@@ -36,8 +36,8 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
 |---|---|---|---|---|---|
 | F00.1 | Project Next.js + TS + Tailwind + shadcn | TODO | |  | |
-| F00.2 | Supabase client (client/server/admin) | TODO | `src/lib/supabase/` |  | |
-| F00.3 | Tipe database generated | TODO | `src/types/database.ts` |  | |
+| F00.2 | Supabase client (client/server/admin) | DONE | `src/lib/supabase/` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; diverifikasi tambahan: client.ts & admin.ts terhubung ke project Supabase live (ojltfmvmbolalhtzrhva), admin client sukses memanggil rpc `is_admin()` (200 OK) |
+| F00.3 | Tipe database generated | DONE | `src/types/database.ts` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; diverifikasi tambahan: nama tabel/kolom di database.ts cocok dengan skema live (query ke `site_settings`/`profiles` tidak error nama relasi/kolom, hanya permission denied 42501 karena GRANT belum diberikan ke anon/service_role) |
 | F00.4 | next-intl + middleware + messages | TODO | `src/i18n/`, `messages/` |  | |
 | F00.5 | Layout publik + pemilih bahasa + floating WA | TODO | `src/app/[locale]/layout.tsx` |  | |
 | F00.6 | Auth: daftar, login, verifikasi email, reset sandi | TODO | `src/app/[locale]/(auth)/` |  | |
@@ -171,6 +171,7 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 
 ```
 2026-XX-XX  F0X.Y  apa yang diuji, dengan data apa, hasilnya apa
+2026-09-06  F00.2/F00.3  Alif menguji sendiri hasil sesuai; verifikasi tambahan: client.ts & admin.ts konek ke project Supabase live, admin client sukses panggil rpc is_admin() (200 OK), nama tabel/kolom di database.ts cocok skema live (site_settings/profiles ada, hanya permission denied 42501 karena GRANT anon/service_role belum diberikan)
 ```
 
 ---
