@@ -52,14 +52,14 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 |---|---|---|---|---|---|
 | F01.1 | Pop-up pembuka | DONE | `src/components/popup-pembuka.tsx`, `src/components/popup-dialog-client.tsx` | 2026-09-07 | Alif menguji sendiri di browser, hasil sesuai: popup muncul saat halaman pertama dibuka, bisa ditutup lewat tombol X, dan tidak muncul lagi setelah reload di sesi yang sama |
 | F01.2 | Sale banner | DONE | `src/components/sale-banner.tsx` | 2026-09-07 | Alif menguji sendiri di browser, hasil sesuai: banner tampil dengan judul, teks, urgensi, dan tombol saat ada baris aktif, dan langsung hilang dari landing saat dinonaktifkan/tidak ada baris aktif |
-| F01.3 | Hero produk unggulan | TODO | |  | |
-| F01.4 | Section jadwal pelatihan | TODO | |  | |
+| F01.3 | Hero produk unggulan | DONE | `src/components/hero-section.tsx`, `src/app/(public)/page.tsx` | 2026-09-07 | Alif menguji sendiri di browser, hasil sesuai: dua kartu penawaran (Pelatihan Drone Bersertifikat, Jual Drone Autel) tampil berdampingan di 375px tanpa scroll, tombol Lihat Jadwal mengarah ke section jadwal dan Lihat Katalog ke /katalog; banner hero dari hero_slides tampil saat ada baris aktif |
+| F01.4 | Section jadwal pelatihan | DONE | `src/components/jadwal-batch-section.tsx`, `src/app/(public)/page.tsx` | 2026-09-07 | Alif menguji sendiri di browser, hasil sesuai: card batch menampilkan tanggal, tag kategori, judul, lokasi, harga, dan status; batch berstatus closed tidak menampilkan tombol Daftar Sekarang sama sekali |
 | F01.5 | Halaman detail batch | TODO | |  | |
 | F01.6 | Form pendaftaran minat → DB + WA | TODO | |  | |
-| F01.7 | Galeri instruktur | TODO | |  | |
-| F01.8 | Company profile | TODO | |  | |
+| F01.7 | Galeri instruktur | DONE | `src/components/instruktur-section.tsx`, `src/app/(public)/page.tsx` | 2026-09-07 | Alif menguji sendiri di browser, hasil sesuai: galeri instruktur tampil dari tabel instructors, section hilang saat tidak ada instruktur aktif |
+| F01.8 | Company profile | DONE | `src/components/company-profile-section.tsx`, `src/app/(public)/page.tsx` | 2026-09-07 | Alif menguji sendiri di browser, hasil sesuai: company profile tampil di bagian bawah landing dengan konten HTML (heading/list) dari Tiptap, section hilang saat kosong |
 | F01.9 | Floating WhatsApp button | TODO | |  | |
-| F01.10 | Testimoni | TODO | |  | |
+| F01.10 | Testimoni | DONE | `src/components/testimoni-section.tsx`, `src/app/(public)/page.tsx` | 2026-09-07 | Alif menguji sendiri di browser, hasil sesuai: testimoni tampil dari tabel testimonials dengan nama, peran, dan isi, section hilang saat tidak ada testimoni aktif |
 | F01.11 | Pemilih bahasa di semua halaman publik | TODO | |  | |
 | F01.12 | Admin: CRUD batch + isi halaman detail | TODO | |  | |
 | F01.13 | Admin: CRUD konten landing | TODO | |  | |
@@ -186,6 +186,7 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 2026-09-06  F00.8  Claude menguji via browser otomatis: `/admin` tanpa sesi tetap redirect ke `/admin/login` (requireAdmin() di layout tidak rusak oleh perubahan sidebar). Sembilan halaman menu (`/admin/batch`, `konten`, `leads`, `sertifikat`, `upgrade`, `materi`, `produk`, `pengaturan`, + beranda) berhasil di-build sebagai rute dinamis (lihat output `pnpm build`). Tampilan sidebar saat login BELUM diverifikasi visual — tidak ada kredensial admin di sesi ini. Alif perlu login sendiri dan cek: sidebar penuh di desktop, drawer hamburger di 375px, seluruh 9 menu di PRD §4 muncul, untuk memenuhi Definition of Done butir 5.
 2026-09-06  F00.5/F00.8/F00.10  Alif menguji sendiri di browser, hasil sesuai: font sudah berganti (Inter) dan nav publik/sidebar admin sudah berubah menjadi hamburger saat viewport di-resize ke ukuran mobile. Ketiganya DONE.
 2026-09-07  F01.1/F01.2  Alif menguji sendiri di browser, hasil sesuai: popup pembuka muncul saat halaman pertama dibuka, dapat ditutup, dan tidak muncul lagi dalam sesi yang sama; sale banner tampil dengan judul/teks/urgensi/tombol dan hilang saat dinonaktifkan dari Admin. Keduanya DONE.
+2026-09-07  F01.3/F01.4/F01.7/F01.8/F01.10  Alif menguji sendiri di browser, hasil sesuai: dua kartu penawaran hero (pelatihan drone, jual drone) tampil tanpa scroll di 375px; jadwal batch menampilkan tanggal/tag/judul/lokasi/harga/status dan batch closed tidak punya tombol Daftar Sekarang; galeri instruktur, company profile, dan testimoni tampil dari tabelnya masing-masing dan hilang saat kosong. Kelimanya DONE.
 ```
 
 ---
