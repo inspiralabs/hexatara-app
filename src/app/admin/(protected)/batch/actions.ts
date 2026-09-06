@@ -162,25 +162,3 @@ export async function toggleAktifBatchAction(batchId: number, aktif: boolean) {
   }
   return { ok: true as const };
 }
-
-export async function uploadGambarBatchAction(formData: FormData) {
-  await requireAdmin();
-  const file = formData.get('file');
-  if (!(file instanceof File)) {
-    return { ok: false as const, pesan: 'Berkas tidak ditemukan.' };
-  }
-
-  const ext = file.name.split('.').pop() ?? 'jpg';
-  const path = `batches/${crypto.randomUUID()}.${ext}`;
-  const supabaseAdmin = createAdminClient();
-  const { error } = await supabaseAdmin.storage.from('content').upload(path, file, {
-    contentType: file.type,
-  });
-  if (error) {
-    console.error('[admin-batch] gagal unggah gambar:', error);
-    return { ok: false as const, pesan: 'Gagal mengunggah gambar. Coba lagi.' };
-  }
-
-  const { data } = supabaseAdmin.storage.from('content').getPublicUrl(path);
-  return { ok: true as const, url: data.publicUrl };
-}

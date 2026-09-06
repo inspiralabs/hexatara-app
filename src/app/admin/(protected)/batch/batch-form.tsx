@@ -6,7 +6,8 @@ import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, XIcon } from 'lucide-react';
 import { BatchFormSchema, type BatchFormInput } from '@/lib/validations/batch-admin';
-import { simpanBatchAction, uploadGambarBatchAction } from './actions';
+import { simpanBatchAction } from './actions';
+import { uploadGambarAdminAction } from '../actions';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -205,7 +206,7 @@ export function BatchForm({
               onUpload={async (file) => {
                 const fd = new FormData();
                 fd.append('file', file);
-                return uploadGambarBatchAction(fd);
+                return uploadGambarAdminAction(fd);
               }}
             />
           )}
@@ -379,7 +380,7 @@ export function BatchForm({
                   onUpload={async (file) => {
                     const fd = new FormData();
                     fd.append('file', file);
-                    return uploadGambarBatchAction(fd);
+                    return uploadGambarAdminAction(fd);
                   }}
                 />
               )}
