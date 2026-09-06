@@ -1,4 +1,5 @@
 import { requireAdmin } from '@/lib/auth/guard';
+import { AdminSidebar } from '@/components/admin/admin-sidebar';
 
 export default async function AdminProtectedLayout({
   children,
@@ -7,7 +8,10 @@ export default async function AdminProtectedLayout({
 }) {
   await requireAdmin();
 
-  // Sidebar & menu penuh menyusul di F00.8 — ini kerangka minimum
-  // supaya requireAdmin() bisa diuji sekarang.
-  return <div className="min-h-screen p-4">{children}</div>;
+  return (
+    <div className="flex min-h-screen flex-col md:flex-row">
+      <AdminSidebar />
+      <main className="flex-1 p-4">{children}</main>
+    </div>
+  );
 }

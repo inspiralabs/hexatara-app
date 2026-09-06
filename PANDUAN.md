@@ -2574,8 +2574,8 @@ Plus enam pemeriksaan wajib di Bagian 6.5.1.
 ```
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji F00.5, F00.8, dan F00.10 sendiri di browser dan hasilnya sesuai.
-Isi ketiga barisnya: Status DONE, Berkas [daftar berkas], Diuji [tanggal],
-Bukti [kalimat hasil pengujian saya].
+Isi ketiga barisnya: Status DONE, Berkas [daftar berkas], Diuji [06/09/2026]
+Bukti [sudah berganti font dan sudah berubah menjadi humberger ketika resize]
 Tambahkan satu baris ke Log verifikasi.
 Jangan mengubah status baris fitur lain.
 ```

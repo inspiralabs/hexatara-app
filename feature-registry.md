@@ -39,12 +39,12 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 | F00.2 | Supabase client (client/server/admin) | DONE | `src/lib/supabase/` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; diverifikasi tambahan: client.ts & admin.ts terhubung ke project Supabase live (ojltfmvmbolalhtzrhva), admin client sukses memanggil rpc `is_admin()` (200 OK) |
 | F00.3 | Tipe database generated | DONE | `src/types/database.ts` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; diverifikasi tambahan: nama tabel/kolom di database.ts cocok dengan skema live (query ke `site_settings`/`profiles` tidak error nama relasi/kolom, hanya permission denied 42501 karena GRANT belum diberikan ke anon/service_role) |
 | F00.4 | next-intl + middleware + messages | TODO | `src/i18n/`, `messages/` |  | |
-| F00.5 | Layout publik + pemilih bahasa + floating WA | TODO | `src/app/[locale]/layout.tsx` |  | |
+| F00.5 | Layout publik + pemilih bahasa + floating WA | DONE | `src/app/(public)/layout.tsx`, `src/app/(public)/page.tsx`, `src/components/public-nav-mobile.tsx`, `src/components/floating-whatsapp.tsx` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; sudah berganti font dan sudah berubah menjadi hamburger ketika resize |
 | F00.6 | Auth: daftar, login, verifikasi email, reset sandi | TODO | `src/app/[locale]/(auth)/` |  | |
 | F00.7 | Login Admin terpisah + `requireAdmin()` | TODO | `src/lib/auth/guard.ts` |  | |
-| F00.8 | Kerangka Admin Panel | TODO | `src/app/admin/` |  | |
+| F00.8 | Kerangka Admin Panel | DONE | `src/app/admin/(protected)/layout.tsx`, `src/components/admin/admin-sidebar.tsx`, `src/components/admin/admin-stub-page.tsx`, `src/app/admin/(protected)/{batch,konten,leads,sertifikat,upgrade,materi,produk,pengaturan}/page.tsx` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; sudah berganti font dan sudah berubah menjadi hamburger ketika resize |
 | F00.9 | Helper Resend + template email | TODO | `src/lib/email/` |  | |
-| F00.10 | Design tokens | TODO | `src/app/globals.css` |  | |
+| F00.10 | Design tokens | DONE | `src/app/globals.css`, `src/app/layout.tsx` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; sudah berganti font dan sudah berubah menjadi hamburger ketika resize |
 
 ## Sprint 1 — Modul 1: Landing Page
 
@@ -177,6 +177,9 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 2026-09-06  F00.6  Reset sandi BELUM bisa diuji tuntas — permintaan ke /auth/v1/recover kena 429 (rate limit email bawaan Supabase, bukan custom SMTP/Resend). Terkonfirmasi lewat Authentication > Logs. Ulangi setelah jendela rate limit reset, atau pasang SMTP kustom (Resend, F00.9) untuk hilangkan batasan ini.
 2026-09-06  F00.7  requireAdmin() terverifikasi lewat tinjauan kode dipanggil eksplisit di actions.ts (bukan cuma layout.tsx), sesuai batasan PANDUAN.md 7.3. Pembuktian black-box (coba Server Action langsung sebagai non-admin) tertunda: satu-satunya admin action saat ini (logoutAdminAction) tidak bisa dibedakan hasilnya secara visual (requireAdmin gagal ATAU signOut sukses sama-sama redirect ke /admin/login). Uji black-box definitif ditunda ke Sprint 1 saat ada admin action dengan efek data nyata (mis. CRUD batch F01.12).
 2026-09-06  (observasi, bukan blocker) Beberapa request dev server (POST /admin/login, GET /admin?_rsc=, prefetch /lupa-sandi) sesekali mengembalikan 503 lalu berhasil di percobaan berikutnya. Diamati 3x selama sesi pengujian F00.6/F00.7. Belum jelas penyebabnya (dugaan: Turbopack recompile saat dev). Tidak menghambat fungsi, tapi layak dipantau — kalau pola berulang di Sprint 1, cek log `pnpm dev` saat momen itu terjadi.
+2026-09-06  F00.5/F00.10  `pnpm tsc --noEmit`, `pnpm lint`, `pnpm build` bersih. Claude menguji via browser otomatis (sebagai bantuan, BUKAN pengganti verifikasi Alif) di viewport 375px pada `/`: tidak ada scroll horizontal (scrollWidth == clientWidth == 360px), header + hamburger + footer + tombol WA mengambang tampil benar, hamburger membuka drawer berisi 4 link nav (Beranda/Verifikasi Sertifikat/Materi & Kuis/Katalog Produk) dan menutup lagi saat link diklik. Kode tombol WA hanya `<a href="wa.me/...">`, tidak ada `fetch`/API. Masih perlu Alif buka sendiri untuk memenuhi Definition of Done butir 5.
+2026-09-06  F00.8  Claude menguji via browser otomatis: `/admin` tanpa sesi tetap redirect ke `/admin/login` (requireAdmin() di layout tidak rusak oleh perubahan sidebar). Sembilan halaman menu (`/admin/batch`, `konten`, `leads`, `sertifikat`, `upgrade`, `materi`, `produk`, `pengaturan`, + beranda) berhasil di-build sebagai rute dinamis (lihat output `pnpm build`). Tampilan sidebar saat login BELUM diverifikasi visual — tidak ada kredensial admin di sesi ini. Alif perlu login sendiri dan cek: sidebar penuh di desktop, drawer hamburger di 375px, seluruh 9 menu di PRD §4 muncul, untuk memenuhi Definition of Done butir 5.
+2026-09-06  F00.5/F00.8/F00.10  Alif menguji sendiri di browser, hasil sesuai: font sudah berganti (Inter) dan nav publik/sidebar admin sudah berubah menjadi hamburger saat viewport di-resize ke ukuran mobile. Ketiganya DONE.
 ```
 
 ---
