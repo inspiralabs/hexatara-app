@@ -140,7 +140,7 @@ import 'server-only';
 
 Baris itu membuat impor dari Client Component gagal saat build, bukan gagal diam-diam di produksi. Komentar peringatan saja tidak cukup — komentar bisa terlewat, error build tidak.
 
-`admin.ts` dipakai di **satu tempat saja**: aktivasi sertifikat F03.8 dan operasi Admin yang memang perlu menembus RLS. Kalau kamu memakainya di tempat lain, hampir pasti policy RLS-nya yang perlu diperbaiki, bukan client-nya yang perlu diganti.
+`admin.ts` dipakai di **tempat-tempat yang memang perlu menembus RLS dengan sengaja**: aktivasi sertifikat (F03.8), operasi Admin, dan Server Action publik yang menulis ke tabel tanpa policy insert/update untuk anon (misalnya F01.6 — `batch_leads` sengaja tidak punya policy insert anon). Kalau kamu memakainya di tempat lain, hampir pasti policy RLS-nya yang perlu diperbaiki, bukan client-nya yang perlu diganti.
 
 ### 3.2 Tipe database — generated, jangan ditulis tangan
 

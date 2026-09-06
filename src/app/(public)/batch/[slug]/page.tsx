@@ -16,37 +16,10 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { Database } from "@/types/database";
-
-type Batch = Pick<
-  Database["public"]["Tables"]["batches"]["Row"],
-  | "id"
-  | "slug"
-  | "judul_id"
-  | "kategori_id"
-  | "lokasi_id"
-  | "alamat"
-  | "harga"
-  | "status"
-  | "tanggal_mulai"
-  | "tanggal_selesai"
-  | "deskripsi_id"
-  | "silabus_id"
-  | "hero_gambar_url"
->;
+import { DaftarMinatDialog } from "./daftar-minat-dialog";
 
 const KONTEN_HTML_CLASS =
   "mt-2 space-y-3 text-base text-warna-teks-2 [&_a]:underline [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-warna-teks [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-5";
-
-// ponytail: F01.6 (form minat) belum dibangun, jadi tombol ini langsung buka WA
-// tanpa menyimpan ke batch_leads dan tanpa nama pendaftar. Ganti dengan alur
-// simpan-DB-dulu-baru-WA (PRD §6.4 F01.6) begitu form itu dikerjakan.
-function buildWaDaftarLink(nomor: string | undefined, batch: Pick<Batch, "judul_id" | "tanggal_mulai" | "tanggal_selesai">) {
-  if (!nomor) return null;
-  const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai);
-  const pesan = `Halo Admin Hexatara, saya ingin mendaftar batch "${batch.judul_id}"${tanggal ? ` (${tanggal})` : ""}.`;
-  return `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
-}
 
 function buildWaTanyaLink(nomor: string | undefined, judul: string) {
   if (!nomor) return null;
@@ -84,7 +57,6 @@ export default async function BatchDetailPage({
   const nomorWa = process.env.NEXT_PUBLIC_WA_ADMIN;
   const status = STATUS_BATCH_LABEL[batch.status];
   const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai);
-  const waDaftarLink = buildWaDaftarLink(nomorWa, batch);
   const waTanyaLink = buildWaTanyaLink(nomorWa, batch.judul_id);
 
   const tabItems = [
@@ -190,16 +162,7 @@ export default async function BatchDetailPage({
             {batch.harga != null && (
               <p className="mt-3 text-xl font-bold text-warna-teks">{formatRupiah(batch.harga)}</p>
             )}
-            {batch.status !== "closed" && waDaftarLink && (
-              <a
-                href={waDaftarLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
-              >
-                Daftar Sekarang
-              </a>
-            )}
+            {batch.status !== "closed" && <DaftarMinatDialog batchId={batch.id} />}
           </div>
 
           <div className="rounded-xl border border-warna-latar-2 bg-warna-latar p-5">
