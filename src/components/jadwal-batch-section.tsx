@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { STATUS_BATCH_LABEL, formatRupiah, formatTanggalBatch } from "@/lib/batch";
 import type { Database } from "@/types/database";
 
 type Batch = Pick<
@@ -7,36 +8,9 @@ type Batch = Pick<
   "id" | "slug" | "judul_id" | "kategori_id" | "lokasi_id" | "harga" | "status" | "tanggal_mulai" | "tanggal_selesai"
 >;
 
-const STATUS_LABEL: Record<Batch["status"], { label: string; className: string }> = {
-  upcoming: { label: "Akan Datang", className: "bg-warna-utama/10 text-warna-utama" },
-  open: { label: "Pendaftaran Dibuka", className: "bg-warna-sukses/10 text-warna-sukses" },
-  closed: { label: "Ditutup", className: "bg-warna-teks-2/10 text-warna-teks-2" },
-};
-
-const formatTanggalId = new Intl.DateTimeFormat("id-ID", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
-
-function formatTanggalBatch(mulai: string | null, selesai: string | null) {
-  if (!mulai) return null;
-  const awal = formatTanggalId.format(new Date(mulai));
-  if (!selesai || selesai === mulai) return awal;
-  return `${awal} – ${formatTanggalId.format(new Date(selesai))}`;
-}
-
-function formatRupiah(nilai: number) {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(nilai);
-}
-
 function BatchCard({ batch }: { batch: Batch }) {
   const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai);
-  const status = STATUS_LABEL[batch.status];
+  const status = STATUS_BATCH_LABEL[batch.status];
 
   return (
     <article className="flex flex-col gap-2 rounded-xl border border-warna-latar-2 bg-warna-latar p-4">
