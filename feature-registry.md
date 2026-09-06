@@ -157,6 +157,7 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 | Soal kuis + penjelasan tiap opsi salah | Hexatara | **Menghambat UAT Modul 3.** Minta sekarang, jangan tunggu Sprint 3 tiba | |
 | Template PDF sertifikat | Hexatara | Menghambat F03.4 | |
 | Akses DNS hexatara.com | Abi | Menghambat deploy produksi + verifikasi domain Resend | |
+| Verifikasi domain Resend (`hexatara.com`) — akun Resend baru dibuat InspiraLabs, sandbox `onboarding@resend.dev` dipakai untuk dev F00.9 | Akses DNS hexatara.com (baris di atas) | Tidak menghambat F00.9 (dev jalan pakai sandbox). Menghambat Fase 14.3 (Custom SMTP produksi + kirim ke alamat selain milik sendiri) | 2026-09-06 |
 | Data sertifikat existing | Abi | Tidak menghambat — Modul 2 dibangun penuh dengan data seed | |
 | Konten Bahasa Inggris | Hexatara | Tidak menghambat — fallback ke Indonesia | |
 | Persetujuan rate limit /verify | Hexatara | Tidak menghambat — di balik feature flag | |

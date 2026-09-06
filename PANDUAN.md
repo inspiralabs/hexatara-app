@@ -2593,6 +2593,8 @@ git push
 
 ## 7.5 Helper email
 
+> **Catatan status akun (2026-09-06):** Akun Resend didaftarkan atas nama InspiraLabs (bukan email pribadi/klien) — pemilik akun tetap InspiraLabs, sesuai kesepakatan dengan Alif. Verifikasi domain `hexatara.com` di Resend BELUM dilakukan — menunggu akses DNS dari Abi (lihat tabel "Diblokir/menunggu pihak lain" di `feature-registry.md`). Untuk fase ini, dev/testing tetap jalan pakai domain sandbox `onboarding@resend.dev` seperti sudah diatur di `.env.local` (Fase 4.1) — sandbox ini hanya bisa mengirim ke alamat email pemilik akun Resend sendiri, cukup untuk uji lima pemicu di bawah. Verifikasi domain + Custom SMTP produksi baru dikerjakan di Fase 14.3 setelah DNS tersedia.
+
 ```
 Baca PRD.md Bagian 11 dulu.
 
