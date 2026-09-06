@@ -161,6 +161,7 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 | Konten Bahasa Inggris | Hexatara | Tidak menghambat — fallback ke Indonesia | |
 | Persetujuan rate limit /verify | Hexatara | Tidak menghambat — di balik feature flag | |
 | Persetujuan add-on terjemahan otomatis | Hexatara | Tidak menghambat — ADR-007 | |
+| Rate limit email bawaan Supabase (429 pada /auth/v1/recover) | Waktu (jendela rate limit direset otomatis) | Menghambat pengujian reset sandi F00.6 sampai tuntas — bukan bug kode, terkonfirmasi via Auth Logs Supabase | 2026-09-06 |
 
 ---
 
@@ -172,6 +173,10 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 ```
 2026-XX-XX  F0X.Y  apa yang diuji, dengan data apa, hasilnya apa
 2026-09-06  F00.2/F00.3  Alif menguji sendiri hasil sesuai; verifikasi tambahan: client.ts & admin.ts konek ke project Supabase live, admin client sukses panggil rpc is_admin() (200 OK), nama tabel/kolom di database.ts cocok skema live (site_settings/profiles ada, hanya permission denied 42501 karena GRANT anon/service_role belum diberikan)
+2026-09-06  F00.6  Claude menguji via browser otomatis (sebagai bantuan, BUKAN pengganti verifikasi Alif): daftar akun baru (+test2) -> login sebelum verifikasi email diklik ditolak dengan pesan "Email belum diverifikasi" -> klik link verifikasi dari email asli -> login berhasil. Masih perlu Alif klik sendiri untuk memenuhi Definition of Done butir 5.
+2026-09-06  F00.6  Reset sandi BELUM bisa diuji tuntas — permintaan ke /auth/v1/recover kena 429 (rate limit email bawaan Supabase, bukan custom SMTP/Resend). Terkonfirmasi lewat Authentication > Logs. Ulangi setelah jendela rate limit reset, atau pasang SMTP kustom (Resend, F00.9) untuk hilangkan batasan ini.
+2026-09-06  F00.7  requireAdmin() terverifikasi lewat tinjauan kode dipanggil eksplisit di actions.ts (bukan cuma layout.tsx), sesuai batasan PANDUAN.md 7.3. Pembuktian black-box (coba Server Action langsung sebagai non-admin) tertunda: satu-satunya admin action saat ini (logoutAdminAction) tidak bisa dibedakan hasilnya secara visual (requireAdmin gagal ATAU signOut sukses sama-sama redirect ke /admin/login). Uji black-box definitif ditunda ke Sprint 1 saat ada admin action dengan efek data nyata (mis. CRUD batch F01.12).
+2026-09-06  (observasi, bukan blocker) Beberapa request dev server (POST /admin/login, GET /admin?_rsc=, prefetch /lupa-sandi) sesekali mengembalikan 503 lalu berhasil di percobaan berikutnya. Diamati 3x selama sesi pengujian F00.6/F00.7. Belum jelas penyebabnya (dugaan: Turbopack recompile saat dev). Tidak menghambat fungsi, tapi layak dipantau — kalau pola berulang di Sprint 1, cek log `pnpm dev` saat momen itu terjadi.
 ```
 
 ---
