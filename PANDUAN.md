@@ -2678,7 +2678,7 @@ git push
 ## 8.1 Pop-up & sale banner
 
 ```
-/impeccable
+/impeccable /ponytail
 
 Baca PRD.md Bagian 6.4 (F01.1 dan F01.2) dulu.
 
@@ -2751,7 +2751,7 @@ git push
 ## 8.2 Hero, jadwal batch, instruktur, company profile
 
 ```
-/impeccable
+/impeccable /ponytail
 
 Baca PRD.md Bagian 6.4 (F01.4) dan Bagian 12.3 dulu.
 
@@ -2817,7 +2817,7 @@ git push
 ## 8.3 Halaman detail batch
 
 ```
-/impeccable /design:ux-copy
+/impeccable /design:ux-copy /ponytail
 
 Baca PRD.md Bagian 6.4 (F01.5) dulu.
 
@@ -2889,7 +2889,7 @@ git push
 ## 8.4 Form pendaftaran minat
 
 ```
-/design:ux-copy
+/impeccable /design:ux-copy /ponytail
 
 Baca PRD.md Bagian 6.4 (F01.6) dan ENGINEERING.md Bagian 5.1 dulu.
 
@@ -2965,7 +2965,7 @@ git push
 > Urutan yang disarankan: batches → popups → sale_banners → hero_slides → instructors → company_profile → testimonials → daftar lead.
 
 ```
-/impeccable
+/impeccable /ponytail
 
 Baca PRD.md Bagian 10 dan ENGINEERING.md Bagian 5.3 dan 5.6 dulu.
 
@@ -3109,7 +3109,7 @@ Tag itu jalan mundurmu. Kalau migrasinya kacau: `git reset --hard sebelum-dwibah
 Tempel utuh ke panel Claude Code, di sesi yang baru di-`/clear`.
 
 ```
-/writing-plans
+/writing-plans /ponytail
 
 Baca PRD.md Bagian 4.1 dan 4.2, lalu ENGINEERING.md Bagian 5.9, lalu ADR-002,
 ADR-003, dan ADR-009 di ENGINEERING.md Bagian 10.
@@ -3299,7 +3299,7 @@ Mulai Sprint 2 dari Fase 10. Sejak titik ini, seluruh route publik ada di bawah 
 ## 10.1 Halaman verifikasi publik
 
 ```
-/impeccable /design:ux-copy
+/impeccable /design:ux-copy /ponytail
 
 Baca PRD.md Bagian 7 seluruhnya dulu, terutama 7.4, 7.6, dan 7.7.
 Lalu ENGINEERING.md Bagian 3.4.
@@ -3409,7 +3409,7 @@ git push
 ## 10.2 Admin: CRUD sertifikat satuan
 
 ```
-/design:ux-copy
+/impeccable /design:ux-copy /ponytail
 
 Baca PRD.md Bagian 7.4, 7.5, dan 7.8 dulu.
 
@@ -3486,7 +3486,7 @@ git push
 ## 10.3 Import massal sertifikat
 
 ```
-/test-driven-development
+/impeccable /test-driven-development /ponytail
 
 Baca PRD.md Bagian 7.8 dan ENGINEERING.md Bagian 5.5 dulu.
 
@@ -3572,6 +3572,8 @@ git push
 ## 10.4 Rate limit
 
 ```
+/ponytail
+
 Baca PRD.md Bagian 7.9 dan ADR-008 di ENGINEERING.md Bagian 10 dulu.
 
 Tugas: F02.9.
@@ -3654,7 +3656,7 @@ Jangan lupa tambahkan kedua env Upstash ke **Vercel → Settings → Environment
 ## 11.1 Materi & mesin kuis
 
 ```
-/brainstorming /impeccable
+/brainstorming /impeccable /ponytail
 
 Baca PRD.md Bagian 8.5 seluruhnya dulu. Ini bagian yang paling sering dirusak
 oleh "bantuan" AI.
@@ -3737,7 +3739,7 @@ git push
 ## 11.2 Sertifikat preview
 
 ```
-/brainstorming /test-driven-development
+/impeccable /brainstorming /test-driven-development /ponytail
 
 Baca PRD.md Bagian 8.6 dan ADR-005 di ENGINEERING.md Bagian 10 dulu.
 Lalu ENGINEERING.md Bagian 5.3 dan 5.4.
@@ -3818,7 +3820,7 @@ git push
 ## 11.3 Upgrade & pembayaran
 
 ```
-/design:ux-copy
+/impeccable /design:ux-copy /ponytail
 
 Baca PRD.md Bagian 8.7 dulu.
 
@@ -3903,7 +3905,7 @@ git push
 > **Blok paling kritis di seluruh proyek.** Kesalahan di sini tidak bisa diperbaiki belakangan: nomor sertifikat sudah terpakai, pengguna sudah membayar.
 
 ```
-/test-driven-development
+/impeccable /test-driven-development /ponytail
 
 Baca PRD.md Bagian 8.8 dan ENGINEERING.md Bagian 5.2 dan 3.6 dulu.
 
@@ -4005,7 +4007,7 @@ git push
 ## 11.5 Dashboard pengguna
 
 ```
-/impeccable
+/impeccable /ponytail
 
 Baca PRD.md Bagian 8.9 dulu.
 
@@ -4068,6 +4070,8 @@ git push
 ## 11.6 Admin: materi & bank soal
 
 ```
+/impeccable /ponytail
+
 Baca PRD.md Bagian 8.10 dan ENGINEERING.md Bagian 5.5 dulu.
 
 Tugas: F03.12 dan F03.13.
@@ -4156,7 +4160,7 @@ git push
 ## 12.1 Katalog & detail produk
 
 ```
-/impeccable
+/impeccable /ponytail
 
 Baca PRD.md Bagian 9.4 dan ADR-004 di ENGINEERING.md Bagian 10 dulu.
 Lalu ENGINEERING.md Bagian 3.4.
@@ -4256,7 +4260,7 @@ git push
 ## 12.2 Form permintaan penawaran
 
 ```
-/design:ux-copy
+/impeccable /design:ux-copy /ponytail
 
 Baca PRD.md Bagian 9.5 dulu.
 
@@ -4332,6 +4336,8 @@ git push
 ## 12.3 Admin: CRUD produk
 
 ```
+/impeccable /ponytail
+
 Baca PRD.md Bagian 10 dan ENGINEERING.md Bagian 5.3 dulu.
 
 Tugas: F04.6.
@@ -4418,7 +4424,7 @@ git push
 ## 13.1 Audit aksesibilitas
 
 ```
-/impeccable
+/impeccable /ponytail
 
 Baca PRD.md Bagian 12.3 dan ENGINEERING.md Bagian 7 dulu.
 
@@ -4489,6 +4495,8 @@ git push
 ## 13.2 SEO & halaman error
 
 ```
+/impeccable /ponytail
+
 Baca PRD.md Bagian 4.1 dulu.
 
 Tugas: F05.3 dan F05.4.
@@ -4553,7 +4561,7 @@ git push
 ## 13.3 Kesiapan produksi
 
 ```
-/verification-before-completion
+/verification-before-completion /ponytail
 
 Tugas: F05.5, F05.6, F05.7.
 
@@ -4684,6 +4692,8 @@ git push
 ## 13.5 Dokumentasi as-built
 
 ```
+/ponytail
+
 Baca Lampiran C dulu.
 
 Tugas: F05.8.

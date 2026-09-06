@@ -860,7 +860,7 @@ Font: `Inter` untuk semua. Tanpa font kedua. Tanpa dark mode.
 
 ## 13. ATURAN UNTUK AI
 
-Daftar lengkap 25 larangan ada di `ENGINEERING.md` Bagian 9. Ini yang paling sering dilanggar, dikelompokkan menurut alasannya.
+Daftar lengkap 25 larangan ada di bagian ini sendiri (di bawah). Ini yang paling sering dilanggar, dikelompokkan menurut alasannya.
 
 ### 13.1 Database & infrastruktur
 

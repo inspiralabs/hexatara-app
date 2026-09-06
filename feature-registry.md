@@ -14,9 +14,9 @@ Sebuah fitur berstatus `DONE` hanya kalau kelimanya terpenuhi.
 Empat pertama boleh dikerjakan agent, **yang kelima wajib Alif.**
 
 1. `pnpm tsc --noEmit` dan `pnpm lint` bersih
-2. Seluruh acceptance criteria fitur ini di `ENGINEERING.md` Bagian 10 sudah dicek satu per satu
+2. Seluruh acceptance criteria fitur ini di `PRD.md` Bagian 6–11 sudah dicek satu per satu
 3. Diuji di viewport 375px — tanpa scroll horizontal, tanpa elemen terpotong
-4. Tidak melanggar satu pun dari 25 larangan di Bagian 9
+4. Tidak melanggar satu pun dari 25 larangan di `PRD.md` Bagian 13
 5. **Alif membuka sendiri di browser, mengklik sendiri, hasilnya sesuai** ← tanpa ini tetap `WIP`
 
 Kolom **Bukti** diisi apa yang benar-benar diuji, bukan kata "sudah dites".
@@ -35,13 +35,13 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
 |---|---|---|---|---|---|
-| F00.1 | Project Next.js + TS + Tailwind + shadcn | TODO | |  | |
+| F00.1 | Project Next.js + TS + Tailwind + shadcn | DONE | | 2026-09-06 | Alif konfirmasi: project sudah berjalan sejak awal (dipakai seluruh fitur lain), `pnpm build` bersih (tsc/lint/build lolos, 20 route ter-generate tanpa error) |
 | F00.2 | Supabase client (client/server/admin) | DONE | `src/lib/supabase/` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; diverifikasi tambahan: client.ts & admin.ts terhubung ke project Supabase live (ojltfmvmbolalhtzrhva), admin client sukses memanggil rpc `is_admin()` (200 OK) |
 | F00.3 | Tipe database generated | DONE | `src/types/database.ts` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; diverifikasi tambahan: nama tabel/kolom di database.ts cocok dengan skema live (query ke `site_settings`/`profiles` tidak error nama relasi/kolom, hanya permission denied 42501 karena GRANT belum diberikan ke anon/service_role) |
 | F00.4 | next-intl + middleware + messages | TODO | `src/i18n/`, `messages/` |  | |
 | F00.5 | Layout publik + pemilih bahasa + floating WA | DONE | `src/app/(public)/layout.tsx`, `src/app/(public)/page.tsx`, `src/components/public-nav-mobile.tsx`, `src/components/floating-whatsapp.tsx` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; sudah berganti font dan sudah berubah menjadi hamburger ketika resize |
-| F00.6 | Auth: daftar, login, verifikasi email, reset sandi | TODO | `src/app/[locale]/(auth)/` |  | |
-| F00.7 | Login Admin terpisah + `requireAdmin()` | TODO | `src/lib/auth/guard.ts` |  | |
+| F00.6 | Auth: daftar, login, verifikasi email, reset sandi | DONE | `src/app/(auth)/` | 2026-09-06 | Alif menguji sendiri di browser: daftar akun baru + email verifikasi masuk + klik link → login berhasil; lupa sandi sampai tuntas (link reset masuk, sandi baru berhasil dipakai login); login dengan sandi salah/akun belum verifikasi ditolak dengan pesan error yang sesuai |
+| F00.7 | Login Admin terpisah + `requireAdmin()` | DONE | `src/lib/auth/guard.ts` | 2026-09-06 | Alif menguji sendiri di browser: login admin berhasil, sidebar 9 menu (PRD §4) tampil; akses /admin tanpa login → redirect ke halaman login; akses /admin pakai akun non-admin → ditolak |
 | F00.8 | Kerangka Admin Panel | DONE | `src/app/admin/(protected)/layout.tsx`, `src/components/admin/admin-sidebar.tsx`, `src/components/admin/admin-stub-page.tsx`, `src/app/admin/(protected)/{batch,konten,leads,sertifikat,upgrade,materi,produk,pengaturan}/page.tsx` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; sudah berganti font dan sudah berubah menjadi hamburger ketika resize |
 | F00.9 | Helper Resend + template email | TODO | `src/lib/email/` |  | |
 | F00.10 | Design tokens | DONE | `src/app/globals.css`, `src/app/layout.tsx` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; sudah berganti font dan sudah berubah menjadi hamburger ketika resize |
@@ -50,8 +50,8 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
 |---|---|---|---|---|---|
-| F01.1 | Pop-up pembuka | TODO | |  | |
-| F01.2 | Sale banner | TODO | |  | |
+| F01.1 | Pop-up pembuka | DONE | `src/components/popup-pembuka.tsx`, `src/components/popup-dialog-client.tsx` | 2026-09-07 | Alif menguji sendiri di browser, hasil sesuai: popup muncul saat halaman pertama dibuka, bisa ditutup lewat tombol X, dan tidak muncul lagi setelah reload di sesi yang sama |
+| F01.2 | Sale banner | DONE | `src/components/sale-banner.tsx` | 2026-09-07 | Alif menguji sendiri di browser, hasil sesuai: banner tampil dengan judul, teks, urgensi, dan tombol saat ada baris aktif, dan langsung hilang dari landing saat dinonaktifkan/tidak ada baris aktif |
 | F01.3 | Hero produk unggulan | TODO | |  | |
 | F01.4 | Section jadwal pelatihan | TODO | |  | |
 | F01.5 | Halaman detail batch | TODO | |  | |
@@ -181,8 +181,11 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 2026-09-06  F00.5/F00.10  `pnpm tsc --noEmit`, `pnpm lint`, `pnpm build` bersih. Claude menguji via browser otomatis (sebagai bantuan, BUKAN pengganti verifikasi Alif) di viewport 375px pada `/`: tidak ada scroll horizontal (scrollWidth == clientWidth == 360px), header + hamburger + footer + tombol WA mengambang tampil benar, hamburger membuka drawer berisi 4 link nav (Beranda/Verifikasi Sertifikat/Materi & Kuis/Katalog Produk) dan menutup lagi saat link diklik. Kode tombol WA hanya `<a href="wa.me/...">`, tidak ada `fetch`/API. Masih perlu Alif buka sendiri untuk memenuhi Definition of Done butir 5.
 2026-09-06  (setup Resend, bukan fitur berkode) Alif mendaftarkan akun Resend baru atas nama InspiraLabs (hexatara.inspiralabs@gmail.com). Dites kirim via API langsung (PowerShell Invoke-RestMethod) ke inspiradrive9+test1@gmail.com -> ditolak 403 ("You can only send testing emails to your own email address"). Terkonfirmasi: sandbox onboarding@resend.dev cuma bisa kirim ke hexatara.inspiralabs@gmail.com persis. Berlaku untuk testing F00.9 dan seluruh alur email/auth sampai domain hexatara.com terverifikasi (Fase 14.3).
 2026-09-06  F00.9  Verifikasi kode terpenuhi: `src/lib/email/templates.ts` berisi tepat LIMA fungsi template (templateVerifikasiEmail, templateResetSandi, templatePembayaranDisetujui, templatePembayaranDitolak, templateLeadBaru), `send.ts` punya lima fungsi pengirim sepadan — sesuai batasan lima pemicu di PANDUAN.md 7.5. Uji daftar akun di /daftar: email verifikasi masuk, tapi TERKONFIRMASI lewat Supabase (SMTP bawaan), BUKAN lewat Resend (tidak ada jejak di Resend Logs) — ini benar sesuai desain, karena Custom SMTP baru diarahkan ke Resend di Fase 14.3. Uji "matikan RESEND_API_KEY -> kirim form -> data tetap tersimpan, aplikasi tidak error" BELUM BISA dilakukan: dicek `grep` di src/app, belum ada satu pun pemanggil kirimEmailLeadBaru/Verifikasi/ResetSandi/PembayaranDisetujui/PembayaranDitolak — sesuai scope 7.5 ("pemanggilnya menyusul di sprint yang membutuhkan"). F01.6 (form lead, TODO) adalah pemanggil pertama yang akan tersedia. Ditunda: uji ulang saat F01.6 atau fitur pembayaran dibangun, lewat form sungguhan seperti pola F01.6 di PANDUAN.md (matikan RESEND_API_KEY -> kirim form -> data tetap tersimpan).
+2026-09-06  F00.1/F00.6/F00.7  `pnpm tsc --noEmit`, `pnpm lint`, `pnpm build` bersih (20 route ter-generate tanpa error). Alif menguji sendiri di browser: daftar akun + verifikasi email + login sukses; lupa sandi sampai tuntas (link reset masuk, sandi baru berhasil dipakai login) — rate limit 429 sebelumnya sudah reset; login sandi salah/belum verifikasi ditolak dengan pesan sesuai; login admin sukses dengan sidebar 9 menu tampil; akses /admin tanpa login dan dengan akun non-admin sama-sama ditolak/redirect. Ketiganya diubah ke DONE.
+2026-09-06  Checklist 7.6 (sebelum Sprint 1)  `pnpm build` lolos; push sukses ke inspiralabs/hexatara-app.git (e30ebb7..e20001d); Vercel deploy hijau; tidak ada folder src/app/[locale]/. F00.9 SENGAJA tetap TODO (bukan lolos diam-diam) — menunggu pemanggil pertama di F01.6 yang justru bagian Sprint 1. Diputuskan lanjut ke Fase 8 dengan F00.9 selesai bersamaan F01.6, bukan diselesaikan paksa lebih dulu.
 2026-09-06  F00.8  Claude menguji via browser otomatis: `/admin` tanpa sesi tetap redirect ke `/admin/login` (requireAdmin() di layout tidak rusak oleh perubahan sidebar). Sembilan halaman menu (`/admin/batch`, `konten`, `leads`, `sertifikat`, `upgrade`, `materi`, `produk`, `pengaturan`, + beranda) berhasil di-build sebagai rute dinamis (lihat output `pnpm build`). Tampilan sidebar saat login BELUM diverifikasi visual — tidak ada kredensial admin di sesi ini. Alif perlu login sendiri dan cek: sidebar penuh di desktop, drawer hamburger di 375px, seluruh 9 menu di PRD §4 muncul, untuk memenuhi Definition of Done butir 5.
 2026-09-06  F00.5/F00.8/F00.10  Alif menguji sendiri di browser, hasil sesuai: font sudah berganti (Inter) dan nav publik/sidebar admin sudah berubah menjadi hamburger saat viewport di-resize ke ukuran mobile. Ketiganya DONE.
+2026-09-07  F01.1/F01.2  Alif menguji sendiri di browser, hasil sesuai: popup pembuka muncul saat halaman pertama dibuka, dapat ditutup, dan tidak muncul lagi dalam sesi yang sama; sale banner tampil dengan judul/teks/urgensi/tombol dan hilang saat dinonaktifkan dari Admin. Keduanya DONE.
 ```
 
 ---

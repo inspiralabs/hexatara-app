@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { FloatingWhatsapp } from "@/components/floating-whatsapp";
 import { PublicNavMobile } from "@/components/public-nav-mobile";
@@ -14,7 +15,8 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
     <div className="flex min-h-full flex-1 flex-col">
       <header className="sticky top-0 z-30 border-b border-warna-latar-2 bg-warna-latar">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-          <Link href="/" className="text-lg font-bold text-warna-utama">
+          <Link href="/" className="flex items-center gap-2 text-lg font-bold text-warna-utama">
+            <Image src="/hexatara-logo.png" alt="Hexatara" width={32} height={32} className="h-8 w-8" priority />
             Hexatara
           </Link>
 
