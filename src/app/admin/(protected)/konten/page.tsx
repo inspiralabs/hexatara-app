@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PopupList } from './popup-list';
 import { SaleBannerList } from './sale-banner-list';
+import { HeroSlideList } from './hero-slide-list';
 
 function TabBelumDibangun() {
   return <p className="pt-6 text-sm text-warna-teks-2">Belum dibangun — menyusul sesi berikutnya.</p>;
@@ -28,6 +29,13 @@ export default async function AdminKontenPage() {
 
   if (errorBanner) console.error('[admin-konten] gagal memuat sale banner:', errorBanner);
 
+  const { data: heroSlides, error: errorHero } = await supabase
+    .from('hero_slides')
+    .select('*')
+    .order('urutan', { ascending: true });
+
+  if (errorHero) console.error('[admin-konten] gagal memuat hero slide:', errorHero);
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-xl font-bold text-warna-teks">Konten Landing</h1>
@@ -49,7 +57,7 @@ export default async function AdminKontenPage() {
           <SaleBannerList banners={saleBanners ?? []} />
         </TabsContent>
         <TabsContent value="hero">
-          <TabBelumDibangun />
+          <HeroSlideList slides={heroSlides ?? []} />
         </TabsContent>
         <TabsContent value="instruktur">
           <TabBelumDibangun />
