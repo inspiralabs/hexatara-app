@@ -41,16 +41,6 @@ Daftar lengkap 25 butir ada di `PRD.md` Bagian 13 dan `ENGINEERING.md` Bagian 9.
 
 Merasa salah satu larangan ini keliru? Katakan. Jangan melanggarnya diam-diam, dan jangan mematuhinya diam-diam kalau menurutmu ada masalah nyata.
 
-## Status dwibahasa saat ini
-
-**Sprint 0 dan 1 dibangun Bahasa Indonesia saja.** Struktur route memakai `src/app/(public)/`, `(auth)/`, `(user)/`, `admin/` — **bukan** `src/app/[locale]/`.
-
-Migrasi ke next-intl dikerjakan di akhir Sprint 1 lewat Lampiran C di `PANDUAN.md`. Sampai itu terjadi, **jangan membuat folder `[locale]`, jangan memasang next-intl, jangan membuat `messages/*.json`.**
-
-Skema database sudah menyediakan kolom `_id`/`_en` sejak awal, jadi tidak ada migrasi database saat dwibahasa masuk.
-
-Hapus bagian ini setelah migrasi selesai.
-
 ## Pakai Context7
 
 Saat menyentuh Next.js App Router, next-intl, Supabase SSR, pdf-lib, atau shadcn: tambahkan `use context7` di prompt. API-nya berubah cukup sering sampai ingatan model tidak bisa dipercaya.

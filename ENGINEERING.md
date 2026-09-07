@@ -81,7 +81,7 @@ Stack lengkap ada di `PRD.md` Bagian 2. Yang perlu ditegaskan di sisi teknis:
 | TypeScript | 5.x, `strict: true` | `any` dilarang. Kalau tipenya sulit, `unknown` lalu persempit |
 | Tailwind | 4.x | Konfigurasi lewat CSS, bukan `tailwind.config.ts` gaya v3 |
 | shadcn/ui | terbaru | Komponen di `src/components/ui/` — **jangan diedit manual** |
-| next-intl | 3.x | **Belum dipasang.** Masuk di Sprint 1.5, lihat `PANDUAN.md` Lampiran C |
+| next-intl | 4.x | Aktif sejak Fase 9. Routing digabung ke `src/proxy.ts` (bukan `middleware.ts` terpisah — Next.js 16 memakai konvensi `proxy.ts`) |
 
 ### 2.2 Yang dilarang dipasang
 
@@ -363,9 +363,9 @@ Batasi ekstensi Tiptap ke yang benar-benar dipakai: heading, bold, italic, bulle
 
 ### 5.9 Dwibahasa
 
-**Belum aktif.** Sprint 0 dan 1 dibangun Bahasa Indonesia saja. Migrasi di Sprint 1.5, `PANDUAN.md` Lampiran C.
+**Aktif sejak Fase 9.** Migrasi ke next-intl sudah selesai — lihat riwayat keputusan di ADR-009.
 
-Setelah migrasi, satu helper dipakai di mana-mana:
+Satu helper dipakai di mana-mana:
 
 ```ts
 // src/lib/i18n/pick.ts
@@ -406,21 +406,24 @@ Bahasa Indonesia untuk hal yang berhubungan dengan domain bisnis, Bahasa Inggris
 
 ### 6.3 Struktur folder
 
-**Sekarang — Sprint 0 dan 1, sebelum migrasi dwibahasa:**
+**Struktur sekarang, sejak migrasi dwibahasa di Fase 9:**
 
 ```
 src/
 ├─ app/
-│  ├─ (public)/        landing, batch, verify, materi, kuis, katalog
-│  ├─ (auth)/          login, daftar, lupa-sandi, reset-sandi, verifikasi-email
-│  ├─ (user)/          dashboard
-│  ├─ admin/           Admin Panel — Indonesia saja
+│  ├─ [locale]/
+│  │  ├─ (public)/     landing, batch, verify, materi, kuis, katalog
+│  │  ├─ (auth)/       login, daftar, lupa-sandi, reset-sandi, verifikasi-email
+│  │  └─ (user)/       dashboard
+│  ├─ admin/           Admin Panel — Indonesia saja, TIDAK ikut pindah ke [locale]
 │  └─ api/             hanya untuk yang benar-benar butuh HTTP endpoint
 ├─ components/ui/      shadcn, JANGAN diedit manual
 ├─ components/         komponen milik aplikasi
+├─ i18n/                routing.ts, request.ts, navigation.ts (next-intl)
 ├─ lib/
 │  ├─ supabase/        client.ts, server.ts, admin.ts
 │  ├─ auth/            guard.ts
+│  ├─ i18n/             pick.ts
 │  ├─ validations/     skema Zod per modul
 │  ├─ certificate/     penomoran, status, generate PDF, QR
 │  ├─ email/           helper Resend + template
@@ -428,9 +431,7 @@ src/
 └─ types/database.ts   generated, JANGAN diedit tangan
 ```
 
-**Setelah Sprint 1.5:** seluruh isi `(public)`, `(auth)`, `(user)` pindah ke bawah `src/app/[locale]/`. `admin/` **tidak ikut pindah.**
-
-**Sampai migrasi itu terjadi, jangan membuat folder `[locale]`.** Kalau kamu membuatnya sekarang, halaman `/` menghasilkan 404 dan penyebabnya sulit dilacak.
+Rute publik, akun, dan pengguna berada di bawah `src/app/[locale]/`. `admin/` dan `src/app/auth/confirm/route.ts` (target link email Supabase) sengaja tetap di luar — keduanya harus bebas prefix locale.
 
 ### 6.4 Komponen
 
