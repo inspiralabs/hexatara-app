@@ -2,6 +2,7 @@ import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PopupList } from './popup-list';
+import { SaleBannerList } from './sale-banner-list';
 
 function TabBelumDibangun() {
   return <p className="pt-6 text-sm text-warna-teks-2">Belum dibangun — menyusul sesi berikutnya.</p>;
@@ -19,6 +20,13 @@ export default async function AdminKontenPage() {
     .order('created_at', { ascending: false });
 
   if (error) console.error('[admin-konten] gagal memuat popup:', error);
+
+  const { data: saleBanners, error: errorBanner } = await supabase
+    .from('sale_banners')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (errorBanner) console.error('[admin-konten] gagal memuat sale banner:', errorBanner);
 
   return (
     <div className="flex flex-col gap-4">
@@ -38,7 +46,7 @@ export default async function AdminKontenPage() {
           <PopupList popups={popups ?? []} />
         </TabsContent>
         <TabsContent value="banner">
-          <TabBelumDibangun />
+          <SaleBannerList banners={saleBanners ?? []} />
         </TabsContent>
         <TabsContent value="hero">
           <TabBelumDibangun />
