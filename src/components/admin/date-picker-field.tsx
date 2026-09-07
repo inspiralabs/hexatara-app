@@ -13,10 +13,12 @@ export function DatePickerField({
   label,
   value,
   onChange,
+  disabled,
 }: {
   label: string;
   value: string | null;
   onChange: (value: string | null) => void;
+  disabled?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const selected = value ? parse(value, 'yyyy-MM-dd', new Date()) : undefined;
@@ -24,8 +26,11 @@ export function DatePickerField({
   return (
     <div className="flex flex-col gap-1.5">
       <span className="text-sm font-medium text-warna-teks">{label}</span>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger className="flex h-11 items-center gap-2 rounded-lg border border-warna-latar-2 px-3 text-left text-sm text-warna-teks">
+      <Popover open={open && !disabled} onOpenChange={(next) => setOpen(disabled ? false : next)}>
+        <PopoverTrigger
+          disabled={disabled}
+          className="flex h-11 items-center gap-2 rounded-lg border border-warna-latar-2 px-3 text-left text-sm text-warna-teks disabled:cursor-not-allowed disabled:opacity-50"
+        >
           <CalendarIcon className="size-4 text-warna-teks-2" aria-hidden="true" />
           {selected ? format(selected, 'd MMMM yyyy', { locale: localeId }) : 'Pilih tanggal'}
         </PopoverTrigger>
