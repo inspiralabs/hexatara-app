@@ -61,7 +61,31 @@
       "continueWhatsapp": "Lanjut ke WhatsApp"
     }
   },
-  "verify": {},
+  "verify": {
+    "pageTitle": "Verify Certificate Authenticity",
+    "pageSubtitle": "Enter the certificate number to confirm it's genuine. This number is printed on the physical certificate.",
+    "searchLabel": "Certificate Number",
+    "searchPlaceholder": "e.g. HXT-CERT-000001",
+    "searchButton": "Search",
+    "searchHint": "The certificate number is printed at the bottom of the physical certificate.",
+    "tokenResultHint": "Result from a QR code scan.",
+    "searchAgain": "Search another number",
+    "result": {
+      "validTitle": "Certificate Valid",
+      "validBadge": "Valid",
+      "noExpiryNote": "No expiry date",
+      "invalidTitle": "Certificate Not Valid",
+      "invalidBadge": "Invalid",
+      "invalidBody": "This certificate was issued by Hexatara, but its validity period has passed.",
+      "notFoundTitle": "Number Not Found",
+      "notFoundBadge": "Not Found",
+      "notFoundBody": "This number isn't registered in our system. Double-check what you typed, or contact Hexatara Admin if you believe this number is correct.",
+      "nameLabel": "Name",
+      "numberLabel": "Certificate Number",
+      "issuedLabel": "Issue Date",
+      "expiryLabel": "Valid Until"
+    }
+  },
   "quiz": {},
   "catalog": {},
   "auth": {

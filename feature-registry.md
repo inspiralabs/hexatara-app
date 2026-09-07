@@ -69,12 +69,12 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
 |---|---|---|---|---|---|
-| F02.1 | `/verify` form pencarian | TODO | |  | |
-| F02.2 | `/verify/[token]` hasil QR | TODO | |  | |
-| F02.3 | Tampilan hasil (5 kolom saja) | TODO | |  | |
-| F02.4 | Status kedaluwarsa otomatis | TODO | |  | |
-| F02.5 | Sertifikat tanpa masa berlaku | TODO | |  | |
-| F02.6 | Pesan tidak ditemukan | TODO | |  | |
+| F02.1 | `/verify` form pencarian | DONE | `src/app/[locale]/(public)/verify/page.tsx`, `src/app/[locale]/(public)/verify/certificate-result.tsx`, `messages/id.json`, `messages/en.json` | 2026-09-07 | Alif menguji sendiri di browser, hasil sesuai: `/verify` dibuka tanpa login, form nomor sertifikat mengirim GET dan hasil pencarian tampil di halaman yang sama |
+| F02.2 | `/verify/[token]` hasil QR | DONE | `src/app/[locale]/(public)/verify/[token]/page.tsx`, `src/app/[locale]/(public)/verify/certificate-result.tsx` | 2026-09-07 | Alif menguji sendiri di browser, hasil sesuai: membuka `/verify/[token]` langsung menampilkan hasil tanpa input manual tambahan |
+| F02.3 | Tampilan hasil (5 kolom saja) | DONE | `src/app/[locale]/(public)/verify/certificate-result.tsx` | 2026-09-07 | Alif menguji sendiri di browser, hasil sesuai: hasil menampilkan nama, nomor sertifikat, tanggal terbit, masa berlaku, dan status — tanpa email, telepon, atau alamat |
+| F02.4 | Status kedaluwarsa otomatis | DONE | `src/app/[locale]/(public)/verify/certificate-result.tsx` | 2026-09-07 | Alif menguji sendiri di browser, hasil sesuai: sertifikat yang sudah lewat tanggal kedaluwarsa tampil Invalid merah, yang belum lewat tampil Berlaku hijau — dihitung dari kolom `status` view `certificates_public`, bukan dihitung ulang di kode |
+| F02.5 | Sertifikat tanpa masa berlaku | DONE | `src/app/[locale]/(public)/verify/certificate-result.tsx` | 2026-09-07 | Alif menguji sendiri di browser, hasil sesuai: sertifikat `free_track` (`tanggal_kedaluwarsa` NULL) tampil Berlaku hijau dengan keterangan "Tanpa masa berlaku", tidak pernah kosong atau tanda hubung |
+| F02.6 | Pesan tidak ditemukan | DONE | `src/app/[locale]/(public)/verify/certificate-result.tsx` | 2026-09-07 | Alif menguji sendiri di browser, hasil sesuai: nomor yang tidak terdaftar tampil "Tidak Ditemukan" abu-abu, jelas berbeda secara visual dan kalimat dari Invalid |
 | F02.7 | Admin: CRUD sertifikat satuan | TODO | |  | |
 | F02.8 | Admin: import massal + laporan per baris | TODO | |  | |
 | F02.9 | Rate limit (feature flag) | TODO | |  | |
@@ -194,6 +194,8 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 2026-09-07  F01.12  Alif menguji sendiri di browser CRUD batches: tambah batch baru, ubah data batch, hapus dengan konfirmasi alert-dialog, toggle aktif/nonaktif, dan unggah gambar — kelimanya sesuai. DONE. Catatan: F01.13 (CRUD popup/banner/hero/instruktur/company profile/testimoni) dan F01.14 (daftar lead + ekspor CSV) TETAP TODO — halaman /admin/konten dan /admin/leads masih stub "Belum dibangun", belum ada yang bisa diuji untuk keduanya. Ekspor CSV khususnya bagian dari F01.14, bukan F01.12.
 2026-09-07  F00.4/F01.11  Migrasi dwibahasa next-intl dikerjakan lewat eksekusi bertahap otomatis (routing.ts/request.ts/navigation.ts, proxy.ts, next.config.ts, pick() helper, messages/id.json + messages/en.json, language-switcher.tsx, pemindahan seluruh route (public)/(auth) ke src/app/[locale]/, ekstraksi teks di ~20 berkas). `pnpm tsc --noEmit`, `pnpm lint`, dan `pnpm build` bersih (28 route ter-generate, /admin/* dan /auth/confirm tidak berubah). Ini KODE SELESAI, BUKAN terverifikasi pengguna — belum ada yang membuka di browser dan mengklik pemilih bahasa sungguhan. Kedua baris diubah TODO -> WIP, sengaja TIDAK diubah ke DONE menunggu Alif buka sendiri di browser sesuai Definition of Done butir 5.
 2026-09-07  F00.4/F01.11  Alif menguji sendiri di browser, 9 tahap uji lolos. Kedua baris diubah WIP -> DONE.
+2026-09-07  F00.4/F01.11  Bug ditemukan setelah DONE: next-intl createMiddleware() default melakukan locale detection dari header Accept-Language, sehingga pengunjung dengan HP berbahasa Inggris otomatis diarahkan ke /en walau tidak pernah memilih bahasa apa pun — bertentangan dengan PRD §4.1 (hexatara.com/ SELALU Indonesia tanpa prefix, keputusan permanen karena QR sertifikat fisik). Perbaikan: localeDetection: false ditambahkan di src/i18n/routing.ts. Alif menguji ulang sendiri: domain utama dibuka di HP berbahasa Inggris (mode Incognito, tanpa cookie NEXT_LOCALE lama) tetap tampil Indonesia tanpa redirect ke /en. Sudah di-commit dan dideploy ke Vercel, hasilnya sesuai di produksi. F00.4 dan F01.11 tetap DONE.
+2026-09-07  F02.1/F02.2/F02.3/F02.4/F02.5/F02.6  Alif menguji sendiri di browser, hasil sesuai: `/verify` tanpa login menampilkan form nomor sertifikat dan `/verify/[token]` menampilkan hasil langsung; hasil pencarian hanya berisi nama, nomor, tanggal terbit, masa berlaku, status (tanpa email/telepon/alamat); sertifikat lewat tanggal tampil Invalid merah, sertifikat free_track tanpa tanggal kedaluwarsa tampil Berlaku hijau dengan "Tanpa masa berlaku", dan nomor tidak terdaftar tampil "Tidak Ditemukan" abu-abu — berbeda jelas dari Invalid secara visual dan kalimat. Keenam baris diubah TODO -> DONE.
 ```
 
 ---

@@ -61,7 +61,31 @@
       "continueWhatsapp": "Lanjut ke WhatsApp"
     }
   },
-  "verify": {},
+  "verify": {
+    "pageTitle": "Cek Keabsahan Sertifikat",
+    "pageSubtitle": "Masukkan nomor sertifikat untuk memastikan keasliannya. Nomor ini tercetak di sertifikat fisik Anda.",
+    "searchLabel": "Nomor Sertifikat",
+    "searchPlaceholder": "Contoh: HXT-CERT-000001",
+    "searchButton": "Cari",
+    "searchHint": "Nomor sertifikat tercetak di bagian bawah sertifikat fisik Anda.",
+    "tokenResultHint": "Hasil dari pemindaian kode QR.",
+    "searchAgain": "Cari nomor lain",
+    "result": {
+      "validTitle": "Sertifikat Berlaku",
+      "validBadge": "Berlaku",
+      "noExpiryNote": "Tanpa masa berlaku",
+      "invalidTitle": "Sertifikat Tidak Berlaku",
+      "invalidBadge": "Invalid",
+      "invalidBody": "Sertifikat ini pernah diterbitkan Hexatara, tetapi masa berlakunya sudah lewat.",
+      "notFoundTitle": "Nomor Tidak Ditemukan",
+      "notFoundBadge": "Tidak Ditemukan",
+      "notFoundBody": "Nomor ini tidak terdaftar di sistem kami. Periksa kembali penulisannya, atau hubungi Admin Hexatara bila Anda yakin nomor ini benar.",
+      "nameLabel": "Nama",
+      "numberLabel": "Nomor Sertifikat",
+      "issuedLabel": "Tanggal Terbit",
+      "expiryLabel": "Masa Berlaku"
+    }
+  },
   "quiz": {},
   "catalog": {},
   "auth": {
