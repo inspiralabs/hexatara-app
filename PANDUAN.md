@@ -3553,7 +3553,13 @@ Plus enam pemeriksaan wajib di Bagian 6.5.1.
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji F02.8 sendiri di browser dan hasilnya sesuai.
 Isi baris F02.8: Status DONE, Berkas [daftar berkas], Diuji [tanggal],
-Bukti [kalimat hasil pengujian saya].
+Bukti [7 berhasil, 3 gagal — persis sesuai target. Ketiga baris gagal disebut nomor baris Excel yang benar dengan alasan yang tepat (baris 9 nama kosong, baris 10 format tanggal tidak dikenali, baris 11 nomor sudah ada).
+
+Cek Supabase — 7 baris masuk, bukan nol. Terkonfirmasi dari data yang kamu tempel: HXT-CERT-000010 sampai HXT-CERT-000014, HXT-FT-000002, HXT-FT-000003 — persis 7 baris, HXT-CERT-000015 (nama kosong), HXT-CERT-000016 (tanggal ngawur), dan HXT-CERT-000001 (duplikat) tidak ikut masuk sebagai baris baru.
+
+Auto-isi kedaluwarsa +2 tahun untuk RPC tanpa kedaluwarsa — ini yang paling penting untuk saya verifikasi, dan lolos: baris HXT-CERT-000011 (Bayu Saputra) saya sengaja kosongkan tanggal_kedaluwarsa di CSV, tapi hasil di database menunjukkan tanggal_terbit = 2026-08-15 dan tanggal_kedaluwarsa = 2028-08-15 — persis +2 tahun dari terbit, terisi otomatis sesuai aturan.
+
+free_track dengan kedaluwarsa kosong (benar) — juga lolos: HXT-FT-000002 dan HXT-FT-000003 masuk dengan tanggal_kedaluwarsa = null, sesuai constraint chk_free_track_tanpa_expiry].
 Tambahkan satu baris ke Log verifikasi.
 Jangan mengubah status baris fitur lain.
 ```

@@ -5,10 +5,13 @@ import { routing } from '@/i18n/routing';
 
 const handleI18nRouting = createMiddleware(routing);
 
-// /admin, /api, dan /auth (Route Handler konfirmasi email Supabase) TIDAK
-// pernah masuk pohon [locale] — proxy Supabase tetap jalan di jalur-jalur
+// /admin, /api, /auth (Route Handler konfirmasi email Supabase), dan /templates
+// (berkas statis di public/templates — CSV impor F02.8, PDF sertifikat F03.4)
+// TIDAK pernah masuk pohon [locale] — proxy Supabase tetap jalan di jalur-jalur
 // ini (auth Admin butuh refresh token juga), hanya locale routing yang dilewati.
-const LOCALE_EXCLUDED_PREFIXES = ['/admin', '/api', '/auth'];
+// Matcher di bawah hanya mengecualikan ekstensi gambar, jadi berkas statis lain
+// tanpa prefix di sini akan salah diarahkan next-intl seolah-olah butuh locale.
+const LOCALE_EXCLUDED_PREFIXES = ['/admin', '/api', '/auth', '/templates'];
 
 function shouldSkipLocaleRouting(pathname: string) {
   return LOCALE_EXCLUDED_PREFIXES.some(
