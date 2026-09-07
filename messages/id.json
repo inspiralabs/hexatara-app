@@ -68,6 +68,7 @@
     "searchPlaceholder": "Contoh: HXT-CERT-000001",
     "searchButton": "Cari",
     "searchHint": "Nomor sertifikat tercetak di bagian bawah sertifikat fisik Anda.",
+    "rateLimited": "Terlalu banyak permintaan pencarian dalam waktu singkat. Coba lagi sebentar lagi.",
     "tokenResultHint": "Hasil dari pemindaian kode QR.",
     "searchAgain": "Cari nomor lain",
     "result": {

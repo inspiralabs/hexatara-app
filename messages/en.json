@@ -68,6 +68,7 @@
     "searchPlaceholder": "e.g. HXT-CERT-000001",
     "searchButton": "Search",
     "searchHint": "The certificate number is printed at the bottom of the physical certificate.",
+    "rateLimited": "Too many search requests in a short time. Please try again shortly.",
     "tokenResultHint": "Result from a QR code scan.",
     "searchAgain": "Search another number",
     "result": {

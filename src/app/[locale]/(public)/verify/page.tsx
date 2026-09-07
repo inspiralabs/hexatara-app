@@ -1,6 +1,13 @@
+import { headers } from "next/headers";
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
+import { cekRateLimitVerify } from "@/lib/rate-limit/verify";
 import { CertificateResult } from "./certificate-result";
+
+async function getClientIp() {
+  const h = await headers();
+  return h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || "";
+}
 
 export default async function VerifyPage({
   searchParams,
@@ -13,16 +20,22 @@ export default async function VerifyPage({
 
   const nomorDicari = nomor?.trim();
   let row = null;
+  let rateLimited = false;
 
   if (nomorDicari) {
-    const supabase = await createClient();
-    const { data, error } = await supabase
-      .from("certificates_public")
-      .select("nama_lengkap, nomor_sertifikat, tanggal_terbit, tanggal_kedaluwarsa, status")
-      .ilike("nomor_sertifikat", nomorDicari)
-      .maybeSingle();
-    if (error) console.error("[verify] gagal mencari sertifikat:", error);
-    row = data;
+    const diizinkan = await cekRateLimitVerify(await getClientIp());
+    if (!diizinkan) {
+      rateLimited = true;
+    } else {
+      const supabase = await createClient();
+      const { data, error } = await supabase
+        .from("certificates_public")
+        .select("nama_lengkap, nomor_sertifikat, tanggal_terbit, tanggal_kedaluwarsa, status")
+        .ilike("nomor_sertifikat", nomorDicari)
+        .maybeSingle();
+      if (error) console.error("[verify] gagal mencari sertifikat:", error);
+      row = data;
+    }
   }
 
   return (
@@ -53,7 +66,12 @@ export default async function VerifyPage({
       </form>
       <p className="mt-2 text-sm text-warna-teks-2">{t("searchHint")}</p>
 
-      {nomorDicari && <CertificateResult row={row} locale={locale} />}
+      {nomorDicari && rateLimited && (
+        <p className="mt-6 rounded-xl border border-warna-teks-2/20 bg-warna-latar-2 p-5 text-sm text-warna-teks-2">
+          {t("rateLimited")}
+        </p>
+      )}
+      {nomorDicari && !rateLimited && <CertificateResult row={row} locale={locale} />}
     </div>
   );
 }

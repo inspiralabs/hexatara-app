@@ -3620,7 +3620,7 @@ Plus enam pemeriksaan wajib di Bagian 6.5.1.
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji F02.9 sendiri di browser dan hasilnya sesuai.
 Isi baris F02.9: Status DONE, Berkas [daftar berkas], Diuji [tanggal],
-Bukti [kalimat hasil pengujian saya].
+Bukti [saya sudah coba jalankan env true dan coba cari sertifikat sampai muncul pesan rate limitnya].
 Tambahkan satu baris ke Log verifikasi.
 Jangan mengubah status baris fitur lain.
 ```
