@@ -4961,7 +4961,36 @@ pnpm add -D knip
 
 Jalankan `pnpm knip` di akhir tiap sprint. Ini alat anti-slop paling langsung: AI sering meninggalkan helper, komponen, dan tipe yang tidak pernah dipakai karena pendekatannya berubah di tengah jalan.
 
+> **Diperbarui 2026-09-07.** `knip.json` di atas ditambah `ignoreDependencies` dan `ignore` untuk lima hal yang **sengaja disimpan meski terdeteksi tidak terpakai** — supaya tidak terus muncul sebagai temuan padahal sudah diputuskan, bukan berarti aturan `entry`/`project` di atas berubah:
+>
+> ```json
+> {
+>   "entry": ["src/app/**/*.{ts,tsx}"],
+>   "project": ["src/**/*.{ts,tsx}"],
+>   "ignoreDependencies": ["pdf-lib", "qrcode", "@types/qrcode"],
+>   "ignore": ["src/lib/constants.ts", "src/lib/supabase/client.ts"]
+> }
+> ```
+>
+> - `pdf-lib`, `qrcode`, `@types/qrcode` — belum ada pemanggil karena F03.4 (sertifikat PDF + QR) belum dibangun (Sprint 3). Bukan kode mati, persiapan yang disengaja.
+> - `src/lib/constants.ts` — harga upgrade tetap (`PRD.md` §8.7), dipakai mulai F03.5/F03.6 (Sprint 3).
+> - `src/lib/supabase/client.ts` — bagian dari arsitektur tiga client (`ENGINEERING.md` §3.1: `client.ts` untuk Client Component, `server.ts` untuk Server Component/Action, `admin.ts` untuk service role). Belum ada Client Component yang butuh Supabase langsung di browser — semua form sejauh ini lewat Server Action — tapi client-nya tetap bagian arsitektur yang sudah diputuskan, bukan sisa yang salah pasang.
+>
+> Kalau salah satu dari lima ini masih tidak terpakai setelah Sprint 3 selesai, itu pertanda nyata untuk ditinjau ulang — bukan otomatis dihapus begitu saja.
+
 ## B.4 Test — hanya untuk tiga tempat
+
+> **Diperbarui 2026-09-07, saat Lampiran B benar-benar dipasang.** Ketiga target di bawah ditulis sebelum Modul 2 (Sprint 2) dibangun, dengan asumsi logikanya akan berupa fungsi TypeScript. Yang benar-benar terjadi berbeda — dan bukan kelalaian:
+>
+> - **F02.4 — hitung status kedaluwarsa**: dihitung murni oleh fungsi Postgres `status_sertifikat()`, diekspos lewat kolom `status` di view `certificates_public`. Kode TypeScript (`/verify`) hanya membaca kolom itu, tidak pernah menghitung ulang — persis sesuai `ENGINEERING.md` §3.6 ("Jangan menghitung ulang di TypeScript — nanti dua sumber kebenaran"). **Tidak ada fungsi TS untuk ditulis test-nya.**
+> - **Penomoran sertifikat**: dihasilkan murni oleh fungsi Postgres `next_certificate_number()` yang mengunci baris counter, dipanggil lewat `.rpc()`. `ENGINEERING.md` §3.6 juga eksplisit: "Jangan pernah menghitung nomor sendiri di TypeScript." **Tidak ada fungsi TS untuk ditulis test-nya.**
+> - **F03.8 — aktivasi sertifikat**: belum dibangun. Begitu dibangun, rencananya (`ENGINEERING.md` §5.2) juga membungkus langkah database dalam satu fungsi Postgres lewat `.rpc()`, bukan logika TypeScript murni — jadi kemungkinan besar tetap tidak akan punya fungsi TS yang bisa di-unit-test langsung.
+>
+> Menulis Vitest untuk tiga target ini berarti menulis ULANG logikanya di TypeScript dulu supaya ada yang ditest — persis dua sumber kebenaran yang dilarang berkali-kali di PRD/ENGINEERING. Diputuskan: **lewati ketiganya.** Verifikasinya sudah terjadi lewat pengujian manual data-nyata yang tercatat di `feature-registry.md` (log F02.4–F02.9).
+>
+> Sebagai gantinya, Vitest dipasang untuk `validateRow()` di `src/lib/certificate/import.ts` (F02.8) — satu-satunya business logic non-trivial Modul 2 yang benar-benar berupa fungsi TypeScript murni. Tesnya juga mencakup regresi bug timezone nyata yang sempat ditemukan (lihat `src/lib/certificate/import.test.ts`). File ini menggantikan `import.check.mts` (self-check tanpa framework yang dipakai sebelum Lampiran B dipasang).
+>
+> Instruksi asli di bawah ini **dibiarkan, tidak dihapus**, sebagai catatan kenapa rencana awal berubah — bukan lagi langkah yang harus diikuti.
 
 ```powershell
 pnpm add -D vitest @vitejs/plugin-react
@@ -5016,6 +5045,36 @@ pnpm tsc --noEmit && pnpm lint
 ```
 
 Commit ditolak kalau tipenya rusak atau ada `console.log`. Kalau ini terasa menghalangi di tengah pekerjaan, hapus saja berkasnya — dia melayani kamu, bukan sebaliknya.
+
+## Temuan knip tertunda — belum dieksekusi
+
+> **Dicatat 2026-09-07** setelah `knip.json` diberi `ignoreDependencies`/`ignore` untuk lima hal yang sengaja dipertahankan (lihat catatan di B.3). Sisa temuan `pnpm knip` ditinjau satu per satu di sesi yang sama, tapi **tidak ada yang dieksekusi** — daftar ini untuk sprint pembersihan nanti, bukan tindakan sekarang.
+
+**Genuinely mati, aman dihapus kapan saja:**
+- `clsx` (dependency) — nol import di `src/`. Proyek sudah pakai package `cn` ("Drop-in replacement for clsx + tailwind-merge") lewat `src/lib/utils.ts: export { cn } from "cn"`. Sisa dari sebelum migrasi ke `cn`.
+- `tailwind-merge` (dependency) — sama seperti `clsx`, digantikan sepenuhnya oleh `cn`.
+- `sonner` (dependency) — satu-satunya pemakai (`src/components/ui/sonner.tsx`, wrapper `Toaster`) sudah dihapus di putaran B.3. Nol `toast(...)` di mana pun; semua form pakai `<Alert>` inline.
+- `BatchFormOutput` (type, `src/lib/validations/batch-admin.ts:64`) — nol pemakai bahkan di file sendiri. Server Action pakai `parsed.data` langsung, bukan alias `z.output<>` ini.
+- `SertifikatFormOutput` (type, `src/lib/validations/sertifikat-admin.ts:38`) — pola kembar persis `BatchFormOutput`.
+
+**`@vitejs/plugin-react` — kemungkinan besar dead-on-arrival, bukan sekadar "belum kepakai":**
+Dipasang sesuai instruksi literal B.4, tapi tidak ada `vitest.config.ts` yang memakainya — satu-satunya test (`validateRow`) murni logika, tanpa JSX. `pdf-lib`/`qrcode` punya pemanggil pasti di masa depan (F03.4); dependency ini tidak, karena aturan project sendiri melarang test UI. **Evaluasi ulang tiap kali B.4 disentuh lagi** — kalau aturan "tanpa test UI" tidak pernah berubah, ini kandidat hapus permanen.
+
+**False positive — JANGAN dihapus, sudah dipakai lewat CSS/config yang tidak ditelusuri knip:**
+- `shadcn` (dependency) — `src/app/globals.css:3`, `@import "shadcn/tailwind.css";`. Juga CLI (`components.json`, `npx shadcn add`).
+- `tw-animate-css` (dependency) — `src/app/globals.css:2`, `@import "tw-animate-css";`.
+- `tailwindcss` (dependency) — `src/app/globals.css:1`, `@import "tailwindcss";`, plus `postcss.config.*` mendaftarkan `@tailwindcss/postcss`.
+
+**Sub-export shadcn (39 export + `CarouselApi`) — hidup tapi belum terpakai, tidak boleh diedit manual (ENGINEERING §6.4):**
+`AlertDialogMedia/Overlay/Portal/Trigger`, `AlertTitle`, `AlertAction`, `badgeVariants`, `CalendarDayButton`, `CardFooter`, `CardAction`, `useCarousel`, `DialogClose/Overlay/Portal`, sembilan `DropdownMenu*`, `PopoverDescription/Header/Title`, `SelectGroup/Label/ScrollDownButton/ScrollUpButton/Separator`, `SheetClose/Footer/Description`, `TableFooter/Caption`, `tabsListVariants`, `CarouselApi` (type) — semua di `src/components/ui/*.tsx` yang FILE-nya dipakai, cuma sub-export ini belum ada pemanggilnya. Knip benar secara teknis, tapi menghapusnya berarti menyunting berkas shadcn generated, yang dilarang. **Opsional**: redam noise-nya lewat `ignoreExportsUsedInFile` khusus folder `components/ui/` di `knip.json`, kalau nanti dirasa perlu — belum dipasang sekarang.
+
+**Kodenya hidup, cukup hilangkan kata `export` saat sempat — bukan hapus definisi:**
+- `KOLOM_WAJIB` (`src/lib/certificate/import.ts:5`) — dipakai 4x di file yang sama, nol pemakai eksternal.
+- `SertifikatImpor` (type, `src/lib/certificate/import.ts:23`) — dipakai di union type `HasilValidasiBaris` di file yang sama.
+- `BenefitSchema`, `EquipmentSchema`, `FaqSchema`, `GallerySchema` (`src/lib/validations/batch-admin.ts:11,17,22,29`) — dikomposisi ke `BatchFormSchema` di file yang sama.
+
+**True positive remeh, boleh dibiarkan:**
+- `redirect`, `getPathname` (`src/i18n/navigation.ts:4`) — sisa satu baris destructuring `createNavigation()`; `Link`/`useRouter`/`usePathname` dari baris yang sama dipakai luas. Dua ini murni tidak pernah diimpor, tapi remeh — boleh dibiarkan sebagai cermin API next-intl penuh.
 
 ---
 

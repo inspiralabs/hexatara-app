@@ -5,6 +5,9 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -30,10 +33,5 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": [
-    "node_modules",
-    // Self-check dijalankan langsung lewat `node`, bukan lewat tsc/Next.js —
-    // butuh ekstensi eksplisit di import yang tsc tolak tanpa allowImportingTsExtensions.
-    "src/lib/certificate/import.check.mts"
-  ]
+  "exclude": ["node_modules"]
 }

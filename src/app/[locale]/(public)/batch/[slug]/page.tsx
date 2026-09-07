@@ -123,7 +123,7 @@ export default async function BatchDetailPage({
         {/* 3. Tab Deskripsi + Silabus */}
         {tabItems.length > 0 && (
           <div className="pt-8">
-            <Tabs defaultValue={tabItems[0].value}>
+            <Tabs defaultValue={tabItems[0]?.value}>
               <TabsList>
                 {tabItems.map((tab) => (
                   <TabsTrigger key={tab.value} value={tab.value}>

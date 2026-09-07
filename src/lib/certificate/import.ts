@@ -120,7 +120,8 @@ function parseCsv(text: string) {
 
 function parseExcel(buffer: ArrayBuffer) {
   const workbook = XLSX.read(buffer, { type: 'array' });
-  const sheet = workbook.Sheets[workbook.SheetNames[0]];
+  const namaSheet = workbook.SheetNames[0];
+  const sheet = namaSheet ? workbook.Sheets[namaSheet] : undefined;
   if (!sheet) return { ok: false as const, pesan: 'Berkas Excel tidak berisi sheet apa pun.' };
   const matrix = XLSX.utils.sheet_to_json<unknown[]>(sheet, { header: 1, raw: true, defval: '' });
   return rowsFromMatrix(matrix);
