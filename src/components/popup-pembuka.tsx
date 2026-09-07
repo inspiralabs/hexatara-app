@@ -1,17 +1,25 @@
+import { getLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
-import type { Database } from "@/types/database";
+import { pick } from "@/lib/i18n/pick";
 import { PopupDialogClient } from "@/components/popup-dialog-client";
 
-export type PopupAktif = Pick<
-  Database["public"]["Tables"]["popups"]["Row"],
-  "id" | "judul_id" | "isi_id" | "gambar_url" | "cta_teks_id" | "cta_url"
->;
+export type PopupAktif = {
+  id: number;
+  judul: string;
+  isi: string;
+  gambar_url: string | null;
+  cta_teks: string | null;
+  cta_url: string | null;
+};
 
 export async function PopupPembuka() {
   const supabase = await createClient();
+  const locale = await getLocale();
   const { data, error } = await supabase
     .from("popups")
-    .select("id, judul_id, isi_id, gambar_url, cta_teks_id, cta_url, tayang_mulai, tayang_selesai")
+    .select(
+      "id, judul_id, judul_en, isi_id, isi_en, gambar_url, cta_teks_id, cta_teks_en, cta_url, tayang_mulai, tayang_selesai"
+    )
     .eq("is_active", true);
 
   if (error) {
@@ -28,5 +36,14 @@ export async function PopupPembuka() {
 
   if (!popup) return null;
 
-  return <PopupDialogClient popup={popup} />;
+  const resolved: PopupAktif = {
+    id: popup.id,
+    judul: pick(popup.judul_id, popup.judul_en, locale) ?? "",
+    isi: pick(popup.isi_id, popup.isi_en, locale) ?? "",
+    gambar_url: popup.gambar_url,
+    cta_teks: pick(popup.cta_teks_id, popup.cta_teks_en, locale),
+    cta_url: popup.cta_url,
+  };
+
+  return <PopupDialogClient popup={resolved} />;
 }

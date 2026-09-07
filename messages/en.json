@@ -1,0 +1,115 @@
+{
+  "common": {
+    "metaTitle": "Hexatara — Pelatihan Pilot Drone Bersertifikat",
+    "metaDescription": "Pelatihan pilot drone bersertifikat (Remote Pilot Certificate) dan penjualan drone profesional Autel oleh Hexatara Indonesia.",
+    "companyName": "Hexatara Indonesia",
+    "footerTagline": "Pelatihan pilot drone bersertifikat & penjualan drone profesional Autel — Bekasi.",
+    "footerCopyright": "© {year} Hexatara Indonesia.",
+    "whatsappAriaLabel": "Hubungi Admin lewat WhatsApp",
+    "closeAriaLabel": "Tutup",
+    "openMenuAriaLabel": "Buka menu navigasi",
+    "menuLabel": "Menu",
+    "processing": "Memproses…"
+  },
+  "nav": {
+    "home": "Beranda",
+    "verify": "Verifikasi Sertifikat",
+    "materi": "Materi & Kuis",
+    "katalog": "Katalog Produk",
+    "switchToId": "Indonesia",
+    "switchToEn": "English"
+  },
+  "landing": {
+    "offerTrainingTitle": "Pelatihan Pilot Drone Bersertifikat",
+    "offerTrainingDesc": "Sertifikasi RPC resmi, kelas bulanan bersama instruktur berpengalaman.",
+    "offerTrainingCta": "Lihat Jadwal",
+    "offerRetailTitle": "Jual Drone Profesional Autel",
+    "offerRetailDesc": "Drone untuk kebutuhan survei, pemetaan, dan industri.",
+    "offerRetailCta": "Lihat Katalog",
+    "scheduleHeading": "Jadwal Pelatihan Mendatang",
+    "testimonialsHeading": "Kata Mereka",
+    "instructorsHeading": "Instruktur Kami"
+  },
+  "batch": {
+    "status": {
+      "upcoming": "Akan Datang",
+      "open": "Pendaftaran Dibuka",
+      "closed": "Ditutup"
+    },
+    "registerNow": "Daftar Sekarang",
+    "scheduleInvestmentHeading": "Jadwal & Investasi",
+    "timeLabel": "Waktu: ",
+    "locationLabel": "Lokasi: ",
+    "addressLabel": "Alamat: ",
+    "supportHeading": "Dukungan Peserta",
+    "supportDescription": "Ada pertanyaan sebelum mendaftar? Hubungi Admin langsung lewat WhatsApp.",
+    "contactAdmin": "Hubungi Admin",
+    "equipmentHeading": "Peralatan Belajar",
+    "faqHeading": "Pertanyaan Umum",
+    "galleryHeading": "Galeri Dokumentasi",
+    "descriptionTab": "Deskripsi",
+    "syllabusTab": "Silabus",
+    "dialog": {
+      "title": "Daftar Minat Batch",
+      "submit": "Kirim",
+      "nameLabel": "Nama lengkap",
+      "whatsappLabel": "Nomor WhatsApp",
+      "consentLabel": "Saya menyetujui data ini disimpan Hexatara untuk keperluan pendaftaran minat.",
+      "disclaimer": "Ini bukan pendaftaran resmi peserta. Seleksi dan pembayaran tetap berjalan manual lewat WhatsApp.",
+      "successTitle": "Pendaftaran Minat Tersimpan",
+      "successBody": "Terima kasih! Data kamu sudah tersimpan. Lanjutkan ke WhatsApp Admin untuk proses selanjutnya — ini bukan pendaftaran resmi peserta, seleksi dan pembayaran tetap berjalan manual lewat WhatsApp.",
+      "continueWhatsapp": "Lanjut ke WhatsApp"
+    }
+  },
+  "verify": {},
+  "quiz": {},
+  "catalog": {},
+  "auth": {
+    "backToLogin": "Kembali ke halaman masuk",
+    "daftar": {
+      "title": "Daftar akun",
+      "description": "Buat akun untuk mengakses materi dan sertifikat gratis.",
+      "haveAccount": "Sudah punya akun?",
+      "loginLink": "Masuk",
+      "nameLabel": "Nama lengkap",
+      "emailLabel": "Email",
+      "passwordLabel": "Kata sandi",
+      "consentLabel": "Saya menyetujui data ini disimpan Hexatara untuk keperluan pendaftaran.",
+      "submit": "Daftar"
+    },
+    "login": {
+      "title": "Masuk",
+      "forgotPassword": "Lupa kata sandi?",
+      "noAccount": "Belum punya akun?",
+      "registerLink": "Daftar",
+      "emailLabel": "Email",
+      "passwordLabel": "Kata sandi",
+      "submit": "Masuk"
+    },
+    "lupaSandi": {
+      "title": "Lupa kata sandi",
+      "description": "Masukkan email akun kamu untuk menerima tautan reset.",
+      "expiredAlert": "Tautan reset sudah tidak berlaku atau sudah dipakai. Minta tautan baru di bawah.",
+      "emailLabel": "Email",
+      "submit": "Kirim tautan reset",
+      "sending": "Mengirim…"
+    },
+    "resetSandi": {
+      "title": "Atur ulang kata sandi",
+      "description": "Pilih kata sandi baru untuk akun kamu.",
+      "invalidAlert": "Tautan reset tidak valid atau sudah kadaluwarsa. Minta tautan baru.",
+      "requestNewLink": "Minta tautan reset baru",
+      "newPasswordLabel": "Kata sandi baru",
+      "confirmPasswordLabel": "Konfirmasi kata sandi",
+      "submit": "Simpan kata sandi baru",
+      "saving": "Menyimpan…"
+    },
+    "verifikasiEmail": {
+      "title": "Verifikasi email",
+      "invalidAlert": "Tautan verifikasi tidak valid atau sudah kadaluwarsa. Daftar ulang untuk mendapatkan tautan baru.",
+      "sentMessage": "Kami sudah mengirim tautan verifikasi ke email kamu. Klik tautan itu untuk mengaktifkan akun sebelum bisa masuk."
+    }
+  },
+  "dashboard": {},
+  "admin": {}
+}

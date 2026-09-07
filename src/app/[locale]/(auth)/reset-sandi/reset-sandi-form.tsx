@@ -3,38 +3,39 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/i18n/navigation';
 import { z } from 'zod';
-import { LoginSchema } from '@/lib/validations/auth';
-import { loginAction } from './actions';
+import { ResetSandiSchema } from '@/lib/validations/auth';
+import { resetSandiAction } from './actions';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-type LoginInput = z.infer<typeof LoginSchema>;
+type ResetSandiInput = z.infer<typeof ResetSandiSchema>;
 
-export function LoginForm() {
+export function ResetSandiForm() {
+  const t = useTranslations('auth.resetSandi');
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<LoginInput>({
-    resolver: zodResolver(LoginSchema),
-    defaultValues: { email: '', password: '' },
+  } = useForm<ResetSandiInput>({
+    resolver: zodResolver(ResetSandiSchema),
+    defaultValues: { password: '', konfirmasiPassword: '' },
   });
 
-  async function onSubmit(data: LoginInput) {
+  async function onSubmit(data: ResetSandiInput) {
     setPesanError(null);
-    const hasil = await loginAction(data);
+    const hasil = await resetSandiAction(data);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
       return;
     }
-    router.push('/');
-    router.refresh();
+    router.push('/login');
   }
 
   return (
@@ -46,17 +47,11 @@ export function LoginForm() {
       )}
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="email">Email</Label>
-        <Input id="email" type="email" autoComplete="email" {...register('email')} />
-        {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="password">Kata sandi</Label>
+        <Label htmlFor="password">{t('newPasswordLabel')}</Label>
         <Input
           id="password"
           type="password"
-          autoComplete="current-password"
+          autoComplete="new-password"
           {...register('password')}
         />
         {errors.password && (
@@ -64,8 +59,21 @@ export function LoginForm() {
         )}
       </div>
 
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="konfirmasiPassword">{t('confirmPasswordLabel')}</Label>
+        <Input
+          id="konfirmasiPassword"
+          type="password"
+          autoComplete="new-password"
+          {...register('konfirmasiPassword')}
+        />
+        {errors.konfirmasiPassword && (
+          <p className="text-sm text-destructive">{errors.konfirmasiPassword.message}</p>
+        )}
+      </div>
+
       <Button type="submit" size="lg" disabled={isSubmitting}>
-        {isSubmitting ? 'Memproses…' : 'Masuk'}
+        {isSubmitting ? t('saving') : t('submit')}
       </Button>
     </form>
   );

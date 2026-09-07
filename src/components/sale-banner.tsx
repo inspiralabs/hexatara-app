@@ -1,10 +1,15 @@
+import { getLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
+import { pick } from "@/lib/i18n/pick";
 
 export async function SaleBanner() {
   const supabase = await createClient();
+  const locale = await getLocale();
   const { data, error } = await supabase
     .from("sale_banners")
-    .select("id, judul_id, teks_id, urgensi_id, tombol_teks_id, tombol_url, tayang_mulai, tayang_selesai")
+    .select(
+      "id, judul_id, judul_en, teks_id, teks_en, urgensi_id, urgensi_en, tombol_teks_id, tombol_teks_en, tombol_url, tayang_mulai, tayang_selesai"
+    )
     .eq("is_active", true);
 
   if (error) {
@@ -21,22 +26,25 @@ export async function SaleBanner() {
 
   if (!banner) return null;
 
+  const judul = pick(banner.judul_id, banner.judul_en, locale);
+  const teks = pick(banner.teks_id, banner.teks_en, locale);
+  const urgensi = pick(banner.urgensi_id, banner.urgensi_en, locale);
+  const tombolTeks = pick(banner.tombol_teks_id, banner.tombol_teks_en, locale);
+
   return (
     <div className="bg-warna-utama px-4 py-3 text-warna-latar">
       <div className="mx-auto flex max-w-6xl flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-base font-semibold">{banner.judul_id}</p>
-          {banner.teks_id && <p className="text-sm text-warna-latar/90">{banner.teks_id}</p>}
-          {banner.urgensi_id && (
-            <p className="text-sm font-medium text-warna-aksen">{banner.urgensi_id}</p>
-          )}
+          <p className="text-base font-semibold">{judul}</p>
+          {teks && <p className="text-sm text-warna-latar/90">{teks}</p>}
+          {urgensi && <p className="text-sm font-medium text-warna-aksen">{urgensi}</p>}
         </div>
-        {banner.tombol_teks_id && banner.tombol_url && (
+        {tombolTeks && banner.tombol_url && (
           <a
             href={banner.tombol_url}
             className="inline-flex h-11 shrink-0 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
           >
-            {banner.tombol_teks_id}
+            {tombolTeks}
           </a>
         )}
       </div>

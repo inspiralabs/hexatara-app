@@ -1,16 +1,21 @@
 import Image from "next/image";
-import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { FloatingWhatsapp } from "@/components/floating-whatsapp";
 import { PublicNavMobile } from "@/components/public-nav-mobile";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
-const NAV_PUBLIK = [
-  { href: "/", label: "Beranda" },
-  { href: "/verify", label: "Verifikasi Sertifikat" },
-  { href: "/materi", label: "Materi & Kuis" },
-  { href: "/katalog", label: "Katalog Produk" },
-];
+export default async function PublicLayout({ children }: { children: React.ReactNode }) {
+  const tNav = await getTranslations("nav");
+  const tCommon = await getTranslations("common");
 
-export default function PublicLayout({ children }: { children: React.ReactNode }) {
+  const NAV_PUBLIK = [
+    { href: "/", label: tNav("home") },
+    { href: "/verify", label: tNav("verify") },
+    { href: "/materi", label: tNav("materi") },
+    { href: "/katalog", label: tNav("katalog") },
+  ];
+
   return (
     <div className="flex min-h-full flex-1 flex-col">
       <header className="sticky top-0 z-30 border-b border-warna-latar-2 bg-warna-latar">
@@ -30,7 +35,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                 {item.label}
               </Link>
             ))}
-            {/* Pemilih bahasa masuk di sini setelah migrasi dwibahasa (Fase 9) */}
+            <LanguageSwitcher />
           </nav>
 
           <PublicNavMobile items={NAV_PUBLIK} />
@@ -41,13 +46,9 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
 
       <footer className="border-t border-warna-latar-2 bg-warna-latar-2">
         <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-warna-teks-2">
-          <p className="font-semibold text-warna-teks">Hexatara Indonesia</p>
-          <p className="mt-1">
-            Pelatihan pilot drone bersertifikat &amp; penjualan drone profesional Autel — Bekasi.
-          </p>
-          <p className="mt-4 text-xs">
-            &copy; {new Date().getFullYear()} Hexatara Indonesia.
-          </p>
+          <p className="font-semibold text-warna-teks">{tCommon("companyName")}</p>
+          <p className="mt-1">{tCommon("footerTagline")}</p>
+          <p className="mt-4 text-xs">{tCommon("footerCopyright", { year: new Date().getFullYear() })}</p>
         </div>
       </footer>
 

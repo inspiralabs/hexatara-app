@@ -1,8 +1,24 @@
 import { createServerClient } from '@supabase/ssr';
+import createMiddleware from 'next-intl/middleware';
 import { NextResponse, type NextRequest } from 'next/server';
+import { routing } from '@/i18n/routing';
+
+const handleI18nRouting = createMiddleware(routing);
+
+// /admin, /api, dan /auth (Route Handler konfirmasi email Supabase) TIDAK
+// pernah masuk pohon [locale] — proxy Supabase tetap jalan di jalur-jalur
+// ini (auth Admin butuh refresh token juga), hanya locale routing yang dilewati.
+const LOCALE_EXCLUDED_PREFIXES = ['/admin', '/api', '/auth'];
+
+function shouldSkipLocaleRouting(pathname: string) {
+  return LOCALE_EXCLUDED_PREFIXES.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`)
+  );
+}
 
 export async function proxy(request: NextRequest) {
-  let response = NextResponse.next({ request });
+  const skipLocale = shouldSkipLocaleRouting(request.nextUrl.pathname);
+  let response = skipLocale ? NextResponse.next({ request }) : handleI18nRouting(request);
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -14,7 +30,7 @@ export async function proxy(request: NextRequest) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
-          response = NextResponse.next({ request });
+          response = skipLocale ? NextResponse.next({ request }) : handleI18nRouting(request);
           cookiesToSet.forEach(({ name, value, options }) =>
             response.cookies.set(name, value, options)
           );

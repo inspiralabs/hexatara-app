@@ -1,13 +1,16 @@
-export function FloatingWhatsapp() {
+import { getTranslations } from "next-intl/server";
+
+export async function FloatingWhatsapp() {
   const nomor = process.env.NEXT_PUBLIC_WA_ADMIN;
   if (!nomor) return null;
+  const t = await getTranslations("common");
 
   return (
     <a
       href={`https://wa.me/${nomor}`}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Hubungi Admin lewat WhatsApp"
+      aria-label={t("whatsappAriaLabel")}
       className="fixed bottom-4 right-4 z-40 flex size-14 items-center justify-center rounded-full bg-warna-sukses text-warna-latar shadow-lg"
     >
       <svg viewBox="0 0 24 24" fill="currentColor" className="size-7" aria-hidden="true">

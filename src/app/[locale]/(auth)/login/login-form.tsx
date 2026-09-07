@@ -3,37 +3,41 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/i18n/navigation';
 import { z } from 'zod';
-import { ResetSandiSchema } from '@/lib/validations/auth';
-import { resetSandiAction } from './actions';
+import { LoginSchema } from '@/lib/validations/auth';
+import { loginAction } from './actions';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-type ResetSandiInput = z.infer<typeof ResetSandiSchema>;
+type LoginInput = z.infer<typeof LoginSchema>;
 
-export function ResetSandiForm() {
+export function LoginForm() {
+  const t = useTranslations('auth.login');
+  const tCommon = useTranslations('common');
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<ResetSandiInput>({
-    resolver: zodResolver(ResetSandiSchema),
-    defaultValues: { password: '', konfirmasiPassword: '' },
+  } = useForm<LoginInput>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: { email: '', password: '' },
   });
 
-  async function onSubmit(data: ResetSandiInput) {
+  async function onSubmit(data: LoginInput) {
     setPesanError(null);
-    const hasil = await resetSandiAction(data);
+    const hasil = await loginAction(data);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
       return;
     }
-    router.push('/login');
+    router.push('/');
+    router.refresh();
   }
 
   return (
@@ -45,11 +49,17 @@ export function ResetSandiForm() {
       )}
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="password">Kata sandi baru</Label>
+        <Label htmlFor="email">{t('emailLabel')}</Label>
+        <Input id="email" type="email" autoComplete="email" {...register('email')} />
+        {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="password">{t('passwordLabel')}</Label>
         <Input
           id="password"
           type="password"
-          autoComplete="new-password"
+          autoComplete="current-password"
           {...register('password')}
         />
         {errors.password && (
@@ -57,21 +67,8 @@ export function ResetSandiForm() {
         )}
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="konfirmasiPassword">Konfirmasi kata sandi</Label>
-        <Input
-          id="konfirmasiPassword"
-          type="password"
-          autoComplete="new-password"
-          {...register('konfirmasiPassword')}
-        />
-        {errors.konfirmasiPassword && (
-          <p className="text-sm text-destructive">{errors.konfirmasiPassword.message}</p>
-        )}
-      </div>
-
       <Button type="submit" size="lg" disabled={isSubmitting}>
-        {isSubmitting ? 'Menyimpan…' : 'Simpan kata sandi baru'}
+        {isSubmitting ? tCommon('processing') : t('submit')}
       </Button>
     </form>
   );

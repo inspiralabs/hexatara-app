@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { MenuIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,12 +12,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { LanguageSwitcher } from "@/components/language-switcher";
 
 export function PublicNavMobile({
   items,
 }: {
   items: { href: string; label: string }[];
 }) {
+  const t = useTranslations("common");
   const [terbuka, setTerbuka] = useState(false);
 
   return (
@@ -26,7 +29,7 @@ export function PublicNavMobile({
           <Button
             variant="ghost"
             className="size-11 md:hidden"
-            aria-label="Buka menu navigasi"
+            aria-label={t("openMenuAriaLabel")}
           />
         }
       >
@@ -34,7 +37,7 @@ export function PublicNavMobile({
       </SheetTrigger>
       <SheetContent side="right">
         <SheetHeader>
-          <SheetTitle>Menu</SheetTitle>
+          <SheetTitle>{t("menuLabel")}</SheetTitle>
         </SheetHeader>
         <nav className="flex flex-col gap-1 px-4">
           {items.map((item) => (
@@ -48,6 +51,9 @@ export function PublicNavMobile({
             </Link>
           ))}
         </nav>
+        <div className="px-4 pt-2">
+          <LanguageSwitcher />
+        </div>
       </SheetContent>
     </Sheet>
   );

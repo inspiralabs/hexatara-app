@@ -1,32 +1,57 @@
-import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { STATUS_BATCH_LABEL, formatRupiah, formatTanggalBatch } from "@/lib/batch";
+import { pick } from "@/lib/i18n/pick";
 import type { Database } from "@/types/database";
 
 type Batch = Pick<
   Database["public"]["Tables"]["batches"]["Row"],
-  "id" | "slug" | "judul_id" | "kategori_id" | "lokasi_id" | "harga" | "status" | "tanggal_mulai" | "tanggal_selesai"
+  | "id"
+  | "slug"
+  | "judul_id"
+  | "judul_en"
+  | "kategori_id"
+  | "kategori_en"
+  | "lokasi_id"
+  | "lokasi_en"
+  | "harga"
+  | "status"
+  | "tanggal_mulai"
+  | "tanggal_selesai"
 >;
 
-function BatchCard({ batch }: { batch: Batch }) {
+function BatchCard({
+  batch,
+  locale,
+  statusLabel,
+  registerNowLabel,
+}: {
+  batch: Batch;
+  locale: string;
+  statusLabel: string;
+  registerNowLabel: string;
+}) {
   const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai);
   const status = STATUS_BATCH_LABEL[batch.status];
+  const kategori = pick(batch.kategori_id, batch.kategori_en, locale);
+  const lokasi = pick(batch.lokasi_id, batch.lokasi_en, locale);
 
   return (
     <article className="flex flex-col gap-2 rounded-xl border border-warna-latar-2 bg-warna-latar p-4">
       <div className="flex flex-wrap items-center gap-2">
-        {batch.kategori_id && (
+        {kategori && (
           <span className="rounded-full bg-warna-utama/10 px-2.5 py-0.5 text-xs font-medium text-warna-utama">
-            {batch.kategori_id}
+            {kategori}
           </span>
         )}
         <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${status.className}`}>
-          {status.label}
+          {statusLabel}
         </span>
       </div>
-      <h3 className="text-lg font-bold text-warna-teks">{batch.judul_id}</h3>
+      <h3 className="text-lg font-bold text-warna-teks">{pick(batch.judul_id, batch.judul_en, locale)}</h3>
       {tanggal && <p className="text-sm text-warna-teks-2">{tanggal}</p>}
-      {batch.lokasi_id && <p className="text-sm text-warna-teks-2">{batch.lokasi_id}</p>}
+      {lokasi && <p className="text-sm text-warna-teks-2">{lokasi}</p>}
       {batch.harga != null && (
         <p className="text-base font-semibold text-warna-teks">{formatRupiah(batch.harga)}</p>
       )}
@@ -35,7 +60,7 @@ function BatchCard({ batch }: { batch: Batch }) {
           href={`/batch/${batch.slug}`}
           className="mt-2 inline-flex h-11 w-fit items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
         >
-          Daftar Sekarang
+          {registerNowLabel}
         </Link>
       )}
     </article>
@@ -44,9 +69,14 @@ function BatchCard({ batch }: { batch: Batch }) {
 
 export async function JadwalBatchSection() {
   const supabase = await createClient();
+  const locale = await getLocale();
+  const t = await getTranslations("landing");
+  const tBatch = await getTranslations("batch");
   const { data, error } = await supabase
     .from("batches")
-    .select("id, slug, judul_id, kategori_id, lokasi_id, harga, status, tanggal_mulai, tanggal_selesai")
+    .select(
+      "id, slug, judul_id, judul_en, kategori_id, kategori_en, lokasi_id, lokasi_en, harga, status, tanggal_mulai, tanggal_selesai"
+    )
     .eq("is_active", true)
     .order("tanggal_mulai", { ascending: true });
 
@@ -55,10 +85,16 @@ export async function JadwalBatchSection() {
 
   return (
     <section id="jadwal" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-10">
-      <h2 className="text-xl font-bold text-warna-teks sm:text-2xl">Jadwal Pelatihan Mendatang</h2>
+      <h2 className="text-xl font-bold text-warna-teks sm:text-2xl">{t("scheduleHeading")}</h2>
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {data.map((batch) => (
-          <BatchCard key={batch.id} batch={batch} />
+          <BatchCard
+            key={batch.id}
+            batch={batch}
+            locale={locale}
+            statusLabel={tBatch(`status.${batch.status}`)}
+            registerNowLabel={tBatch("registerNow")}
+          />
         ))}
       </div>
     </section>

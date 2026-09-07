@@ -1,7 +1,9 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { STATUS_BATCH_LABEL, formatRupiah, formatTanggalBatch } from "@/lib/batch";
+import { pick } from "@/lib/i18n/pick";
 import {
   Accordion,
   AccordionContent,
@@ -34,11 +36,13 @@ export default async function BatchDetailPage({
 }) {
   const { slug } = await params;
   const supabase = await createClient();
+  const locale = await getLocale();
+  const t = await getTranslations("batch");
 
   const { data: batch, error: batchError } = await supabase
     .from("batches")
     .select(
-      "id, slug, judul_id, kategori_id, lokasi_id, alamat, harga, status, tanggal_mulai, tanggal_selesai, deskripsi_id, silabus_id, hero_gambar_url"
+      "id, slug, judul_id, judul_en, kategori_id, kategori_en, lokasi_id, lokasi_en, alamat, harga, status, tanggal_mulai, tanggal_selesai, deskripsi_id, deskripsi_en, silabus_id, silabus_en, hero_gambar_url"
     )
     .eq("slug", slug)
     .eq("is_active", true)
@@ -48,22 +52,25 @@ export default async function BatchDetailPage({
   if (!batch) notFound();
 
   const [{ data: benefits }, { data: equipment }, { data: faqs }, { data: gallery }] = await Promise.all([
-    supabase.from("batch_benefits").select("id, ikon, teks_id").eq("batch_id", batch.id).order("urutan"),
-    supabase.from("batch_equipment").select("id, teks_id").eq("batch_id", batch.id).order("urutan"),
-    supabase.from("batch_faqs").select("id, tanya_id, jawab_id").eq("batch_id", batch.id).order("urutan"),
-    supabase.from("batch_gallery").select("id, gambar_url, caption_id").eq("batch_id", batch.id).order("urutan"),
+    supabase.from("batch_benefits").select("id, ikon, teks_id, teks_en").eq("batch_id", batch.id).order("urutan"),
+    supabase.from("batch_equipment").select("id, teks_id, teks_en").eq("batch_id", batch.id).order("urutan"),
+    supabase.from("batch_faqs").select("id, tanya_id, tanya_en, jawab_id, jawab_en").eq("batch_id", batch.id).order("urutan"),
+    supabase.from("batch_gallery").select("id, gambar_url, caption_id, caption_en").eq("batch_id", batch.id).order("urutan"),
   ]);
 
   const nomorWa = process.env.NEXT_PUBLIC_WA_ADMIN;
   const status = STATUS_BATCH_LABEL[batch.status];
   const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai);
+  const judul = pick(batch.judul_id, batch.judul_en, locale) ?? batch.judul_id;
+  const kategori = pick(batch.kategori_id, batch.kategori_en, locale);
+  const lokasi = pick(batch.lokasi_id, batch.lokasi_en, locale);
+  const deskripsi = pick(batch.deskripsi_id, batch.deskripsi_en, locale);
+  const silabus = pick(batch.silabus_id, batch.silabus_en, locale);
   const waTanyaLink = buildWaTanyaLink(nomorWa, batch.judul_id);
 
   const tabItems = [
-    batch.deskripsi_id?.trim()
-      ? { value: "deskripsi", label: "Deskripsi", html: batch.deskripsi_id }
-      : null,
-    batch.silabus_id?.trim() ? { value: "silabus", label: "Silabus", html: batch.silabus_id } : null,
+    deskripsi?.trim() ? { value: "deskripsi", label: t("descriptionTab"), html: deskripsi } : null,
+    silabus?.trim() ? { value: "silabus", label: t("syllabusTab"), html: silabus } : null,
   ].filter((item): item is { value: string; label: string; html: string } => item !== null);
 
   return (
@@ -72,16 +79,16 @@ export default async function BatchDetailPage({
       <section className="border-b border-warna-latar-2 bg-warna-latar-2">
         <div className="mx-auto max-w-4xl px-4 py-8">
           <div className="flex flex-wrap items-center gap-2">
-            {batch.kategori_id && (
+            {kategori && (
               <span className="rounded-full bg-warna-utama/10 px-2.5 py-0.5 text-xs font-medium text-warna-utama">
-                {batch.kategori_id}
+                {kategori}
               </span>
             )}
             <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${status.className}`}>
-              {status.label}
+              {t(`status.${batch.status}`)}
             </span>
           </div>
-          <h1 className="mt-3 text-2xl font-bold text-warna-teks sm:text-3xl">{batch.judul_id}</h1>
+          <h1 className="mt-3 text-2xl font-bold text-warna-teks sm:text-3xl">{judul}</h1>
           {batch.hero_gambar_url && (
             <div className="relative mt-6 aspect-video w-full overflow-hidden rounded-xl">
               <Image
@@ -107,7 +114,7 @@ export default async function BatchDetailPage({
                 className="inline-flex items-center gap-1.5 rounded-full border border-warna-latar-2 bg-warna-latar px-3 py-1.5 text-sm text-warna-teks"
               >
                 {b.ikon && <span aria-hidden="true">{b.ikon}</span>}
-                {b.teks_id}
+                {pick(b.teks_id, b.teks_en, locale)}
               </span>
             ))}
           </div>
@@ -138,23 +145,23 @@ export default async function BatchDetailPage({
         {/* 4–6. Jadwal & Investasi / Dukungan Peserta / Peralatan Belajar */}
         <div className="grid grid-cols-1 gap-4 pt-8 sm:grid-cols-2 lg:grid-cols-3">
           <div className="rounded-xl border border-warna-latar-2 bg-warna-latar p-5">
-            <h2 className="text-lg font-bold text-warna-teks">Jadwal & Investasi</h2>
+            <h2 className="text-lg font-bold text-warna-teks">{t("scheduleInvestmentHeading")}</h2>
             <dl className="mt-3 space-y-1.5 text-sm text-warna-teks-2">
               {tanggal && (
                 <div>
-                  <dt className="inline font-medium text-warna-teks">Waktu: </dt>
+                  <dt className="inline font-medium text-warna-teks">{t("timeLabel")}</dt>
                   <dd className="inline">{tanggal}</dd>
                 </div>
               )}
-              {batch.lokasi_id && (
+              {lokasi && (
                 <div>
-                  <dt className="inline font-medium text-warna-teks">Lokasi: </dt>
-                  <dd className="inline">{batch.lokasi_id}</dd>
+                  <dt className="inline font-medium text-warna-teks">{t("locationLabel")}</dt>
+                  <dd className="inline">{lokasi}</dd>
                 </div>
               )}
               {batch.alamat && (
                 <div>
-                  <dt className="inline font-medium text-warna-teks">Alamat: </dt>
+                  <dt className="inline font-medium text-warna-teks">{t("addressLabel")}</dt>
                   <dd className="inline">{batch.alamat}</dd>
                 </div>
               )}
@@ -166,10 +173,8 @@ export default async function BatchDetailPage({
           </div>
 
           <div className="rounded-xl border border-warna-latar-2 bg-warna-latar p-5">
-            <h2 className="text-lg font-bold text-warna-teks">Dukungan Peserta</h2>
-            <p className="mt-2 text-sm text-warna-teks-2">
-              Ada pertanyaan sebelum mendaftar? Hubungi Admin langsung lewat WhatsApp.
-            </p>
+            <h2 className="text-lg font-bold text-warna-teks">{t("supportHeading")}</h2>
+            <p className="mt-2 text-sm text-warna-teks-2">{t("supportDescription")}</p>
             {waTanyaLink && (
               <a
                 href={waTanyaLink}
@@ -177,17 +182,17 @@ export default async function BatchDetailPage({
                 rel="noopener noreferrer"
                 className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama"
               >
-                Hubungi Admin
+                {t("contactAdmin")}
               </a>
             )}
           </div>
 
           {equipment && equipment.length > 0 && (
             <div className="rounded-xl border border-warna-latar-2 bg-warna-latar p-5">
-              <h2 className="text-lg font-bold text-warna-teks">Peralatan Belajar</h2>
+              <h2 className="text-lg font-bold text-warna-teks">{t("equipmentHeading")}</h2>
               <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm text-warna-teks-2">
                 {equipment.map((item) => (
-                  <li key={item.id}>{item.teks_id}</li>
+                  <li key={item.id}>{pick(item.teks_id, item.teks_en, locale)}</li>
                 ))}
               </ul>
             </div>
@@ -197,12 +202,16 @@ export default async function BatchDetailPage({
         {/* 7a. FAQ */}
         {faqs && faqs.length > 0 && (
           <div className="pt-10">
-            <h2 className="text-xl font-bold text-warna-teks">Pertanyaan Umum</h2>
+            <h2 className="text-xl font-bold text-warna-teks">{t("faqHeading")}</h2>
             <Accordion className="mt-4">
               {faqs.map((faq) => (
                 <AccordionItem key={faq.id} value={String(faq.id)}>
-                  <AccordionTrigger className="text-base text-warna-teks">{faq.tanya_id}</AccordionTrigger>
-                  <AccordionContent className="text-warna-teks-2">{faq.jawab_id}</AccordionContent>
+                  <AccordionTrigger className="text-base text-warna-teks">
+                    {pick(faq.tanya_id, faq.tanya_en, locale)}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-warna-teks-2">
+                    {pick(faq.jawab_id, faq.jawab_en, locale)}
+                  </AccordionContent>
                 </AccordionItem>
               ))}
             </Accordion>
@@ -212,23 +221,26 @@ export default async function BatchDetailPage({
         {/* 7b. Galeri dokumentasi */}
         {gallery && gallery.length > 0 && (
           <div className="pt-10">
-            <h2 className="text-xl font-bold text-warna-teks">Galeri Dokumentasi</h2>
+            <h2 className="text-xl font-bold text-warna-teks">{t("galleryHeading")}</h2>
             <Carousel className="mt-4">
               <CarouselContent>
-                {gallery.map((item) => (
-                  <CarouselItem key={item.id} className="sm:basis-1/2">
-                    <div className="relative aspect-video overflow-hidden rounded-xl">
-                      <Image
-                        src={item.gambar_url}
-                        alt={item.caption_id ?? ""}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 640px) 100vw, 50vw"
-                      />
-                    </div>
-                    {item.caption_id && <p className="mt-2 text-sm text-warna-teks-2">{item.caption_id}</p>}
-                  </CarouselItem>
-                ))}
+                {gallery.map((item) => {
+                  const caption = pick(item.caption_id, item.caption_en, locale);
+                  return (
+                    <CarouselItem key={item.id} className="sm:basis-1/2">
+                      <div className="relative aspect-video overflow-hidden rounded-xl">
+                        <Image
+                          src={item.gambar_url}
+                          alt={caption ?? ""}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 640px) 100vw, 50vw"
+                        />
+                      </div>
+                      {caption && <p className="mt-2 text-sm text-warna-teks-2">{caption}</p>}
+                    </CarouselItem>
+                  );
+                })}
               </CarouselContent>
               <CarouselPrevious className="hidden sm:flex" />
               <CarouselNext className="hidden sm:flex" />

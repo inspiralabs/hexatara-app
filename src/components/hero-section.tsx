@@ -1,12 +1,17 @@
 import Image from "next/image";
 import { GraduationCap, ShoppingBag } from "lucide-react";
+import { getLocale, getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { pick } from "@/lib/i18n/pick";
 
 export async function HeroSection() {
   const supabase = await createClient();
+  const locale = await getLocale();
+  const t = await getTranslations("landing");
   const { data, error } = await supabase
     .from("hero_slides")
-    .select("id, judul_id, subjudul_id, gambar_url, cta_teks_id, cta_url")
+    .select("id, judul_id, judul_en, subjudul_id, subjudul_en, gambar_url, cta_teks_id, cta_teks_en, cta_url")
     .eq("is_active", true)
     .order("urutan", { ascending: true })
     .limit(1);
@@ -23,33 +28,29 @@ export async function HeroSection() {
         <div className="flex flex-col gap-2 rounded-xl border border-warna-latar-2 bg-warna-latar p-4 sm:p-6">
           <GraduationCap className="size-6 text-warna-utama sm:size-8" aria-hidden="true" />
           <h2 className="text-base font-bold leading-tight text-warna-teks sm:text-xl">
-            Pelatihan Pilot Drone Bersertifikat
+            {t("offerTrainingTitle")}
           </h2>
-          <p className="hidden text-sm text-warna-teks-2 sm:block">
-            Sertifikasi RPC resmi, kelas bulanan bersama instruktur berpengalaman.
-          </p>
+          <p className="hidden text-sm text-warna-teks-2 sm:block">{t("offerTrainingDesc")}</p>
           <a
             href="#jadwal"
             className="mt-auto inline-flex h-11 w-fit items-center justify-center rounded-lg bg-warna-aksen px-4 text-sm font-semibold text-warna-teks sm:text-base"
           >
-            Lihat Jadwal
+            {t("offerTrainingCta")}
           </a>
         </div>
 
         <div className="flex flex-col gap-2 rounded-xl border border-warna-latar-2 bg-warna-latar p-4 sm:p-6">
           <ShoppingBag className="size-6 text-warna-utama sm:size-8" aria-hidden="true" />
           <h2 className="text-base font-bold leading-tight text-warna-teks sm:text-xl">
-            Jual Drone Profesional Autel
+            {t("offerRetailTitle")}
           </h2>
-          <p className="hidden text-sm text-warna-teks-2 sm:block">
-            Drone untuk kebutuhan survei, pemetaan, dan industri.
-          </p>
-          <a
+          <p className="hidden text-sm text-warna-teks-2 sm:block">{t("offerRetailDesc")}</p>
+          <Link
             href="/katalog"
             className="mt-auto inline-flex h-11 w-fit items-center justify-center rounded-lg bg-warna-aksen px-4 text-sm font-semibold text-warna-teks sm:text-base"
           >
-            Lihat Katalog
-          </a>
+            {t("offerRetailCta")}
+          </Link>
         </div>
       </div>
 
@@ -68,16 +69,16 @@ export async function HeroSection() {
               </div>
             )}
             <div className="flex flex-col gap-2 p-6 text-warna-latar sm:w-1/2">
-              <h3 className="text-xl font-bold sm:text-2xl">{slide.judul_id}</h3>
+              <h3 className="text-xl font-bold sm:text-2xl">{pick(slide.judul_id, slide.judul_en, locale)}</h3>
               {slide.subjudul_id && (
-                <p className="text-base text-warna-latar/90">{slide.subjudul_id}</p>
+                <p className="text-base text-warna-latar/90">{pick(slide.subjudul_id, slide.subjudul_en, locale)}</p>
               )}
               {slide.cta_teks_id && slide.cta_url && (
                 <a
                   href={slide.cta_url}
                   className="mt-2 inline-flex h-11 w-fit items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
                 >
-                  {slide.cta_teks_id}
+                  {pick(slide.cta_teks_id, slide.cta_teks_en, locale)}
                 </a>
               )}
             </div>

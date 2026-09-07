@@ -1,21 +1,23 @@
-import Link from 'next/link';
+import { getTranslations } from 'next-intl/server';
+import { Link } from '@/i18n/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { DaftarForm } from './daftar-form';
 
-export default function DaftarPage() {
+export default async function DaftarPage() {
+  const t = await getTranslations('auth.daftar');
   return (
     <div className="mx-auto flex min-h-[70vh] w-full max-w-md flex-col justify-center px-4 py-10">
       <Card>
         <CardHeader>
-          <CardTitle>Daftar akun</CardTitle>
-          <CardDescription>Buat akun untuk mengakses materi dan sertifikat gratis.</CardDescription>
+          <CardTitle>{t('title')}</CardTitle>
+          <CardDescription>{t('description')}</CardDescription>
         </CardHeader>
         <CardContent>
           <DaftarForm />
           <p className="mt-4 text-sm text-muted-foreground">
-            Sudah punya akun?{' '}
+            {t('haveAccount')}{' '}
             <Link href="/login" className="underline underline-offset-4">
-              Masuk
+              {t('loginLink')}
             </Link>
           </p>
         </CardContent>

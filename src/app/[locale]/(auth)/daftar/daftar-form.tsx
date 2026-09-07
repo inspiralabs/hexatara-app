@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
+import { useRouter } from '@/i18n/navigation';
 import { z } from 'zod';
 import { DaftarSchema } from '@/lib/validations/auth';
 import { daftarAction } from './actions';
@@ -16,6 +17,8 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 type DaftarInput = z.infer<typeof DaftarSchema>;
 
 export function DaftarForm() {
+  const t = useTranslations('auth.daftar');
+  const tCommon = useTranslations('common');
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
   const {
@@ -47,7 +50,7 @@ export function DaftarForm() {
       )}
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="nama_lengkap">Nama lengkap</Label>
+        <Label htmlFor="nama_lengkap">{t('nameLabel')}</Label>
         <Input id="nama_lengkap" autoComplete="name" {...register('nama_lengkap')} />
         {errors.nama_lengkap && (
           <p className="text-sm text-destructive">{errors.nama_lengkap.message}</p>
@@ -55,13 +58,13 @@ export function DaftarForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{t('emailLabel')}</Label>
         <Input id="email" type="email" autoComplete="email" {...register('email')} />
         {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="password">Kata sandi</Label>
+        <Label htmlFor="password">{t('passwordLabel')}</Label>
         <Input
           id="password"
           type="password"
@@ -84,7 +87,7 @@ export function DaftarForm() {
               onCheckedChange={(checked) => field.onChange(checked)}
             />
             <Label htmlFor="persetujuan" className="font-normal">
-              Saya menyetujui data ini disimpan Hexatara untuk keperluan pendaftaran.
+              {t('consentLabel')}
             </Label>
           </div>
         )}
@@ -94,7 +97,7 @@ export function DaftarForm() {
       )}
 
       <Button type="submit" size="lg" disabled={isSubmitting}>
-        {isSubmitting ? 'Memproses…' : 'Daftar'}
+        {isSubmitting ? tCommon('processing') : t('submit')}
       </Button>
     </form>
   );

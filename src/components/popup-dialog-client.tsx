@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { XIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   Dialog,
   DialogContent,
@@ -16,6 +17,7 @@ import type { PopupAktif } from "@/components/popup-pembuka";
 const KEY_PREFIX = "hexatara-popup-tertutup-";
 
 export function PopupDialogClient({ popup }: { popup: PopupAktif }) {
+  const t = useTranslations("common");
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -36,14 +38,14 @@ export function PopupDialogClient({ popup }: { popup: PopupAktif }) {
         <button
           type="button"
           onClick={tutup}
-          aria-label="Tutup"
+          aria-label={t("closeAriaLabel")}
           className="absolute right-1 top-1 flex size-11 items-center justify-center rounded-full text-warna-teks-2 hover:bg-warna-latar-2"
         >
           <XIcon className="size-5" aria-hidden="true" />
         </button>
 
         <DialogHeader>
-          <DialogTitle className="pr-8 text-lg text-warna-teks">{popup.judul_id}</DialogTitle>
+          <DialogTitle className="pr-8 text-lg text-warna-teks">{popup.judul}</DialogTitle>
         </DialogHeader>
 
         {popup.gambar_url && (
@@ -59,10 +61,10 @@ export function PopupDialogClient({ popup }: { popup: PopupAktif }) {
         )}
 
         <DialogDescription className="whitespace-pre-line text-base text-warna-teks">
-          {popup.isi_id}
+          {popup.isi}
         </DialogDescription>
 
-        {popup.cta_teks_id && popup.cta_url && (
+        {popup.cta_teks && popup.cta_url && (
           <DialogFooter className="mx-0 mb-0 justify-start border-t-0 bg-transparent p-0">
             <a
               href={popup.cta_url}
@@ -70,7 +72,7 @@ export function PopupDialogClient({ popup }: { popup: PopupAktif }) {
               rel="noopener noreferrer"
               className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
             >
-              {popup.cta_teks_id}
+              {popup.cta_teks}
             </a>
           </DialogFooter>
         )}
