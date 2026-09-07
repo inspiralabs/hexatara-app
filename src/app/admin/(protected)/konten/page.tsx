@@ -5,6 +5,7 @@ import { PopupList } from './popup-list';
 import { SaleBannerList } from './sale-banner-list';
 import { HeroSlideList } from './hero-slide-list';
 import { InstructorList } from './instructor-list';
+import { CompanyProfileForm } from './company-profile-form';
 
 function TabBelumDibangun() {
   return <p className="pt-6 text-sm text-warna-teks-2">Belum dibangun — menyusul sesi berikutnya.</p>;
@@ -44,6 +45,14 @@ export default async function AdminKontenPage() {
 
   if (errorInstructor) console.error('[admin-konten] gagal memuat instruktur:', errorInstructor);
 
+  const { data: companyProfile, error: errorCompany } = await supabase
+    .from('company_profile')
+    .select('*')
+    .eq('id', 1)
+    .maybeSingle();
+
+  if (errorCompany) console.error('[admin-konten] gagal memuat company profile:', errorCompany);
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-xl font-bold text-warna-teks">Konten Landing</h1>
@@ -71,7 +80,11 @@ export default async function AdminKontenPage() {
           <InstructorList instructors={instructors ?? []} />
         </TabsContent>
         <TabsContent value="company">
-          <TabBelumDibangun />
+          {companyProfile ? (
+            <CompanyProfileForm profile={companyProfile} />
+          ) : (
+            <p className="pt-6 text-sm text-destructive">Gagal memuat company profile. Coba muat ulang halaman.</p>
+          )}
         </TabsContent>
         <TabsContent value="testimoni">
           <TabBelumDibangun />
