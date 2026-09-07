@@ -6,10 +6,7 @@ import { SaleBannerList } from './sale-banner-list';
 import { HeroSlideList } from './hero-slide-list';
 import { InstructorList } from './instructor-list';
 import { CompanyProfileForm } from './company-profile-form';
-
-function TabBelumDibangun() {
-  return <p className="pt-6 text-sm text-warna-teks-2">Belum dibangun — menyusul sesi berikutnya.</p>;
-}
+import { TestimonialList } from './testimonial-list';
 
 export default async function AdminKontenPage() {
   // Layout sudah memanggil requireAdmin(), tapi Server Component ini dipanggil
@@ -53,6 +50,13 @@ export default async function AdminKontenPage() {
 
   if (errorCompany) console.error('[admin-konten] gagal memuat company profile:', errorCompany);
 
+  const { data: testimonials, error: errorTestimonial } = await supabase
+    .from('testimonials')
+    .select('*')
+    .order('urutan', { ascending: true });
+
+  if (errorTestimonial) console.error('[admin-konten] gagal memuat testimoni:', errorTestimonial);
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-xl font-bold text-warna-teks">Konten Landing</h1>
@@ -87,7 +91,7 @@ export default async function AdminKontenPage() {
           )}
         </TabsContent>
         <TabsContent value="testimoni">
-          <TabBelumDibangun />
+          <TestimonialList testimonials={testimonials ?? []} />
         </TabsContent>
       </Tabs>
     </div>
