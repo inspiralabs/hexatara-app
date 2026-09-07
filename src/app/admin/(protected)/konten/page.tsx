@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PopupList } from './popup-list';
 import { SaleBannerList } from './sale-banner-list';
 import { HeroSlideList } from './hero-slide-list';
+import { InstructorList } from './instructor-list';
 
 function TabBelumDibangun() {
   return <p className="pt-6 text-sm text-warna-teks-2">Belum dibangun — menyusul sesi berikutnya.</p>;
@@ -36,6 +37,13 @@ export default async function AdminKontenPage() {
 
   if (errorHero) console.error('[admin-konten] gagal memuat hero slide:', errorHero);
 
+  const { data: instructors, error: errorInstructor } = await supabase
+    .from('instructors')
+    .select('*')
+    .order('urutan', { ascending: true });
+
+  if (errorInstructor) console.error('[admin-konten] gagal memuat instruktur:', errorInstructor);
+
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-xl font-bold text-warna-teks">Konten Landing</h1>
@@ -60,7 +68,7 @@ export default async function AdminKontenPage() {
           <HeroSlideList slides={heroSlides ?? []} />
         </TabsContent>
         <TabsContent value="instruktur">
-          <TabBelumDibangun />
+          <InstructorList instructors={instructors ?? []} />
         </TabsContent>
         <TabsContent value="company">
           <TabBelumDibangun />
