@@ -61,6 +61,15 @@
       "continueWhatsapp": "Lanjut ke WhatsApp"
     }
   },
+  "materi": {
+    "pageTitle": "Materi Gratis",
+    "pageSubtitle": "Pelajari dasar keselamatan penerbangan drone sebelum mengerjakan kuis — semuanya gratis, tanpa perlu mendaftar.",
+    "kosong": "Belum ada materi tersedia. Silakan cek kembali nanti.",
+    "buka": "Buka Materi",
+    "ctaHeading": "Sudah siap uji pemahaman?",
+    "ctaBody": "Kerjakan kuisnya sekarang — semua orang bisa mendapatkan sertifikat, tidak ada nilai minimum.",
+    "ctaButton": "Mulai Kuis"
+  },
   "verify": {
     "pageTitle": "Cek Keabsahan Sertifikat",
     "pageSubtitle": "Masukkan nomor sertifikat untuk memastikan keasliannya. Nomor ini tercetak di sertifikat fisik Anda.",
@@ -87,7 +96,15 @@
       "expiryLabel": "Masa Berlaku"
     }
   },
-  "quiz": {},
+  "quiz": {
+    "pageTitle": "Kuis Dasar Keselamatan Drone",
+    "pageSubtitle": "Jawab tiap soal sampai benar. Tidak ada nilai minimum dan tidak ada batas percobaan.",
+    "kosong": "Soal kuis belum tersedia. Silakan cek kembali nanti.",
+    "progres": "Soal {sekarang} dari {total}",
+    "lanjut": "Lanjut",
+    "dapatkanSertifikat": "Dapatkan Sertifikat",
+    "selesai": "Semua soal terjawab benar! Selamat, Anda siap melanjutkan."
+  },
   "catalog": {},
   "auth": {
     "backToLogin": "Kembali ke halaman masuk",

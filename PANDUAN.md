@@ -3726,7 +3726,7 @@ Plus enam pemeriksaan wajib di Bagian 6.5.1.
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji F03.1 dan F03.2 sendiri di browser dan hasilnya sesuai.
 Isi kedua barisnya: Status DONE, Berkas [daftar berkas], Diuji [tanggal],
-Bukti [kalimat hasil pengujian saya].
+Bukti [saya sudah uji di incognito dan mengisi jawaban salah hingga benar lalu mendapatkan sertifikat yang mengarah ke daftar. sudah lolos].
 Tambahkan satu baris ke Log verifikasi.
 Jangan mengubah status baris fitur lain.
 ```

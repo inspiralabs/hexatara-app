@@ -61,6 +61,15 @@
       "continueWhatsapp": "Lanjut ke WhatsApp"
     }
   },
+  "materi": {
+    "pageTitle": "Free Materials",
+    "pageSubtitle": "Learn the basics of drone flight safety before taking the quiz — completely free, no registration needed.",
+    "kosong": "No materials available yet. Please check back later.",
+    "buka": "Open Material",
+    "ctaHeading": "Ready to test your understanding?",
+    "ctaBody": "Take the quiz now — everyone can earn a certificate, there's no minimum score.",
+    "ctaButton": "Start Quiz"
+  },
   "verify": {
     "pageTitle": "Verify Certificate Authenticity",
     "pageSubtitle": "Enter the certificate number to confirm it's genuine. This number is printed on the physical certificate.",
@@ -87,7 +96,15 @@
       "expiryLabel": "Valid Until"
     }
   },
-  "quiz": {},
+  "quiz": {
+    "pageTitle": "Drone Safety Basics Quiz",
+    "pageSubtitle": "Answer each question until you get it right. No minimum score and no attempt limit.",
+    "kosong": "Quiz questions aren't available yet. Please check back later.",
+    "progres": "Question {sekarang} of {total}",
+    "lanjut": "Next",
+    "dapatkanSertifikat": "Get Certificate",
+    "selesai": "All questions answered correctly! Congratulations, you're ready to continue."
+  },
   "catalog": {},
   "auth": {
     "backToLogin": "Kembali ke halaman masuk",

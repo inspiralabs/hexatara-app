@@ -83,8 +83,8 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
 |---|---|---|---|---|---|
-| F03.1 | Halaman materi tanpa login | TODO | |  | |
-| F03.2 | Mesin kuis correctable | TODO | |  | |
+| F03.1 | Halaman materi tanpa login | DONE | `src/app/[locale]/(public)/materi/page.tsx` | 2026-09-08 | Alif menguji sendiri di browser mode Incognito, hasil sesuai |
+| F03.2 | Mesin kuis correctable | DONE | `src/app/[locale]/(public)/kuis/page.tsx`, `src/app/[locale]/(public)/kuis/quiz-engine.tsx` | 2026-09-08 | Alif menguji sendiri di browser mode Incognito: mengisi jawaban salah hingga benar, lalu mendapatkan sertifikat yang mengarah ke halaman daftar — sudah lolos |
 | F03.3 | Registrasi + verifikasi email | SKIP | — | Sudah tercakup F00.6, tidak dikerjakan dua kali  | |
 | F03.4 | Sertifikat preview (QR blur + badge) | TODO | |  | |
 | F03.5 | Pilih paket upgrade | TODO | |  | |
@@ -200,6 +200,7 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 2026-09-07  F02.8  Alif menguji sendiri di browser: unggah CSV 10 baris → 7 berhasil, 3 gagal sesuai target, nomor baris Excel dan alasan gagal tepat (baris 9 nama kosong, baris 10 format tanggal tidak dikenali, baris 11 nomor sudah ada). Dicek langsung di Supabase: 7 baris masuk persis yang seharusnya, baris nama-kosong/tanggal-ngawur/duplikat tidak ikut masuk. Auto-isi kedaluwarsa +2 tahun untuk RPC tanpa kedaluwarsa terkonfirmasi lewat data nyata (HXT-CERT-000011: terbit 2026-08-15, kedaluwarsa terisi otomatis 2028-08-15). free_track dengan kedaluwarsa NULL juga lolos (HXT-FT-000002, HXT-FT-000003). Baris diubah TODO -> DONE.
 2026-09-07  F02.9  Alif menguji sendiri di browser: set RATE_LIMIT_VERIFY_ENABLED=true, mencari sertifikat berulang kali di /verify sampai muncul pesan rate limit — hasil sesuai. Baris diubah TODO -> DONE. Dengan ini seluruh Sprint 2 (Modul 2 — Verifikasi Sertifikat) DONE.
 2026-09-07  Lampiran B (B.1-B.5) terpasang dan diuji: tsconfig diperketat, jsx-a11y + no-console jadi error, knip terpasang, Vitest untuk validateRow() (9 test), husky pre-commit. pnpm knip menghasilkan temuan yang sudah ditinjau lengkap (dicatat di PANDUAN.md, bagian "Temuan knip tertunda") — bukan nol temuan, tapi semua false positive (shadcn/tw-animate-css/tailwindcss lewat CSS) atau item yang sengaja dipertahankan sudah diberi ignore di knip.json (pdf-lib, qrcode, @types/qrcode, lib/constants.ts, lib/supabase/client.ts). Sisanya (clsx, tailwind-merge, sonner, BatchFormOutput, SertifikatFormOutput, dan beberapa export yang tidak perlu jadi API publik) dicatat sebagai utang teknis kecil untuk sprint pembersihan nanti, bukan blocker.
+2026-09-08  F03.1/F03.2  Alif menguji sendiri di browser mode Incognito: mengisi jawaban salah hingga benar pada kuis, lalu mendapatkan sertifikat yang mengarah ke halaman daftar — sudah lolos. Kedua baris diubah TODO -> DONE.
 ```
 
 ---
