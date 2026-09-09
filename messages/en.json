@@ -149,9 +149,21 @@
     "verifikasiEmail": {
       "title": "Verifikasi email",
       "invalidAlert": "Tautan verifikasi tidak valid atau sudah kadaluwarsa. Daftar ulang untuk mendapatkan tautan baru.",
-      "sentMessage": "Kami sudah mengirim tautan verifikasi ke email kamu. Klik tautan itu untuk mengaktifkan akun sebelum bisa masuk."
+      "sentMessage": "Kami sudah mengirim tautan verifikasi ke email kamu. Klik tautan itu untuk mengaktifkan akun sebelum bisa masuk.",
+      "verifiedMessage": "Your email has been verified. Your account is now active.",
+      "goToDashboard": "Go to Dashboard"
     }
   },
-  "dashboard": {},
+  "dashboard": {
+    "pageTitle": "My Dashboard",
+    "readyToFly": "Ready To Fly",
+    "previewDescription": "This certificate is still a preview. The active QR code and official number appear once your upgrade is approved by Admin.",
+    "qrLocked": "Active after upgrade",
+    "unduhPreview": "Download PDF (Preview)",
+    "memproses": "Processing…",
+    "belumSelesaiKuis": "Finish the quiz first to get your preview certificate.",
+    "mulaiKuis": "Start Quiz",
+    "keluar": "Log Out"
+  },
   "admin": {}
 }

@@ -29,7 +29,7 @@ export function QuizEngine({ questions }: { questions: QuizQuestion[] }) {
       <div className="mt-6 rounded-xl border border-warna-sukses/30 bg-warna-sukses/5 p-6 text-center">
         <p className="text-lg font-bold text-warna-sukses">{t('selesai')}</p>
         <Link
-          href="/daftar"
+          href="/daftar?kuisSelesai=1"
           className="mt-4 inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks"
         >
           {t('dapatkanSertifikat')}

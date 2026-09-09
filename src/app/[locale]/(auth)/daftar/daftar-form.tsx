@@ -16,7 +16,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 
 type DaftarInput = z.infer<typeof DaftarSchema>;
 
-export function DaftarForm() {
+export function DaftarForm({ kuisSelesai = false }: { kuisSelesai?: boolean }) {
   const t = useTranslations('auth.daftar');
   const tCommon = useTranslations('common');
   const router = useRouter();
@@ -33,7 +33,7 @@ export function DaftarForm() {
 
   async function onSubmit(data: DaftarInput) {
     setPesanError(null);
-    const hasil = await daftarAction(data);
+    const hasil = await daftarAction(data, kuisSelesai);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
       return;
