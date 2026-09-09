@@ -105,7 +105,16 @@
     "dapatkanSertifikat": "Dapatkan Sertifikat",
     "selesai": "Semua soal terjawab benar! Selamat, Anda siap melanjutkan."
   },
-  "catalog": {},
+  "catalog": {
+    "pageTitle": "Katalog Produk",
+    "pageSubtitle": "Drone profesional Autel untuk kebutuhan survei, pemetaan, dan industri.",
+    "kosong": "Belum ada produk tersedia. Silakan cek kembali nanti.",
+    "hargaHubungiKami": "Hubungi kami untuk harga",
+    "lihatDetail": "Lihat Detail",
+    "descriptionHeading": "Deskripsi",
+    "specHeading": "Spesifikasi",
+    "backToCatalog": "Kembali ke Katalog"
+  },
   "auth": {
     "backToLogin": "Kembali ke halaman masuk",
     "daftar": {

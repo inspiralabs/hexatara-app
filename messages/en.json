@@ -105,7 +105,16 @@
     "dapatkanSertifikat": "Get Certificate",
     "selesai": "All questions answered correctly! Congratulations, you're ready to continue."
   },
-  "catalog": {},
+  "catalog": {
+    "pageTitle": "Product Catalog",
+    "pageSubtitle": "Professional Autel drones for survey, mapping, and industrial needs.",
+    "kosong": "No products available yet. Please check back later.",
+    "hargaHubungiKami": "Contact us for pricing",
+    "lihatDetail": "View Detail",
+    "descriptionHeading": "Description",
+    "specHeading": "Specifications",
+    "backToCatalog": "Back to Catalog"
+  },
   "auth": {
     "backToLogin": "Kembali ke halaman masuk",
     "daftar": {

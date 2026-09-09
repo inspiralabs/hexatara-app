@@ -4152,7 +4152,7 @@ git push
 - [ ] Seluruh baris F03.x berstatus `DONE` (F03.3 tetap `SKIP` — sudah tercakup F00.6)
 - [ ] Alur penuh sudah kamu jalani sendiri dari ujung ke ujung: materi → kuis → daftar → preview → bayar → Admin setujui → QR aktif → terverifikasi di `/verify`
 - [ ] `pnpm knip` bersih
-- [ ] `pnpm test` lolos — F03.8 termasuk tiga tempat yang wajib punya test
+- [ ] `pnpm test` lolos. **F03.8 sengaja tidak punya unit test TS** — logikanya (kunci baris, cek status pesanan, cek duplikat free_track, insert `certificates`, update `certificate_orders`) dibungkus seluruhnya dalam satu fungsi Postgres, `aktivasi_sertifikat_free_track()` (`docs/sql/14_aktivasi_sertifikat.sql`), dipanggil lewat `.rpc()` — sesuai rencana `ENGINEERING.md` §5.2. Tidak ada fungsi TS murni untuk ditest; menulis Vitest di sini berarti menulis ulang logikanya di TypeScript dulu, persis dua sumber kebenaran yang dilarang §3.6. Lihat §B.4 untuk penjelasan lengkap kenapa ini bukan celah. Jaring pengamannya adalah uji manual jalur bahagia/gagal/pembatalan yang sudah tercatat di `feature-registry.md` (log F03.7/F03.8/F03.11, 2026-09-09) — bukan celah yang perlu ditambal sebelum Sprint 4.
 
 ---
 
@@ -4247,7 +4247,7 @@ Plus enam pemeriksaan wajib di Bagian 6.5.1.
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji F04.1, F04.2, F04.3 sendiri di browser dan hasilnya sesuai.
 Isi ketiga barisnya: Status DONE, Berkas [daftar berkas], Diuji [tanggal],
-Bukti [kalimat hasil pengujian saya].
+Bukti [saya udah uji barang autel evo II saya ubah jadi false dan hilang harganya, selain itu benar saat queyr saya jalankan harga tampil null, dan semua list uji sudah saya lakukan lolos].
 Tambahkan satu baris ke Log verifikasi.
 Jangan mengubah status baris fitur lain.
 ```
@@ -4980,13 +4980,13 @@ Jalankan `pnpm knip` di akhir tiap sprint. Ini alat anti-slop paling langsung: A
 
 ## B.4 Test — hanya untuk tiga tempat
 
-> **Diperbarui 2026-09-07, saat Lampiran B benar-benar dipasang.** Ketiga target di bawah ditulis sebelum Modul 2 (Sprint 2) dibangun, dengan asumsi logikanya akan berupa fungsi TypeScript. Yang benar-benar terjadi berbeda — dan bukan kelalaian:
+> **Diperbarui 2026-09-07, saat Lampiran B benar-benar dipasang; F03.8 dikonfirmasi 2026-09-09 setelah dibangun.** Ketiga target di bawah ditulis sebelum Modul 2 (Sprint 2) dibangun, dengan asumsi logikanya akan berupa fungsi TypeScript. Yang benar-benar terjadi berbeda — dan bukan kelalaian:
 >
 > - **F02.4 — hitung status kedaluwarsa**: dihitung murni oleh fungsi Postgres `status_sertifikat()`, diekspos lewat kolom `status` di view `certificates_public`. Kode TypeScript (`/verify`) hanya membaca kolom itu, tidak pernah menghitung ulang — persis sesuai `ENGINEERING.md` §3.6 ("Jangan menghitung ulang di TypeScript — nanti dua sumber kebenaran"). **Tidak ada fungsi TS untuk ditulis test-nya.**
 > - **Penomoran sertifikat**: dihasilkan murni oleh fungsi Postgres `next_certificate_number()` yang mengunci baris counter, dipanggil lewat `.rpc()`. `ENGINEERING.md` §3.6 juga eksplisit: "Jangan pernah menghitung nomor sendiri di TypeScript." **Tidak ada fungsi TS untuk ditulis test-nya.**
-> - **F03.8 — aktivasi sertifikat**: belum dibangun. Begitu dibangun, rencananya (`ENGINEERING.md` §5.2) juga membungkus langkah database dalam satu fungsi Postgres lewat `.rpc()`, bukan logika TypeScript murni — jadi kemungkinan besar tetap tidak akan punya fungsi TS yang bisa di-unit-test langsung.
+> - **F03.8 — aktivasi sertifikat**: dikonfirmasi, bukan lagi prediksi. Dibangun persis sesuai rencana `ENGINEERING.md` §5.2 — kedelapan langkah (kunci baris pesanan, cek status, cek duplikat free_track, ambil nomor, insert `certificates`, update `certificate_orders`) dibungkus satu fungsi Postgres, `aktivasi_sertifikat_free_track()` (`docs/sql/14_aktivasi_sertifikat.sql`), dipanggil lewat `.rpc()` dari `setujuiPesananAction()` (`src/app/admin/(protected)/upgrade/actions.ts`). Sisa kode TS di action itu cuma efek samping *best-effort* (generate PDF, kirim email, catat `activity_logs`) tanpa logika bercabang yang berisiko salah. **Tidak ada fungsi TS untuk ditulis test-nya** — sama persis dengan dua target di atas.
 >
-> Menulis Vitest untuk tiga target ini berarti menulis ULANG logikanya di TypeScript dulu supaya ada yang ditest — persis dua sumber kebenaran yang dilarang berkali-kali di PRD/ENGINEERING. Diputuskan: **lewati ketiganya.** Verifikasinya sudah terjadi lewat pengujian manual data-nyata yang tercatat di `feature-registry.md` (log F02.4–F02.9).
+> Menulis Vitest untuk ketiga target ini berarti menulis ULANG logikanya di TypeScript dulu supaya ada yang ditest — persis dua sumber kebenaran yang dilarang berkali-kali di PRD/ENGINEERING. Diputuskan: **lewati ketiganya.** Verifikasinya sudah terjadi lewat pengujian manual data-nyata yang tercatat di `feature-registry.md` (log F02.4–F02.9 dan F03.7/F03.8/F03.11).
 >
 > Sebagai gantinya, Vitest dipasang untuk `validateRow()` di `src/lib/certificate/import.ts` (F02.8) — satu-satunya business logic non-trivial Modul 2 yang benar-benar berupa fungsi TypeScript murni. Tesnya juga mencakup regresi bug timezone nyata yang sempat ditemukan (lihat `src/lib/certificate/import.test.ts`). File ini menggantikan `import.check.mts` (self-check tanpa framework yang dipakai sebelum Lampiran B dipasang).
 >
