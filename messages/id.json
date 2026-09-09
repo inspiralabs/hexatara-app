@@ -159,11 +159,20 @@
     "readyToFly": "Ready To Fly",
     "previewDescription": "Sertifikat ini masih pratinjau. QR aktif dan nomor resmi muncul setelah upgrade disetujui Admin.",
     "qrLocked": "Aktif setelah upgrade",
+    "qrAktif": "QR aktif",
     "unduhPreview": "Unduh PDF (Preview)",
+    "unduhFinal": "Unduh Sertifikat",
+    "nomorSertifikat": "Nomor Sertifikat",
     "memproses": "Memproses…",
     "belumSelesaiKuis": "Selesaikan kuis dulu untuk mendapatkan sertifikat pratinjau.",
     "mulaiKuis": "Mulai Kuis",
-    "keluar": "Keluar"
+    "keluar": "Keluar",
+    "statusPembayaran": "Status Pembayaran",
+    "belumUpgrade": "Belum mengajukan upgrade sertifikat.",
+    "upgradeSekarang": "Upgrade sekarang",
+    "pesananMerchTambahan": "Pesanan Merchandise Tambahan",
+    "riwayatAktivitas": "Riwayat Aktivitas",
+    "belumAdaAktivitas": "Belum ada aktivitas."
   },
   "admin": {}
 }

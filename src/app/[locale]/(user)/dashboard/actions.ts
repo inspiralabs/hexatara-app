@@ -48,3 +48,39 @@ export async function unduhSertifikatPreviewAction() {
 
   return { ok: true as const, url: signed.signedUrl };
 }
+
+export async function unduhSertifikatFinalAction() {
+  const claims = await requireUser();
+
+  // RLS "sertifikat: publik baca yang aktif" (qr_aktif = true) sudah mengizinkan
+  // pemilik membaca barisnya sendiri lewat client biasa — tidak perlu admin client
+  // untuk SELECT ini, cuma untuk signed URL ke bucket privat di bawah.
+  const supabase = await createClient();
+  const { data: cert } = await supabase
+    .from('certificates')
+    .select('id, nomor_sertifikat')
+    .eq('user_id', claims.sub)
+    .eq('jenis', 'free_track')
+    .eq('qr_aktif', true)
+    .maybeSingle();
+
+  if (!cert) {
+    return { ok: false as const, pesan: 'Sertifikat belum aktif.' };
+  }
+
+  // PDF final sudah dibuat & diunggah Admin saat approval (admin/upgrade/actions.ts) —
+  // di sini cuma re-sign, bukan generate ulang.
+  const supabaseAdmin = createAdminClient();
+  const { data: signed, error: signError } = await supabaseAdmin.storage
+    .from('certificates')
+    .createSignedUrl(`final/${cert.id}.pdf`, 60);
+  if (signError || !signed) {
+    console.error('[dashboard] gagal membuat signed URL sertifikat final:', signError);
+    return {
+      ok: false as const,
+      pesan: 'Sertifikat aktif, tapi berkas PDF belum tersedia. Hubungi Admin.',
+    };
+  }
+
+  return { ok: true as const, url: signed.signedUrl };
+}

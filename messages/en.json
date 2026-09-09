@@ -159,11 +159,20 @@
     "readyToFly": "Ready To Fly",
     "previewDescription": "This certificate is still a preview. The active QR code and official number appear once your upgrade is approved by Admin.",
     "qrLocked": "Active after upgrade",
+    "qrAktif": "QR active",
     "unduhPreview": "Download PDF (Preview)",
+    "unduhFinal": "Download Certificate",
+    "nomorSertifikat": "Certificate Number",
     "memproses": "Processing…",
     "belumSelesaiKuis": "Finish the quiz first to get your preview certificate.",
     "mulaiKuis": "Start Quiz",
-    "keluar": "Log Out"
+    "keluar": "Log Out",
+    "statusPembayaran": "Payment Status",
+    "belumUpgrade": "You haven't applied for a certificate upgrade yet.",
+    "upgradeSekarang": "Upgrade now",
+    "pesananMerchTambahan": "Additional Merchandise Order",
+    "riwayatAktivitas": "Activity History",
+    "belumAdaAktivitas": "No activity yet."
   },
   "admin": {}
 }

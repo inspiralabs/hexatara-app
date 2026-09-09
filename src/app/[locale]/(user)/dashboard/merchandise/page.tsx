@@ -28,7 +28,7 @@ export default async function MerchandisePage() {
 
   const { data: order } = await supabase
     .from('certificate_orders')
-    .select('id, status, alasan_tolak')
+    .select('id, status, alasan_tolak, status_pengiriman')
     .eq('user_id', claims.sub)
     .eq('paket', 'merch_addon')
     .maybeSingle();

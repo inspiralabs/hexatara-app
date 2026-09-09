@@ -3,12 +3,22 @@ import { BuktiTransferUpload } from './bukti-transfer-upload';
 import type { Database } from '@/types/database';
 
 type Paket = Database['public']['Enums']['paket_upgrade'];
+type StatusKirim = Database['public']['Enums']['status_kirim'];
 type Order = {
   id: number;
   status: Database['public']['Enums']['status_order'];
   alasan_tolak: string | null;
+  status_pengiriman: StatusKirim;
 };
 type Rekening = { bank?: string; nomor?: string; atas_nama?: string } | undefined;
+
+const LABEL_STATUS_KIRIM: Record<StatusKirim, string> = {
+  tidak_ada: 'Tidak Ada',
+  belum_diproses: 'Belum Diproses',
+  diproses: 'Diproses',
+  dikirim: 'Dikirim',
+  diterima: 'Diterima',
+};
 
 // Dipakai bersama oleh /dashboard/upgrade (F03.5+F03.6) dan /dashboard/merchandise
 // (F03.10) — keduanya cuma beda paket mana yang ditawarkan, alur statusnya sama persis.
@@ -30,7 +40,19 @@ export function PesananStatusSection({
   }
 
   if (order.status === 'disetujui') {
-    return <p className="text-warna-teks-2">Pesanan sudah disetujui.</p>;
+    return (
+      <div>
+        <p className="text-warna-teks-2">Pesanan sudah disetujui.</p>
+        {order.status_pengiriman !== 'tidak_ada' && (
+          <p className="mt-1 text-sm text-warna-teks-2">
+            Status Pengiriman:{' '}
+            <span className="font-medium text-warna-teks">
+              {LABEL_STATUS_KIRIM[order.status_pengiriman]}
+            </span>
+          </p>
+        )}
+      </div>
+    );
   }
 
   // menunggu_bukti atau ditolak — keduanya butuh instruksi transfer + form unggah.
