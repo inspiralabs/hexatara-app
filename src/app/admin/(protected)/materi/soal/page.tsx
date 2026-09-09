@@ -2,37 +2,42 @@ import Link from 'next/link';
 import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { MateriRowActions } from './materi-row-actions';
+import { SoalRowActions } from './soal-row-actions';
 
-export default async function AdminMateriPage() {
+export default async function AdminSoalPage() {
   // Layout sudah memanggil requireAdmin(), tapi Server Component ini memanggil
   // lagi secara eksplisit sesuai ENGINEERING §4.1 — bukan cuma diandalkan dari layout.
   await requireAdmin();
 
   const supabase = await createClient();
-  const { data: materi, error } = await supabase
-    .from('materials')
-    .select('id, judul_id, urutan, is_active, file_url')
+  const { data: soal, error } = await supabase
+    .from('quiz_questions')
+    .select('id, pertanyaan_id, urutan, is_active')
     .order('urutan');
 
-  if (error) console.error('[admin-materi] gagal memuat daftar:', error);
+  if (error) console.error('[admin-soal] gagal memuat daftar:', error);
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-warna-teks">Materi & Bank Soal</h1>
+        <div>
+          <h1 className="text-xl font-bold text-warna-teks">Bank Soal</h1>
+          <Link href="/admin/materi" className="text-sm text-warna-utama underline">
+            &larr; Materi
+          </Link>
+        </div>
         <div className="flex gap-2">
           <Link
-            href="/admin/materi/soal"
+            href="/admin/materi/soal/impor"
             className="inline-flex h-11 items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama"
           >
-            Bank Soal
+            Impor Excel
           </Link>
           <Link
-            href="/admin/materi/baru"
+            href="/admin/materi/soal/baru"
             className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
           >
-            Tambah Materi
+            Tambah Soal
           </Link>
         </div>
       </div>
@@ -42,32 +47,26 @@ export default async function AdminMateriPage() {
           <TableHeader>
             <TableRow>
               <TableHead>Urutan</TableHead>
-              <TableHead>Judul</TableHead>
+              <TableHead>Pertanyaan</TableHead>
               <TableHead>Aktif</TableHead>
-              <TableHead>Berkas</TableHead>
               <TableHead className="text-right">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {!materi || materi.length === 0 ? (
+            {!soal || soal.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-warna-teks-2">
-                  Belum ada materi.
+                <TableCell colSpan={4} className="text-center text-warna-teks-2">
+                  Belum ada soal.
                 </TableCell>
               </TableRow>
             ) : (
-              materi.map((m) => (
-                <TableRow key={m.id}>
-                  <TableCell>{m.urutan}</TableCell>
-                  <TableCell className="font-medium text-warna-teks">{m.judul_id}</TableCell>
-                  <TableCell>{m.is_active ? 'Ya' : 'Tidak'}</TableCell>
-                  <TableCell>
-                    <a href={m.file_url} target="_blank" rel="noopener noreferrer" className="text-warna-utama underline">
-                      Buka
-                    </a>
-                  </TableCell>
+              soal.map((s) => (
+                <TableRow key={s.id}>
+                  <TableCell>{s.urutan}</TableCell>
+                  <TableCell className="font-medium text-warna-teks">{s.pertanyaan_id}</TableCell>
+                  <TableCell>{s.is_active ? 'Ya' : 'Tidak'}</TableCell>
                   <TableCell className="text-right">
-                    <MateriRowActions id={m.id} judul={m.judul_id} />
+                    <SoalRowActions id={s.id} pertanyaan={s.pertanyaan_id} />
                   </TableCell>
                 </TableRow>
               ))
