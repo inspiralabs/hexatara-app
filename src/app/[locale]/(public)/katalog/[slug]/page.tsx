@@ -11,6 +11,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { QuoteDialog } from "./quote-dialog";
 
 const KONTEN_HTML_CLASS =
   "mt-2 space-y-3 text-base text-warna-teks-2 [&_a]:underline [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-warna-teks [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-5";
@@ -21,6 +22,12 @@ function formatRupiah(nilai: number) {
     currency: "IDR",
     maximumFractionDigits: 0,
   }).format(nilai);
+}
+
+function buildWaProdukLink(nomor: string | undefined, namaProduk: string) {
+  if (!nomor) return null;
+  const pesan = `Halo Admin Hexatara, saya ingin bertanya tentang produk "${namaProduk}".`;
+  return `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
 }
 
 export default async function KatalogDetailPage({
@@ -54,6 +61,7 @@ export default async function KatalogDetailPage({
   const nama = pick(produk.nama_id, produk.nama_en, locale) ?? produk.nama_id ?? "";
   const deskripsi = pick(produk.deskripsi_id, produk.deskripsi_en, locale);
   const spesifikasi = pick(produk.spesifikasi_id, produk.spesifikasi_en, locale);
+  const waLink = buildWaProdukLink(process.env.NEXT_PUBLIC_WA_ADMIN, nama);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
@@ -91,6 +99,19 @@ export default async function KatalogDetailPage({
         <p className="text-xl font-bold text-warna-teks">
           {produk.harga != null ? formatRupiah(produk.harga) : t("hargaHubungiKami")}
         </p>
+        <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+          {waLink && (
+            <a
+              href={waLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-11 flex-1 items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama"
+            >
+              {t("contactWhatsapp")}
+            </a>
+          )}
+          <QuoteDialog productId={produk.id} />
+        </div>
       </div>
 
       {deskripsi?.trim() && (

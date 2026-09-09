@@ -113,7 +113,24 @@
     "lihatDetail": "Lihat Detail",
     "descriptionHeading": "Deskripsi",
     "specHeading": "Spesifikasi",
-    "backToCatalog": "Kembali ke Katalog"
+    "backToCatalog": "Kembali ke Katalog",
+    "contactWhatsapp": "Hubungi via WhatsApp",
+    "dialog": {
+      "trigger": "Minta Penawaran",
+      "title": "Minta Penawaran",
+      "subtitle": "Isi data Anda, tim kami akan menghubungi lewat email atau WhatsApp.",
+      "nameLabel": "Nama lengkap",
+      "companyLabel": "Perusahaan (opsional)",
+      "emailLabel": "Email",
+      "whatsappLabel": "Nomor WhatsApp (opsional)",
+      "needsLabel": "Kebutuhan Anda",
+      "needsPlaceholder": "Contoh: jumlah unit, kegunaan, atau pertanyaan lain",
+      "consentLabel": "Saya menyetujui data ini disimpan Hexatara untuk keperluan penawaran.",
+      "submit": "Kirim Permintaan",
+      "successTitle": "Permintaan Terkirim",
+      "successBody": "Terima kasih! Tim kami akan menghubungi Anda lewat email atau WhatsApp yang Anda berikan.",
+      "close": "Tutup"
+    }
   },
   "auth": {
     "backToLogin": "Kembali ke halaman masuk",

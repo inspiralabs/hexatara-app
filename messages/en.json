@@ -113,7 +113,24 @@
     "lihatDetail": "View Detail",
     "descriptionHeading": "Description",
     "specHeading": "Specifications",
-    "backToCatalog": "Back to Catalog"
+    "backToCatalog": "Back to Catalog",
+    "contactWhatsapp": "Contact via WhatsApp",
+    "dialog": {
+      "trigger": "Request a Quote",
+      "title": "Request a Quote",
+      "subtitle": "Fill in your details and our team will reach out by email or WhatsApp.",
+      "nameLabel": "Full name",
+      "companyLabel": "Company (optional)",
+      "emailLabel": "Email",
+      "whatsappLabel": "WhatsApp number (optional)",
+      "needsLabel": "Your needs",
+      "needsPlaceholder": "E.g. quantity needed, use case, or other questions",
+      "consentLabel": "I agree to have this data stored by Hexatara for the purpose of this quote request.",
+      "submit": "Send Request",
+      "successTitle": "Request Sent",
+      "successBody": "Thank you! Our team will contact you by email or WhatsApp using the details you provided.",
+      "close": "Close"
+    }
   },
   "auth": {
     "backToLogin": "Kembali ke halaman masuk",
