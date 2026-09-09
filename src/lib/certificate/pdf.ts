@@ -2,6 +2,7 @@ import 'server-only';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { PDFDocument, StandardFonts, rgb, degrees } from 'pdf-lib';
+import QRCode from 'qrcode';
 
 const TEMPLATE_PATH = path.join(process.cwd(), 'public/templates/sertifikat.pdf');
 
@@ -104,6 +105,81 @@ export async function generateSertifikatPreviewPdf({
     size: 9,
     font,
     color: rgb(0.45, 0.45, 0.47),
+  });
+
+  return pdfDoc.save();
+}
+
+// PDF final — diterbitkan setelah Admin menyetujui pembayaran (F03.8). Fungsi
+// terpisah dari preview di atas, bukan versi bercabang dari fungsi yang sama:
+// tidak ada watermark PREVIEW, tidak ada kotak QR placeholder, nomor sertifikat
+// asli ditampilkan (preview sengaja mengosongkannya — ADR-005, PRD §8.6).
+export async function generateSertifikatFinalPdf({
+  namaLengkap,
+  nomorSertifikat,
+  tanggalTerbit,
+  publicToken,
+}: {
+  namaLengkap: string;
+  nomorSertifikat: string;
+  tanggalTerbit: string; // ISO, dari certificates.tanggal_terbit
+  publicToken: string;
+}): Promise<Uint8Array> {
+  const templateBytes = await readFile(TEMPLATE_PATH);
+  const pdfDoc = await PDFDocument.load(templateBytes);
+
+  const page = pdfDoc.getPages()[0];
+  if (!page) throw new Error('Template sertifikat tidak punya halaman apa pun');
+  const { width, height } = page.getSize();
+
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+  page.drawText('READY TO FLY', {
+    x: width - 190,
+    y: height - 60,
+    size: 14,
+    font: fontBold,
+    color: rgb(0.96, 0.62, 0.04),
+  });
+
+  page.drawText(namaLengkap, {
+    x: 60,
+    y: height - 220,
+    size: 26,
+    font: fontBold,
+    color: rgb(0.07, 0.09, 0.15),
+  });
+
+  page.drawText(`Menyelesaikan materi dasar keselamatan penerbangan drone pada ${formatTanggalId(tanggalTerbit)}`, {
+    x: 60,
+    y: height - 255,
+    size: 12,
+    font,
+    color: rgb(0.3, 0.35, 0.4),
+  });
+
+  page.drawText(`Nomor sertifikat: ${nomorSertifikat}`, {
+    x: 60,
+    y: height - 285,
+    size: 10,
+    font,
+    color: rgb(0.55, 0.55, 0.55),
+  });
+
+  // QR asli menuju /verify/{public_token} (PRD §8.6) — server tidak pernah
+  // mengirim public_token ke klien sebelum langkah ini, jadi ini titik pertama
+  // QR sungguhan ada.
+  const verifyUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/verify/${publicToken}`;
+  const qrPngBytes = await QRCode.toBuffer(verifyUrl, { type: 'png', margin: 1, width: 300 });
+  const qrImage = await pdfDoc.embedPng(qrPngBytes);
+
+  const kotakUkuran = 110;
+  page.drawImage(qrImage, {
+    x: width - 60 - kotakUkuran,
+    y: 60,
+    width: kotakUkuran,
+    height: kotakUkuran,
   });
 
   return pdfDoc.save();

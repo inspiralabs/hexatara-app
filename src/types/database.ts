@@ -1,4 +1,4 @@
-export type Json =
+﻿export type Json =
   | string
   | number
   | boolean
@@ -1038,6 +1038,14 @@ export type Database = {
       }
     }
     Functions: {
+      aktivasi_sertifikat_free_track: {
+        Args: { p_order_id: number }
+        Returns: {
+          certificate_id: string
+          nomor_sertifikat: string
+          user_id: string
+        }[]
+      }
       is_admin: { Args: never; Returns: boolean }
       next_certificate_number: {
         Args: { p_jenis: Database["public"]["Enums"]["jenis_sertifikat"] }

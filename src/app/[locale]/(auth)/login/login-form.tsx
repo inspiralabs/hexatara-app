@@ -36,7 +36,7 @@ export function LoginForm() {
       setPesanError(hasil.pesan);
       return;
     }
-    router.push('/');
+    router.push('/dashboard');
     router.refresh();
   }
 
