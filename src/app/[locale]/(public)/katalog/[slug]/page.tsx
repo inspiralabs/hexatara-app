@@ -124,7 +124,9 @@ export default async function KatalogDetailPage({
       {spesifikasi?.trim() && (
         <div className="mt-8">
           <h2 className="text-lg font-bold text-warna-teks">{t("specHeading")}</h2>
-          <p className="mt-2 whitespace-pre-line text-base text-warna-teks-2">{spesifikasi}</p>
+          {/* HTML dari Tiptap di Admin Panel (F04.6, ENGINEERING §5.8) — hanya Admin
+              yang mengisi, dangerouslySetInnerHTML aman di sini. */}
+          <div className={KONTEN_HTML_CLASS} dangerouslySetInnerHTML={{ __html: spesifikasi }} />
         </div>
       )}
     </div>
