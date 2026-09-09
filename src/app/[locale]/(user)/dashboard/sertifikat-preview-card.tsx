@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Lock } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { unduhSertifikatPreviewAction } from './actions';
 
 export function SertifikatPreviewCard({ namaLengkap }: { namaLengkap: string }) {
@@ -45,14 +46,22 @@ export function SertifikatPreviewCard({ namaLengkap }: { namaLengkap: string }) 
 
       {pesanError && <p className="mt-4 text-sm text-destructive">{pesanError}</p>}
 
-      <button
-        type="button"
-        onClick={unduh}
-        disabled={pending}
-        className="mt-4 inline-flex h-11 items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama disabled:opacity-50"
-      >
-        {pending ? t('memproses') : t('unduhPreview')}
-      </button>
+      <div className="mt-4 flex flex-wrap gap-3">
+        <button
+          type="button"
+          onClick={unduh}
+          disabled={pending}
+          className="inline-flex h-11 items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama disabled:opacity-50"
+        >
+          {pending ? t('memproses') : t('unduhPreview')}
+        </button>
+        <Link
+          href="/dashboard/upgrade"
+          className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
+        >
+          Upgrade Sertifikat
+        </Link>
+      </div>
     </div>
   );
 }

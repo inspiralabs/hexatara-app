@@ -3890,7 +3890,7 @@ Plus enam pemeriksaan wajib di Bagian 6.5.1.
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji F03.5, F03.6, F03.10 sendiri di browser dan hasilnya sesuai.
 Isi ketiga barisnya: Status DONE, Berkas [daftar berkas], Diuji [tanggal],
-Bukti [kalimat hasil pengujian saya].
+Bukti [saya sudah coba upgrade dengan 150 dan mengisi semua form lalu mengupload dummy bukti pembayaran. setelah itu tinggal menunggu verifikasi dari admin. sudah sesuai].
 Tambahkan satu baris ke Log verifikasi.
 Jangan mengubah status baris fitur lain.
 ```
