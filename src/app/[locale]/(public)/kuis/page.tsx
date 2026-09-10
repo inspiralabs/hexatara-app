@@ -1,5 +1,6 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
+import { getOptionalUser } from "@/lib/auth/guard";
 import { pick } from "@/lib/i18n/pick";
 import { QuizEngine, type QuizQuestion } from "./quiz-engine";
 
@@ -7,6 +8,7 @@ export default async function KuisPage() {
   const supabase = await createClient();
   const locale = await getLocale();
   const t = await getTranslations("quiz");
+  const claims = await getOptionalUser();
 
   // Dua query paralel (bukan nested embed PostgREST) — pola yang sama dipakai
   // halaman detail batch. is_correct & penjelasan opsi SENGAJA publik (lihat
@@ -51,7 +53,7 @@ export default async function KuisPage() {
           {t("kosong")}
         </p>
       ) : (
-        <QuizEngine questions={questions} />
+        <QuizEngine questions={questions} sudahLogin={claims != null} />
       )}
     </div>
   );

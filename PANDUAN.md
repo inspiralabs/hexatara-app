@@ -4551,7 +4551,7 @@ Paparkan dulu rencana perbaikannya sebelum menulis kode.
 ```
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji perbaikan bug alur freemium sendiri di browser dan hasilnya
-sesuai. Tambahkan baris baru di Log verifikasi mendeskripsikan bug dan
+sesuai yang sudah punya akun tidak membutuhkan form dan langsung masuk dashboard sendiri, untuk yang belum punya maka isi form daftar dulu sudah sesuai. Tambahkan baris baru di Log verifikasi mendeskripsikan bug dan
 perbaikannya, tanggal [tanggal]. Jangan mengubah status baris fitur lain.
 ```
 

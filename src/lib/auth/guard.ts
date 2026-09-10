@@ -12,6 +12,14 @@ export async function requireUser() {
   return data.claims;
 }
 
+// Sama seperti requireUser(), tapi tidak redirect — untuk halaman publik yang
+// harus tetap bisa diakses anonim namun perlu tahu ada sesi login atau tidak.
+export async function getOptionalUser() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+  return data?.claims ?? null;
+}
+
 export async function requireAdmin() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();

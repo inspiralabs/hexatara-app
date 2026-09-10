@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import { selesaikanKuisLoginAction } from './actions';
 
 export type QuizOption = {
   id: number;
@@ -18,22 +19,35 @@ export type QuizQuestion = {
   options: QuizOption[];
 };
 
-export function QuizEngine({ questions }: { questions: QuizQuestion[] }) {
+export function QuizEngine({
+  questions,
+  sudahLogin = false,
+}: {
+  questions: QuizQuestion[];
+  sudahLogin?: boolean;
+}) {
   const t = useTranslations('quiz');
   const [index, setIndex] = useState(0);
   const [dipilih, setDipilih] = useState<number | null>(null);
   const [benar, setBenar] = useState(false);
 
   if (index >= questions.length) {
+    const tombolClassName =
+      'mt-4 inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks';
     return (
       <div className="mt-6 rounded-xl border border-warna-sukses/30 bg-warna-sukses/5 p-6 text-center">
         <p className="text-lg font-bold text-warna-sukses">{t('selesai')}</p>
-        <Link
-          href="/daftar?kuisSelesai=1"
-          className="mt-4 inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks"
-        >
-          {t('dapatkanSertifikat')}
-        </Link>
+        {sudahLogin ? (
+          <form action={selesaikanKuisLoginAction}>
+            <button type="submit" className={tombolClassName}>
+              {t('dapatkanSertifikat')}
+            </button>
+          </form>
+        ) : (
+          <Link href="/daftar?kuisSelesai=1" className={tombolClassName}>
+            {t('dapatkanSertifikat')}
+          </Link>
+        )}
       </div>
     );
   }
