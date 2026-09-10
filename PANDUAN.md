@@ -4551,7 +4551,7 @@ Paparkan dulu rencana perbaikannya sebelum menulis kode.
 ```
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji perbaikan bug alur freemium sendiri di browser dan hasilnya
-sesuai yang sudah punya akun tidak membutuhkan form dan langsung masuk dashboard sendiri, untuk yang belum punya maka isi form daftar dulu sudah sesuai. Tambahkan baris baru di Log verifikasi mendeskripsikan bug dan
+sesuai. Tambahkan baris baru di Log verifikasi mendeskripsikan bug dan
 perbaikannya, tanggal [tanggal]. Jangan mengubah status baris fitur lain.
 ```
 
@@ -4565,7 +4565,7 @@ git commit -m "fix(freemium): user yang sudah login tidak lagi diminta daftar ul
 
 ---
 
-## 12.5.3 LMS Freemium — materi berbab, validasi baca, course completion
+## 12.5.3 LMS Freemium — materi berbab, video/gambar opsional, lampiran file, validasi baca, course completion
 
 ```
 /impeccable /ponytail
@@ -4574,58 +4574,196 @@ Lampirkan hexatara_DESIGN.md bersama design-system-v2.md sebagai referensi
 struktur (radius, spacing, elevasi) — WARNA tetap wajib dari design-system-v2.md,
 JANGAN pernah pakai warna dari hexatara_DESIGN.md.
 
-Baca PRD.md Bagian 8 (seluruh Modul 3), ENGINEERING.md ADR-013, dan SQL yang
-baru dijalankan (material_chapters, material_progress) dulu.
+Baca PRD.md Bagian 8 (seluruh Modul 3), ENGINEERING.md ADR-013 DAN ADR-018,
+dan SQL yang baru dijalankan (material_chapters termasuk kolom video_url/
+gambar_url, material_progress, material_chapter_files) dulu.
 
-Tugas: F03.1 dan F03.4 direstrukturisasi total dari tampilan materi flat
-(kemungkinan PDF/PPT) menjadi pengalaman LMS penuh.
+CATATAN KONTEKS: blok ini sudah dijalankan DUA KALI sebelumnya (percobaan 1:
+versi ADR-013 saja; percobaan 2: versi ADR-018 dengan video/gambar/file).
+Setelah uji coba percobaan 2 di browser oleh Alif, ditemukan 9 masalah
+konkret (lihat DAFTAR PERBAIKAN WAJIB di bawah) — daftar ini HARUS dicek
+dan diperbaiki satu per satu, JANGAN ditulis ulang dari nol tanpa memeriksa
+dulu kondisi kode yang ada sekarang. Sebelum mengubah apa pun, telusuri dan
+laporkan dulu: (a) halaman listing publik yang masih menampilkan
+"uji_materi_pdf"/"uji_materi_ppt" sebagai kartu — apakah keduanya baris
+data lama di tabel materials yang perlu di-nonaktifkan (is_active=false)
+atau memang perlu di-filter di query listing; (b) alur klik "Mulai
+Sekarang" saat ini menuju ke mana persis (apakah ada halaman ringkasan
+perantara sebelum masuk LMS, atau langsung ke LMS); (c) kenapa tombol
+"Lanjut ke Bab Berikutnya" tidak aktif walau sudah discroll sampai bawah —
+periksa logic deteksi scroll-to-bottom yang sudah ditulis, jangan asal
+tulis ulang sebelum tahu bug sebenarnya di mana. JANGAN membuat asumsi
+tentang penyebab sebelum memeriksa kode yang ada.
 
-ALUR BARU:
+Tugas: F03.1 dan F03.4 tampil sebagai pengalaman LMS penuh, gaya
+mirip Coursera/Schoolabs TAPI TANPA fitur komentar/diskusi (lihat poin 4).
+
+CATATAN SIMULASI (jangan dikerjakan sekarang, hanya dicatat sebagai TODO):
+Nantinya navbar "Materi & Kuis" di layout publik akan DIHILANGKAN — trigger
+untuk masuk LMS akan dipindah ke halaman Beranda atau Pelatihan. Untuk
+SAAT INI, biarkan navbar "Materi & Kuis" tetap ada dan berfungsi sebagai
+trigger simulasi/uji coba menuju LMS. JANGAN hapus navbar ini di blok ini
+— penghapusannya adalah tugas terpisah yang belum dijadwalkan.
+
+DAFTAR PERBAIKAN WAJIB (hasil uji coba Alif di browser, percobaan 2):
+
+1. Kartu "uji_materi_pdf" dan "uji_materi_ppt" di halaman listing "Materi
+   Gratis" TIDAK BOLEH tampil lagi — itu data uji coba lama dari sebelum
+   LMS berbab (masih pakai file_url PDF/PPT flat, bukan material_chapters).
+   Filter query listing supaya HANYA menampilkan materi yang punya minimal
+   1 baris di material_chapters (materi berbab), ATAU set is_active=false
+   pada 2 baris dummy lama itu di database — putuskan mana yang lebih
+   tepat setelah memeriksa query listing yang ada, lalu laporkan pilihannya.
+2. Klik menu "Materi & Kuis" di navbar HARUS langsung membuka pengalaman
+   LMS (tampilan sidebar+konten dari poin 2 ALUR di bawah), BUKAN berhenti
+   di halaman ringkasan/listing dulu. Halaman ringkasan per-materi (poster,
+   deskripsi, tombol "Mulai Sekarang") boleh tetap ada sebagai langkah,
+   tapi kalau hanya ada SATU materi published, pertimbangkan skip langsung
+   ke LMS materi tersebut. Diskusikan trade-off ini di paparan rencana
+   sebelum implementasi kalau ada lebih dari satu kemungkinan pendekatan.
+3. Tambahkan panel/tab FILE yang bisa diunduh di dalam tampilan LMS (lihat
+   poin 3e ALUR di bawah — ini sudah dispesifikasikan, pastikan benar-benar
+   terpasang dan terlihat, bukan cuma ada di kode tapi tidak dirender).
+4. TATA LETAK: bukan sidebar kiri polos seperti percobaan sebelumnya —
+   buat DUA TAB BERSEBELAHAN di bagian atas konten (mirip navigasi
+   horizontal, lihat referensi tab "Materi" dan "Komentar" di
+   screenshot Schoolabs, TAPI tab kedua di Hexatara adalah "File", BUKAN
+   "Komentar"): tab "Materi" menampilkan konten bab aktif (teks/video/
+   gambar), tab "File" menampilkan daftar lampiran unduhan untuk bab
+   aktif tersebut. Sidebar navigasi bab (daftar bab, status, kunci
+   progresif) tetap ada terpisah dari dua tab ini — dua tab ini mengganti
+   cara konten UTAMA bab ditampilkan, bukan mengganti sidebar.
+5. BUG: tombol "Lanjut ke Bab Berikutnya" tetap nonaktif walau user sudah
+   scroll sampai bawah. Ini WAJIB diperbaiki — periksa dulu implementasi
+   deteksi scroll (kemungkinan penyebab: threshold deteksi terlalu ketat,
+   event listener terpasang di container yang salah, konten pendek yang
+   tidak menghasilkan scroll sama sekali sehingga kondisi "sampai bawah"
+   tidak pernah terpenuhi, atau race condition saat konten video/gambar
+   baru selesai load dan mengubah tinggi kontainer setelah initial check).
+   Kalau konten bab pendek dan tidak menghasilkan scrollbar sama sekali,
+   tombol harus tetap bisa aktif (anggap "sudah dibaca" begitu halaman
+   selesai render), bukan terkunci selamanya.
+6. Tambahkan HEADER di bagian atas tampilan LMS bertuliskan sesuatu seperti
+   "Pelatihan Gratis untuk Sertifikat" (boleh disesuaikan redaksinya,
+   yang penting menyampaikan bahwa ini adalah jalur gratis menuju
+   sertifikasi) — supaya user paham konteks kenapa mereka ada di sini.
+7. Setelah materi DAN kuis sama-sama selesai 100%, tampilkan tombol baru
+   "Dapatkan Sertifikat" (ini menegaskan ulang poin 8 ALUR di bawah —
+   pastikan benar-benar muncul di kondisi ini, bukan cuma tombol "Kembali
+   ke Course").
+8. Ganti tombol "Kembali ke Materi"/"Kembali ke Course" menjadi "Beranda",
+   dan posisikan di POJOK KANAN BAWAH tampilan LMS (bukan di kiri atas
+   seperti percobaan sebelumnya) — floating button, konsisten dengan
+   elevasi/shadow-hanya-mengambang dari design-system-v2.md.
+9. MOBILE FIRST WAJIB — seluruh tampilan LMS (sidebar bab, dua tab
+   Materi/File, video/gambar, tombol Lanjut, tombol Beranda mengambang)
+   harus didesain dan diuji dari breakpoint mobile dulu, baru melebar ke
+   tablet/desktop. Sidebar navigasi bab di mobile TIDAK BOLEH memakan
+   seluruh layar secara permanen — pertimbangkan pola drawer/collapsible
+   yang bisa dibuka-tutup, supaya area baca konten tetap jadi fokus utama
+   di layar kecil.
+
+ALUR:
 
 1. Halaman pertama menu Materi & Kuis (diakses dari Beranda atau dari
-   Pelatihan) adalah halaman ringkasan — bagian dari tampilan publik biasa:
-   poster, judul pelatihan, bintang 5 (StarRating, dari materials kalau
-   relevan atau skip kalau tidak ada rating untuk materi), badge "Pelatihan
-   Gratis", deskripsi, tentang pelatihan, tombol "Mulai Sekarang".
+   Pelatihan, untuk saat ini via navbar — lihat CATATAN SIMULASI di atas)
+   adalah halaman ringkasan — bagian dari tampilan publik biasa: poster,
+   judul pelatihan, bintang 5 (StarRating, dari materials kalau relevan
+   atau skip kalau tidak ada rating untuk materi), badge "Pelatihan
+   Gratis", deskripsi, tentang pelatihan, tombol "Mulai Sekarang". Lihat
+   PERBAIKAN WAJIB poin 2 di atas soal apakah langkah ini di-skip.
 
-2. Klik "Mulai Sekarang" membuka TAMPILAN PENUH terpisah dari layout publik
-   biasa (tanpa navbar/footer situs, atau navbar minimal) — mirip mode
-   fokus LMS. Layout: sidebar kiri berisi daftar course content (bab-bab
-   dari material_chapters, urut sesuai kolom urutan), area utama menampilkan
-   judul bab + konten HTML dari bab yang aktif.
+2. Klik "Mulai Sekarang" (atau langsung klik menu "Materi & Kuis", lihat
+   poin 2 di atas) membuka TAMPILAN PENUH terpisah dari layout publik
+   biasa (tanpa navbar/footer situs, atau navbar minimal) — mode fokus LMS.
+   Header atas: judul "Pelatihan Gratis untuk Sertifikat" (poin 6). Layout:
+   SIDEBAR navigasi bab (dari material_chapters, urut sesuai kolom urutan)
+   dengan status jelas per bab (selesai/centang, aktif/highlight aksen,
+   terkunci/redup) DAN progress bar keseluruhan; AREA UTAMA di sebelahnya
+   berisi DUA TAB BERSEBELAHAN "Materi" dan "File" (poin 4) untuk bab yang
+   sedang aktif. Tombol "Beranda" mengambang di pojok kanan bawah (poin 8).
 
-3. KUNCI PROGRESIF: bab ke-N di sidebar HANYA bisa diklik kalau bab 1..N-1
+3. TAB "Materi" (tab aktif default) — susunan dari atas ke bawah:
+   a. Judul bab.
+   b. Video pengantar (embed player) HANYA kalau material_chapters.video_url
+      bab ini TERISI. Kalau NULL, lewati bagian ini sama sekali — jangan
+      tampilkan placeholder/empty state video.
+   c. Konten teks (HTML dari konten_id/konten_en, Tiptap) — SELALU
+      ditampilkan, ini yang wajib ada di setiap bab.
+   d. Gambar pendukung (di sela atau di bawah konten teks, sesuai enak
+      dibaca) HANYA kalau material_chapters.gambar_url bab ini TERISI.
+      Kalau NULL, lewati.
+   Bab boleh punya kombinasi apa saja dari (video, gambar) — semua
+   independen, teks konten yang selalu wajib ada.
+
+   TAB "File" (tab kedua, sejajar tab "Materi", lihat poin 4 PERBAIKAN
+   WAJIB di atas) — daftar lampiran bab aktif dari material_chapter_files
+   (urut sesuai kolom urutan), tiap baris tampilkan judul_id/judul_en,
+   deskripsi_id/deskripsi_en, dan tombol "Unduh" yang membuka url_file.
+   Kalau bab tidak punya lampiran sama sekali, tab "File" tetap MUNCUL
+   (jangan disembunyikan — user perlu tahu opsi ini ada) tapi isinya
+   empty state singkat semacam "Belum ada file untuk bab ini".
+
+   PENTING — TIDAK ADA FITUR KOMENTAR/DISKUSI di LMS materi Hexatara.
+   Ini beda sengaja dari referensi visual (Schoolabs-style) yang mungkin
+   dipakai sebagai inspirasi tata letak — di referensi ada tab "Komentar",
+   di Hexatara TIDAK ADA, digantikan oleh tab "File" di atas. Jangan
+   implementasikan comment/diskusi dalam bentuk apa pun di sini.
+
+4. KUNCI PROGRESIF: bab ke-N di sidebar HANYA bisa diklik kalau bab 1..N-1
    sudah tercatat selesai (material_progress.is_selesai = true untuk user
    ini). Bab yang belum terbuka tampil non-klik di sidebar (redup/disabled),
    BUKAN disembunyikan — user perlu tahu berapa total bab yang harus
    diselesaikan.
 
-4. VALIDASI BACA per bab: tombol "Lanjut ke Bab Berikutnya" nonaktif sampai
-   user SCROLL SAMPAI AKHIR konten bab yang sedang dibuka (deteksi scroll
-   posisi kontainer konten mencapai bottom). Setelah itu, tombol aktif —
-   klik tombol memanggil Server Action yang menulis/update baris
+5. VALIDASI BACA per bab: tombol "Lanjut ke Bab Berikutnya" nonaktif sampai
+   user SCROLL SAMPAI AKHIR konten TAB "Materi" bab yang sedang dibuka
+   (deteksi scroll posisi kontainer konten tab Materi mencapai bottom —
+   mencakup video/gambar/konten teks, TIDAK termasuk tab "File" karena
+   tab itu opsional dan bukan bagian wajib dibaca). Setelah itu, tombol
+   aktif — klik tombol memanggil Server Action yang menulis/update baris
    material_progress (is_selesai=true, selesai_at=now()) untuk (user,
    chapter) tersebut, DAN memvalidasi di server bahwa bab sebelumnya
    memang sudah selesai (jangan percaya urutan dari client saja — cegah
    akal-akalan lewat DevTools yang langsung memanggil action bab ke-5
-   tanpa melewati 1-4).
+   tanpa melewati 1-4). TIDAK ADA tombol "Tandai Selesai" terpisah seperti
+   di referensi visual — validasi scroll + tombol "Lanjut ke Bab
+   Berikutnya" inilah satu-satunya mekanisme penanda selesai, supaya user
+   tidak bisa asal skip materi dan langsung loncat ke kuis.
+   PERBAIKI BUG dari percobaan sebelumnya (lihat PERBAIKAN WAJIB poin 5):
+   pastikan deteksi scroll benar-benar berfungsi di semua kondisi —
+   termasuk saat konten bab pendek dan tidak menghasilkan scrollbar sama
+   sekali (dalam kondisi ini anggap otomatis "sudah dibaca" begitu konten
+   selesai render, tombol langsung aktif, JANGAN terkunci selamanya), dan
+   saat video/gambar baru selesai load mengubah tinggi kontainer setelah
+   initial mount (re-cek posisi scroll setelah aset selesai load, jangan
+   cuma sekali saat mount).
 
-5. COURSE COMPLETION: progress bar di sidebar menghitung
-   (jumlah bab selesai / total bab) x 100%. Bab yang selesai ditandai
-   centang di sidebar.
+6. COURSE COMPLETION — progress bar DAN checklist harus terlihat jelas di
+   sidebar (bukan cuma angka %): tampilkan (jumlah bab selesai / total bab)
+   x 100% sebagai progress bar visual, PLUS status per-bab (ikon
+   selesai/aktif/terkunci di sebelah tiap judul bab di sidebar) supaya user
+   langsung tahu sedang di bab mana dan berapa lagi yang tersisa —
+   perbaikan UX dari percobaan pertama yang membingungkan.
 
-6. Setelah SEMUA bab selesai (100% course completion), menu/tombol "Kuis"
+7. Setelah SEMUA bab selesai (100% course completion), menu/tombol "Kuis"
    di sidebar terbuka dan bisa diklik — mengarah ke mesin kuis F03.2 YANG
    SUDAH ADA DAN TIDAK BERUBAH SAMA SEKALI (tetap stateless di React,
    tanpa skor, tanpa kondisi gagal, sesuai PRD §8.5 — larangan §13.3 tetap
-   berlaku penuh untuk kuis). Blok ini HANYA mengatur kapan kuis terbuka,
-   bukan mengubah cara kuis bekerja.
+   berlaku penuh untuk kuis). Blok ini HANYA mengatur kapan kuis terbuka
+   dan bagaimana ia muncul di sidebar navigasi LMS, TIDAK mengubah cara
+   kuis bekerja sama sekali.
 
-7. Tombol "Dapatkan Sertifikat" (F03.4, sudah ada) HANYA muncul setelah
-   kuis selesai 100% (logic yang sudah ada, tidak berubah). Kalau belum
-   100%, user hanya melihat tombol "Kembali ke Course" yang membawa balik
-   ke tampilan sidebar+materi (BUKAN ke awal — posisi terakhir/status
-   completion tetap tersimpan).
+8. Tombol "Dapatkan Sertifikat" (F03.4, sudah ada) HANYA muncul setelah
+   MATERI DAN KUIS sama-sama selesai 100% (logic yang sudah ada, tidak
+   berubah — lihat PERBAIKAN WAJIB poin 7). Kalau belum 100%, tombol
+   mengambang di pojok kanan bawah tetap berlabel "Beranda" (lihat poin 8
+   ALUR di atas dan PERBAIKAN WAJIB poin 8) dan membawa user keluar dari
+   mode fokus LMS kembali ke halaman Beranda situs — BUKAN "Kembali ke
+   Course" seperti sebelumnya. Posisi/status completion tetap tersimpan
+   di database (untuk user login) atau state client (untuk anonim),
+   sehingga saat user kembali lagi ke menu Materi & Kuis, progress
+   terakhir tidak hilang.
 
 UNTUK PENGUNJUNG ANONIM (belum login): progress bab disimpan di client
 (React state/sessionStorage) selama sesi berjalan, PERSIS pola kuis F03.2
@@ -4643,30 +4781,49 @@ Batasan yang HARUS dipatuhi (larangan §13.3 untuk KUIS, TIDAK berubah):
 - Tidak ada tabel riwayat pengerjaan KUIS
 - material_progress adalah progress MATERI, bukan skor/riwayat kuis —
   jangan disalahartikan sebagai pelanggaran larangan ini
+- Fitur komentar/diskusi TIDAK ADA di LMS materi — lihat poin 3
 
-Paparkan dulu rencana detail (struktur folder, komponen, Server Action)
-sebelum menulis kode. Ini restrukturisasi besar — jangan buru-buru.
+Paparkan dulu rencana detail (struktur folder, komponen, Server Action,
+hasil telusuran kode percobaan sebelumnya untuk 3 poin investigasi di
+CATATAN KONTEKS, dan bagian mana yang dipertahankan vs ditulis ulang)
+sebelum menulis kode. Ini revisi signifikan — jangan buru-buru.
 ```
 
 ### SETELAH BLOK INI
 
-**Uji sendiri:**
-- Buka menu Materi & Kuis sebagai anonim → klik Mulai Sekarang → tampilan LMS penuh muncul, bab pertama terbuka, bab 2+ terkunci (redup, tidak bisa diklik)
-- Scroll konten bab 1 sampai akhir → tombol "Lanjut" aktif → klik → bab 1 tercentang selesai di sidebar, progress bar bertambah, bab 2 terbuka
+**Uji sendiri (fokus pada 9 perbaikan dari uji coba sebelumnya):**
+- Buka halaman listing "Materi Gratis" → kartu "uji_materi_pdf" dan "uji_materi_ppt" TIDAK muncul lagi, hanya materi berbab yang tampil
+- Klik menu "Materi & Kuis" di navbar → langsung masuk ke tampilan LMS (bukan berhenti di halaman ringkasan/listing)
+- Header atas tampilan LMS menampilkan judul semacam "Pelatihan Gratis untuk Sertifikat"
+- Area konten menampilkan DUA TAB bersebelahan "Materi" dan "File" untuk bab aktif — tab File tetap muncul walau bab tidak punya lampiran (isi empty state), dan menampilkan daftar unduhan yang berfungsi kalau ada
+- Sidebar menampilkan progress bar visual PLUS status per-bab yang jelas (centang/aktif/terkunci)
+- Bab tanpa video/gambar tampil rapi teks-only di tab Materi, tanpa placeholder kosong
+- Bab dengan video → player muncul dan bisa diputar; bab dengan gambar → gambar tampil di posisi yang enak dibaca; bab dengan keduanya → keduanya tampil bersamaan
+- Pastikan TIDAK ADA elemen komentar/diskusi di mana pun dalam tampilan LMS
+- Scroll konten tab Materi bab 1 sampai akhir → tombol "Lanjut ke Bab Berikutnya" AKTIF (verifikasi bug lama benar-benar sudah teratasi) → klik → bab 1 tercentang selesai di sidebar, progress bar bertambah, bab 2 terbuka
+- Uji juga bab yang kontennya pendek dan TIDAK menghasilkan scrollbar → tombol Lanjut tetap aktif (tidak terkunci selamanya)
 - Coba klik bab 3 langsung sebelum menyelesaikan bab 2 (kalau sidebar entah bagaimana bisa diklik) → ditolak, atau tidak bisa diklik sama sekali
 - Coba akal-akalan lewat DevTools memanggil Server Action bab terakhir langsung tanpa melalui bab sebelumnya → ditolak di server
 - Selesaikan semua bab → menu Kuis terbuka → kerjakan kuis (perilaku F03.2 sama sekali tidak berubah, tetap correctable tanpa gagal)
-- Selesai kuis 100% → tombol Dapatkan Sertifikat muncul
-- Selesai kuis TAPI keluar dulu sebelum 100% → kembali ke course, tombol yang ada hanya "Kembali ke Course", bukan Dapatkan Sertifikat
+- Sebelum kuis 100% → tombol mengambang pojok kanan bawah berlabel "Beranda" (bukan "Kembali ke Materi/Course"), mengarah ke halaman Beranda situs
+- Selesai materi DAN kuis 100% → tombol baru "Dapatkan Sertifikat" muncul
 - Login sebagai user (bukan anonim), ulangi alur → progress langsung tersimpan ke akun, cek dari device/browser lain progress tetap ada
+- Uji dari breakpoint MOBILE dulu (lebar layar ~375px) → sidebar bab tidak memakan seluruh layar secara permanen (drawer/collapsible), tab Materi/File, video/gambar, tombol Lanjut, dan tombol Beranda mengambang semua rapi dan bisa dipakai dengan nyaman di layar kecil — baru cek tablet/desktop
+- Gunakan data dummy "Dasar Keselamatan Penerbangan Drone" dari SQL 16 (4 bab: teks saja / teks+gambar / teks+video / teks+gambar+video+2 lampiran file) untuk menguji semua kombinasi sekaligus
 
 **Update — tempel ke sesi baru:**
 
 ```
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
-Saya sudah menguji restrukturisasi LMS materi (F03.1, F03.4 versi baru)
-sendiri di browser dan hasilnya sesuai — termasuk kunci progresif per bab,
-validasi scroll, course completion, dan kuis tetap tidak berubah perilakunya.
+Saya sudah menguji revisi LMS materi (F03.1, F03.4, sesuai ADR-018) dan
+9 perbaikan hasil uji coba sebelumnya sendiri di browser dan hasilnya
+sesuai — termasuk kunci progresif per bab, validasi scroll (bug lama
+sudah teratasi), course completion dengan progress bar + checklist yang
+jelas, video/gambar opsional per bab, tab File unduhan per bab, listing
+materi lama sudah tersembunyi, klik navbar langsung ke LMS, header
+"Pelatihan Gratis untuk Sertifikat", tombol Beranda mengambang, tombol
+Dapatkan Sertifikat muncul setelah 100%, tampilan mobile first rapi, tanpa
+fitur komentar, dan kuis tetap tidak berubah perilakunya.
 Isi baris terkait: Status DONE, Berkas [daftar berkas], Diuji [tanggal],
 Bukti [ringkas hasil uji di atas]. Tambahkan satu baris ke Log verifikasi.
 Jangan mengubah status baris fitur lain.
@@ -4677,7 +4834,7 @@ Jangan mengubah status baris fitur lain.
 ```powershell
 pnpm tsc --noEmit; pnpm lint; pnpm build
 git add -A
-git commit -m "feat(lms): restrukturisasi materi freemium jadi LMS berbab dengan validasi baca dan course completion"
+git commit -m "fix(lms): perbaiki tampilan LMS materi - tab Materi/File, bug tombol Lanjut, listing lama, tombol Beranda, mobile first"
 ```
 
 ---

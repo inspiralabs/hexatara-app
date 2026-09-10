@@ -766,6 +766,23 @@ Ini juga perluasan scope di luar BRD-HXT-002 asli (BRD §4.2 dan §13.2 melarang
 
 ---
 
+### ADR-018 — LMS materi: video/gambar opsional per bab, lampiran file bisa diunduh
+**2026-09-10 · Berlaku**
+
+**Konteks.** Setelah §12.5.3 (ADR-013) dijalankan pertama kali, hasil implementasi belum sesuai referensi LMS yang diinginkan Alif (mirip Schoolabs/Coursera-style): sidebar navigasi materi masih flat, tidak ada tampilan konten visual (video/gambar), dan tidak ada cara bagi Admin melampirkan berkas yang bisa diunduh user (pengganti kolom komentar di referensi, yang tidak relevan untuk Hexatara). ADR-013 asli hanya mendefinisikan `konten_id`/`konten_en` sebagai HTML teks dari Tiptap, tanpa slot untuk video atau gambar per bab, dan tidak ada mekanisme lampiran file sama sekali.
+
+**Keputusan.**
+- Dua kolom baru di `material_chapters`: `video_url text` dan `gambar_url text`, KEDUANYA nullable dan independen satu sama lain. Admin bebas mengisi salah satu, keduanya, atau tidak sama sekali — tampilan bab menyesuaikan (bab teks-saja tetap valid, tidak wajib ada video/gambar). Ini murni penambahan kolom pada tabel yang sudah ada (ADR-013), bukan restrukturisasi.
+- Tabel baru `material_chapter_files`: relasi one-to-many ke `material_chapters` (satu bab bisa punya banyak lampiran file, misal PDF slide + spreadsheet referensi dalam bab yang sama). Kolom: `judul_id`/`judul_en`, `deskripsi_id`/`deskripsi_en` (mengikuti konvensi dwibahasa proyek, sama seperti `material_chapters.judul_id`/`judul_en`), `url_file`, `urutan` (tunduk pola reorder otomatis ADR-014, sama seperti `material_chapters.urutan`).
+- Di UI LMS materi, lampiran file bab aktif ditampilkan sebagai bagian dari sidebar/panel navigasi bab tersebut (bukan sebagai section "komentar" seperti referensi visual yang dilampirkan Alif) — tiap file tampil dengan judul, deskripsi singkat, dan tombol unduh. TIDAK ada fitur komentar/diskusi di LMS materi Hexatara, itu sengaja dihilangkan dari referensi.
+- Progress bar dan checklist status (course completion) SUDAH ditentukan di ADR-013 — ADR ini tidak mengubah mekanismenya, hanya menegaskan bahwa UI-nya harus jelas menunjukkan posisi user (bab mana yang sedang dibaca, bab mana yang sudah selesai/tercentang, berapa persen total) supaya user tidak bingung, sesuai umpan balik Alif setelah melihat hasil implementasi pertama.
+
+**Konsekuensi.** Menambah 1 tabel baru (`material_chapter_files`) di luar 24 tabel PRD §5 plus 4 tabel yang sudah ditambahkan Fase 12.5 sebelumnya (kini 5 tabel baru total) — SQL baru dijalankan manual oleh user (larangan #2, tidak dieksekusi otomatis). Ini murni perluasan ADR-013 (LMS materi), bukan ADR terpisah secara konseptual — dipecah jadi ADR-018 sendiri supaya riwayat perubahan pasca-implementasi-pertama tetap tercatat jelas terpisah dari desain awal.
+
+Larangan §13.3 untuk KUIS tetap berlaku penuh dan sama sekali tidak tersentuh oleh ADR ini — file unduhan, video, dan gambar HANYA berlaku untuk MATERI, tidak ada perubahan apa pun pada mesin kuis F03.2.
+
+---
+
 ### Template ADR baru
 
 ```
@@ -791,3 +808,4 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-09-05 | ADR-009 (dwibahasa ditunda ke Sprint 1.5) dan ADR-010 (`xlsx` dari CDN) ditambahkan |
 | 2026-09-09 | **Fase 12.5 — Redesign & Upgrade Sistem** disepakati Alif, dikerjakan sebelum Sprint 5. ADR-011 s/d ADR-017 ditambahkan (rating bintang manual, hero gallery pakai `hero_slides` existing, kategori produk/pelatihan dinamis, LMS materi berbab dengan progress database, reorder otomatis universal, popup dua gambar per orientasi, ekspor/import CSV diganti XLSX, navbar Admin dua level collapsible). PRD.md Modul 6 ditambahkan (F06.x) sebagai pendokumentasian fitur-fitur ini. PRD.md §6.4/§6.5 diperbarui dari CSV ke XLSX mengikuti ADR-016. SQL baru di `docs/sql/15_redesign_upgrade_fase12.5.sql`, dijalankan manual oleh Alif sebelum blok prompt PANDUAN.md §12.5 dimulai |
 | 2026-09-10 | **Koreksi SQL 15 (ADR-013).** Draf pertama salah asumsi seluruh primary key proyek bertipe `uuid`. Dikonfirmasi lewat query `information_schema.columns` terhadap database live: hampir semua tabel inti (`materials`, `products`, `batches`, `popups`, `quiz_questions`, dst) memakai `bigint identity`, hanya `certificates` dan `profiles` yang sengaja `uuid`. `material_chapters.id`/`material_id` dan `material_progress.id`/`chapter_id` diperbaiki jadi `bigint`; `material_progress.user_id` tetap `uuid` (mengacu `auth.users`). ADR-011 (rating) dan ADR-012 (kategori, `product_categories`/`batch_categories` — sengaja `uuid` karena tabel baru) sudah berhasil dijalankan sebelum koreksi ini dan tidak terpengaruh. **Pelajaran untuk sesi berikutnya: selalu verifikasi tipe kolom lewat query ke database live sebelum menulis DDL baru, jangan berasumsi dari pola sebagian tabel** |
+| 2026-09-10 | **ADR-018 ditambahkan setelah uji coba pertama §12.5.3.** Alif menjalankan §12.5.3 (LMS materi) dan menemukan hasilnya belum sesuai ekspektasi: sidebar masih flat, tidak ada video/gambar, tidak ada lampiran file. Ditambahkan `material_chapters.video_url`/`gambar_url` (nullable, independen) dan tabel baru `material_chapter_files` (lampiran file per bab, one-to-many, dwibahasa `judul_id`/`judul_en`/`deskripsi_id`/`deskripsi_en`, tunduk pola reorder ADR-014). SQL baru di `docs/sql/16_lms_video_gambar_file_bab.sql`, termasuk data dummy materi baru "Dasar Keselamatan Penerbangan Drone" untuk uji coba UI sebelum Admin panel-nya (§12.5.4) selesai dibuat. PANDUAN.md §12.5.3 ditulis ulang untuk mencakup layout LMS lengkap (sidebar Materi/File/Kuis, progress bar dan checklist status yang jelas) |

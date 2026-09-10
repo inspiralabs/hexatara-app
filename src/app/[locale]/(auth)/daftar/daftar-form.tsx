@@ -7,6 +7,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { z } from 'zod';
 import { DaftarSchema } from '@/lib/validations/auth';
+import { bacaProgresSesi, hapusProgresSesi } from '@/lib/materi/session-progress';
 import { daftarAction } from './actions';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -33,11 +34,13 @@ export function DaftarForm({ kuisSelesai = false }: { kuisSelesai?: boolean }) {
 
   async function onSubmit(data: DaftarInput) {
     setPesanError(null);
-    const hasil = await daftarAction(data, kuisSelesai);
+    const progresBab = bacaProgresSesi();
+    const hasil = await daftarAction(data, kuisSelesai, progresBab ?? undefined);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
       return;
     }
+    hapusProgresSesi();
     router.push('/verifikasi-email');
   }
 

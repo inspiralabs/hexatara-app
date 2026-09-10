@@ -2,8 +2,13 @@
 
 import { DaftarSchema } from '@/lib/validations/auth';
 import { createClient } from '@/lib/supabase/server';
+import type { MateriSessionProgress } from '@/lib/materi/session-progress';
 
-export async function daftarAction(input: unknown, kuisSelesai = false) {
+export async function daftarAction(
+  input: unknown,
+  kuisSelesai = false,
+  chapterProgress?: MateriSessionProgress
+) {
   const parsed = DaftarSchema.safeParse(input);
 
   if (!parsed.success) {
@@ -43,6 +48,12 @@ export async function daftarAction(input: unknown, kuisSelesai = false) {
         nama_lengkap,
         consent_at: new Date().toISOString(),
         kuis_selesai: kuisSelesai ? 'true' : undefined,
+        // Progress bab materi yang dikerjakan anonim (§12.5.3, docs/sql/17_...) —
+        // dibaca trigger handle_new_user() saat baris auth.users dibuat.
+        chapters_selesai:
+          chapterProgress && chapterProgress.chapterIds.length > 0
+            ? JSON.stringify(chapterProgress.chapterIds)
+            : undefined,
       },
       emailRedirectTo,
     },

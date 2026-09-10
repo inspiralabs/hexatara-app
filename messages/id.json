@@ -65,10 +65,29 @@
     "pageTitle": "Materi Gratis",
     "pageSubtitle": "Pelajari dasar keselamatan penerbangan drone sebelum mengerjakan kuis — semuanya gratis, tanpa perlu mendaftar.",
     "kosong": "Belum ada materi tersedia. Silakan cek kembali nanti.",
-    "buka": "Buka Materi",
-    "ctaHeading": "Sudah siap uji pemahaman?",
-    "ctaBody": "Kerjakan kuisnya sekarang — semua orang bisa mendapatkan sertifikat, tidak ada nilai minimum.",
-    "ctaButton": "Mulai Kuis"
+    "badgeGratis": "Pelatihan Gratis",
+    "mulaiSekarang": "Mulai Sekarang"
+  },
+  "kelas": {
+    "tidakDitemukan": "Materi tidak ditemukan.",
+    "kosongBab": "Materi ini belum punya bab. Silakan cek kembali nanti.",
+    "kembali": "Kembali ke Materi",
+    "headerBadge": "Pelatihan Gratis untuk Sertifikat",
+    "progres": "{selesai} dari {total} proses selesai",
+    "lanjutBab": "Lanjut ke Bab Berikutnya",
+    "bacaSampaiAkhir": "Baca sampai akhir bab untuk melanjutkan",
+    "kuisMenu": "Kuis",
+    "kuisTerkunci": "Selesaikan semua bab dulu untuk membuka kuis",
+    "unduh": "Unduh",
+    "daftarBab": "Daftar Materi",
+    "tabMateri": "Materi",
+    "tabFile": "File",
+    "fileKosong": "Belum ada file untuk bab ini.",
+    "beranda": "Beranda",
+    "dapatkanSertifikat": "Dapatkan Sertifikat",
+    "lanjutKuis": "Lanjut ke Kuis",
+    "lanjutSoal": "Lanjut ke Soal Berikutnya",
+    "submitJawaban": "Submit Jawaban"
   },
   "verify": {
     "pageTitle": "Cek Keabsahan Sertifikat",

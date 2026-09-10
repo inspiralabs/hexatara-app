@@ -566,9 +566,57 @@ export type Database = {
         }
         Relationships: []
       }
+      material_chapter_files: {
+        Row: {
+          chapter_id: number
+          created_at: string
+          deskripsi_en: string | null
+          deskripsi_id: string | null
+          id: number
+          judul_en: string | null
+          judul_id: string
+          updated_at: string
+          url_file: string
+          urutan: number
+        }
+        Insert: {
+          chapter_id: number
+          created_at?: string
+          deskripsi_en?: string | null
+          deskripsi_id?: string | null
+          id?: never
+          judul_en?: string | null
+          judul_id: string
+          updated_at?: string
+          url_file: string
+          urutan?: number
+        }
+        Update: {
+          chapter_id?: number
+          created_at?: string
+          deskripsi_en?: string | null
+          deskripsi_id?: string | null
+          id?: never
+          judul_en?: string | null
+          judul_id?: string
+          updated_at?: string
+          url_file?: string
+          urutan?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "material_chapter_files_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "material_chapters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       material_chapters: {
         Row: {
           created_at: string
+          gambar_url: string | null
           id: number
           judul_en: string | null
           judul_id: string
@@ -577,9 +625,11 @@ export type Database = {
           material_id: number
           updated_at: string
           urutan: number
+          video_url: string | null
         }
         Insert: {
           created_at?: string
+          gambar_url?: string | null
           id?: never
           judul_en?: string | null
           judul_id: string
@@ -588,9 +638,11 @@ export type Database = {
           material_id: number
           updated_at?: string
           urutan?: number
+          video_url?: string | null
         }
         Update: {
           created_at?: string
+          gambar_url?: string | null
           id?: never
           judul_en?: string | null
           judul_id?: string
@@ -599,6 +651,7 @@ export type Database = {
           material_id?: number
           updated_at?: string
           urutan?: number
+          video_url?: string | null
         }
         Relationships: [
           {
@@ -654,6 +707,7 @@ export type Database = {
           is_active: boolean
           judul_en: string | null
           judul_id: string
+          poster_url: string | null
           updated_at: string
           urutan: number
         }
@@ -665,6 +719,7 @@ export type Database = {
           is_active?: boolean
           judul_en?: string | null
           judul_id: string
+          poster_url?: string | null
           updated_at?: string
           urutan?: number
         }
@@ -676,6 +731,7 @@ export type Database = {
           is_active?: boolean
           judul_en?: string | null
           judul_id?: string
+          poster_url?: string | null
           updated_at?: string
           urutan?: number
         }
