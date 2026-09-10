@@ -12,7 +12,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { RichTextEditor } from '@/components/admin/rich-text-editor';
-import { ImageUploadField } from '@/components/admin/image-upload-field';
+import { ImageUploadField } from '@/components/image-upload-field';
 import { uploadGambarAdminAction } from '../actions';
 import type { Database } from '@/types/database';
 

@@ -108,6 +108,38 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 | F04.5 | Form permintaan penawaran | DONE | `src/app/[locale]/(public)/katalog/[slug]/actions.ts`, `quote-dialog.tsx`, `src/lib/validations/quote-request.ts` | 2026-09-09 | Alif menguji sendiri di browser. Dialog checkbox default tidak tercentang; validasi nama/email wajib jalan, email pribadi (non-domain perusahaan) diterima; submit sukses menampilkan konfirmasi tanpa redirect WA; baris tersimpan di quote_requests dengan consent_at dan product_id benar; email notifikasi masuk ke ADMIN_NOTIFY_EMAIL dengan jenis "penawaran"; data tetap tersimpan saat pengiriman email gagal disimulasikan. |
 | F04.6 | Admin: CRUD produk | DONE | `src/lib/validations/produk-admin.ts`, `src/app/admin/(protected)/produk/actions.ts`, `src/app/admin/(protected)/produk/page.tsx`, `src/app/admin/(protected)/produk/produk-form.tsx`, `src/app/admin/(protected)/produk/produk-row-actions.tsx`, `src/app/admin/(protected)/produk/baru/page.tsx`, `src/app/admin/(protected)/produk/[id]/page.tsx`, `src/app/[locale]/(public)/katalog/[slug]/page.tsx` | 2026-09-09 | Alif menguji sendiri di browser. Tambah/ubah/hapus produk berfungsi dengan konfirmasi hapus (Batal mempertahankan, Hapus menghapus); toggle tampilkan_harga menyembunyikan angka harga dari halaman publik dan dari seluruh respons Network (bukan cuma disembunyikan di UI); ubah urutan mengubah posisi di /katalog; is_active = false menghilangkan produk dari katalog publik; foto 3 MB dari HP terkompresi signifikan di Storage; ekspor CSV permintaan penawaran terbuka rapi tanpa kerusakan huruf beraksen di Excel; pengguna non-admin ditolak saat mengakses URL admin produk langsung. |
 
+## Sprint 4.5 — Modul 6: Redesign & Upgrade Sistem (Fase 12.5)
+
+> Bukan bagian dari scope asli BRD-HXT-002. Disepakati Alif 2026-09-09, dikerjakan SEBELUM Sprint 5.
+> Lihat PRD.md Bagian 9a, ENGINEERING.md ADR-011 s/d ADR-017, PANDUAN.md Bagian 12.5 (17 blok prompt
+> berurutan). Setiap baris di bawah HANYA boleh diubah ke DONE setelah blok promptnya selesai DAN
+> Alif menguji sendiri di browser (Definition of Done PRD §14 butir 5, berlaku penuh di sini).
+>
+> Sebelum blok prompt pertama (12.5.1) dijalankan: SQL `docs/sql/15_redesign_upgrade_fase12.5.sql` wajib
+> dijalankan manual oleh Alif di Supabase SQL Editor dulu, lalu generate ulang tipe TypeScript.
+
+| Kode | Fitur | Status | Berkas | Diuji | Bukti |
+|---|---|---|---|---|---|
+| F06.1 | Design System v2 — token shadow/transition, ContentCard, StatusBadge, StarRating, ImageUploadField (kerangka) | WIP | `src/app/globals.css`, `src/components/content-card.tsx`, `src/components/status-badge.tsx`, `src/components/star-rating.tsx`, `src/components/image-upload-field.tsx` | | PANDUAN.md §12.5.1 — kode selesai (`tsc`/`lint`/`build` bersih, `impeccable detect` nol temuan), belum ada halaman yang memakainya untuk Alif verifikasi visual di browser. Tetap WIP sampai §12.5.5 dst mulai memakai komponen ini. |
+| F06.3 | Perbaikan bug alur freemium (user login diminta daftar ulang) | TODO | | | PANDUAN.md §12.5.2 |
+| F06.2 | LMS materi freemium berbab — kunci progresif, validasi baca, course completion, progress database | TODO | | | PANDUAN.md §12.5.3 |
+| F06.2b | Admin: CRUD bab materi (Tiptap, reorder otomatis) | TODO | | | PANDUAN.md §12.5.4 |
+| F06.8/F06.9/F06.7 | Favicon Hexatara, navbar publik disederhanakan, popup berbasis gambar dua orientasi | TODO | | | PANDUAN.md §12.5.5 |
+| F06.10 | Redesign Beranda — hero dua kolom + carousel, urutan section baru, footer lengkap, halaman statis baru | TODO | | | PANDUAN.md §12.5.6 |
+| F06.11 | Redesign halaman Pelatihan — hero freemium, filter/sort/kategori, detail + suggest | TODO | | | PANDUAN.md §12.5.7 |
+| F06.12 | Redesign halaman Produk — hero, filter/sort/kategori, galeri multi-gambar, detail + suggest | TODO | | | PANDUAN.md §12.5.8 |
+| F06.4/F06.5 | Admin: kategori produk & pelatihan dinamis, field rating | TODO | | | PANDUAN.md §12.5.9 |
+| F06.13 | Admin: navbar collapsible dua level menggantikan pola tab (leads dipecah dari Tabs) | TODO | | | PANDUAN.md §12.5.10 |
+| F06.14 | Admin: DataTable generik (filter, sort, pagination) di semua tabel | TODO | | | PANDUAN.md §12.5.11 — perlu konfirmasi dependency TanStack Table |
+| F06.15 | Admin: ImageUploadField lengkap dengan validasi dan crop | TODO | | | PANDUAN.md §12.5.12 — perlu konfirmasi dependency library crop |
+| F06.16 | Admin: sonner toast, ekspor XLSX (ADR-016), reorder soal kuis, Combobox searchable | TODO | | | PANDUAN.md §12.5.13 |
+| F06.17 | Dashboard User — redesign penuh, preview sertifikat, perbaikan bug navigasi transaksi | TODO | | | PANDUAN.md §12.5.14 |
+| F06.18 | Redesign login/daftar/reset sandi — toggle password, konfirmasi password, validasi inline | TODO | | | PANDUAN.md §12.5.15 |
+| F06.19 | Audit visual — warna tombol dan UX form publik (audit dulu, perbaikan menyusul setelah disetujui) | TODO | | | PANDUAN.md §12.5.16 |
+| F06.20 | Checklist penutup Fase 12.5 sebelum lanjut Sprint 5 | TODO | | | PANDUAN.md §12.5.17 |
+
+---
+
 ## Sprint 5 — Hardening & Deploy
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
@@ -210,6 +242,7 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 2026-09-09  F04.4/F04.5/F01.14  Alif menguji sendiri di browser. F04.4: tombol "Hubungi via WhatsApp" tampil di produk harga tampil maupun tersembunyi, membuka wa.me dengan nomor NEXT_PUBLIC_WA_ADMIN dan pesan terisi nama produk, tanpa pemanggilan API (dicek di Network tab). F04.5: dialog checkbox default tidak tercentang; validasi nama/email wajib jalan, email pribadi (non-domain perusahaan) diterima; submit sukses menampilkan konfirmasi tanpa redirect WA; baris tersimpan di quote_requests dengan consent_at dan product_id benar; email notifikasi masuk ke ADMIN_NOTIFY_EMAIL dengan jenis "penawaran"; data tetap tersimpan saat pengiriman email gagal disimulasikan. F01.14 (perluasan, status DONE tidak berubah): /admin/leads diperluas jadi dua tab dengan hitungan jumlah, data tab penawaran (quote_requests) tampil benar, ekspor CSV tab penawaran maupun tab lama (batch_leads) sama-sama berfungsi dan terbuka rapi di Excel, tab lama tidak berubah perilakunya. F04.4 dan F04.5 diubah TODO -> DONE.
 2026-09-09  F04.6  Alif menguji sendiri di browser: tambah/ubah/hapus produk berfungsi dengan konfirmasi hapus (Batal mempertahankan, Hapus menghapus); toggle tampilkan_harga menyembunyikan angka harga dari halaman publik dan dari seluruh respons Network (bukan cuma disembunyikan di UI); ubah urutan mengubah posisi di /katalog; is_active = false menghilangkan produk dari katalog publik; foto 3 MB dari HP terkompresi signifikan di Storage; ekspor CSV permintaan penawaran terbuka rapi tanpa kerusakan huruf beraksen di Excel; pengguna non-admin ditolak saat mengakses URL admin produk langsung. Baris diubah TODO -> DONE.
 2026-09-09  (investigasi, BUKAN bug kode) Hydration mismatch dilaporkan di PublicLayout (`src/app/[locale]/(public)/layout.tsx`) saat membuka /katalog/[slug]. Claude membaca layout.tsx dan seluruh komponen anaknya (PublicNavMobile, LanguageSwitcher, FloatingWhatsapp) — tidak ditemukan percabangan client-only atau setState di luar useEffect; git blame menunjukkan berkas-berkas itu terakhir disentuh 2026-09-07, bukan sesi F04.4/F04.5/F04.6. Dicoba direproduksi langsung di browser (hard reload dan navigasi klik ke tiga slug produk berbeda, buka dialog Minta Penawaran) — tidak berhasil direproduksi, console bersih. Alif me-restart `pnpm dev` dari nol dan mengonfirmasi errornya hilang, normal kembali. Kesimpulan: state dev server (Fast Refresh/HMR) yang basi setelah banyak edit berturut-turut selama sesi, bukan cacat di kode aplikasi — tidak ada perbaikan kode yang diperlukan atau dilakukan.
+2026-09-09  (dokumen, bukan hasil uji) Sprint 4.5 — Modul 6 (Fase 12.5, Redesign & Upgrade Sistem) ditambahkan ke registry berstatus TODO seluruhnya (F06.1 s/d F06.20), berdasarkan brainstorming UI/UX menyeluruh dengan Alif dan disetujui sebagai perluasan di luar BRD-HXT-002 asli. PRD.md Bagian 9a, ENGINEERING.md ADR-011 s/d ADR-017, PANDUAN.md Bagian 12.5 (17 blok prompt), dan `docs/sql/15_redesign_upgrade_fase12.5.sql` ditulis bersamaan. Belum ada satu baris pun yang diuji — SQL baru wajib dijalankan manual oleh Alif di Supabase dulu sebelum blok prompt 12.5.1 dimulai.
 ```
 
 ---

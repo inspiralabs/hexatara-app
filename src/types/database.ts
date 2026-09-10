@@ -1,4 +1,4 @@
-﻿export type Json =
+export type Json =
   | string
   | number
   | boolean
@@ -72,6 +72,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      batch_categories: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          nama_en: string | null
+          nama_id: string
+          updated_at: string
+          urutan: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          nama_en?: string | null
+          nama_id: string
+          updated_at?: string
+          urutan?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          nama_en?: string | null
+          nama_id?: string
+          updated_at?: string
+          urutan?: number
+        }
+        Relationships: []
       }
       batch_equipment: {
         Row: {
@@ -225,6 +255,7 @@ export type Database = {
       batches: {
         Row: {
           alamat: string | null
+          category_id: string | null
           created_at: string
           deskripsi_en: string | null
           deskripsi_id: string | null
@@ -238,6 +269,7 @@ export type Database = {
           kategori_id: string | null
           lokasi_en: string | null
           lokasi_id: string | null
+          rating: number | null
           silabus_en: string | null
           silabus_id: string | null
           slug: string
@@ -249,6 +281,7 @@ export type Database = {
         }
         Insert: {
           alamat?: string | null
+          category_id?: string | null
           created_at?: string
           deskripsi_en?: string | null
           deskripsi_id?: string | null
@@ -262,6 +295,7 @@ export type Database = {
           kategori_id?: string | null
           lokasi_en?: string | null
           lokasi_id?: string | null
+          rating?: number | null
           silabus_en?: string | null
           silabus_id?: string | null
           slug: string
@@ -273,6 +307,7 @@ export type Database = {
         }
         Update: {
           alamat?: string | null
+          category_id?: string | null
           created_at?: string
           deskripsi_en?: string | null
           deskripsi_id?: string | null
@@ -286,6 +321,7 @@ export type Database = {
           kategori_id?: string | null
           lokasi_en?: string | null
           lokasi_id?: string | null
+          rating?: number | null
           silabus_en?: string | null
           silabus_id?: string | null
           slug?: string
@@ -295,7 +331,15 @@ export type Database = {
           updated_at?: string
           urutan?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "batches_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "batch_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       certificate_counters: {
         Row: {
@@ -522,6 +566,85 @@ export type Database = {
         }
         Relationships: []
       }
+      material_chapters: {
+        Row: {
+          created_at: string
+          id: number
+          judul_en: string | null
+          judul_id: string
+          konten_en: string | null
+          konten_id: string
+          material_id: number
+          updated_at: string
+          urutan: number
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          judul_en?: string | null
+          judul_id: string
+          konten_en?: string | null
+          konten_id: string
+          material_id: number
+          updated_at?: string
+          urutan?: number
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          judul_en?: string | null
+          judul_id?: string
+          konten_en?: string | null
+          konten_id?: string
+          material_id?: number
+          updated_at?: string
+          urutan?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "material_chapters_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      material_progress: {
+        Row: {
+          chapter_id: number
+          created_at: string
+          id: number
+          is_selesai: boolean
+          selesai_at: string | null
+          user_id: string
+        }
+        Insert: {
+          chapter_id: number
+          created_at?: string
+          id?: never
+          is_selesai?: boolean
+          selesai_at?: string | null
+          user_id: string
+        }
+        Update: {
+          chapter_id?: number
+          created_at?: string
+          id?: never
+          is_selesai?: boolean
+          selesai_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "material_progress_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "material_chapters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       materials: {
         Row: {
           deskripsi_en: string | null
@@ -564,6 +687,8 @@ export type Database = {
           cta_teks_en: string | null
           cta_teks_id: string | null
           cta_url: string | null
+          gambar_desktop_url: string | null
+          gambar_mobile_url: string | null
           gambar_url: string | null
           id: number
           is_active: boolean
@@ -580,6 +705,8 @@ export type Database = {
           cta_teks_en?: string | null
           cta_teks_id?: string | null
           cta_url?: string | null
+          gambar_desktop_url?: string | null
+          gambar_mobile_url?: string | null
           gambar_url?: string | null
           id?: number
           is_active?: boolean
@@ -596,6 +723,8 @@ export type Database = {
           cta_teks_en?: string | null
           cta_teks_id?: string | null
           cta_url?: string | null
+          gambar_desktop_url?: string | null
+          gambar_mobile_url?: string | null
           gambar_url?: string | null
           id?: number
           is_active?: boolean
@@ -606,6 +735,36 @@ export type Database = {
           tayang_mulai?: string | null
           tayang_selesai?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      product_categories: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          nama_en: string | null
+          nama_id: string
+          updated_at: string
+          urutan: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          nama_en?: string | null
+          nama_id: string
+          updated_at?: string
+          urutan?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          nama_en?: string | null
+          nama_id?: string
+          updated_at?: string
+          urutan?: number
         }
         Relationships: []
       }
@@ -647,6 +806,7 @@ export type Database = {
       }
       products: {
         Row: {
+          category_id: string | null
           created_at: string
           deskripsi_en: string | null
           deskripsi_id: string | null
@@ -656,6 +816,7 @@ export type Database = {
           kategori: string | null
           nama_en: string | null
           nama_id: string
+          rating: number | null
           slug: string
           spesifikasi_en: string | null
           spesifikasi_id: string | null
@@ -664,6 +825,7 @@ export type Database = {
           urutan: number
         }
         Insert: {
+          category_id?: string | null
           created_at?: string
           deskripsi_en?: string | null
           deskripsi_id?: string | null
@@ -673,6 +835,7 @@ export type Database = {
           kategori?: string | null
           nama_en?: string | null
           nama_id: string
+          rating?: number | null
           slug: string
           spesifikasi_en?: string | null
           spesifikasi_id?: string | null
@@ -681,6 +844,7 @@ export type Database = {
           urutan?: number
         }
         Update: {
+          category_id?: string | null
           created_at?: string
           deskripsi_en?: string | null
           deskripsi_id?: string | null
@@ -690,6 +854,7 @@ export type Database = {
           kategori?: string | null
           nama_en?: string | null
           nama_id?: string
+          rating?: number | null
           slug?: string
           spesifikasi_en?: string | null
           spesifikasi_id?: string | null
@@ -697,7 +862,15 @@ export type Database = {
           updated_at?: string
           urutan?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

@@ -77,7 +77,7 @@ Diambil apa adanya dari BRD Bagian 2.3. Ini yang ditanyakan Hexatara saat serah 
 | Kejelasan landing page | Pengunjung menyebutkan dua penawaran inti tanpa scroll | Buka di 375px, ukur dengan DevTools |
 | Verifikasi mandiri | Pihak ketiga memverifikasi tanpa menghubungi Admin | Buka `/verify` di HP tanpa login |
 | Status kedaluwarsa | Nol pembaruan manual | Sertifikat lewat tanggal berubah sendiri |
-| Pencatatan lead | Semua lead tercatat & bisa diekspor | Isi form → cek tabel → ekspor CSV |
+| Pencatatan lead | Semua lead tercatat & bisa diekspor | Isi form → cek tabel → ekspor XLSX |
 | Ketersediaan | Website hidup saat pemeriksaan DKPPU | Uptime |
 | Kemandirian Admin | Admin menambah batch, produk, banner, sertifikat tanpa bantuan teknis | Abi melakukannya sendiri saat UAT |
 
@@ -116,7 +116,7 @@ Dikunci 5 September 2026 sesuai BRD Bagian 13.4. Mengubah baris mana pun butuh i
 | Email | Resend |
 | PDF sertifikat | pdf-lib + qrcode |
 | Editor Admin | Tiptap |
-| Import data | papaparse (CSV) + xlsx dari cdn.sheetjs.com (Excel) |
+| Import/ekspor data | xlsx dari cdn.sheetjs.com (Excel/XLSX) — seluruh titik ekspor dan import, ADR-016. `papaparse` (CSV) dipakai di awal, digantikan XLSX sepenuhnya 2026-09-09 |
 | Rate limit | @upstash/ratelimit — di balik feature flag |
 | Hosting | Vercel → Hostinger VPS setelah stabil |
 
@@ -164,13 +164,19 @@ Tiga peran. Tidak ada peran instruktur, korporat, atau peserta berbayar — modu
 ```
 PUBLIK — dwibahasa
 /                          landing page
-/batch/[slug]              detail batch
+/pelatihan                 listing pelatihan (Fase 12.5/F06.11 — sebelumnya bagian dari landing;
+                            rename dari /batch dikonfirmasi saat implementasi §12.5.7 PANDUAN.md,
+                            redirect dari URL lama dijaga kalau sudah terindeks)
+/pelatihan/[slug]          detail batch (sebelumnya /batch/[slug])
 /verify                    form pencarian nomor sertifikat
 /verify/[token]            hasil dari pemindaian QR
-/materi                    daftar materi free track
-/kuis                      mesin kuis
+/materi                    ringkasan materi & kuis freemium (Fase 12.5/F06.2 — direstrukturisasi
+                            jadi LMS berbab, lihat Bagian 9a.3)
+/kuis                      mesin kuis (perilaku TIDAK berubah, lihat Bagian 9a.3)
 /katalog                   daftar produk
 /katalog/[slug]            detail produk
+/tentang-kami  /faq  /ketentuan-layanan  /kebijakan-privasi  /syarat-ketentuan
+                            halaman statis baru (F06.10, footer)
 /en/...                    versi Inggris dari semua di atas
 
 AKUN — dwibahasa
@@ -186,7 +192,7 @@ ADMIN — butuh role admin, Bahasa Indonesia saja, TANPA prefix locale
 /admin                     beranda
 /admin/batch               + /baru  /[id]
 /admin/konten              popup, banner, hero, instruktur, company profile, testimoni
-/admin/leads               pendaftaran minat + permintaan penawaran + ekspor CSV
+/admin/leads               pendaftaran minat + permintaan penawaran + ekspor XLSX
 /admin/sertifikat          daftar, tambah satuan, import massal
 /admin/upgrade             antrean verifikasi pembayaran
 /admin/materi              materi + bank soal
@@ -226,11 +232,11 @@ Jangan pernah menulis `locale === 'en' ? x.judul_en : x.judul_id` langsung di ko
 
 ## 5. MODEL DATA
 
-24 tabel, 2 view publik, 4 fungsi. DDL lengkap ada di `PANDUAN.md` Bagian 3.3, dijalankan **manual** oleh developer di Supabase SQL Editor. Migrasi baru nomor 13 ke atas ditulis sebagai berkas di `docs/sql/`.
+24 tabel inti Fase 1, 2 view publik, 4 fungsi, ditambah 4 tabel baru dari Fase 12.5 (Modul 6 — lihat Bagian 5.1b dan ADR-011 s/d ADR-017 di `ENGINEERING.md`). DDL lengkap 24 tabel inti ada di `PANDUAN.md` Bagian 3.3, dijalankan **manual** oleh developer di Supabase SQL Editor. Migrasi baru nomor 13 ke atas ditulis sebagai berkas di `docs/sql/`, termasuk `docs/sql/15_redesign_upgrade_fase12.5.sql` untuk Fase 12.5.
 
 **Agent tidak pernah mengeksekusi DDL.** Kalau butuh perubahan skema: tulis SQL-nya sebagai usulan, jelaskan kenapa, tunggu user menjalankannya dan mengonfirmasi.
 
-### 5.1 Daftar tabel
+### 5.1 Daftar tabel (24 tabel inti Fase 1)
 
 | Kelompok | Tabel |
 |---|---|
@@ -242,6 +248,17 @@ Jangan pernah menulis `locale === 'en' ? x.judul_en : x.judul_id` langsung di ko
 | Sertifikat | `certificates`, `certificate_counters` |
 | Free track | `materials`, `quiz_questions`, `quiz_options` |
 | Upgrade | `certificate_orders` |
+
+### 5.1b Tabel tambahan — Fase 12.5 (Modul 6, lihat Bagian 9a)
+
+| Tabel | Ditambahkan oleh | Kegunaan |
+|---|---|---|
+| `product_categories` | ADR-012 | Kategori produk dinamis, CRUD Admin (F06.4) |
+| `batch_categories` | ADR-012 | Kategori pelatihan dinamis, CRUD Admin (F06.4) |
+| `material_chapters` | ADR-013 | Bab materi LMS freemium, urut dan berkunci progresif (F06.2) |
+| `material_progress` | ADR-013 | Progress baca materi per user per bab, HANYA materi — bukan riwayat kuis (F06.2) |
+
+Kolom baru pada tabel inti yang sudah ada: `batches.rating`, `products.rating` (ADR-011), `products.category_id`, `batches.category_id` (ADR-012), `popups.gambar_mobile_url`, `popups.gambar_desktop_url` (ADR-015). Tidak ada kolom `urutan` baru di `batches` — batch tetap urut berdasarkan tanggal (ADR-014).
 
 ### 5.2 View publik — WAJIB untuk akses anonim
 
@@ -288,7 +305,7 @@ Kalau kamu merasa butuh salah satu dari ini, kamu sedang salah paham requirement
 | `coupons`, `promos`, `discounts` | Sale banner hanya menampilkan pesan. Tidak menyentuh nominal apa pun |
 | `payments`, `transactions` | Tidak ada payment gateway. Bukti transfer adalah berkas di `certificate_orders` |
 | `email_domain_blacklist`, `validation_logs` | Scope Fase 2 |
-| `courses`, `enrollments`, `attendance` | Tidak ada LMS di Fase 1 |
+| `courses`, `enrollments`, `attendance` | Tidak ada LMS untuk batch tersertifikasi berbayar di Fase 1 — delivery tetap manual WhatsApp Group + Zoom (BRD §4.2). **Pengecualian tercatat:** `material_chapters`/`material_progress` (ADR-013, Bagian 5.1b) BUKAN pelanggaran baris ini — keduanya khusus MATERI freemium (Modul 3/6), bukan kelas berbayar, dan tidak menambah `courses`/`enrollments`/`attendance` |
 | `roles`, `permissions` | Dua peran, kolom `profiles.role` sudah cukup |
 | `shipments` | Pengiriman digabung di `certificate_orders` — satu pesanan satu pengiriman |
 
@@ -325,7 +342,7 @@ Halaman boleh panjang ke bawah. Yang tidak boleh: informasi terpenting muncul be
 | F01.11 | Pemilih bahasa di seluruh halaman publik | MUST | — |
 | F01.12 | Admin: CRUD batch + seluruh isi halaman detail | MUST | `batches` + anak |
 | F01.13 | Admin: CRUD popup, banner, hero, instruktur, company profile, testimoni | MUST | konten landing |
-| F01.14 | Admin: daftar lead + ekspor CSV | MUST | `batch_leads` |
+| F01.14 | Admin: daftar lead + ekspor XLSX | MUST | `batch_leads` |
 
 ### 6.4 Perilaku yang mudah salah
 
@@ -378,9 +395,9 @@ Ini **bukan pendaftaran resmi.** Seleksi, pembayaran, dan penerimaan peserta bat
 
 Hanya tautan `wa.me`. Tanpa API, tanpa gateway, tanpa blast, tanpa chatbot, tanpa balasan otomatis. Nomornya dari `NEXT_PUBLIC_WA_ADMIN`.
 
-**F01.14 — ekspor CSV**
+**F01.14 — ekspor XLSX** *(diubah dari CSV, ADR-016, 2026-09-09)*
 
-`papaparse`, UTF-8 **dengan BOM**. Tanpa BOM, Excel di Windows merusak huruf beraksen dan nama peserta jadi berantakan. Nama berkas: `leads-batch-YYYY-MM-DD.csv`.
+`xlsx` dari CDN SheetJS (sudah terpasang, ADR-010), kolom asli per field tanpa concat — bukan satu kolom dipisah koma. Nama berkas: `leads-batch-YYYY-MM-DD.xlsx`. Alasan perubahan: Admin (Abi, pengguna awam) kesulitan membuka CSV satu-kolom-dipisah-koma di Excel, terutama pada data dengan banyak field. `papaparse` yang dipakai sebelumnya (dengan BOM UTF-8) jadi kandidat dependency unused — dicek dengan `pnpm knip` setelah seluruh titik ekspor/import berpindah ke XLSX.
 
 ### 6.5 Selesai bila — acceptance criteria BRD 13.1
 
@@ -394,7 +411,7 @@ Hanya tautan `wa.me`. Tanpa API, tanpa gateway, tanpa blast, tanpa chatbot, tanp
 - [ ] Batch berstatus Closed tidak menampilkan tombol "Daftar Sekarang" yang dapat diklik
 - [ ] Halaman detail batch memuat ketujuh elemen
 - [ ] Form minat menyimpan ke database, menampilkan konfirmasi, mengarahkan ke WhatsApp dengan pesan terisi
-- [ ] Data lead dapat diekspor ke CSV, dan hasilnya terbuka rapi di spreadsheet
+- [ ] Data lead dapat diekspor ke XLSX (bukan lagi CSV, ADR-016), dan hasilnya terbuka rapi per kolom di Excel
 - [ ] Floating WhatsApp hanya membuka tautan — tidak ada pemanggilan API di dalam kode
 - [ ] Pengalih bahasa berfungsi di seluruh halaman publik, konten belum diterjemahkan menampilkan versi Indonesia
 - [ ] Script autentikasi dimuat satu kali per halaman — tidak ada error deklarasi ganda di console
@@ -484,7 +501,7 @@ Saat Admin memilih jenis `existing_manual` atau `rpc_certified`, kolom tanggal k
 
 Saat jenis `free_track`, kolom tanggal kedaluwarsa **dinonaktifkan dan dikosongkan.** Bukan sekadar diberi peringatan.
 
-Import CSV atau Excel memakai pola **laporan per baris**:
+Import Excel/XLSX memakai pola **laporan per baris**:
 
 ```
 Berhasil: 47 baris
@@ -762,6 +779,71 @@ Setelah tersimpan, kirim email pemberitahuan ke Admin.
 
 ---
 
+## 9a. MODUL 6 — REDESIGN & UPGRADE SISTEM (FASE 12.5)
+
+> Bukan bagian dari scope asli BRD-HXT-002. Perluasan yang disetujui Alif (pelaksana proyek, InspiraLabs) tanggal 2026-09-09, dikerjakan SEBELUM Sprint 5 (hardening & rilis). Dicatat sebagai ADR-011 s/d ADR-017 di `ENGINEERING.md` Bagian 10, prompt lengkap di `PANDUAN.md` Bagian 12.5. Penomoran "Modul 6" dipakai untuk konsistensi dengan penomoran F0x.x fitur (F06.x) — bukan berarti ada 6 modul resmi di BRD, yang tetap 4 modul utama + 2 modul pendukung sesuai BRD §4.1.
+
+### 9a.1 Tujuan
+
+Dua hal berbeda digabung dalam satu paket kerja karena saling terkait secara visual dan struktural: (1) pengetatan design system jadi "Premium Minimalist" yang konsisten di seluruh halaman publik dan Admin, dan (2) perluasan fungsional pada beberapa titik yang sebelumnya minim (LMS materi freemium, kategori dinamis, navbar Admin, dashboard User). Tidak ada perubahan pada Modul 1–5 yang sudah DONE — ini pendalaman UX dan penyelesaian celah, bukan penulisan ulang dari nol.
+
+### 9a.2 Daftar fitur
+
+| Kode | Fitur | Prio | ADR terkait |
+|---|---|---|---|
+| F06.1 | Design System v2 — token shadow/transition, komponen reusable (ContentCard, StatusBadge, StarRating, ImageUploadField) | MUST | — |
+| F06.2 | LMS materi freemium berbab — kunci progresif, validasi baca, course completion, progress database | MUST | ADR-013, ADR-014 |
+| F06.3 | Perbaikan bug alur freemium (user login diminta daftar ulang) | MUST | — |
+| F06.4 | Kategori produk & pelatihan dinamis (Admin CRUD) | MUST | ADR-012 |
+| F06.5 | Rating bintang manual Admin (opsional, batch & produk) | SHOULD | ADR-011 |
+| F06.6 | Hero carousel dari `hero_slides` existing | MUST | ADR-011b |
+| F06.7 | Popup berbasis gambar, dua orientasi | MUST | ADR-015 |
+| F06.8 | Favicon Hexatara menggantikan indikator loading bawaan browser | SHOULD | — |
+| F06.9 | Navbar publik disederhanakan + pemilih bahasa berikon bendera + tombol Masuk | MUST | — |
+| F06.10 | Redesign Beranda — urutan section baru, footer lengkap, halaman statis baru | MUST | — |
+| F06.11 | Halaman Pelatihan tersendiri — filter, sort, kategori, suggest | MUST | ADR-012 |
+| F06.12 | Halaman Produk — galeri multi-gambar, filter, sort, kategori, suggest | MUST | ADR-012 |
+| F06.13 | Admin: navbar collapsible dua level menggantikan pola tab | MUST | ADR-017 |
+| F06.14 | Admin: DataTable generik (filter, sort, pagination) di semua tabel | MUST | — |
+| F06.15 | Admin: ImageUploadField dengan validasi dan crop | MUST | — |
+| F06.16 | Admin: sonner toast di semua aksi, ekspor XLSX, reorder soal kuis, Combobox searchable | MUST | ADR-014, ADR-016 |
+| F06.17 | Dashboard User — redesign penuh, preview sertifikat, perbaikan bug navigasi transaksi | MUST | — |
+| F06.18 | Redesign login/daftar/reset sandi — toggle password, konfirmasi password, validasi inline | MUST | — |
+| F06.19 | Audit visual — warna tombol dan UX form publik | SHOULD | — |
+
+Urutan pengerjaan detail (17 blok prompt berurutan, masing-masing dengan rencana-tunggu-persetujuan sebelum kode, uji mandiri, dan commit sendiri) ada di `PANDUAN.md` Bagian 12.5.1 s/d 12.5.17. Urutan blok mengikuti dependency teknis: fondasi design system dulu (12.5.1), lalu perbaikan bug (12.5.2) sebelum restrukturisasi besar LMS (12.5.3) supaya tidak menumpuk bug lama ke struktur baru.
+
+### 9a.3 F06.2 — LMS materi freemium (ringkasan, detail penuh ADR-013)
+
+Materi freemium (F03.1) yang sebelumnya berupa tampilan flat (kemungkinan PDF/PPT) direstrukturisasi jadi pengalaman LMS: materi dipecah jadi banyak bab (`material_chapters`) yang wajib dibaca berurutan, dengan validasi scroll-ke-akhir per bab, course completion, dan progress bar. Bab yang belum terbuka tampil redup di sidebar (bukan disembunyikan). Menu kuis (F03.2, TIDAK berubah sama sekali perilakunya) hanya terbuka setelah 100% bab selesai.
+
+**Batas tegas yang tidak boleh dilanggar:** validasi baca ini HANYA berlaku untuk MATERI, bukan kuis. Kuis (F03.2) tetap 100% correctable, stateless di client, tanpa skor dan tanpa kondisi gagal, persis PRD §8.5 dan larangan §13.3 — blok F06.2 tidak mengubah satu baris pun logic kuis, hanya kapan menu kuis menjadi bisa diklik.
+
+Untuk pengunjung anonim, progress bab disimpan di client (sessionStorage/React state) sampai user mendaftar akun di akhir alur, persis pola kuis F03.2 yang sudah ada — baru ditulis ke `material_progress` setelah pendaftaran. Untuk user yang sudah login, progress langsung tertulis ke database sejak bab pertama.
+
+### 9a.4 F06.3 — perbaikan bug alur freemium
+
+Bug yang dikonfirmasi: user yang sudah login, saat klik "mulai kuis" dari dashboard, diarahkan ke alur kuis anonim (bukan sesi miliknya) — setelah selesai kuis dan klik "dapatkan sertifikat", diminta mengisi form daftar akun lagi, dan setelah login ulang kembali ke kondisi seolah belum pernah mengerjakan apa pun. Akar masalah dikonfirmasi murni soal ALUR/REDIRECT (sistem tidak membedakan pengguna anonim vs yang sudah login saat mengerjakan kuis), bukan progress yang hilang dari database. Perbaikannya: user yang sudah login tidak lagi melalui halaman publik `/kuis` yang sama dengan anonim, dan tombol "dapatkan sertifikat" langsung memproses memakai identitas yang sudah login tanpa form daftar ulang. Alur anonim tidak berubah.
+
+### 9a.5 Batasan yang tetap berlaku penuh
+
+Seluruh 25 larangan di Bagian 13 berlaku tanpa pengecualian untuk Modul 6, dengan catatan eksplisit berikut supaya tidak disalahpahami sebagai pelanggaran:
+
+- Larangan #14 (kuis: tidak ada ambang nilai/kondisi gagal) — F06.2 TIDAK menyentuh kuis, hanya materi. Lihat 9a.3.
+- Larangan §13.5/§25 (tidak ada LMS/progres peserta) — larangan ini untuk batch tersertifikasi berbayar (delivery tetap manual WhatsApp Group + Zoom). `material_progress` (ADR-013) khusus materi FREEMIUM, modul yang memang sudah masuk scope BRD sejak awal. Lihat Bagian 5.5.
+- Larangan #7 (dependency baru butuh izin eksplisit) — F06.14 (DataTable, kemungkinan TanStack Table) dan F06.15 (crop gambar, kemungkinan react-image-crop) BUTUH konfirmasi eksplisit dari Alif sebelum dipasang. Ini ditandai di blok prompt PANDUAN.md §12.5.11 dan §12.5.12 masing-masing.
+
+### 9a.6 Selesai bila
+
+- [ ] Seluruh F06.1 s/d F06.19 berstatus DONE di `feature-registry.md` dengan bukti uji manual di browser (Definition of Done Bagian 14 berlaku penuh — butir 5 tetap wajib Alif)
+- [ ] Kuis (F03.2) tidak mengalami regresi perilaku — tetap correctable, tanpa skor, tanpa kondisi gagal
+- [ ] Harga tersembunyi (F04.3) tidak mengalami regresi — diuji ulang lewat Network tab setelah redesign katalog
+- [ ] `pnpm knip` bersih, termasuk `papaparse` yang dihapus setelah migrasi XLSX kalau memang sudah tidak dipakai
+- [ ] `pnpm build` lolos tanpa error
+- [ ] Diuji ulang di 375px untuk seluruh halaman yang tersentuh redesign, termasuk F01–F04 yang sudah DONE sebelumnya (regresi dari komponen bersama seperti ContentCard/DataTable/ImageUploadField)
+
+---
+
 ## 10. MODUL PENDUKUNG — ADMIN PANEL
 
 > BRD Bagian 5.E · dikerjakan menyebar di Sprint 1–4
@@ -773,7 +855,7 @@ Admin Panel memungkinkan Hexatara mengoperasikan keempat modul utama **secara ma
 | Batch pelatihan | Tambah, ubah, tutup batch; status Open/Closed/Upcoming; kelola benefit, silabus, FAQ, galeri, jadwal, lokasi, peralatan | 1 |
 | Konten landing | Kelola isi & status aktif pop-up, hero, instruktur, company profile, testimoni | 1 |
 | Sale banner | Judul, teks penawaran, pesan urgensi, teks & tautan tombol, periode tayang, aktif/nonaktif | 1 |
-| Lead | Lihat pendaftaran minat & permintaan penawaran, ekspor CSV | 1, 4 |
+| Lead | Lihat pendaftaran minat & permintaan penawaran, ekspor XLSX | 1, 4 |
 | Sertifikat | Import massal; tambah & ubah satuan; kedaluwarsa bawaan +2 tahun; lihat status | 2 |
 | Pembayaran free track | Antrean upgrade; verifikasi/tolak bukti + alasan; aktifkan QR; proses merchandise menyusul; perbarui status pengiriman | 3 |
 | Materi & kuis | Kelola materi; kelola bank soal + penjelasan tiap opsi salah | 3 |
@@ -943,11 +1025,13 @@ Penambahan salah satu butir ini merupakan **perubahan scope yang memerlukan kese
 | Otomasi quotation & invoice | Fase 3 |
 | Mesin promo/kupon otomatis | Tidak direncanakan |
 | Dashboard korporat B2B | Fase 2, perlu klarifikasi model kuota |
-| Sinkronisasi Google Workspace / Spreadsheet | Digantikan ekspor CSV manual |
+| Sinkronisasi Google Workspace / Spreadsheet | Digantikan ekspor XLSX manual |
 | Produk counter-UAS | Lini produk masa depan |
 | Tanda tangan digital tersertifikasi | Belum tentu diakui regulator |
 | Aplikasi mobile native | Web responsif mobile-first dinilai memadai |
 | Integrasi Google Meet API | Tidak relevan tanpa LMS berbayar |
+
+> **Catatan soal LMS Basic untuk batch RPC (baris kedua tabel di atas).** Ini TETAP di luar scope Fase 1, tidak berubah. Modul 6/Fase 12.5 (Bagian 9a) yang menambahkan `material_chapters`/`material_progress` adalah LMS untuk MATERI FREEMIUM (Modul 3, yang sejak awal memang bagian resmi BRD) — bukan LMS untuk batch RPC berbayar. Delivery batch RPC tetap manual lewat WhatsApp Group + Zoom, tidak tersentuh oleh Modul 6.
 
 ---
 

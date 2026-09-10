@@ -16,7 +16,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DatePickerField } from '@/components/admin/date-picker-field';
 import { RichTextEditor } from '@/components/admin/rich-text-editor';
-import { ImageUploadField } from '@/components/admin/image-upload-field';
+import { ImageUploadField } from '@/components/image-upload-field';
 
 const STATUS_OPTIONS: { value: BatchFormInput['status']; label: string }[] = [
   { value: 'upcoming', label: 'Akan Datang' },

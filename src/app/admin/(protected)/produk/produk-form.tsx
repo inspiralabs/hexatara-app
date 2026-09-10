@@ -12,7 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { RichTextEditor } from '@/components/admin/rich-text-editor';
-import { ImageUploadField } from '@/components/admin/image-upload-field';
+import { ImageUploadField } from '@/components/image-upload-field';
 
 function slugify(text: string) {
   return text
