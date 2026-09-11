@@ -1280,6 +1280,14 @@ export type Database = {
         Args: { p_jenis: Database["public"]["Enums"]["jenis_sertifikat"] }
         Returns: string
       }
+      reorder_material_chapter_files: {
+        Args: { p_chapter_id: number; p_file_ids: number[] }
+        Returns: undefined
+      }
+      reorder_material_chapters: {
+        Args: { p_chapter_ids: number[]; p_material_id: number }
+        Returns: undefined
+      }
       status_sertifikat: { Args: { p_exp: string }; Returns: string }
     }
     Enums: {

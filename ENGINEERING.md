@@ -783,6 +783,86 @@ Larangan §13.3 untuk KUIS tetap berlaku penuh dan sama sekali tidak tersentuh o
 
 ---
 
+### ADR-019 — Redesign total: adopsi Studio Admin design system (Fase 12.6)
+**2026-09-10 · Berlaku**
+
+**Konteks.** Alif memberikan referensi desain baru untuk seluruh Hexatara
+(admin, dashboard user, termasuk halaman login/daftar): studio-admin.arhamkhnz.com,
+starter dashboard Next.js berbasis shadcn/ui. Instruksinya eksplisit: "segala
+komponen yang digunakan sebelumnya akan direplace" — ini bukan penyempurnaan
+Fase 12.5, ini pivot arah desain. Diverifikasi langsung lewat browser
+(termasuk pembacaan computed CSS custom properties, bukan tebakan visual) —
+detail lengkap ada di `hexatara_ADMIN_DESIGN.md`.
+
+Sebelum ADR ini ditulis, dicek status Fase 12.5 yang sedang berjalan: hanya
+§12.5.1 (Design System v2 kerangka), §12.5.2 (perbaikan bug freemium), dan
+§12.5.3 (LMS materi berbab, sudah 2 kali iterasi) yang benar-benar sudah
+dijalankan. §12.5.4 (CRUD bab materi) BELUM SELESAI, dan §12.5.5 sampai
+§12.5.17 SAMA SEKALI BELUM DIMULAI. Karena scope-nya nyaris sama persis
+dengan yang akan dibangun ulang di Fase 12.6 (DataTable generik, crop gambar,
+Dashboard User, halaman Auth, redesign Beranda/Pelatihan/Produk, dst),
+melanjutkan blok-blok itu dengan design system LAMA lalu langsung
+menggantinya adalah kerja dua kali yang sia-sia. Diputuskan: §12.5.4 sampai
+§12.5.17 di PANDUAN.md diarsipkan (ditandai jelas, TIDAK dihapus, supaya
+riwayat keputusan tetap tercatat) dan seluruh scope-nya diserap ke blok-blok
+Fase 12.6 — pemetaan lengkap ada di catatan arsip di PANDUAN.md, tepat
+sebelum §12.5.4.
+
+**Keputusan.**
+- **Dibuka Fase baru, bukan disisipkan ke Fase 12.5.** Fase 12.5 tetap
+  tercatat apa adanya sebagai riwayat (§12.5.1–§12.5.3 tetap dipakai sebagai
+  fondasi kode yang ada, dimigrasi bukan ditulis ulang dari nol). Fase 12.6
+  — "Redesign Total: Adopsi Studio Admin Design System" — dimulai bersih
+  dengan sistem desain baru, dikerjakan SEBELUM Sprint 5 seperti Fase 12.5.
+- **Dependency baru DISETUJUI eksplisit oleh Alif** (larangan #7 PRD.md,
+  butuh izin eksplisit — ini izinnya, dicatat di sini): shadcn/ui + Radix UI
+  primitives, `class-variance-authority`, `@tanstack/react-table` (data
+  table — ini juga menuntaskan izin yang sebelumnya digantung di F06.14/
+  §12.5.11), `next-themes` (dark mode), Recharts atau library chart sejenis,
+  `lucide-react` (ikon). Command Palette (`cmdk`, ⌘J) TIDAK wajib — boleh
+  dipasang atau di-skip, diputuskan saat eksekusi §12.6.0, bukan fitur inti.
+- **Warna: ikuti referensi APA ADANYA untuk sekarang** (preset "Neutral"
+  bawaan shadcn/ui — achromatic, satu-satunya warna ber-hue adalah
+  `destructive`/merah untuk aksi berbahaya), BUKAN token Hexatara
+  (`--warna-utama` `#1E40AF`, `--warna-aksen` `#F59E0B`) yang selama ini jadi
+  sumber kebenaran tunggal di seluruh blok §12.5.x. Ini keputusan SEMENTARA,
+  eksplisit menunggu persetujuan Abi — dicatat sebagai blok PALING AKHIR
+  Fase 12.6 (§12.6.14, murni catatan, TIDAK dieksekusi sampai Abi
+  menyetujui). Sampai saat itu, seluruh dokumen desain (`hexatara_ADMIN_DESIGN.md`,
+  blok-blok §12.6.x) sengaja memakai token referensi, bukan token Hexatara.
+- **Radius `0.625rem` (10px) dan font Geist** dari referensi dipakai sebagai
+  default baru, menggantikan skala radius `design-system-v2.md` sebelumnya —
+  tunduk pada keputusan warna di atas (kalau Abi nanti minta radius/font ikut
+  balik ke identitas Hexatara juga, itu bagian dari §12.6.14).
+- **Halaman Auth pakai varian v2** referensi (form di kiri, panel highlight
+  fitur di kanan) — dipilih Alif dari 2 varian yang ditemukan di referensi.
+- **Prinsip mobile-first TETAP UTAMA**, ditegaskan ulang eksplisit oleh Alif
+  saat ADR ini disepakati — bukan pengulangan basa-basi, tapi penekanan
+  khusus karena redesign sebesar ini berisiko fokus ke desktop dulu. Setiap
+  blok §12.6.x WAJIB diuji dari breakpoint mobile terlebih dahulu, sama
+  seperti pola yang sudah ditegakkan di §12.5.3/ADR-018.
+- **Dua AppShell terpisah**: satu untuk area Admin, satu untuk Dashboard
+  User (role berbeda, navigasi berbeda) — keduanya pakai pola sidebar+topbar
+  yang sama dari referensi, tapi konten sidebar berbeda. Halaman PUBLIK
+  (Beranda, Pelatihan, Produk, dst) TIDAK memakai shell sidebar ini — tetap
+  layout marketing biasa, hanya komponen dasarnya (button, card, badge,
+  token warna/radius/font) yang ikut sistem baru.
+
+**Konsekuensi.** Ini migrasi besar yang menyentuh HAMPIR SELURUH permukaan
+UI Hexatara yang sudah ada, termasuk yang sudah DONE di F01-F04 (bukan cuma
+Fase 12.5) — audit regresi visual menyeluruh WAJIB di penutup Fase 12.6
+(§12.6.11), meneruskan pola yang sudah ada di §12.5.17 lama. Komponen lama
+dari Fase 12.5 (`ContentCard`, `StatusBadge`, `StarRating`, `ImageUploadField`
+kerangka §12.5.1) TIDAK dibuang logikanya, tapi tampilannya dibangun ulang di
+atas primitif shadcn/ui baru. `hexatara_DESIGN.md` (referensi gaya
+Linear/Cal.com/Mintlify/Vercel, dipakai Fase 12.5) TIDAK dipakai lagi di
+Fase 12.6 — digantikan `hexatara_ADMIN_DESIGN.md`. Warna Hexatara yang sudah
+jadi identitas brand (biru `#1E40AF`, aksen oranye `#F59E0B`) untuk sementara
+tidak terlihat di UI sampai Abi menyetujui penyesuaian (§12.6.14) — risiko
+ini diterima sadar oleh Alif, bukan kelalaian.
+
+---
+
 ### Template ADR baru
 
 ```
@@ -809,3 +889,4 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-09-09 | **Fase 12.5 — Redesign & Upgrade Sistem** disepakati Alif, dikerjakan sebelum Sprint 5. ADR-011 s/d ADR-017 ditambahkan (rating bintang manual, hero gallery pakai `hero_slides` existing, kategori produk/pelatihan dinamis, LMS materi berbab dengan progress database, reorder otomatis universal, popup dua gambar per orientasi, ekspor/import CSV diganti XLSX, navbar Admin dua level collapsible). PRD.md Modul 6 ditambahkan (F06.x) sebagai pendokumentasian fitur-fitur ini. PRD.md §6.4/§6.5 diperbarui dari CSV ke XLSX mengikuti ADR-016. SQL baru di `docs/sql/15_redesign_upgrade_fase12.5.sql`, dijalankan manual oleh Alif sebelum blok prompt PANDUAN.md §12.5 dimulai |
 | 2026-09-10 | **Koreksi SQL 15 (ADR-013).** Draf pertama salah asumsi seluruh primary key proyek bertipe `uuid`. Dikonfirmasi lewat query `information_schema.columns` terhadap database live: hampir semua tabel inti (`materials`, `products`, `batches`, `popups`, `quiz_questions`, dst) memakai `bigint identity`, hanya `certificates` dan `profiles` yang sengaja `uuid`. `material_chapters.id`/`material_id` dan `material_progress.id`/`chapter_id` diperbaiki jadi `bigint`; `material_progress.user_id` tetap `uuid` (mengacu `auth.users`). ADR-011 (rating) dan ADR-012 (kategori, `product_categories`/`batch_categories` — sengaja `uuid` karena tabel baru) sudah berhasil dijalankan sebelum koreksi ini dan tidak terpengaruh. **Pelajaran untuk sesi berikutnya: selalu verifikasi tipe kolom lewat query ke database live sebelum menulis DDL baru, jangan berasumsi dari pola sebagian tabel** |
 | 2026-09-10 | **ADR-018 ditambahkan setelah uji coba pertama §12.5.3.** Alif menjalankan §12.5.3 (LMS materi) dan menemukan hasilnya belum sesuai ekspektasi: sidebar masih flat, tidak ada video/gambar, tidak ada lampiran file. Ditambahkan `material_chapters.video_url`/`gambar_url` (nullable, independen) dan tabel baru `material_chapter_files` (lampiran file per bab, one-to-many, dwibahasa `judul_id`/`judul_en`/`deskripsi_id`/`deskripsi_en`, tunduk pola reorder ADR-014). SQL baru di `docs/sql/16_lms_video_gambar_file_bab.sql`, termasuk data dummy materi baru "Dasar Keselamatan Penerbangan Drone" untuk uji coba UI sebelum Admin panel-nya (§12.5.4) selesai dibuat. PANDUAN.md §12.5.3 ditulis ulang untuk mencakup layout LMS lengkap (sidebar Materi/File/Kuis, progress bar dan checklist status yang jelas) |
+| 2026-09-10 | **ADR-019 — Fase 12.6 dibuka, redesign total.** Alif memberikan referensi baru (studio-admin.arhamkhnz.com, shadcn/ui) dan minta seluruh komponen lama direplace. Dicek status Fase 12.5: hanya §12.5.1–§12.5.3 sudah jalan, §12.5.4 belum selesai, §12.5.5–§12.5.17 belum dimulai sama sekali — scope-nya diserap ke Fase 12.6 alih-alih dibangun dua kali (dengan design system lama lalu diganti lagi). §12.5.4–§12.5.17 di PANDUAN.md diarsipkan (ditandai, tidak dihapus). Dependency baru disetujui eksplisit: shadcn/ui, Radix UI, `@tanstack/react-table`, `next-themes`, Recharts, `lucide-react` (Command Palette/`cmdk` opsional). Warna mengikuti preset "Neutral" referensi untuk sementara (achromatic + merah untuk destructive), BUKAN token Hexatara — menunggu persetujuan Abi, dicatat sebagai blok paling akhir §12.6.14. Auth pakai varian v2 (form kiri, panel highlight kanan). Prinsip mobile-first ditegaskan ulang sebagai prioritas utama di setiap blok. Referensi struktural lengkap di `hexatara_ADMIN_DESIGN.md`, menggantikan `hexatara_DESIGN.md` untuk Fase 12.6 |

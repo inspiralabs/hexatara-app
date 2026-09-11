@@ -20,12 +20,7 @@ export default async function AdminSoalPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-warna-teks">Bank Soal</h1>
-          <Link href="/admin/materi" className="text-sm text-warna-utama underline">
-            &larr; Materi
-          </Link>
-        </div>
+        <h1 className="text-xl font-bold text-warna-teks">Kuis</h1>
         <div className="flex gap-2">
           <Link
             href="/admin/materi/soal/impor"

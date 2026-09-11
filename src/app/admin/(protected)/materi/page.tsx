@@ -1,80 +1,75 @@
-import Link from 'next/link';
 import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { MateriRowActions } from './materi-row-actions';
+import { getMateriId } from '@/lib/materi/singleton';
+import { MateriForm } from './materi-form';
+import { BabList } from './bab-list';
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
+import type { MateriFormInput } from '@/lib/validations/materi-admin';
+
+const DEFAULT_VALUES: MateriFormInput = {
+  judul_id: '',
+  judul_en: '',
+  deskripsi_id: '',
+  deskripsi_en: '',
+  file_url: '',
+  poster_url: '',
+  is_active: true,
+};
 
 export default async function AdminMateriPage() {
   // Layout sudah memanggil requireAdmin(), tapi Server Component ini memanggil
   // lagi secara eksplisit sesuai ENGINEERING §4.1 — bukan cuma diandalkan dari layout.
   await requireAdmin();
 
-  const supabase = await createClient();
-  const { data: materi, error } = await supabase
-    .from('materials')
-    .select('id, judul_id, urutan, is_active, file_url')
-    .order('urutan');
+  const materialId = await getMateriId();
 
-  if (error) console.error('[admin-materi] gagal memuat daftar:', error);
+  if (materialId == null) {
+    return (
+      <div className="flex flex-col gap-4">
+        <h1 className="text-xl font-bold text-warna-teks">Materi</h1>
+        <p className="text-sm text-warna-teks-2">
+          Lengkapi pengaturan kartu halaman Materi dulu — ini cuma sekali, sebelum bisa menambah Materi.
+        </p>
+        <MateriForm mode="create" defaultValues={DEFAULT_VALUES} />
+      </div>
+    );
+  }
+
+  const supabase = await createClient();
+  const { data: materi } = await supabase.from('materials').select('*').eq('id', materialId).maybeSingle();
+  const { data: bab, error: errBab } = await supabase
+    .from('material_chapters')
+    .select('id, judul_id')
+    .eq('material_id', materialId)
+    .order('urutan');
+  if (errBab) console.error('[admin-materi] gagal memuat daftar materi:', errBab);
+
+  const defaultValues: MateriFormInput = materi
+    ? {
+        judul_id: materi.judul_id,
+        judul_en: materi.judul_en ?? '',
+        deskripsi_id: materi.deskripsi_id ?? '',
+        deskripsi_en: materi.deskripsi_en ?? '',
+        file_url: materi.file_url,
+        poster_url: materi.poster_url ?? '',
+        is_active: materi.is_active,
+      }
+    : DEFAULT_VALUES;
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-warna-teks">Materi & Bank Soal</h1>
-        <div className="flex gap-2">
-          <Link
-            href="/admin/materi/soal"
-            className="inline-flex h-11 items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama"
-          >
-            Bank Soal
-          </Link>
-          <Link
-            href="/admin/materi/baru"
-            className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
-          >
-            Tambah Materi
-          </Link>
-        </div>
-      </div>
+      <h1 className="text-xl font-bold text-warna-teks">Materi</h1>
 
-      <div className="overflow-x-auto rounded-lg border border-warna-latar-2">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Urutan</TableHead>
-              <TableHead>Judul</TableHead>
-              <TableHead>Aktif</TableHead>
-              <TableHead>Berkas</TableHead>
-              <TableHead className="text-right">Aksi</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {!materi || materi.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={5} className="text-center text-warna-teks-2">
-                  Belum ada materi.
-                </TableCell>
-              </TableRow>
-            ) : (
-              materi.map((m) => (
-                <TableRow key={m.id}>
-                  <TableCell>{m.urutan}</TableCell>
-                  <TableCell className="font-medium text-warna-teks">{m.judul_id}</TableCell>
-                  <TableCell>{m.is_active ? 'Ya' : 'Tidak'}</TableCell>
-                  <TableCell>
-                    <a href={m.file_url} target="_blank" rel="noopener noreferrer" className="text-warna-utama underline">
-                      Buka
-                    </a>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <MateriRowActions id={m.id} judul={m.judul_id} />
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      <Accordion defaultValue={[]}>
+        <AccordionItem value="pengaturan" className="rounded-lg border border-warna-latar-2 px-4">
+          <AccordionTrigger className="hover:no-underline">Pengaturan Kartu Materi</AccordionTrigger>
+          <AccordionContent>
+            <MateriForm mode="edit" materiId={materialId} defaultValues={defaultValues} />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
+      <BabList materialId={materialId} bab={bab ?? []} />
     </div>
   );
 }

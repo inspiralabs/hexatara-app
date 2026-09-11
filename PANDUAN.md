@@ -59,7 +59,8 @@ Centang setiap kali selesai. Ini satu-satunya cara tahu posisi kalau besok kamu 
 - [ ] **Fase 10** — Sprint 2: Verifikasi Sertifikat (3–4 hari)
 - [ ] **Fase 11** — Sprint 3: Sertifikat Gratis (7–10 hari) ← terberat
 - [ ] **Fase 12** — Sprint 4: Katalog Produk (3–4 hari)
-- [ ] **Fase 12.5** — Redesign & Upgrade Sistem (di luar scope BRD asli, disepakati 2026-09-09, ~17 blok)
+- [ ] **Fase 12.5** — Redesign & Upgrade Sistem (di luar scope BRD asli, disepakati 2026-09-09, ~17 blok — §12.5.1-§12.5.3 dipakai, §12.5.4-§12.5.17 diarsipkan lihat Fase 12.6)
+- [ ] **Fase 12.6** — Redesign Total: Adopsi Studio Admin Design System (di luar scope BRD asli, disepakati 2026-09-10, ADR-019, 15 blok, warna sementara menunggu persetujuan Abi)
 - [ ] **Fase 13** — Sprint 5: Hardening (2–3 hari)
 
 ### Bagian 4 — Rilis
@@ -88,7 +89,8 @@ pertama. Itu posisimu.
 | [Fase 10](#fase-10--sprint-2-verifikasi-sertifikat)  | `/verify`, status kedaluwarsa, import massal                    |
 | [Fase 11](#fase-11--sprint-3-sertifikat-gratis)      | Kuis, preview, upgrade, aktivasi QR                             |
 | [Fase 12](#fase-12--sprint-4-katalog-produk)         | Katalog, harga tersembunyi, form penawaran                      |
-| [Fase 12.5](#fase-125--redesign--upgrade-sistem)     | Design system v2, LMS materi berbab, kategori dinamis, navbar Admin, dashboard User — di luar scope BRD asli |
+| [Fase 12.5](#fase-125--redesign--upgrade-sistem)     | Design system v2, LMS materi berbab, kategori dinamis, navbar Admin, dashboard User — §12.5.1-§12.5.3 dipakai (fondasi), §12.5.4-§12.5.17 diarsipkan lihat Fase 12.6 |
+| [Fase 12.6](#fase-126--redesign-total-adopsi-studio-admin-design-system) | Redesign total ke Studio Admin design system (shadcn/ui): AdminShell/DashboardUserShell, auth v2, DataTable generik, migrasi seluruh CRUD Admin & halaman publik — di luar scope BRD asli, ADR-019 |
 | [Fase 13](#fase-13--sprint-5-hardening--rilis)       | Aksesibilitas, SEO, sapuan anti scope creep                     |
 | [Fase 14](#fase-14--rilis-ke-hexataracom)            | Domain, SMTP, backup, checklist go-live                         |
 | [Lampiran A](#lampiran-a--kalau-macet)               | Daftar error dan penyebabnya                                    |
@@ -4839,7 +4841,36 @@ git commit -m "fix(lms): perbaiki tampilan LMS materi - tab Materi/File, bug tom
 
 ---
 
-## 12.5.4 Admin: CRUD bab materi (Tiptap, reorder otomatis)
+> **ARSIP — §12.5.4 SAMPAI §12.5.17 DI BAWAH INI TIDAK DIJALANKAN LAGI.**
+> Ditulis dengan design system LAMA (`design-system-v2.md` + `hexatara_DESIGN.md`,
+> gaya Linear/Cal.com/Mintlify/Vercel). Setelah Alif memberi referensi baru
+> (studio-admin.arhamkhnz.com) dan memutuskan redesign total (ADR-019,
+> 2026-09-10), seluruh scope dari §12.5.4 dan seterusnya dipindahkan dan
+> dibangun ulang di **Fase 12.6** (lihat setelah §12.5.17) dengan sistem
+> desain baru. Diputuskan diarsipkan bukan dihapus supaya riwayat keputusan
+> tetap tercatat — konten di bawah ini DIBIARKAN APA ADANYA sebagai catatan,
+> BUKAN instruksi aktif. Jangan tempel blok manapun dari §12.5.4–§12.5.16 ke
+> Claude Code lagi.
+>
+> §12.5.1–§12.5.3 SUDAH dijalankan dan TETAP DIPAKAI sebagai fondasi kode
+> yang ada (Design System v2 kerangka awal, perbaikan bug freemium, LMS
+> materi berbab) — hasilnya DIMIGRASI (bukan ditulis ulang dari nol) ke
+> sistem desain baru di blok Fase 12.6 yang relevan, bukan dibuang.
+>
+> Pemetaan blok lama → blok baru di Fase 12.6:
+> §12.5.4 (CRUD bab materi) → §12.6.6 · §12.5.5 (favicon/navbar/popup) →
+> §12.6.9 · §12.5.6 (redesign Beranda) → §12.6.9 · §12.5.7 (redesign
+> Pelatihan) → §12.6.9 · §12.5.8 (redesign Produk) → §12.6.9 · §12.5.9
+> (kategori dinamis, rating) → §12.6.5 · §12.5.10 (navbar Admin dua level) →
+> §12.6.0 (sudah tercakup di shell baru) · §12.5.11 (DataTable generik) →
+> §12.6.3 · §12.5.12 (crop gambar) → §12.6.4 · §12.5.13 (toast/XLSX/reorder
+> kuis/combobox) → §12.6.10 · §12.5.14 (Dashboard User) → §12.6.8 · §12.5.15
+> (login/daftar/reset sandi) → §12.6.1 · §12.5.16 (audit visual) → §12.6.11
+> · §12.5.17 (checklist penutup) → §12.6.13.
+
+---
+
+## 12.5.4 Admin: CRUD bab materi (Tiptap, reorder otomatis) — ARSIP, jangan dijalankan, lihat §12.6.6
 
 ```
 /impeccable /ponytail
@@ -4886,7 +4917,7 @@ Paparkan dulu rencana sebelum menulis kode.
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji Admin CRUD bab materi sendiri di browser dan hasilnya
 sesuai. Isi baris terkait: Status DONE, Berkas [daftar berkas], Diuji
-[tanggal], Bukti [ringkas hasil uji]. Tambahkan satu baris ke Log verifikasi.
+[tanggal], Bukti [UX baru untuk LMS dan penyesuaian terhadap LMS baru, sudah diuji dari crud materi hingga crud file dan kuis sudah berhasil lolos]. Tambahkan satu baris ke Log verifikasi.
 Jangan mengubah status baris fitur lain.
 ```
 
@@ -4895,7 +4926,7 @@ Jangan mengubah status baris fitur lain.
 ```powershell
 pnpm tsc --noEmit; pnpm lint; pnpm build
 git add -A
-git commit -m "feat(admin): CRUD bab materi dengan Tiptap dan reorder drag-and-drop"
+git 
 ```
 
 ---
@@ -5841,6 +5872,986 @@ git commit -m "fix(ui): warna tombol konsisten dengan design token, perbaikan UX
 - [ ] Diuji ulang di 375px untuk SEMUA halaman yang disentuh redesign ini — bukan cuma halaman baru, tapi juga F01-F04 yang sudah DONE sebelumnya untuk pastikan tidak ada regresi visual dari komponen bersama yang berubah (ContentCard, DataTable, ImageUploadField)
 - [ ] Uji ulang Network tab untuk harga tersembunyi (F04.3) — WAJIB, karena redesign katalog menyentuh langsung halaman ini
 - [ ] Uji ulang bug freemium (12.5.2) dan bug dashboard transaksi (12.5.14) benar-benar tuntas, bukan cuma gejala yang hilang sementara
+
+> **Catatan: checklist di atas untuk cakupan §12.5.1-§12.5.3 saja** (satu-satunya
+> blok Fase 12.5 yang benar-benar dijalankan). §12.5.4-§12.5.17 diarsipkan,
+> lihat Fase 12.6 di bawah untuk checklist penutup yang berlaku.
+
+---
+
+# FASE 12.6 — REDESIGN TOTAL: ADOPSI STUDIO ADMIN DESIGN SYSTEM
+
+> Disepakati Alif 2026-09-10 (ADR-019 di `ENGINEERING.md`), dikerjakan SEBELUM
+> Sprint 5, menggantikan sisa scope Fase 12.5 yang belum dijalankan
+> (§12.5.4–§12.5.17, lihat catatan arsip sebelum §12.5.4). Referensi:
+> **studio-admin.arhamkhnz.com**, dirangkum di `hexatara_ADMIN_DESIGN.md`.
+>
+> **PERINGATAN WARNA — baca sebelum menjalankan blok manapun di bawah ini:**
+> Fase ini mengikuti token warna REFERENSI (preset "Neutral" shadcn/ui —
+> achromatic, satu-satunya warna ber-hue adalah merah untuk destructive),
+> **BUKAN** `--warna-utama`/`--warna-aksen` Hexatara yang jadi sumber
+> kebenaran tunggal di SELURUH blok Fase 12.5 sebelumnya. ini kebalikan dari
+> aturan yang berlaku di atas — SENGAJA, keputusan sementara Alif menunggu
+> persetujuan Abi (§12.6.14, blok paling akhir, belum dieksekusi). Setiap
+> blok di bawah ini akan bilang "lampirkan hexatara_ADMIN_DESIGN.md" alih-alih
+> "hexatara_DESIGN.md" — JANGAN keliru pakai referensi warna yang lama.
+>
+> **MOBILE FIRST tetap prinsip utama, ditegaskan ulang khusus oleh Alif.**
+> Setiap blok WAJIB dirancang dan diuji dari breakpoint mobile (~375px)
+> dulu, baru melebar ke tablet/desktop — bukan sebaliknya, dan bukan
+> "sempat-sempatnya" di akhir.
+
+---
+
+## 12.6.0 Fondasi: shadcn/ui, AppShell, tema
+
+```
+/impeccable /ponytail
+
+Lampirkan hexatara_ADMIN_DESIGN.md sebagai referensi struktur DAN warna untuk
+Fase 12.6 — BERBEDA dari seluruh blok Fase 12.5 sebelumnya, di fase ini warna
+justru WAJIB ikut referensi (preset Neutral shadcn/ui), JANGAN pakai
+--warna-utama/--warna-aksen Hexatara. Ini keputusan sementara (ADR-019),
+lihat §12.6.14 untuk konteks lengkap.
+
+Baca ENGINEERING.md ADR-019 dulu.
+
+Tugas: pasang fondasi shadcn/ui dan bangun DUA AppShell terpisah (Admin dan
+Dashboard User) yang akan dipakai SEMUA blok Fase 12.6 berikutnya.
+
+DEPENDENCY BARU YANG SUDAH DISETUJUI (ADR-019, tidak perlu tanya ulang):
+shadcn/ui + Radix UI primitives, class-variance-authority, tailwind-merge,
+@tanstack/react-table, next-themes, Recharts (atau library chart lain yang
+kompatibel shadcn/ui — jelaskan pilihannya kalau beda), lucide-react.
+Command Palette (cmdk, shortcut Cmd/Ctrl+K) OPSIONAL — putuskan sendiri mau
+dipasang atau skip, jelaskan alasannya di paparan rencana, ini BUKAN fitur
+inti.
+
+LANGKAH:
+1. Inisialisasi shadcn/ui (npx shadcn init) dengan base color "Neutral" dan
+   radius default (0.625rem / 10px) — cocok dengan hexatara_ADMIN_DESIGN.md
+   Bagian 1. Font ganti ke Geist (next/font/google atau paket geist).
+2. Pasang komponen shadcn/ui dasar yang akan dipakai lintas blok: Sidebar,
+   Button, Card, Badge, Table, Dialog, AlertDialog, DropdownMenu, Input,
+   Select, Combobox (kalau shadcn belum punya bawaan, pola Command+Popover),
+   Form (react-hook-form + zod kalau belum terpasang — cek dulu, jangan
+   pasang ulang kalau sudah ada), Avatar, Sonner (toast).
+3. Bangun <AdminShell>: sidebar kiri collapsible (icon-only saat collapse),
+   dikelompokkan per label (contoh: "Utama", "Konten", "LMS", "Pengguna",
+   "Pengaturan" — sesuaikan dengan menu admin Hexatara yang benar-benar ada,
+   JANGAN reka menu yang tidak ada). Kartu profil admin di paling bawah
+   sidebar. Topbar: toggle sidebar, search (opsional Command Palette), theme
+   toggle (light/dark/system), avatar.
+4. Bangun <DashboardUserShell>: pola sama (sidebar+topbar collapsible),
+   TAPI menu sidebar untuk user biasa (profil, sertifikat saya, riwayat
+   materi, dst — sesuai menu Dashboard User yang sudah ada di PRD Modul 4).
+   Dua shell ini TERPISAH karena role dan navigasinya beda, JANGAN dibuat
+   satu shell dengan menu disembunyikan berdasarkan role.
+5. ThemeProvider (next-themes) dipasang di root layout, toggle berfungsi.
+6. MOBILE FIRST: kedua shell WAJIB berubah jadi drawer tersembunyi (dipicu
+   hamburger di topbar) di breakpoint mobile — verifikasi persis seperti
+   perilaku referensi (hexatara_ADMIN_DESIGN.md Bagian 2), bukan sekadar
+   "menyempit".
+7. JANGAN migrasikan konten halaman apa pun di blok ini — blok ini HANYA
+   fondasi shell dan sistem token. Migrasi konten per halaman ada di blok
+   §12.6.2 dan seterusnya.
+
+Paparkan dulu rencana detail (struktur folder komponen shadcn/ui, isi menu
+sidebar Admin dan Dashboard User berdasarkan menu yang BENAR-BENAR ADA
+sekarang — telusuri dulu, jangan reka) sebelum menulis kode. Ini fondasi
+paling kritis di Fase 12.6, kalau salah di sini semua blok berikutnya kena
+dampak — jangan buru-buru.
+```
+
+### SETELAH BLOK INI
+
+**Uji sendiri:**
+- `npx shadcn init` berhasil, `components.json` dan token warna Neutral
+  terpasang di `globals.css` atau setara
+- AdminShell dan DashboardUserShell tampil dengan sidebar+topbar sesuai
+  hexatara_ADMIN_DESIGN.md
+- Toggle sidebar (collapse jadi icon-only) berfungsi di desktop
+- Di 375px, sidebar berubah jadi drawer tersembunyi, dipicu hamburger —
+  konten tidak terpotong, tidak ada scroll horizontal
+- Theme toggle berfungsi (light ↔ dark), token warna berubah konsisten di
+  seluruh shell
+- `pnpm build` lolos tanpa error
+
+**Update — tempel ke sesi baru:**
+
+```
+Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
+Saya sudah menguji fondasi shadcn/ui dan AppShell (Admin + Dashboard User)
+sendiri di browser, termasuk mobile 375px dan dark mode, dan hasilnya
+sesuai. Tambahkan baris baru untuk fitur ini (Fase 12.6, redesign total)
+kalau belum ada di tabel, isi Status DONE, Berkas [daftar berkas], Diuji
+[tanggal], Bukti [ringkas hasil uji]. Tambahkan satu baris ke Log verifikasi.
+Jangan mengubah status baris fitur lain.
+```
+
+**Commit:**
+
+```powershell
+pnpm tsc --noEmit; pnpm lint; pnpm build
+git add -A
+git commit -m "feat(design-v3): fondasi shadcn/ui, AdminShell dan DashboardUserShell (Fase 12.6)"
+```
+
+---
+
+## 12.6.1 Halaman Auth: login, daftar, reset sandi (varian v2)
+
+```
+/impeccable /ponytail
+
+Lampirkan hexatara_ADMIN_DESIGN.md sebagai referensi struktur DAN warna
+(lihat peringatan warna di awal Fase 12.6).
+
+Baca PRD.md bagian autentikasi/akun dan kode Supabase Auth yang SUDAH ADA
+dulu — blok ini HANYA mengganti tampilan, logika autentikasi (Supabase)
+TIDAK disentuh sama sekali.
+
+Tugas: redesign halaman login, daftar (register), dan reset sandi memakai
+pola AUTH V2 dari referensi (hexatara_ADMIN_DESIGN.md Bagian 3): form di
+KIRI, panel gelap dengan logo+tagline Hexatara di KANAN, berisi 2 kartu
+highlight fitur di bagian bawah panel (isi kartu disesuaikan Hexatara —
+misal "Sertifikasi Resmi Drone" dan "Butuh Bantuan?", BUKAN teks generik
+dari referensi).
+
+FITUR WAJIB per halaman:
+- Login: email, password, toggle show/hide password, checkbox "Ingat saya",
+  tombol submit, link ke Daftar dan ke Reset Sandi
+- Daftar: email, password, konfirmasi password, validasi inline (kekuatan
+  password, kecocokan konfirmasi), tombol submit, link ke Login
+- Reset Sandi: alur yang SUDAH ADA (kirim email/verifikasi), hanya tampilan
+  yang diganti
+
+Cek dulu apakah OAuth (Google, dst) relevan untuk Hexatara sesuai PRD — kalau
+tidak ada requirement OAuth, JANGAN tambahkan tombol "Continue with Google"
+dari referensi, itu murni elemen starter template.
+
+Ini menggantikan scope §12.5.15 (arsip) — kalau ada requirement spesifik di
+sana yang belum tercakup di atas (misal validasi kekuatan password), baca
+juga isinya sebagai referensi konten, TAPI bangun tampilannya dengan pola
+v2 ini, bukan pola lama.
+
+MOBILE FIRST: di layar sempit, panel highlight kanan boleh disembunyikan
+atau dipindah ke atas form (stack), form tetap harus nyaman diisi di layar
+375px tanpa scroll horizontal.
+
+Paparkan dulu rencana sebelum menulis kode.
+```
+
+### SETELAH BLOK INI
+
+**Uji sendiri:**
+- Login, daftar, reset sandi tampil dengan layout v2 (form kiri, panel
+  highlight kanan)
+- Toggle show/hide password berfungsi di login dan daftar
+- Validasi inline daftar (kekuatan password, kecocokan konfirmasi) berfungsi
+- Alur reset sandi yang sudah ada tetap berfungsi penuh (belum rusak logic-nya)
+- 375px: form tetap nyaman diisi, tidak ada scroll horizontal
+- Dark mode: ketiga halaman tetap terbaca jelas
+
+**Update — tempel ke sesi baru:**
+
+```
+Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
+Saya sudah menguji redesign halaman login/daftar/reset sandi (varian v2)
+sendiri di browser, termasuk mobile dan dark mode, dan hasilnya sesuai —
+alur autentikasi yang sudah ada tidak berubah, hanya tampilan. Isi baris
+terkait (menggantikan F06.18 lama): Status DONE, Berkas [daftar berkas],
+Diuji [tanggal], Bukti [ringkas hasil uji]. Tambahkan satu baris ke Log
+verifikasi. Jangan mengubah status baris fitur lain.
+```
+
+**Commit:**
+
+```powershell
+pnpm tsc --noEmit; pnpm lint; pnpm build
+git add -A
+git commit -m "feat(auth): redesign login, daftar, reset sandi ke pola auth v2 (Fase 12.6)"
+```
+
+---
+
+## 12.6.2 Dashboard Admin: halaman overview baru
+
+```
+/impeccable /ponytail
+
+Lampirkan hexatara_ADMIN_DESIGN.md sebagai referensi struktur DAN warna.
+
+Baca feature-registry.md untuk daftar lengkap fitur admin yang sudah ada.
+
+Tugas: bangun halaman overview/beranda Admin (di dalam AdminShell dari
+§12.6.0) sebagai halaman pertama yang dilihat admin setelah login.
+
+FITUR WAJIB (pola dari hexatara_ADMIN_DESIGN.md Bagian 3):
+1. Baris kartu statistik (4 kartu, stack di mobile) — pakai METRIK HEXATARA
+   YANG NYATA, BUKAN metrik dummy dari referensi (Revenue/Growth Rate itu
+   generik SaaS, tidak relevan). Contoh metrik yang relevan: jumlah
+   pendaftar/leads baru, jumlah materi/pelatihan aktif, jumlah sertifikat
+   terbit bulan ini, jumlah transaksi pending — SESUAIKAN dengan data yang
+   BENAR-BENAR ada di database, telusuri dulu tabel yang relevan, jangan
+   reka angka.
+2. Satu kartu chart (tren pendaftar atau transaksi beberapa bulan terakhir)
+   dengan dropdown filter periode.
+3. Satu tabel aktivitas terbaru (leads/pendaftar terbaru, atau transaksi
+   terbaru) memakai pola DataTable ringkas (belum perlu filter/sort lengkap
+   di halaman overview ini — itu tugas §12.6.3 untuk tabel-tabel CRUD penuh).
+
+Data HARUS query nyata dari database (Server Component), bukan data statis/
+hardcoded.
+
+Paparkan dulu rencana (metrik apa saja yang dipakai dan dari tabel mana)
+sebelum menulis kode.
+```
+
+### SETELAH BLOK INI
+
+**Uji sendiri:**
+- Halaman overview Admin tampil setelah login, 4 kartu statistik menampilkan
+  angka NYATA dari database (verifikasi manual angkanya benar)
+- Chart tren tampil dan filter periode berfungsi
+- Tabel aktivitas terbaru menampilkan data terbaru yang benar
+- 375px: kartu stack rapi, chart dan tabel tetap terbaca tanpa scroll
+  horizontal
+
+**Update — tempel ke sesi baru:**
+
+```
+Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
+Saya sudah menguji halaman overview Dashboard Admin baru sendiri di browser
+dan hasilnya sesuai, metrik menampilkan data nyata. Tambahkan baris baru
+untuk fitur ini kalau belum ada, isi Status DONE, Berkas [daftar berkas],
+Diuji [tanggal], Bukti [ringkas hasil uji]. Tambahkan satu baris ke Log
+verifikasi. Jangan mengubah status baris fitur lain.
+```
+
+**Commit:**
+
+```powershell
+pnpm tsc --noEmit; pnpm lint; pnpm build
+git add -A
+git commit -m "feat(admin): halaman overview Dashboard Admin baru dengan stat card, chart, aktivitas terbaru"
+```
+
+---
+
+## 12.6.3 DataTable generik dan migrasi seluruh tabel Admin
+
+```
+/impeccable /ponytail
+
+Lampirkan hexatara_ADMIN_DESIGN.md sebagai referensi struktur DAN warna.
+
+Baca design-system-v2.md bagian Reusability (kalau masih relevan sebagai
+catatan prinsip, BUKAN sebagai sumber token warna) dulu.
+
+Tugas: bangun komponen <DataTable> generik berbasis @tanstack/react-table
+(sudah disetujui, ADR-019) mengikuti pola tabel referensi, lalu migrasikan
+KE SEMUA tabel Admin yang sudah ada (telusuri dulu — kemungkinan besar:
+leads, batch, sertifikat, upgrade, materi, bank soal, produk, kategori, dan
+tabel lain yang ditemukan saat telusur, jangan berasumsi dari daftar ini
+saja).
+
+FITUR WAJIB (hexatara_ADMIN_DESIGN.md Bagian 3):
+1. Search box di atas tabel (filter kolom teks utama)
+2. Filter dropdown per kolom yang relevan (status, tanggal, kategori — beda
+   tiap tabel sesuai kolomnya)
+3. Sort per kolom via klik header, indikator arah sort
+4. Checkbox pilih-baris termasuk "select all"
+5. Pagination LENGKAP di footer: dropdown rows-per-page (10/20/30/50/100),
+   teks "Halaman X dari Y", tombol first/prev/next/last
+6. Tombol edit dan hapus per baris (AlertDialog konfirmasi yang SUDAH ADA,
+   jangan buat modal baru)
+
+Migrasi SATU tabel dulu sampai benar, baru lanjut ke tabel berikutnya — uji
+tiap tabel sebelum lanjut.
+
+Ini menggantikan scope §12.5.11 (arsip) — dependency @tanstack/react-table
+SUDAH DISETUJUI di ADR-019, tidak perlu tanya ulang izin.
+
+MOBILE FIRST: di 375px, tabel HARUS tetap bisa dipakai — pertimbangkan pola
+card-list (setiap baris jadi kartu ringkas) atau scroll horizontal terbatas
+DI DALAM kontainer tabel saja (bukan seluruh halaman ikut scroll), pilih
+salah satu dan konsisten di semua tabel.
+
+Paparkan dulu rencana (daftar lengkap tabel yang akan dimigrasi, urutan
+migrasinya) sebelum menulis kode.
+```
+
+### SETELAH BLOK INI
+
+**Uji sendiri (ulangi untuk SETIAP tabel admin yang dimigrasi):**
+- Search box memfilter data sesuai kata kunci
+- Filter dropdown per kolom berfungsi
+- Klik header kolom → data terurut asc, klik lagi → desc
+- Checkbox pilih-baris dan "select all" berfungsi
+- Pagination lengkap berfungsi (ganti rows-per-page, first/prev/next/last)
+- Tombol edit membuka form edit yang benar, tombol hapus memunculkan
+  AlertDialog
+- 375px: tabel tetap bisa dipakai dengan pola yang dipilih (card-list atau
+  scroll horizontal terbatas), tidak ada elemen terpotong
+
+**Update — tempel ke sesi baru:**
+
+```
+Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
+Saya sudah menguji DataTable generik baru (TanStack Table) di seluruh tabel
+Admin sendiri di browser, termasuk mobile 375px, dan hasilnya sesuai. Isi
+baris terkait (menggantikan F06.14 lama): Status DONE, Berkas [daftar
+berkas], Diuji [tanggal], Bukti [sebutkan tabel mana saja yang sudah
+dimigrasi]. Tambahkan satu baris ke Log verifikasi. Jangan mengubah status
+baris fitur lain.
+```
+
+**Commit:**
+
+```powershell
+pnpm tsc --noEmit; pnpm lint; pnpm build
+git add -A
+git commit -m "feat(admin): DataTable generik TanStack Table di semua tabel Admin (Fase 12.6)"
+```
+
+---
+
+## 12.6.4 Form components generik dan upload gambar dengan crop
+
+```
+/impeccable /ponytail
+
+Lampirkan hexatara_ADMIN_DESIGN.md sebagai referensi struktur DAN warna.
+
+Tugas: standardisasi komponen form Admin (Input, Select, Combobox
+searchable, Textarea, DatePicker kalau dibutuhkan) memakai shadcn/ui Form +
+react-hook-form + zod, DAN redesign <ImageUploadField> (kerangka lama dari
+§12.5.1) menjadi lengkap dengan validasi (ukuran file, tipe file, dimensi
+minimum kalau relevan) dan CROP gambar.
+
+DEPENDENCY CROP: pilih library crop (react-image-crop atau react-easy-crop)
+— SUDAH TERMASUK dependency yang disetujui di ADR-019 (kategori umum "form
+components"), tapi kalau ternyata butuh library spesifik yang belum
+disebutkan Alif, tetap konfirmasi eksplisit dulu sebelum memasang, jangan
+asumsikan semua library apa pun otomatis diizinkan.
+
+FITUR WAJIB ImageUploadField:
+1. Preview gambar sebelum upload
+2. Validasi tipe file (JPG/PNG/WebP) dan ukuran maksimum, pesan error jelas
+3. Crop dengan aspect ratio yang bisa dikonfigurasi per pemakaian (misal 1:1
+   untuk foto profil, 16:9 untuk hero)
+4. Kompresi otomatis setelah crop (browser-image-compression, sudah dipakai
+   di proyek — cek dulu, jangan pasang ulang kalau sudah ada)
+5. Loading state saat upload ke Supabase Storage
+
+Terapkan ImageUploadField baru ini ke SEMUA form Admin yang sebelumnya
+memakai kerangka lama (§12.5.1) — telusuri dulu semua pemakaiannya.
+
+Ini menggantikan scope §12.5.12 (arsip).
+
+MOBILE FIRST: dialog crop WAJIB bisa dipakai nyaman di layar 375px (area
+crop cukup besar untuk disentuh dengan jari, tombol konfirmasi/batal mudah
+dijangkau).
+
+Paparkan dulu rencana (library crop yang dipilih dan alasannya, daftar form
+yang akan dimigrasi) sebelum menulis kode.
+```
+
+### SETELAH BLOK INI
+
+**Uji sendiri:**
+- Form Admin (contoh: form produk, form pelatihan) memakai komponen shadcn/ui
+  Form baru, validasi zod berfungsi dengan pesan error jelas
+- Upload gambar: pilih file → preview muncul → crop bisa digeser/di-resize →
+  konfirmasi → gambar terkompres dan terupload ke Supabase Storage
+- Validasi tipe/ukuran file menolak file tidak valid dengan pesan jelas
+- 375px: dialog crop nyaman dipakai dengan jari, tombol mudah dijangkau
+
+**Update — tempel ke sesi baru:**
+
+```
+Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
+Saya sudah menguji form components generik dan ImageUploadField dengan crop
+sendiri di browser, termasuk mobile, dan hasilnya sesuai. Isi baris terkait
+(menggantikan F06.15 lama): Status DONE, Berkas [daftar berkas], Diuji
+[tanggal], Bukti [ringkas hasil uji]. Tambahkan satu baris ke Log verifikasi.
+Jangan mengubah status baris fitur lain.
+```
+
+**Commit:**
+
+```powershell
+pnpm tsc --noEmit; pnpm lint; pnpm build
+git add -A
+git commit -m "feat(admin): form components shadcn/ui generik, ImageUploadField dengan crop (Fase 12.6)"
+```
+
+---
+
+## 12.6.5 Migrasi CRUD konten, produk, pelatihan, kategori dinamis
+
+```
+/impeccable /ponytail
+
+Lampirkan hexatara_ADMIN_DESIGN.md sebagai referensi struktur DAN warna.
+
+Baca ENGINEERING.md ADR-012 (kategori produk/pelatihan dinamis) dulu.
+
+Tugas: migrasikan SEMUA halaman CRUD Admin untuk konten dan katalog ke pola
+shell (§12.6.0) + DataTable (§12.6.3) + form components (§12.6.4) yang
+sudah dibangun — telusuri dulu daftar lengkapnya, kemungkinan besar:
+popup, hero-slide, instructor, testimonial, company-profile, produk, batch
+pelatihan, kategori produk, kategori pelatihan, field rating manual (ADR-011).
+
+Ini murni migrasi TAMPILAN — logika bisnis, validasi, dan struktur data yang
+sudah ada di masing-masing fitur TIDAK berubah, hanya dibungkus ulang dengan
+komponen baru.
+
+Ini menggantikan scope §12.5.9 (arsip, kategori dinamis + rating) — kalau
+kategori dinamis dan field rating manual BELUM pernah diimplementasikan
+sama sekali (bukan cuma soal tampilan), bangun dulu logikanya sesuai
+ADR-011/ADR-012 sebelum membungkusnya dengan tampilan baru — cek dulu status
+sebenarnya, jangan asumsikan sudah ada.
+
+Migrasi SATU menu dulu sampai benar dan teruji, baru lanjut ke menu
+berikutnya.
+
+Paparkan dulu rencana (daftar lengkap menu yang akan dimigrasi, urutan,
+konfirmasi status kategori dinamis/rating sudah ada atau belum) sebelum
+menulis kode.
+```
+
+### SETELAH BLOK INI
+
+**Uji sendiri (ulangi per menu yang dimigrasi):**
+- Tabel listing pakai DataTable baru, form create/edit pakai form components
+  baru, semua fungsi lama (validasi, simpan, hapus) tetap bekerja
+- Kategori produk/pelatihan dinamis bisa ditambah/diedit/dihapus dari Admin
+  (kalau belum ada sebelumnya, sekarang berfungsi)
+- Field rating manual bisa diisi Admin dan tampil benar di halaman publik
+- 375px: setiap menu tetap nyaman dipakai
+
+**Update — tempel ke sesi baru:**
+
+```
+Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
+Saya sudah menguji migrasi CRUD konten/produk/pelatihan/kategori ke sistem
+desain baru sendiri di browser dan hasilnya sesuai. Isi baris terkait
+(menggantikan F06.4/F06.5/F06.9 lama sesuai yang relevan): Status DONE,
+Berkas [daftar berkas], Diuji [tanggal], Bukti [sebutkan menu mana saja
+yang sudah dimigrasi]. Tambahkan satu baris ke Log verifikasi. Jangan
+mengubah status baris fitur lain.
+```
+
+**Commit:**
+
+```powershell
+pnpm tsc --noEmit; pnpm lint; pnpm build
+git add -A
+git commit -m "feat(admin): migrasi CRUD konten, produk, pelatihan, kategori dinamis ke sistem desain baru"
+```
+
+---
+
+## 12.6.6 Migrasi Admin LMS: bab materi, kuis, sertifikat
+
+```
+/impeccable /ponytail
+
+Lampirkan hexatara_ADMIN_DESIGN.md sebagai referensi struktur DAN warna.
+
+Baca ENGINEERING.md ADR-013 dan ADR-018 (LMS materi berbab, video/gambar
+opsional, lampiran file) dulu — kalau §12.5.4 lama (arsip) sudah sempat
+dikerjakan sebagian, telusuri kode yang ada dan lanjutkan/perbaiki, JANGAN
+tulis ulang dari nol tanpa memeriksa dulu.
+
+Tugas: bangun/selesaikan/migrasikan CRUD Admin untuk:
+1. Bab materi (material_chapters) — editor Tiptap untuk konten_id/konten_en,
+   field video_url dan gambar_url (opsional, independen sesuai ADR-018),
+   reorder otomatis (drag-and-drop, pola ADR-014)
+2. Lampiran file per bab (material_chapter_files) — UI upload/kelola file
+   memakai pola File Manager dari referensi (hexatara_ADMIN_DESIGN.md
+   Bagian 3): card per file dengan ikon tipe file, judul_id/judul_en,
+   deskripsi_id/deskripsi_en, tombol hapus, reorder
+3. Bank soal kuis (kalau ada CRUD terpisah) dan reorder soal kuis
+4. Sertifikat (kalau ada menu CRUD/kelola terpisah di Admin)
+
+Semua pakai pola shell+DataTable+form dari blok sebelumnya. Larangan §13.3
+untuk KUIS TIDAK BERUBAH (tidak ada skor/ambang nilai/riwayat pengerjaan
+ditambahkan di sisi Admin manapun).
+
+Ini menggantikan scope §12.5.4 (arsip, mungkin sebagian sudah dikerjakan —
+verifikasi dulu).
+
+MOBILE FIRST: editor Tiptap dan drag-reorder WAJIB tetap bisa dipakai di
+layar sempit (drag-handle cukup besar untuk disentuh, toolbar Tiptap tidak
+terpotong).
+
+Paparkan dulu rencana (status kode §12.5.4 lama yang sudah ada, apa yang
+dipertahankan vs ditulis ulang) sebelum menulis kode.
+```
+
+### SETELAH BLOK INI
+
+**Uji sendiri:**
+- Admin bisa membuat/edit/hapus bab materi lengkap dengan konten Tiptap,
+  video_url, gambar_url (opsional)
+- Reorder bab lewat drag-and-drop berfungsi dan tersimpan
+- Admin bisa menambah/kelola lampiran file per bab, tampil sebagai card
+  bergaya File Manager
+- Reorder soal kuis berfungsi (kalau ada)
+- 375px: editor dan drag-reorder tetap bisa dipakai dengan nyaman
+
+**Update — tempel ke sesi baru:**
+
+```
+Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
+Saya sudah menguji Admin LMS (bab materi, lampiran file, bank soal/reorder
+kuis, sertifikat) sendiri di browser, termasuk mobile, dan hasilnya sesuai.
+Isi baris terkait (menggantikan F06.2b lama): Status DONE, Berkas [daftar
+berkas], Diuji [tanggal], Bukti [ringkas hasil uji]. Tambahkan satu baris ke
+Log verifikasi. Jangan mengubah status baris fitur lain.
+```
+
+**Commit:**
+
+```powershell
+pnpm tsc --noEmit; pnpm lint; pnpm build
+git add -A
+git commit -m "feat(admin): migrasi Admin LMS (bab materi, lampiran file, kuis, sertifikat) ke sistem desain baru"
+```
+
+---
+
+## 12.6.7 Restyle tampilan LMS materi (user-facing)
+
+```
+/impeccable /ponytail
+
+Lampirkan hexatara_ADMIN_DESIGN.md sebagai referensi struktur DAN warna.
+
+Baca kode LMS materi user-facing (§12.5.3, sudah dibangun dan diuji 2 kali
+sebelumnya) dulu — INI RESTYLE, BUKAN restrukturisasi. Seluruh LOGIKA yang
+sudah benar (kunci progresif per bab, validasi scroll-sampai-bawah,
+Server Action penulisan material_progress, validasi server bahwa bab
+sebelumnya sudah selesai, course completion, kapan kuis terbuka) TIDAK
+BOLEH berubah sama sekali — hanya tampilan visualnya yang diganti ke sistem
+desain baru (dalam <DashboardUserShell> dari §12.6.0, atau tetap mode fokus
+tanpa shell kalau itu lebih sesuai — putuskan dan jelaskan di paparan
+rencana).
+
+Elemen yang sudah benar secara STRUKTUR dari iterasi sebelumnya (pertahankan
+strukturnya, ganti stylingnya saja): sidebar navigasi bab dengan status
+jelas, dua tab "Materi" dan "File" (pola File Manager referensi untuk tab
+File), tombol "Lanjut ke Bab Berikutnya", integrasi kuis F03.2 di dalam LMS
+yang sama (bukan halaman terpisah), indikator nomor soal kotak-kotak,
+progress bar yang membaca materi+kuis, alur "Dapatkan Sertifikat" di akhir.
+
+Larangan §13.3 untuk KUIS TIDAK BERUBAH — ini murni restyle visual atas
+mekanisme yang sudah benar.
+
+MOBILE FIRST: perilaku sidebar-jadi-drawer di mobile yang sudah dibangun di
+iterasi sebelumnya WAJIB dipertahankan, hanya visualnya yang ikut sistem
+desain baru.
+
+Paparkan dulu rencana (bagian mana yang murni ganti styling vs ada
+penyesuaian struktur kecil karena pindah ke komponen shadcn/ui) sebelum
+menulis kode.
+```
+
+### SETELAH BLOK INI
+
+**Uji sendiri:**
+- Seluruh perilaku LMS materi yang sudah benar sebelumnya (kunci progresif,
+  validasi scroll, tab Materi/File, kuis terintegrasi, progress bar
+  gabungan, Dapatkan Sertifikat) MASIH berfungsi identik — regresi nol
+- Tampilan visual sudah mengikuti sistem desain baru (token Neutral, radius,
+  Geist)
+- 375px: perilaku drawer/mobile yang sudah ada sebelumnya tidak berubah
+
+**Update — tempel ke sesi baru:**
+
+```
+Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
+Saya sudah menguji restyle LMS materi user-facing ke sistem desain baru
+sendiri di browser, termasuk mobile, dan memastikan tidak ada regresi
+fungsional dari versi sebelumnya. Isi baris terkait (F06.2): Status DONE,
+Berkas [daftar berkas], Diuji [tanggal], Bukti [ringkas hasil uji].
+Tambahkan satu baris ke Log verifikasi. Jangan mengubah status baris fitur
+lain.
+```
+
+**Commit:**
+
+```powershell
+pnpm tsc --noEmit; pnpm lint; pnpm build
+git add -A
+git commit -m "style(lms): restyle tampilan LMS materi user-facing ke sistem desain baru, logika tidak berubah"
+```
+
+---
+
+## 12.6.8 Dashboard User: redesign penuh
+
+```
+/impeccable /ponytail
+
+Lampirkan hexatara_ADMIN_DESIGN.md sebagai referensi struktur DAN warna.
+
+Baca PRD.md Modul 4 (Dashboard User) dulu.
+
+Tugas: redesign penuh Dashboard User di dalam <DashboardUserShell> (§12.6.0):
+profil, daftar sertifikat (dengan preview), riwayat transaksi/pendaftaran,
+riwayat materi yang sedang/sudah diselesaikan.
+
+FITUR WAJIB:
+1. Kartu statistik ringkas (contoh: jumlah sertifikat dimiliki, materi
+   sedang berjalan) di halaman utama Dashboard User
+2. Preview sertifikat (bukan cuma link download — tampilkan preview visual
+   sertifikat langsung di halaman, sesuai requirement lama F06.17)
+3. Tabel/daftar riwayat transaksi memakai pola DataTable ringkas
+4. PERBAIKI bug navigasi transaksi yang disebut di §12.5.17 lama (§12.5.14)
+   — telusuri dulu apakah bug ini masih ada di kode sekarang, perbaiki kalau
+   masih ada, laporkan kalau ternyata sudah tidak ada
+
+Ini menggantikan scope §12.5.14 (arsip).
+
+MOBILE FIRST: preview sertifikat dan tabel riwayat WAJIB nyaman dilihat di
+375px.
+
+Paparkan dulu rencana (status bug navigasi transaksi setelah ditelusuri)
+sebelum menulis kode.
+```
+
+### SETELAH BLOK INI
+
+**Uji sendiri:**
+- Dashboard User tampil dengan kartu statistik, preview sertifikat, riwayat
+  transaksi, riwayat materi
+- Preview sertifikat tampil visual (bukan cuma link)
+- Bug navigasi transaksi (kalau ada) sudah teratasi — uji ulang skenario
+  yang dulu bermasalah
+- 375px: semua elemen nyaman dipakai
+
+**Update — tempel ke sesi baru:**
+
+```
+Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
+Saya sudah menguji redesign penuh Dashboard User sendiri di browser,
+termasuk mobile, dan memastikan bug navigasi transaksi lama sudah teratasi
+(atau memang sudah tidak ada). Isi baris terkait (menggantikan F06.17 lama):
+Status DONE, Berkas [daftar berkas], Diuji [tanggal], Bukti [ringkas hasil
+uji]. Tambahkan satu baris ke Log verifikasi. Jangan mengubah status baris
+fitur lain.
+```
+
+**Commit:**
+
+```powershell
+pnpm tsc --noEmit; pnpm lint; pnpm build
+git add -A
+git commit -m "feat(user): redesign penuh Dashboard User dengan preview sertifikat dan riwayat"
+```
+
+---
+
+## 12.6.9 Redesign halaman publik: Beranda, Pelatihan, Produk, navbar
+
+```
+/impeccable /ponytail
+
+Lampirkan hexatara_ADMIN_DESIGN.md sebagai referensi struktur DAN warna
+(lihat peringatan warna di awal Fase 12.6) — TAPI halaman publik TIDAK
+memakai AdminShell/DashboardUserShell (tanpa sidebar), tetap layout
+marketing biasa, hanya komponen dasar (button, card, badge) dan token
+(warna, radius, font) yang ikut sistem baru.
+
+Baca PRD.md bagian halaman publik (Beranda, Pelatihan, Produk) dulu.
+
+Tugas gabungan (menggantikan §12.5.5, §12.5.6, §12.5.7, §12.5.8 arsip):
+1. Favicon Hexatara terpasang
+2. Navbar publik disederhanakan sesuai requirement lama (telusuri detail di
+   arsip §12.5.5 kalau perlu referensi konten, bangun tampilannya dengan
+   komponen baru)
+3. Popup berbasis gambar dua orientasi (requirement lama §12.5.5) — pakai
+   Dialog shadcn/ui
+4. Redesign Beranda: hero dua kolom + carousel, urutan section, footer
+   lengkap, halaman statis baru (detail requirement di arsip §12.5.6)
+5. Redesign Pelatihan: hero freemium, filter/sort/kategori, detail +
+   suggest (detail requirement di arsip §12.5.7)
+6. Redesign Produk: hero, filter/sort/kategori, galeri multi-gambar, detail
+   + suggest (detail requirement di arsip §12.5.8) — INGAT F04.3 (harga
+   tersembunyi): verifikasi ulang lewat Network tab bahwa redesign ini
+   TIDAK membocorkan harga di response API untuk user yang belum berhak
+   lihat harga, WAJIB, karena redesign katalog menyentuh langsung halaman ini
+
+Kerjakan satu halaman/section dulu sampai benar dan teruji sebelum lanjut ke
+berikutnya — ini scope besar, jangan digabung sekaligus dalam satu commit.
+
+MOBILE FIRST WAJIB di setiap halaman.
+
+Paparkan dulu rencana (urutan pengerjaan section demi section) sebelum
+menulis kode.
+```
+
+### SETELAH BLOK INI
+
+**Uji sendiri:**
+- Favicon tampil di tab browser
+- Navbar publik disederhanakan, popup gambar dua orientasi berfungsi
+- Beranda, Pelatihan, Produk tampil dengan layout baru, filter/sort/kategori
+  berfungsi, galeri multi-gambar Produk berfungsi
+- **WAJIB:** buka DevTools Network tab di halaman Produk sebagai user yang
+  belum berhak lihat harga → response API TIDAK mengandung field harga
+  (F04.3 tidak regresi)
+- 375px: seluruh halaman publik nyaman dipakai, tidak ada scroll horizontal
+
+**Update — tempel ke sesi baru:**
+
+```
+Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
+Saya sudah menguji redesign halaman publik (Beranda, Pelatihan, Produk,
+navbar, popup, favicon) sendiri di browser, termasuk mobile, dan
+memverifikasi ulang F04.3 (harga tersembunyi) lewat Network tab — tidak ada
+kebocoran. Isi baris terkait (menggantikan F06.6-F06.12 lama sesuai yang
+relevan): Status DONE, Berkas [daftar berkas], Diuji [tanggal], Bukti
+[ringkas hasil uji]. Tambahkan satu baris ke Log verifikasi. Jangan
+mengubah status baris fitur lain.
+```
+
+**Commit:**
+
+```powershell
+pnpm tsc --noEmit; pnpm lint; pnpm build
+git add -A
+git commit -m "feat(public): redesign Beranda, Pelatihan, Produk, navbar, popup ke sistem desain baru"
+```
+
+---
+
+## 12.6.10 Polish Admin: toast, ekspor XLSX, reorder soal kuis, combobox
+
+```
+/impeccable /ponytail
+
+Lampirkan hexatara_ADMIN_DESIGN.md sebagai referensi struktur DAN warna.
+
+Baca ENGINEERING.md ADR-016 (ekspor XLSX) dulu.
+
+Tugas (menggantikan §12.5.13 arsip): pastikan seluruh Admin memakai
+1. Toast notification (Sonner, shadcn/ui) konsisten untuk sukses/error di
+   semua aksi CRUD — ganti alert/notifikasi lama kalau masih ada
+2. Ekspor XLSX (ADR-016) tetap berfungsi, tombolnya distyle ulang mengikuti
+   sistem desain baru
+3. Reorder soal kuis (drag-and-drop) — kalau belum dibangun di §12.6.6,
+   selesaikan di sini; larangan §13.3 tetap berlaku (reorder murni urutan
+   tampil, bukan skor/riwayat)
+4. Combobox searchable dipakai konsisten di semua dropdown pilihan panjang
+   (kategori, instructor, dst) menggantikan native <select> polos
+
+Ini polish menyeluruh — telusuri dulu bagian mana yang sudah tercakup di
+blok-blok sebelumnya (§12.6.3-§12.6.6) supaya tidak dikerjakan dua kali.
+
+Paparkan dulu rencana (bagian mana yang sudah selesai di blok sebelumnya,
+bagian mana yang masih perlu dikerjakan di sini) sebelum menulis kode.
+```
+
+### SETELAH BLOK INI
+
+**Uji sendiri:**
+- Toast muncul konsisten di semua aksi CRUD Admin (sukses dan error)
+- Ekspor XLSX berfungsi, tombol sesuai sistem desain baru
+- Reorder soal kuis berfungsi lewat drag-and-drop
+- Combobox searchable berfungsi di semua dropdown panjang
+
+**Update — tempel ke sesi baru:**
+
+```
+Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
+Saya sudah menguji toast, ekspor XLSX, reorder soal kuis, dan combobox
+searchable sendiri di browser dan hasilnya sesuai. Isi baris terkait
+(menggantikan F06.16 lama): Status DONE, Berkas [daftar berkas], Diuji
+[tanggal], Bukti [ringkas hasil uji]. Tambahkan satu baris ke Log
+verifikasi. Jangan mengubah status baris fitur lain.
+```
+
+**Commit:**
+
+```powershell
+pnpm tsc --noEmit; pnpm lint; pnpm build
+git add -A
+git commit -m "polish(admin): toast Sonner, ekspor XLSX, reorder soal kuis, combobox searchable"
+```
+
+---
+
+## 12.6.11 Audit visual menyeluruh
+
+```
+/impeccable /ponytail
+
+Lampirkan hexatara_ADMIN_DESIGN.md sebagai referensi struktur DAN warna.
+
+Tugas (menggantikan §12.5.16 arsip): audit visual MENYELURUH seluruh
+Hexatara setelah redesign Fase 12.6 — bukan cuma halaman yang disentuh Fase
+12.6, tapi JUGA halaman F01-F04 lama yang mungkin ikut terdampak lewat
+komponen bersama (Button, Card, Badge, dsb yang sekarang dari shadcn/ui).
+
+Jalankan /impeccable audit sebagai pelengkap, lalu periksa manual:
+1. Konsistensi warna token Neutral di SELURUH halaman (tidak ada sisa warna
+   --warna-utama/--warna-aksen lama yang ketinggalan di suatu tempat)
+2. Konsistensi radius dan font Geist di seluruh halaman
+3. Kontras warna tetap memenuhi standar aksesibilitas (4.5:1 minimum) —
+   PENTING karena palet Neutral banyak abu-abu, rawan kontras kurang kalau
+   tidak hati-hati
+4. Dark mode konsisten di SEMUA halaman, tidak ada elemen yang "ketinggalan"
+   di mode terang saat dark mode aktif atau sebaliknya
+5. 375px di SEMUA halaman yang sudah disentuh Fase 12.6
+
+Laporkan temuan sebagai daftar, paling parah di atas. Jangan memperbaiki
+apa pun sebelum saya menyetujui daftarnya.
+```
+
+### SETELAH BLOK INI
+
+**Uji sendiri:**
+- Baca daftar temuan dari Claude Code, putuskan mana yang perlu diperbaiki
+- Setelah perbaikan disetujui dan dikerjakan, cek ulang: tidak ada sisa
+  warna lama, kontras memenuhi standar, dark mode konsisten, 375px bersih
+  di semua halaman
+
+**Update — tempel ke sesi baru:**
+
+```
+Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
+Saya sudah meninjau audit visual menyeluruh dan menyetujui/menyelesaikan
+perbaikan yang diperlukan. Isi baris terkait (menggantikan F06.19 lama):
+Status DONE, Berkas [daftar berkas], Diuji [tanggal], Bukti [ringkas hasil
+audit dan perbaikan]. Tambahkan satu baris ke Log verifikasi. Jangan
+mengubah status baris fitur lain.
+```
+
+**Commit:**
+
+```powershell
+pnpm tsc --noEmit; pnpm lint; pnpm build
+git add -A
+git commit -m "fix(design-v3): audit visual menyeluruh pasca redesign Fase 12.6"
+```
+
+---
+
+## 12.6.12 Panduan pemakaian komponen untuk fitur baru
+
+```
+/impeccable /ponytail
+
+Lampirkan hexatara_ADMIN_DESIGN.md.
+
+Tugas: buat dokumen `docs/PANDUAN_KOMPONEN.md` (developer-facing, BUKAN
+untuk dijalankan sebagai prompt) yang menjelaskan cara memakai sistem
+desain baru ini secara KONSISTEN untuk menu atau fitur yang akan dibuat
+NANTI, setelah Fase 12.6 selesai — supaya tim tidak balik ke pola lama atau
+membuat pola baru yang tidak konsisten.
+
+ISI WAJIB:
+1. Cara memulai halaman Admin baru: pakai <AdminShell>, tambahkan item
+   sidebar ke grup yang sesuai (jangan bikin grup baru tanpa alasan kuat)
+2. Cara memulai tabel data baru: pakai <DataTable> generik (§12.6.3), bukan
+   bikin tabel HTML manual lagi
+3. Cara memulai form baru: pakai pola Form + react-hook-form + zod dari
+   §12.6.4, termasuk cara pakai ImageUploadField kalau perlu upload gambar
+4. Token warna, radius, font yang wajib dipakai (rujuk hexatara_ADMIN_DESIGN.md,
+   DAN catat bahwa token ini bisa berubah kalau §12.6.14 disetujui Abi —
+   developer WAJIB cek dokumen ini lagi setelah itu terjadi)
+5. Checklist mobile-first singkat yang wajib dicek sebelum PR: breakpoint
+   375px diuji, tidak ada scroll horizontal, sidebar/drawer berfungsi
+6. Contoh kode singkat (bukan tutorial panjang) untuk pola paling sering
+   dipakai: halaman CRUD baru dari nol (shell + DataTable + form) dalam
+   beberapa langkah ringkas
+
+Dokumen ini TIDAK berisi prompt yang dijalankan Claude Code — murni
+referensi yang dibaca manusia (atau dilampirkan ke prompt fitur baru di
+masa depan, mirip cara hexatara_ADMIN_DESIGN.md dilampirkan sekarang).
+```
+
+### SETELAH BLOK INI
+
+**Uji sendiri:**
+- `docs/PANDUAN_KOMPONEN.md` ada dan lengkap sesuai isi wajib di atas
+- Coba ikuti panduannya untuk skenario hipotetis (bikin satu halaman CRUD
+  kecil) — kalau panduannya jelas dan bisa diikuti tanpa nebak-nebak,
+  berarti sudah cukup baik
+
+**Update — tempel ke sesi baru:**
+
+```
+Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
+docs/PANDUAN_KOMPONEN.md sudah dibuat dan saya sudah tinjau isinya lengkap
+dan jelas. Tambahkan baris baru untuk dokumen ini, isi Status DONE, Berkas
+docs/PANDUAN_KOMPONEN.md, Diuji [tanggal], Bukti [ringkas]. Tambahkan satu
+baris ke Log verifikasi.
+```
+
+**Commit:**
+
+```powershell
+git add -A
+git commit -m "docs: panduan pemakaian komponen sistem desain baru untuk fitur mendatang"
+```
+
+---
+
+## 12.6.13 Sebelum lanjut ke Sprint 5
+
+- [ ] Seluruh blok 12.6.0 s/d 12.6.12 sudah DONE di feature-registry.md
+- [ ] `pnpm knip` bersih
+- [ ] `pnpm build` lolos tanpa error
+- [ ] Diuji ulang di 375px untuk SEMUA halaman Hexatara — bukan cuma yang
+      disentuh Fase 12.6, tapi juga F01-F04 lama untuk pastikan tidak ada
+      regresi dari komponen bersama yang berubah total (Button, Card,
+      Badge, Table, dan seluruh shell)
+- [ ] Uji ulang Network tab untuk harga tersembunyi (F04.3) — WAJIB
+- [ ] Uji ulang bug freemium (12.5.2) dan bug navigasi transaksi (12.5.14
+      lama / §12.6.8) benar-benar tuntas
+- [ ] Dark mode diuji di SEMUA halaman, bukan cuma sebagian
+- [ ] `docs/PANDUAN_KOMPONEN.md` sudah dibaca dan dipahami tim sebelum fitur
+      baru berikutnya mulai dikerjakan
+
+---
+
+## 12.6.14 CATATAN — Penyesuaian warna, menunggu persetujuan Abi
+
+> **INI BUKAN BLOK PROMPT. JANGAN DIJALANKAN sampai Abi menyetujui.**
+
+Seluruh Fase 12.6 sengaja dibangun dengan token warna REFERENSI (preset
+"Neutral" shadcn/ui, achromatic — lihat `hexatara_ADMIN_DESIGN.md` Bagian 1),
+BUKAN token identitas Hexatara (`--warna-utama` `#1E40AF` biru, `--warna-aksen`
+`#F59E0B` oranye) yang jadi sumber kebenaran tunggal di seluruh Fase 12.5.
+Ini keputusan SEMENTARA Alif (ADR-019, 2026-09-10), eksplisit menunggu
+persetujuan Abi sebelum difinalkan.
+
+Kalau Abi SUDAH menyetujui:
+1. Tentukan bersama Abi: apakah kembali penuh ke `--warna-utama`/`--warna-aksen`
+   Hexatara (primary button, sidebar accent, dst jadi biru/oranye lagi), atau
+   ada penyesuaian lain (radius, font) yang juga ingin diubah dari default
+   referensi.
+2. Update `hexatara_ADMIN_DESIGN.md` Bagian 1 dengan token final yang
+   disetujui.
+3. Tulis prompt blok baru (§12.6.15) untuk menerapkan token final ini ke
+   SELURUH halaman yang sudah dibangun di §12.6.0–§12.6.12 — kemungkinan
+   besar ini cukup mengubah token CSS di satu tempat (tailwind config /
+   globals.css) kalau seluruh komponen sebelumnya memang konsisten memakai
+   token, bukan warna hardcoded per komponen (ini alasan kenapa §12.6.0-
+   §12.6.12 SELALU diinstruksikan pakai token, bukan hex langsung — supaya
+   penyesuaian warna nanti murah, bukan migrasi ulang).
+4. Update ENGINEERING.md dengan ADR baru (atau update ADR-019) mencatat
+   keputusan final Abi dan tanggalnya.
+
+Kalau Abi TIDAK menyetujui / minta tetap warna referensi: cukup hapus
+catatan "SEMENTARA" ini dari `hexatara_ADMIN_DESIGN.md` dan ENGINEERING.md,
+tandai ADR-019 selesai tanpa perubahan lebih lanjut.
 
 ---
 

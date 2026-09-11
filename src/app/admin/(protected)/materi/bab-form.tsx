@@ -4,14 +4,13 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { MateriFormSchema, type MateriFormInput } from '@/lib/validations/materi-admin';
-import { simpanMateriAction } from './actions';
+import { BabFormSchema, type BabFormInput } from '@/lib/validations/materi-bab-admin';
+import { simpanBabAction } from './bab-actions';
 import { uploadGambarAdminAction } from '../actions';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { RichTextEditor } from '@/components/admin/rich-text-editor';
 import { ImageUploadField } from '@/components/image-upload-field';
 
 function Field({ label, htmlFor, children }: { label: string; htmlFor: string; children: React.ReactNode }) {
@@ -23,14 +22,16 @@ function Field({ label, htmlFor, children }: { label: string; htmlFor: string; c
   );
 }
 
-export function MateriForm({
+export function BabForm({
   mode,
-  materiId,
+  materialId,
+  babId,
   defaultValues,
 }: {
   mode: 'create' | 'edit';
-  materiId?: number;
-  defaultValues: MateriFormInput;
+  materialId: number;
+  babId?: number;
+  defaultValues: BabFormInput;
 }) {
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
@@ -39,19 +40,19 @@ export function MateriForm({
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<MateriFormInput>({
-    resolver: zodResolver(MateriFormSchema),
+  } = useForm<BabFormInput>({
+    resolver: zodResolver(BabFormSchema),
     defaultValues,
   });
 
-  async function onSubmit(data: MateriFormInput) {
+  async function onSubmit(data: BabFormInput) {
     setPesanError(null);
-    const hasil = await simpanMateriAction(mode === 'edit' ? (materiId ?? null) : null, data);
+    const hasil = await simpanBabAction(materialId, mode === 'edit' ? (babId ?? null) : null, data);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
       return;
     }
-    router.push('/admin/materi');
+    router.push(mode === 'create' ? `/admin/materi/${hasil.id}` : '/admin/materi');
     router.refresh();
   }
 
@@ -72,20 +73,34 @@ export function MateriForm({
         <Input id="judul_en" {...register('judul_en')} />
       </Field>
 
-      <Field label="Deskripsi (Indonesia)" htmlFor="deskripsi_id">
-        <Textarea id="deskripsi_id" rows={3} {...register('deskripsi_id')} />
+      <Field label="Konten (Indonesia) *" htmlFor="konten_id">
+        <Controller
+          control={control}
+          name="konten_id"
+          render={({ field }) => <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />}
+        />
+        {errors.konten_id && <p className="text-sm text-destructive">{errors.konten_id.message}</p>}
       </Field>
 
-      <Field label="Deskripsi (Inggris)" htmlFor="deskripsi_en">
-        <Textarea id="deskripsi_en" rows={3} {...register('deskripsi_en')} />
+      <Field label="Konten (Inggris)" htmlFor="konten_en">
+        <Controller
+          control={control}
+          name="konten_en"
+          render={({ field }) => <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />}
+        />
+      </Field>
+
+      <Field label="URL Video (opsional)" htmlFor="video_url">
+        <Input id="video_url" placeholder="https://www.youtube.com/embed/..." {...register('video_url')} />
+        <p className="text-xs text-warna-teks-2">URL embed, tampil sebagai video pengantar di atas konten materi.</p>
       </Field>
 
       <Controller
         control={control}
-        name="poster_url"
+        name="gambar_url"
         render={({ field }) => (
           <ImageUploadField
-            label="Poster (tampil di kartu halaman Materi publik)"
+            label="Gambar Pendukung (opsional)"
             value={field.value ?? null}
             onChange={field.onChange}
             onUpload={async (file) => {
@@ -94,19 +109,6 @@ export function MateriForm({
               return uploadGambarAdminAction(fd);
             }}
           />
-        )}
-      />
-
-      <Controller
-        control={control}
-        name="is_active"
-        render={({ field }) => (
-          <div className="flex items-center gap-2">
-            <Switch id="is_active" checked={field.value} onCheckedChange={field.onChange} />
-            <Label htmlFor="is_active" className="font-normal">
-              Aktif — tampil di halaman Materi publik
-            </Label>
-          </div>
         )}
       />
 

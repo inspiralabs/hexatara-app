@@ -4,7 +4,7 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { MoreVerticalIcon } from 'lucide-react';
-import { hapusMateriAction } from './actions';
+import { hapusBabAction } from './bab-actions';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -23,7 +23,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-export function MateriRowActions({ id, judul }: { id: number; judul: string }) {
+export function BabRowActions({ babId, judul }: { babId: number; judul: string }) {
   const router = useRouter();
   const [hapusOpen, setHapusOpen] = useState(false);
   const [pending, startTransition] = useTransition();
@@ -31,7 +31,7 @@ export function MateriRowActions({ id, judul }: { id: number; judul: string }) {
 
   function konfirmasiHapus() {
     startTransition(async () => {
-      const hasil = await hapusMateriAction(id);
+      const hasil = await hapusBabAction(babId);
       if (!hasil.ok) {
         setPesanError(hasil.pesan);
         return;
@@ -44,11 +44,11 @@ export function MateriRowActions({ id, judul }: { id: number; judul: string }) {
   return (
     <>
       <DropdownMenu>
-        <DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label={`Aksi untuk ${judul}`} />}>
+        <DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label={`Aksi untuk materi ${judul}`} />}>
           <MoreVerticalIcon />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem render={<Link href={`/admin/materi/${id}`} />}>Ubah</DropdownMenuItem>
+          <DropdownMenuItem render={<Link href={`/admin/materi/${babId}`} />}>Ubah</DropdownMenuItem>
           <DropdownMenuItem variant="destructive" onClick={() => setHapusOpen(true)}>
             Hapus
           </DropdownMenuItem>
@@ -60,8 +60,8 @@ export function MateriRowActions({ id, judul }: { id: number; judul: string }) {
           <AlertDialogHeader>
             <AlertDialogTitle>Hapus materi &quot;{judul}&quot;?</AlertDialogTitle>
             <AlertDialogDescription>
-              Materi ini akan terhapus permanen dan tidak akan tampil lagi di halaman Materi publik. Tindakan ini
-              tidak bisa dibatalkan.
+              Materi ini beserta lampiran filenya akan terhapus permanen dan progres user yang sudah menyelesaikan
+              materi ini ikut hilang. Tindakan ini tidak bisa dibatalkan.
             </AlertDialogDescription>
           </AlertDialogHeader>
           {pesanError && <p className="px-4 text-sm text-destructive">{pesanError}</p>}
