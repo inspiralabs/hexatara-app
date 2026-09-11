@@ -5123,7 +5123,7 @@ menambah kolom apa pun.
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji redesign Beranda sendiri di browser dan hasilnya sesuai.
 Isi baris terkait: Status DONE, Berkas [daftar berkas], Diuji [tanggal],
-Bukti [ringkas hasil uji]. Tambahkan satu baris ke Log verifikasi.
+Bukti [tampilan sudah diperbaiki dan sesuai. list uji sudah saya lakukan dan sudah oke]. Tambahkan satu baris ke Log verifikasi.
 Jangan mengubah status baris fitur lain.
 ```
 

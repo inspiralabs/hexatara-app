@@ -20,7 +20,7 @@ export async function CompanyProfileSection() {
 
   return (
     <section className="bg-warna-latar-2">
-      <div className="mx-auto max-w-6xl px-4 py-10 sm:flex sm:items-center sm:gap-8">
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:flex sm:items-center sm:gap-8 md:py-24">
         {data.gambar_url && (
           <div className="relative mb-6 aspect-video w-full overflow-hidden rounded-xl sm:mb-0 sm:w-1/2">
             <Image

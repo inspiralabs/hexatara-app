@@ -17,7 +17,7 @@ export async function InstrukturSection() {
   if (!data || data.length === 0) return null;
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-10">
+    <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
       <h2 className="text-xl font-bold text-warna-teks sm:text-2xl">{t("instructorsHeading")}</h2>
       <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {data.map((instruktur) => (

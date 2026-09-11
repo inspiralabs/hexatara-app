@@ -17,13 +17,13 @@ export async function TestimoniSection() {
   if (!data || data.length === 0) return null;
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-10">
+    <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
       <h2 className="text-xl font-bold text-warna-teks sm:text-2xl">{t("testimonialsHeading")}</h2>
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {data.map((testi) => (
           <figure
             key={testi.id}
-            className="flex flex-col gap-3 rounded-xl border border-warna-latar-2 bg-warna-latar p-4"
+            className="flex flex-col gap-3 rounded-xl border border-warna-latar-2 bg-warna-latar p-4 shadow-float hover:-translate-y-0.5 hover:shadow-float-hover [transition:var(--transition-hover)]"
           >
             <blockquote className="text-base text-warna-teks">
               &ldquo;{pick(testi.isi_id, testi.isi_en, locale)}&rdquo;

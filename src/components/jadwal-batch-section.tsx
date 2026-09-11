@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { STATUS_BATCH_LABEL, formatRupiah, formatTanggalBatch } from "@/lib/batch";
 import { pick } from "@/lib/i18n/pick";
+import { ContentCard } from "@/components/content-card";
 import type { Database } from "@/types/database";
 
 export type Batch = Pick<
@@ -38,32 +39,31 @@ export function BatchCard({
   const lokasi = pick(batch.lokasi_id, batch.lokasi_en, locale);
 
   return (
-    <article className="flex flex-col gap-2 rounded-xl border border-warna-latar-2 bg-warna-latar p-4">
-      <div className="flex flex-wrap items-center gap-2">
-        {kategori && (
-          <span className="rounded-full bg-warna-utama/10 px-2.5 py-0.5 text-xs font-medium text-warna-utama">
-            {kategori}
-          </span>
-        )}
-        <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${status.className}`}>
-          {statusLabel}
-        </span>
-      </div>
-      <h3 className="text-lg font-bold text-warna-teks">{pick(batch.judul_id, batch.judul_en, locale)}</h3>
-      {tanggal && <p className="text-sm text-warna-teks-2">{tanggal}</p>}
-      {lokasi && <p className="text-sm text-warna-teks-2">{lokasi}</p>}
-      {batch.harga != null && (
-        <p className="text-base font-semibold text-warna-teks">{formatRupiah(batch.harga)}</p>
-      )}
-      {batch.status !== "closed" && (
-        <Link
-          href={`/batch/${batch.slug}`}
-          className="mt-2 inline-flex h-11 w-fit items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
-        >
-          {registerNowLabel}
-        </Link>
-      )}
-    </article>
+    <ContentCard
+      badges={
+        <>
+          {kategori && (
+            <span className="rounded-full bg-warna-utama/10 px-2.5 py-0.5 text-xs font-medium text-warna-utama">
+              {kategori}
+            </span>
+          )}
+          <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${status.className}`}>{statusLabel}</span>
+        </>
+      }
+      title={pick(batch.judul_id, batch.judul_en, locale)}
+      meta={[tanggal, lokasi].filter((line): line is string => Boolean(line))}
+      price={batch.harga != null ? formatRupiah(batch.harga) : undefined}
+      cta={
+        batch.status !== "closed" && (
+          <Link
+            href={`/batch/${batch.slug}`}
+            className="inline-flex h-11 w-fit items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
+          >
+            {registerNowLabel}
+          </Link>
+        )
+      }
+    />
   );
 }
 
@@ -84,7 +84,7 @@ export async function JadwalBatchSection() {
   if (!data || data.length === 0) return null;
 
   return (
-    <section id="jadwal" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-10">
+    <section id="jadwal" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 md:py-24">
       <h2 className="text-xl font-bold text-warna-teks sm:text-2xl">{t("scheduleHeading")}</h2>
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {data.map((batch) => (
@@ -96,6 +96,15 @@ export async function JadwalBatchSection() {
             registerNowLabel={tBatch("registerNow")}
           />
         ))}
+      </div>
+
+      <div className="mt-8 flex justify-center">
+        <Link
+          href="/pelatihan"
+          className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
+        >
+          {t("lihatSemuaPelatihan")}
+        </Link>
       </div>
     </section>
   );

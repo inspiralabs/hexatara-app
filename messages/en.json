@@ -3,8 +3,8 @@
     "metaTitle": "Hexatara — Pelatihan Pilot Drone Bersertifikat",
     "metaDescription": "Pelatihan pilot drone bersertifikat (Remote Pilot Certificate) dan penjualan drone profesional Autel oleh Hexatara Indonesia.",
     "companyName": "Hexatara Indonesia",
-    "footerTagline": "Pelatihan pilot drone bersertifikat & penjualan drone profesional Autel — Bekasi.",
-    "footerCopyright": "© {year} Hexatara Indonesia.",
+    "footerTagline": "Certified drone pilot training and professional Autel drone sales in Bekasi.",
+    "footerCopyright": "© Hexatara Indonesia {year}. All rights reserved. Powered By InspiraLabs.",
     "whatsappAriaLabel": "Hubungi Admin lewat WhatsApp",
     "closeAriaLabel": "Tutup",
     "openMenuAriaLabel": "Buka menu navigasi",
@@ -24,15 +24,52 @@
     "languageAriaLabel": "Select language"
   },
   "landing": {
-    "offerTrainingTitle": "Pelatihan Pilot Drone Bersertifikat",
-    "offerTrainingDesc": "Sertifikasi RPC resmi, kelas bulanan bersama instruktur berpengalaman.",
-    "offerTrainingCta": "Lihat Jadwal",
-    "offerRetailTitle": "Jual Drone Profesional Autel",
-    "offerRetailDesc": "Drone untuk kebutuhan survei, pemetaan, dan industri.",
-    "offerRetailCta": "Lihat Katalog",
-    "scheduleHeading": "Jadwal Pelatihan Mendatang",
-    "testimonialsHeading": "Kata Mereka",
-    "instructorsHeading": "Instruktur Kami"
+    "offerTrainingTitle": "Certified Drone Pilot Training",
+    "offerTrainingDesc": "Official RPC certification, monthly classes with experienced instructors.",
+    "offerTrainingCta": "View Schedule",
+    "offerRetailTitle": "Professional Autel Drones",
+    "offerRetailDesc": "Drones for survey, mapping, and other professional operational needs.",
+    "offerRetailCta": "View Products",
+    "contactCta": "Contact Us",
+    "scheduleHeading": "Upcoming Training Schedule",
+    "lihatSemuaPelatihan": "View All Training",
+    "produkHeading": "Our Products",
+    "produkSubheading": "Professional Autel drones for survey, mapping, and industrial needs.",
+    "lihatSemuaProduk": "View All Products",
+    "verifyHeading": "Verify Certificate Authenticity",
+    "verifyDesc": "Got a certificate from Hexatara? Confirm it's genuine through the public verification page, no login needed.",
+    "verifyCta": "Verify Now",
+    "testimonialsHeading": "What They Say",
+    "instructorsHeading": "Our Instructors",
+    "faqHeading": "Frequently Asked Questions"
+  },
+  "landingFaq": {
+    "items": [
+      {
+        "question": "What is a Remote Pilot Certificate (RPC)?",
+        "answer": "RPC is an official drone pilot competency certificate issued following the requirements of the DKPPU, Ministry of Transportation. It proves the holder has met the knowledge and skill standards for flying a drone safely and legally."
+      },
+      {
+        "question": "How long is a Hexatara certificate valid?",
+        "answer": "RPC and existing-manual certificates are valid for 2 years from the issue date. Free Track certificates are valid forever, with no expiry date."
+      },
+      {
+        "question": "How do I register for training?",
+        "answer": "Open the Training page, pick a schedule that fits, then fill in the interest registration form. Our Admin will contact you on WhatsApp for the next selection and payment steps."
+      },
+      {
+        "question": "Do the Autel drones you sell come with a warranty?",
+        "answer": "Yes, every Autel drone we sell is an official unit with distributor warranty. Contact us on WhatsApp or through the quote form on the Products page for warranty details on each unit."
+      },
+      {
+        "question": "How do I verify a certificate I received?",
+        "answer": "Open the Verify Certificate page, then enter the certificate number or scan the QR code printed on the physical certificate. The result appears right away, no login needed."
+      },
+      {
+        "question": "Are the free materials and quiz really free?",
+        "answer": "Yes, the basic drone flight safety materials and quiz can be accessed for free without registering. A fee only applies when you choose to upgrade for an official certificate with an active QR code."
+      }
+    ]
   },
   "batch": {
     "status": {
@@ -227,6 +264,53 @@
     "pesananMerchTambahan": "Additional Merchandise Order",
     "riwayatAktivitas": "Activity History",
     "belumAdaAktivitas": "No activity yet."
+  },
+  "footer": {
+    "linksHeading": "Links",
+    "contactHeading": "Contact Us",
+    "serviceHours": "Monday - Friday, 09:00 - 16:00 WIB",
+    "linkTentangKami": "About Us",
+    "linkFaq": "FAQ",
+    "linkKetentuanLayanan": "Terms of Service",
+    "linkKebijakanPrivasi": "Privacy Policy",
+    "linkSyaratKetentuan": "Terms & Conditions"
+  },
+  "static": {
+    "tentangKami": {
+      "title": "About Us",
+      "body": [
+        "Hexatara Indonesia is a certified drone pilot training provider and a seller of professional Autel drones, based in Bekasi.",
+        "We run official Remote Pilot Certificate (RPC) training following the requirements of the DKPPU, Ministry of Transportation, with monthly classes led by experienced drone flight instructors.",
+        "Besides training, we supply professional Autel drones for survey, mapping, and other industrial operational needs, with after-sales support included."
+      ]
+    },
+    "ketentuanLayanan": {
+      "title": "Terms of Service",
+      "body": [
+        "These terms govern the use of the Hexatara Indonesia website and services, including training interest registration, certificate verification, the free materials track, and product quote requests.",
+        "Registering interest in training through this site is not an official participant registration. Selection, payment, and participant acceptance for a training batch remain manual, handled through WhatsApp with Hexatara Admin.",
+        "Certificates issued through the free track (Free Track) or paid tracks are subject to their respective validity rules as shown on the Verify Certificate page.",
+        "Hexatara may update these terms at any time. Changes take effect once published on this page."
+      ]
+    },
+    "kebijakanPrivasi": {
+      "title": "Privacy Policy",
+      "body": [
+        "We collect data you provide directly, such as your name, email, and WhatsApp number, when you register an account, fill in a training interest form, or request a product quote.",
+        "This data is used solely to process registrations, certificate verification, and communication related to Hexatara's services. We do not sell or share your data with third parties for marketing purposes.",
+        "Certificate data shown on the Verify Certificate page is limited to name, certificate number, issue date, validity period, and status, without any personal contact information.",
+        "You can reach us through the contact details in this site's footer for any questions about your personal data."
+      ]
+    },
+    "syaratKetentuan": {
+      "title": "Terms & Conditions",
+      "body": [
+        "By accessing the Hexatara website, you agree to the following terms and conditions.",
+        "The content on this site, including the free training materials, is for educational purposes only and does not replace official certified training conducted directly by Hexatara.",
+        "Certificates issued through the free track (Free Track) remain valid and verifiable, but cover a different scope of competency than an RPC certificate from paid training.",
+        "Product prices and training schedules shown on this site may change at any time without prior notice, and will be reconfirmed by Admin before any transaction is finalized."
+      ]
+    }
   },
   "admin": {}
 }

@@ -57,6 +57,21 @@ export async function hapusHeroSlideAction(slideId: number) {
   return { ok: true as const };
 }
 
+// hero_slides.urutan TIDAK unique (beda dari material_chapters) — aman
+// di-update langsung per baris tanpa RPC dua-fase.
+export async function reorderHeroSlideAction(slideIds: number[]) {
+  await requireAdmin();
+  const supabaseAdmin = createAdminClient();
+  for (const [index, id] of slideIds.entries()) {
+    const { error } = await supabaseAdmin.from('hero_slides').update({ urutan: index }).eq('id', id);
+    if (error) {
+      console.error('[admin-hero-slide] gagal reorder slide:', error);
+      return { ok: false as const, pesan: 'Gagal mengubah urutan. Coba lagi.' };
+    }
+  }
+  return { ok: true as const };
+}
+
 export async function toggleAktifHeroSlideAction(slideId: number, aktif: boolean) {
   await requireAdmin();
   const supabaseAdmin = createAdminClient();
