@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { getOptionalUser } from "@/lib/auth/guard";
 import { FloatingWhatsapp } from "@/components/floating-whatsapp";
 import { PublicNavMobile } from "@/components/public-nav-mobile";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -8,13 +9,15 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const tNav = await getTranslations("nav");
   const tCommon = await getTranslations("common");
+  const claims = await getOptionalUser();
+  const sudahLogin = Boolean(claims);
 
   const NAV_PUBLIK = [
     { href: "/", label: tNav("home") },
-    { href: "/verify", label: tNav("verify") },
-    { href: "/materi", label: tNav("materi") },
-    { href: "/katalog", label: tNav("katalog") },
+    { href: "/pelatihan", label: tNav("pelatihan") },
+    { href: "/katalog", label: tNav("produk") },
   ];
+  const hrefMasuk = sudahLogin ? "/dashboard" : "/login";
 
   return (
     <div className="flex min-h-full flex-1 flex-col">
@@ -36,9 +39,15 @@ export default async function PublicLayout({ children }: { children: React.React
               </Link>
             ))}
             <LanguageSwitcher />
+            <Link
+              href={hrefMasuk}
+              className="flex min-h-11 items-center justify-center rounded-lg border border-warna-utama px-4 text-base font-semibold text-warna-utama"
+            >
+              {tNav("masuk")}
+            </Link>
           </nav>
 
-          <PublicNavMobile items={NAV_PUBLIK} />
+          <PublicNavMobile items={NAV_PUBLIK} hrefMasuk={hrefMasuk} labelMasuk={tNav("masuk")} />
         </div>
       </header>
 

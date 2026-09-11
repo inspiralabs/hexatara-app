@@ -4,14 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { PopupAktif } from "@/components/popup-pembuka";
 
 const KEY_PREFIX = "hexatara-popup-tertutup-";
@@ -32,49 +25,47 @@ export function PopupDialogClient({ popup }: { popup: PopupAktif }) {
     setOpen(false);
   }
 
+  // Popup ADR-015: murni gambar, dua versi (potret mobile / lanskap desktop)
+  // dipilih lewat breakpoint Tailwind `md`, bukan JS matchMedia — CSS saja.
+  const gambar = (
+    <>
+      {popup.gambarMobileUrl && (
+        <div className="relative aspect-[9/16] w-full overflow-hidden rounded-xl md:hidden">
+          <Image src={popup.gambarMobileUrl} alt={popup.judul} fill className="object-cover" sizes="360px" priority />
+        </div>
+      )}
+      {popup.gambarDesktopUrl && (
+        <div className="relative hidden aspect-video w-full overflow-hidden rounded-xl md:block">
+          <Image src={popup.gambarDesktopUrl} alt={popup.judul} fill className="object-cover" sizes="480px" priority />
+        </div>
+      )}
+    </>
+  );
+
   return (
     <Dialog open={open} onOpenChange={(next) => !next && tutup()}>
-      <DialogContent showCloseButton={false} className="max-w-md">
+      <DialogContent showCloseButton={false} className="max-w-sm gap-0 overflow-hidden p-0 md:max-w-lg">
         <button
           type="button"
           onClick={tutup}
           aria-label={t("closeAriaLabel")}
-          className="absolute right-1 top-1 flex size-11 items-center justify-center rounded-full text-warna-teks-2 hover:bg-warna-latar-2"
+          className="absolute right-2 top-2 z-10 flex size-11 items-center justify-center rounded-full bg-warna-latar/80 text-warna-teks hover:bg-warna-latar"
         >
           <XIcon className="size-5" aria-hidden="true" />
         </button>
 
-        <DialogHeader>
-          <DialogTitle className="pr-8 text-lg text-warna-teks">{popup.judul}</DialogTitle>
+        {/* Judul cuma untuk aksesibilitas (nama dialog dibacakan screen reader) — tidak
+            tampil secara visual, gambar sendiri sudah menyampaikan pesannya. */}
+        <DialogHeader className="sr-only">
+          <DialogTitle>{popup.judul}</DialogTitle>
         </DialogHeader>
 
-        {popup.gambar_url && (
-          <div className="relative aspect-video w-full overflow-hidden rounded-md">
-            <Image
-              src={popup.gambar_url}
-              alt=""
-              fill
-              className="object-cover"
-              sizes="(max-width: 480px) 100vw, 480px"
-            />
-          </div>
-        )}
-
-        <DialogDescription className="whitespace-pre-line text-base text-warna-teks">
-          {popup.isi}
-        </DialogDescription>
-
-        {popup.cta_teks && popup.cta_url && (
-          <DialogFooter className="mx-0 mb-0 justify-start border-t-0 bg-transparent p-0">
-            <a
-              href={popup.cta_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
-            >
-              {popup.cta_teks}
-            </a>
-          </DialogFooter>
+        {popup.cta_url ? (
+          <a href={popup.cta_url} target="_blank" rel="noopener noreferrer" className="block">
+            {gambar}
+          </a>
+        ) : (
+          gambar
         )}
       </DialogContent>
     </Dialog>

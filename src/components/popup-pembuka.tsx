@@ -6,9 +6,8 @@ import { PopupDialogClient } from "@/components/popup-dialog-client";
 export type PopupAktif = {
   id: number;
   judul: string;
-  isi: string;
-  gambar_url: string | null;
-  cta_teks: string | null;
+  gambarMobileUrl: string | null;
+  gambarDesktopUrl: string | null;
   cta_url: string | null;
 };
 
@@ -17,9 +16,7 @@ export async function PopupPembuka() {
   const locale = await getLocale();
   const { data, error } = await supabase
     .from("popups")
-    .select(
-      "id, judul_id, judul_en, isi_id, isi_en, gambar_url, cta_teks_id, cta_teks_en, cta_url, tayang_mulai, tayang_selesai"
-    )
+    .select("id, judul_id, judul_en, gambar_mobile_url, gambar_desktop_url, cta_url, tayang_mulai, tayang_selesai")
     .eq("is_active", true);
 
   if (error) {
@@ -31,7 +28,10 @@ export async function PopupPembuka() {
   const popup = data?.find(
     (p) =>
       (!p.tayang_mulai || p.tayang_mulai <= hariIni) &&
-      (!p.tayang_selesai || p.tayang_selesai >= hariIni)
+      (!p.tayang_selesai || p.tayang_selesai >= hariIni) &&
+      // Popup berbasis gambar (ADR-015) — baris lama yang belum diisi ulang
+      // gambarnya oleh Admin sengaja tidak tampil, bukan migrasi otomatis teks->gambar.
+      (p.gambar_mobile_url || p.gambar_desktop_url)
   );
 
   if (!popup) return null;
@@ -39,9 +39,9 @@ export async function PopupPembuka() {
   const resolved: PopupAktif = {
     id: popup.id,
     judul: pick(popup.judul_id, popup.judul_en, locale) ?? "",
-    isi: pick(popup.isi_id, popup.isi_en, locale) ?? "",
-    gambar_url: popup.gambar_url,
-    cta_teks: pick(popup.cta_teks_id, popup.cta_teks_en, locale),
+    // Salah satu kosong -> fallback ke yang terisi, supaya tidak ada breakpoint kosong.
+    gambarMobileUrl: popup.gambar_mobile_url ?? popup.gambar_desktop_url,
+    gambarDesktopUrl: popup.gambar_desktop_url ?? popup.gambar_mobile_url,
     cta_url: popup.cta_url,
   };
 

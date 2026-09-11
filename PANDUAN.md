@@ -4926,7 +4926,7 @@ Jangan mengubah status baris fitur lain.
 ```powershell
 pnpm tsc --noEmit; pnpm lint; pnpm build
 git add -A
-git 
+
 ```
 
 ---
@@ -4989,7 +4989,7 @@ Paparkan dulu rencana sebelum menulis kode.
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji favicon, navbar baru, dan popup gambar sendiri di browser
 dan hasilnya sesuai. Isi baris terkait: Status DONE, Berkas [daftar berkas],
-Diuji [tanggal], Bukti [ringkas hasil uji]. Tambahkan satu baris ke Log
+Diuji [tanggal], Bukti [saya udah buka situs di tab baru cek favicon sudah logo hexatra, navbar sudah benar, pelatihan sudah mengarah ke halaman pelatihan, admin sudah bisa upload popup dan udah tampil di mobile, tab dan desktop tampilan, popup tidak menutupi seluruh layar dan tidak menyebabkan scroll horizontal,hanya satu catatan icon bendera pada navbar atau saat di klik jadi dropdown tidak ada]. Tambahkan satu baris ke Log
 verifikasi. Jangan mengubah status baris fitur lain.
 ```
 

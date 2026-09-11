@@ -5,7 +5,7 @@ import { STATUS_BATCH_LABEL, formatRupiah, formatTanggalBatch } from "@/lib/batc
 import { pick } from "@/lib/i18n/pick";
 import type { Database } from "@/types/database";
 
-type Batch = Pick<
+export type Batch = Pick<
   Database["public"]["Tables"]["batches"]["Row"],
   | "id"
   | "slug"
@@ -21,7 +21,7 @@ type Batch = Pick<
   | "tanggal_selesai"
 >;
 
-function BatchCard({
+export function BatchCard({
   batch,
   locale,
   statusLabel,

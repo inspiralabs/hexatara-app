@@ -15,11 +15,8 @@ function keDefaultValues(p: Popup): PopupFormInput {
   return {
     judul_id: p.judul_id,
     judul_en: p.judul_en ?? '',
-    isi_id: p.isi_id,
-    isi_en: p.isi_en ?? '',
-    gambar_url: p.gambar_url ?? '',
-    cta_teks_id: p.cta_teks_id ?? '',
-    cta_teks_en: p.cta_teks_en ?? '',
+    gambar_mobile_url: p.gambar_mobile_url ?? '',
+    gambar_desktop_url: p.gambar_desktop_url ?? '',
     cta_url: p.cta_url ?? '',
     tayang_mulai: p.tayang_mulai,
     tayang_selesai: p.tayang_selesai,

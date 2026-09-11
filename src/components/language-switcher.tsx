@@ -3,10 +3,18 @@
 import { useTransition } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+const BENDERA: Record<"id" | "en", string> = { id: "🇮🇩", en: "🇬🇧" };
 
 export function LanguageSwitcher() {
   const t = useTranslations("nav");
-  const locale = useLocale();
+  const locale = useLocale() as "id" | "en";
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
@@ -18,26 +26,27 @@ export function LanguageSwitcher() {
   }
 
   return (
-    <div className="flex items-center gap-1 text-sm" aria-label="Pilih bahasa">
-      <button
-        type="button"
-        onClick={() => switchTo("id")}
-        disabled={isPending || locale === "id"}
-        aria-current={locale === "id"}
-        className="min-h-11 px-2 font-medium text-warna-teks-2 disabled:text-warna-utama disabled:font-semibold"
+    <DropdownMenu>
+      <DropdownMenuTrigger
+        disabled={isPending}
+        render={
+          <button
+            type="button"
+            aria-label={t("languageAriaLabel")}
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-md text-xl hover:bg-warna-latar-2"
+          />
+        }
       >
-        {t("switchToId")}
-      </button>
-      <span aria-hidden="true" className="text-warna-teks-2">/</span>
-      <button
-        type="button"
-        onClick={() => switchTo("en")}
-        disabled={isPending || locale === "en"}
-        aria-current={locale === "en"}
-        className="min-h-11 px-2 font-medium text-warna-teks-2 disabled:text-warna-utama disabled:font-semibold"
-      >
-        {t("switchToEn")}
-      </button>
-    </div>
+        {BENDERA[locale]}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => switchTo("id")} aria-current={locale === "id"} className="gap-2">
+          <span aria-hidden="true">{BENDERA.id}</span> {t("switchToId")}
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => switchTo("en")} aria-current={locale === "en"} className="gap-2">
+          <span aria-hidden="true">{BENDERA.en}</span> {t("switchToEn")}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

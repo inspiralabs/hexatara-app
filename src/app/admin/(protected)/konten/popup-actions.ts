@@ -17,11 +17,12 @@ export async function simpanPopupAction(popupId: number | null, input: PopupForm
   const popup = {
     judul_id: p.judul_id,
     judul_en: teks(p.judul_en),
-    isi_id: p.isi_id,
-    isi_en: teks(p.isi_en),
-    gambar_url: teks(p.gambar_url),
-    cta_teks_id: teks(p.cta_teks_id),
-    cta_teks_en: teks(p.cta_teks_en),
+    // Popup sekarang berbasis gambar (ADR-015) — isi_id sisa kolom NOT NULL
+    // dari desain teks lama, tidak lagi ditampilkan di mana pun, cukup diisi
+    // otomatis dari judul supaya tidak melanggar constraint.
+    isi_id: p.judul_id,
+    gambar_mobile_url: teks(p.gambar_mobile_url),
+    gambar_desktop_url: teks(p.gambar_desktop_url),
     cta_url: teks(p.cta_url),
     tayang_mulai: teks(p.tayang_mulai),
     tayang_selesai: teks(p.tayang_selesai),

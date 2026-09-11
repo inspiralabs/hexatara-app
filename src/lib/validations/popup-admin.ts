@@ -9,11 +9,8 @@ const teksWajib = z.string().min(1, { error: 'Wajib diisi' });
 export const PopupFormSchema = z.object({
   judul_id: teksWajib,
   judul_en: teksOpsional,
-  isi_id: teksWajib,
-  isi_en: teksOpsional,
-  gambar_url: teksOpsional,
-  cta_teks_id: teksOpsional,
-  cta_teks_en: teksOpsional,
+  gambar_mobile_url: teksOpsional,
+  gambar_desktop_url: teksOpsional,
   cta_url: teksOpsional,
   tayang_mulai: teksOpsional,
   tayang_selesai: teksOpsional,

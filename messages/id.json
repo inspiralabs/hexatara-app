@@ -13,11 +13,15 @@
   },
   "nav": {
     "home": "Beranda",
+    "pelatihan": "Pelatihan",
+    "produk": "Produk",
     "verify": "Verifikasi Sertifikat",
     "materi": "Materi & Kuis",
     "katalog": "Katalog Produk",
+    "masuk": "Masuk",
     "switchToId": "Indonesia",
-    "switchToEn": "English"
+    "switchToEn": "English",
+    "languageAriaLabel": "Pilih bahasa"
   },
   "landing": {
     "offerTrainingTitle": "Pelatihan Pilot Drone Bersertifikat",
@@ -123,6 +127,11 @@
     "lanjut": "Lanjut",
     "dapatkanSertifikat": "Dapatkan Sertifikat",
     "selesai": "Semua soal terjawab benar! Selamat, Anda siap melanjutkan."
+  },
+  "pelatihan": {
+    "pageTitle": "Jadwal Pelatihan",
+    "pageSubtitle": "Pelatihan pilot drone bersertifikat (Remote Pilot Certificate) bersama instruktur berpengalaman.",
+    "kosong": "Belum ada jadwal pelatihan tersedia. Silakan cek kembali nanti."
   },
   "catalog": {
     "pageTitle": "Katalog Produk",

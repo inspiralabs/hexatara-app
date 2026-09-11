@@ -16,8 +16,12 @@ import { LanguageSwitcher } from "@/components/language-switcher";
 
 export function PublicNavMobile({
   items,
+  hrefMasuk,
+  labelMasuk,
 }: {
   items: { href: string; label: string }[];
+  hrefMasuk: string;
+  labelMasuk: string;
 }) {
   const t = useTranslations("common");
   const [terbuka, setTerbuka] = useState(false);
@@ -50,6 +54,13 @@ export function PublicNavMobile({
               {item.label}
             </Link>
           ))}
+          <Link
+            href={hrefMasuk}
+            onClick={() => setTerbuka(false)}
+            className="flex min-h-11 items-center text-base font-semibold text-warna-utama"
+          >
+            {labelMasuk}
+          </Link>
         </nav>
         <div className="px-4 pt-2">
           <LanguageSwitcher />

@@ -16,7 +16,6 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { DatePickerField } from '@/components/admin/date-picker-field';
@@ -25,11 +24,8 @@ import { ImageUploadField } from '@/components/image-upload-field';
 const DEFAULT_VALUES: PopupFormInput = {
   judul_id: '',
   judul_en: '',
-  isi_id: '',
-  isi_en: '',
-  gambar_url: '',
-  cta_teks_id: '',
-  cta_teks_en: '',
+  gambar_mobile_url: '',
+  gambar_desktop_url: '',
   cta_url: '',
   tayang_mulai: null,
   tayang_selesai: null,
@@ -109,30 +105,51 @@ export function PopupFormDialog({
             <Field label="Judul (Indonesia) *" htmlFor="judul_id">
               <Input id="judul_id" {...register('judul_id')} />
               {errors.judul_id && <p className="text-sm text-destructive">{errors.judul_id.message}</p>}
+              <p className="text-xs text-warna-teks-2">Untuk aksesibilitas (alt text) — tidak ditampilkan di popup.</p>
             </Field>
             <Field label="Judul (Inggris)" htmlFor="judul_en">
               <Input id="judul_en" {...register('judul_en')} />
             </Field>
-
-            <Field label="Isi (Indonesia) *" htmlFor="isi_id">
-              <Textarea id="isi_id" rows={3} {...register('isi_id')} />
-              {errors.isi_id && <p className="text-sm text-destructive">{errors.isi_id.message}</p>}
-            </Field>
-            <Field label="Isi (Inggris)" htmlFor="isi_en">
-              <Textarea id="isi_en" rows={3} {...register('isi_en')} />
-            </Field>
-
-            <Field label="Teks Tombol (Indonesia)" htmlFor="cta_teks_id">
-              <Input id="cta_teks_id" {...register('cta_teks_id')} />
-            </Field>
-            <Field label="Teks Tombol (Inggris)" htmlFor="cta_teks_en">
-              <Input id="cta_teks_en" {...register('cta_teks_en')} />
-            </Field>
           </div>
 
-          <Field label="Tautan Tombol" htmlFor="cta_url">
+          <Field label="Tautan (opsional)" htmlFor="cta_url">
             <Input id="cta_url" placeholder="/katalog atau https://..." {...register('cta_url')} />
+            <p className="text-xs text-warna-teks-2">Kalau diisi, seluruh gambar popup jadi bisa diklik menuju tautan ini.</p>
           </Field>
+
+          <Controller
+            control={control}
+            name="gambar_mobile_url"
+            render={({ field }) => (
+              <ImageUploadField
+                label="Gambar Mobile (potret) — disarankan 1080×1920px"
+                value={field.value ?? null}
+                onChange={field.onChange}
+                onUpload={async (file) => {
+                  const fd = new FormData();
+                  fd.append('file', file);
+                  return uploadGambarAdminAction(fd);
+                }}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="gambar_desktop_url"
+            render={({ field }) => (
+              <ImageUploadField
+                label="Gambar Desktop (lanskap) — disarankan 1920×1080px"
+                value={field.value ?? null}
+                onChange={field.onChange}
+                onUpload={async (file) => {
+                  const fd = new FormData();
+                  fd.append('file', file);
+                  return uploadGambarAdminAction(fd);
+                }}
+              />
+            )}
+          />
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <Controller
@@ -162,23 +179,6 @@ export function PopupFormDialog({
                   Aktifkan pop-up ini
                 </Label>
               </div>
-            )}
-          />
-
-          <Controller
-            control={control}
-            name="gambar_url"
-            render={({ field }) => (
-              <ImageUploadField
-                label="Gambar (opsional)"
-                value={field.value ?? null}
-                onChange={field.onChange}
-                onUpload={async (file) => {
-                  const fd = new FormData();
-                  fd.append('file', file);
-                  return uploadGambarAdminAction(fd);
-                }}
-              />
             )}
           />
 
