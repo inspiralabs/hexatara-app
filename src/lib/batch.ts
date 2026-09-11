@@ -28,3 +28,10 @@ export function formatRupiah(nilai: number) {
     maximumFractionDigits: 0,
   }).format(nilai);
 }
+
+export function stripHtmlExcerpt(html: string | null, maxLen = 120): string | null {
+  if (!html) return null;
+  const teks = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  if (!teks) return null;
+  return teks.length > maxLen ? `${teks.slice(0, maxLen).trimEnd()}…` : teks;
+}

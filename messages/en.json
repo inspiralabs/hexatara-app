@@ -16,7 +16,6 @@
     "pelatihan": "Training",
     "produk": "Products",
     "verify": "Verifikasi Sertifikat",
-    "materi": "Materi & Kuis",
     "katalog": "Katalog Produk",
     "masuk": "Login",
     "switchToId": "Indonesia",
@@ -90,6 +89,12 @@
     "galleryHeading": "Galeri Dokumentasi",
     "descriptionTab": "Deskripsi",
     "syllabusTab": "Silabus",
+    "certificateInfoHeading": "The Certificate You'll Earn",
+    "certificateInfoBody": "Participants who complete this training receive an official Remote Pilot Certificate (RPC) following the requirements of the DKPPU, Ministry of Transportation, valid for 2 years from the issue date, and verifiable anytime on the Verify Certificate page.",
+    "suggestHeading": "Other Training You Might Like",
+    "finalCtaHeading": "Still Have Questions?",
+    "finalCtaDesc": "Our team is ready to help on WhatsApp before you register.",
+    "finalCtaButton": "Ask on WhatsApp",
     "dialog": {
       "title": "Daftar Minat Batch",
       "submit": "Kirim",
@@ -102,17 +107,10 @@
       "continueWhatsapp": "Lanjut ke WhatsApp"
     }
   },
-  "materi": {
-    "pageTitle": "Free Materials",
-    "pageSubtitle": "Learn the basics of drone flight safety before taking the quiz — completely free, no registration needed.",
-    "kosong": "No materials available yet. Please check back later.",
-    "badgeGratis": "Free Training",
-    "mulaiSekarang": "Start Now"
-  },
   "kelas": {
     "tidakDitemukan": "Material not found.",
     "kosongBab": "This material doesn't have any chapters yet. Please check back later.",
-    "kembali": "Back to Materials",
+    "kembali": "Back to Training",
     "headerBadge": "Free Training Toward Certification",
     "progres": "{selesai} of {total} steps completed",
     "lanjutBab": "Continue to Next Chapter",
@@ -168,7 +166,23 @@
   "pelatihan": {
     "pageTitle": "Training Schedule",
     "pageSubtitle": "Certified drone pilot training (Remote Pilot Certificate) with experienced instructors.",
-    "kosong": "No training schedule available yet. Please check back later."
+    "kosong": "No training schedule available yet. Please check back later.",
+    "freemiumHeroTitle": "Not Ready for the Paid Class Yet? Try the Free Materials First.",
+    "freemiumHeroDesc": "Learn the basics of drone flight safety, take the quiz, and earn your first digital certificate. Completely free, no credit card, no risk of failing.",
+    "freemiumHeroCta": "Start Now",
+    "filterKategoriLabel": "Category:",
+    "filterStatusLabel": "Status:",
+    "semua": "All",
+    "lihatDetail": "View Detail",
+    "sort": {
+      "tanggalTerdekat": "Nearest Date",
+      "terbaru": "Newest",
+      "hargaAsc": "Price: Low to High",
+      "hargaDesc": "Price: High to Low"
+    },
+    "customCtaHeading": "Need Training Tailored to Your Team?",
+    "customCtaDesc": "Tell us about your team or organization's training needs, and we'll help put together a schedule and materials that fit.",
+    "customCtaButton": "Ask on WhatsApp"
   },
   "catalog": {
     "pageTitle": "Product Catalog",
@@ -180,6 +194,23 @@
     "specHeading": "Specifications",
     "backToCatalog": "Back to Catalog",
     "contactWhatsapp": "Contact via WhatsApp",
+    "heroTitle": "Autel Drones for Survey, Mapping, and Industrial Needs",
+    "heroDesc": "From enterprise camera drones to multi-sensor units for industrial missions. Our team can help you pick the right unit for your business or organization.",
+    "heroCta": "Consult via WhatsApp",
+    "filterKategoriLabel": "Category:",
+    "semua": "All",
+    "sort": {
+      "terbaru": "Newest",
+      "hargaAsc": "Price: Low to High",
+      "hargaDesc": "Price: High to Low"
+    },
+    "bulkCtaHeading": "Bulk Purchase or Still Deciding?",
+    "bulkCtaDesc": "Our team can help recommend the right unit for your needs, including for bulk purchases.",
+    "bulkCtaButton": "Ask on WhatsApp",
+    "suggestHeading": "You Might Also Like",
+    "finalCtaHeading": "Still Have Questions?",
+    "finalCtaDesc": "Our team is ready to help on WhatsApp before you decide.",
+    "finalCtaButton": "Ask on WhatsApp",
     "dialog": {
       "trigger": "Request a Quote",
       "title": "Request a Quote",

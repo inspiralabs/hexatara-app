@@ -3,15 +3,17 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { pick } from "@/lib/i18n/pick";
 
-export async function InstrukturSection() {
+export async function InstrukturSection({ limit }: { limit?: number } = {}) {
   const supabase = await createClient();
   const locale = await getLocale();
   const t = await getTranslations("landing");
-  const { data, error } = await supabase
+  let query = supabase
     .from("instructors")
     .select("id, nama, foto_url, jabatan_id, jabatan_en")
     .eq("is_active", true)
     .order("urutan", { ascending: true });
+  if (limit) query = query.limit(limit);
+  const { data, error } = await query;
 
   if (error) console.error("[instruktur] gagal memuat:", error);
   if (!data || data.length === 0) return null;

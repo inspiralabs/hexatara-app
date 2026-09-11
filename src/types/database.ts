@@ -1222,6 +1222,8 @@ export type Database = {
       }
       products_public: {
         Row: {
+          category_id: string | null
+          created_at: string | null
           deskripsi_en: string | null
           deskripsi_id: string | null
           harga: number | null
@@ -1229,6 +1231,7 @@ export type Database = {
           kategori: string | null
           nama_en: string | null
           nama_id: string | null
+          rating: number | null
           slug: string | null
           spesifikasi_en: string | null
           spesifikasi_id: string | null
@@ -1236,6 +1239,8 @@ export type Database = {
           urutan: number | null
         }
         Insert: {
+          category_id?: string | null
+          created_at?: string | null
           deskripsi_en?: string | null
           deskripsi_id?: string | null
           harga?: never
@@ -1243,6 +1248,7 @@ export type Database = {
           kategori?: string | null
           nama_en?: string | null
           nama_id?: string | null
+          rating?: number | null
           slug?: string | null
           spesifikasi_en?: string | null
           spesifikasi_id?: string | null
@@ -1250,6 +1256,8 @@ export type Database = {
           urutan?: number | null
         }
         Update: {
+          category_id?: string | null
+          created_at?: string | null
           deskripsi_en?: string | null
           deskripsi_id?: string | null
           harga?: never
@@ -1257,13 +1265,22 @@ export type Database = {
           kategori?: string | null
           nama_en?: string | null
           nama_id?: string | null
+          rating?: number | null
           slug?: string | null
           spesifikasi_en?: string | null
           spesifikasi_id?: string | null
           tampilkan_harga?: boolean | null
           urutan?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Functions: {

@@ -5206,7 +5206,7 @@ rename /batch ke /pelatihan.
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji redesign halaman Pelatihan sendiri di browser dan
 hasilnya sesuai. Isi baris terkait: Status DONE, Berkas [daftar berkas],
-Diuji [tanggal], Bukti [ringkas hasil uji]. Tambahkan satu baris ke Log
+Diuji [tanggal], Bukti [hasil uji lolos dengan tambahan tombol mulai sekarang langsung masuk ke LMS freemium]. Tambahkan satu baris ke Log
 verifikasi. Jangan mengubah status baris fitur lain.
 ```
 
@@ -5215,7 +5215,7 @@ verifikasi. Jangan mengubah status baris fitur lain.
 ```powershell
 pnpm tsc --noEmit; pnpm lint; pnpm build
 git add -A
-git commit -m "feat(pelatihan): halaman listing dengan filter/sort/kategori, redesign detail"
+git commit -m "feat(pelatihan): halaman listing dengan filter/sort/kategori, redesign detail, tombol langsung mengarah ke LMS"
 ```
 
 ---
@@ -5281,7 +5281,7 @@ Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji redesign halaman Produk sendiri di browser dan hasilnya
 sesuai — termasuk uji ulang Network tab untuk harga tersembunyi, tidak ada
 regresi. Isi baris terkait: Status DONE, Berkas [daftar berkas], Diuji
-[tanggal], Bukti [ringkas hasil uji]. Tambahkan satu baris ke Log
+[tanggal], Bukti [saya sudah coba dan lancar lolos]. Tambahkan satu baris ke Log
 verifikasi. Jangan mengubah status baris fitur lain.
 ```
 

@@ -67,7 +67,7 @@ export function QuoteDialog({ productId }: { productId: number }) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger className="inline-flex h-11 flex-1 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks">
+      <DialogTrigger className="inline-flex h-11 flex-1 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]">
         {t('dialog.trigger')}
       </DialogTrigger>
       <DialogContent>
@@ -80,7 +80,7 @@ export function QuoteDialog({ productId }: { productId: number }) {
             <button
               type="button"
               onClick={() => handleOpenChange(false)}
-              className="inline-flex h-11 w-full items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama"
+              className="inline-flex h-11 w-full items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama [transition:var(--transition-hover)] hover:bg-warna-utama/5"
             >
               {t('dialog.close')}
             </button>
@@ -148,7 +148,7 @@ export function QuoteDialog({ productId }: { productId: number }) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks disabled:opacity-50"
+              className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks shadow-float [transition:var(--transition-hover)] hover:shadow-float-hover disabled:opacity-50"
             >
               {isSubmitting ? tCommon('processing') : t('dialog.submit')}
             </button>

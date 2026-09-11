@@ -135,7 +135,7 @@ export default async function MateriCoursePage({
         <div className="mx-auto max-w-md px-4 py-16 text-center">
           <p className="text-base text-warna-teks-2">{t("kosongBab")}</p>
           <Link
-            href="/materi"
+            href="/pelatihan"
             className="mt-4 inline-block text-sm font-semibold text-warna-utama underline underline-offset-4"
           >
             {t("kembali")}

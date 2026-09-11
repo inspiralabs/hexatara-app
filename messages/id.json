@@ -16,7 +16,6 @@
     "pelatihan": "Pelatihan",
     "produk": "Produk",
     "verify": "Verifikasi Sertifikat",
-    "materi": "Materi & Kuis",
     "katalog": "Katalog Produk",
     "masuk": "Masuk",
     "switchToId": "Indonesia",
@@ -90,6 +89,12 @@
     "galleryHeading": "Galeri Dokumentasi",
     "descriptionTab": "Deskripsi",
     "syllabusTab": "Silabus",
+    "certificateInfoHeading": "Sertifikat yang Anda Dapatkan",
+    "certificateInfoBody": "Peserta yang menyelesaikan pelatihan ini mendapatkan Remote Pilot Certificate (RPC) resmi sesuai ketentuan DKPPU Kementerian Perhubungan, berlaku 2 tahun sejak tanggal terbit, dan dapat diverifikasi kapan saja lewat halaman Verifikasi Sertifikat.",
+    "suggestHeading": "Pelatihan Lain yang Mungkin Anda Suka",
+    "finalCtaHeading": "Masih Ada Pertanyaan?",
+    "finalCtaDesc": "Tim kami siap membantu lewat WhatsApp sebelum Anda mendaftar.",
+    "finalCtaButton": "Tanya di WhatsApp",
     "dialog": {
       "title": "Daftar Minat Batch",
       "submit": "Kirim",
@@ -102,17 +107,10 @@
       "continueWhatsapp": "Lanjut ke WhatsApp"
     }
   },
-  "materi": {
-    "pageTitle": "Materi Gratis",
-    "pageSubtitle": "Pelajari dasar keselamatan penerbangan drone sebelum mengerjakan kuis — semuanya gratis, tanpa perlu mendaftar.",
-    "kosong": "Belum ada materi tersedia. Silakan cek kembali nanti.",
-    "badgeGratis": "Pelatihan Gratis",
-    "mulaiSekarang": "Mulai Sekarang"
-  },
   "kelas": {
     "tidakDitemukan": "Materi tidak ditemukan.",
     "kosongBab": "Materi ini belum punya bab. Silakan cek kembali nanti.",
-    "kembali": "Kembali ke Materi",
+    "kembali": "Kembali ke Pelatihan",
     "headerBadge": "Pelatihan Gratis untuk Sertifikat",
     "progres": "{selesai} dari {total} proses selesai",
     "lanjutBab": "Lanjut ke Bab Berikutnya",
@@ -168,7 +166,23 @@
   "pelatihan": {
     "pageTitle": "Jadwal Pelatihan",
     "pageSubtitle": "Pelatihan pilot drone bersertifikat (Remote Pilot Certificate) bersama instruktur berpengalaman.",
-    "kosong": "Belum ada jadwal pelatihan tersedia. Silakan cek kembali nanti."
+    "kosong": "Belum ada jadwal pelatihan tersedia. Silakan cek kembali nanti.",
+    "freemiumHeroTitle": "Belum Yakin Ambil Kelas Berbayar? Coba Materi Gratisnya Dulu.",
+    "freemiumHeroDesc": "Pelajari dasar keselamatan penerbangan drone, kerjakan kuisnya, dan dapatkan sertifikat digital pertamamu. Semua gratis, tanpa kartu kredit, tanpa risiko gagal.",
+    "freemiumHeroCta": "Mulai Sekarang",
+    "filterKategoriLabel": "Kategori:",
+    "filterStatusLabel": "Status:",
+    "semua": "Semua",
+    "lihatDetail": "Lihat Detail",
+    "sort": {
+      "tanggalTerdekat": "Tanggal Terdekat",
+      "terbaru": "Terbaru",
+      "hargaAsc": "Harga Terendah ke Tertinggi",
+      "hargaDesc": "Harga Tertinggi ke Terendah"
+    },
+    "customCtaHeading": "Butuh Pelatihan Sesuai Kebutuhan Tim Anda?",
+    "customCtaDesc": "Ceritakan kebutuhan pelatihan drone tim atau instansi Anda, kami bantu susun jadwal dan materi yang sesuai.",
+    "customCtaButton": "Tanya di WhatsApp"
   },
   "catalog": {
     "pageTitle": "Katalog Produk",
@@ -180,6 +194,23 @@
     "specHeading": "Spesifikasi",
     "backToCatalog": "Kembali ke Katalog",
     "contactWhatsapp": "Hubungi via WhatsApp",
+    "heroTitle": "Drone Autel untuk Kebutuhan Survei, Pemetaan, dan Industri",
+    "heroDesc": "Dari drone kamera enterprise sampai drone multi-sensor untuk misi industri. Tim kami bantu pilih unit yang sesuai kebutuhan bisnis atau instansi Anda.",
+    "heroCta": "Konsultasi via WhatsApp",
+    "filterKategoriLabel": "Kategori:",
+    "semua": "Semua",
+    "sort": {
+      "terbaru": "Terbaru",
+      "hargaAsc": "Harga Terendah ke Tertinggi",
+      "hargaDesc": "Harga Tertinggi ke Terendah"
+    },
+    "bulkCtaHeading": "Pembelian Partai Besar atau Masih Bingung Memilih?",
+    "bulkCtaDesc": "Tim kami siap bantu rekomendasi unit sesuai kebutuhan, termasuk untuk pembelian dalam jumlah banyak.",
+    "bulkCtaButton": "Tanya di WhatsApp",
+    "suggestHeading": "Produk Lain yang Mungkin Anda Suka",
+    "finalCtaHeading": "Masih Ada Pertanyaan?",
+    "finalCtaDesc": "Tim kami siap membantu lewat WhatsApp sebelum Anda memutuskan.",
+    "finalCtaButton": "Tanya di WhatsApp",
     "dialog": {
       "trigger": "Minta Penawaran",
       "title": "Minta Penawaran",

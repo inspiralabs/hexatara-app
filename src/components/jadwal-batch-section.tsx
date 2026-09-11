@@ -56,7 +56,7 @@ export function BatchCard({
       cta={
         batch.status !== "closed" && (
           <Link
-            href={`/batch/${batch.slug}`}
+            href={`/pelatihan/${batch.slug}`}
             className="inline-flex h-11 w-fit items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
           >
             {registerNowLabel}
