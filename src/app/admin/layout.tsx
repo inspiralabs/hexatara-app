@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { Toaster } from "sonner";
+import { Geist } from "next/font/google";
+import { ThemeProvider } from "@/components/shell/theme-provider";
+import { Toaster } from "@/components/ui/sonner";
 import "../globals.css";
 
-const inter = Inter({
+const geist = Geist({
   variable: "--font-sans",
   subsets: ["latin"],
 });
@@ -16,10 +17,12 @@ export const metadata: Metadata = {
 
 export default function AdminRootLayout({ children }: LayoutProps<"/admin">) {
   return (
-    <html lang="id" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col font-sans">
-        {children}
-        <Toaster position="top-center" toastOptions={{ classNames: { error: '!bg-warna-bahaya !text-warna-latar' } }} />
+    <html lang="id" className={`${geist.variable} h-full antialiased`} suppressHydrationWarning>
+      <body className="flex min-h-full flex-col font-sans">
+        <ThemeProvider>
+          {children}
+          <Toaster position="top-center" />
+        </ThemeProvider>
       </body>
     </html>
   );

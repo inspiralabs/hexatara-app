@@ -1,17 +1,25 @@
-import { requireAdmin } from '@/lib/auth/guard';
-import { AdminSidebar } from '@/components/admin/admin-sidebar';
+import { requireAdmin } from "@/lib/auth/guard";
+import { createClient } from "@/lib/supabase/server";
+import { AdminShell } from "@/components/shell/admin-shell";
 
 export default async function AdminProtectedLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  await requireAdmin();
+  const claims = await requireAdmin();
+  const supabase = await createClient();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("nama_lengkap")
+    .eq("id", claims.sub)
+    .maybeSingle();
+
+  const email = typeof claims.email === "string" ? claims.email : "";
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
-      <AdminSidebar />
-      <main className="flex-1 p-4">{children}</main>
-    </div>
+    <AdminShell nama={profile?.nama_lengkap?.trim() || "Admin"} email={email}>
+      {children}
+    </AdminShell>
   );
 }
