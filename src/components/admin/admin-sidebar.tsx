@@ -3,7 +3,21 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { MenuIcon } from "lucide-react";
+import {
+  MenuIcon,
+  HomeIcon,
+  CalendarDaysIcon,
+  ImageIcon,
+  InboxIcon,
+  BadgeCheckIcon,
+  ArrowUpCircleIcon,
+  BookOpenIcon,
+  PackageIcon,
+  SettingsIcon,
+  PanelLeftIcon,
+  PanelLeftCloseIcon,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,57 +33,94 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 type MenuItem = { href: string; label: string };
-type MenuGroup = { label: string; children: MenuItem[] };
+type MenuGroup = { label: string; icon: LucideIcon; children: MenuItem[] };
+type MenuFlat = { href: string; label: string; icon: LucideIcon };
 
-const MENU_ADMIN: (MenuItem | MenuGroup)[] = [
-  { href: "/admin", label: "Beranda" },
+const MENU_ADMIN: (MenuFlat | MenuGroup)[] = [
+  { href: "/admin", label: "Beranda", icon: HomeIcon },
   {
     label: "Batch",
+    icon: CalendarDaysIcon,
     children: [
       { href: "/admin/batch", label: "Daftar Batch" },
       { href: "/admin/batch/kategori", label: "Kategori Pelatihan" },
     ],
   },
-  { href: "/admin/konten", label: "Konten" },
-  { href: "/admin/leads", label: "Leads" },
-  { href: "/admin/sertifikat", label: "Sertifikat" },
-  { href: "/admin/upgrade", label: "Upgrade" },
   {
-    label: "LMS",
+    label: "Konten",
+    icon: ImageIcon,
     children: [
-      { href: "/admin/materi", label: "Materi" },
+      { href: "/admin/konten/popup", label: "Popup" },
+      { href: "/admin/konten/banner", label: "Banner" },
+      { href: "/admin/konten/hero", label: "Hero" },
+      { href: "/admin/konten/instruktur", label: "Instruktur" },
+      { href: "/admin/konten/company", label: "Company Profile" },
+      { href: "/admin/konten/testimoni", label: "Testimoni" },
+    ],
+  },
+  {
+    label: "Leads",
+    icon: InboxIcon,
+    children: [
+      { href: "/admin/leads/minat", label: "Pendaftaran Minat" },
+      { href: "/admin/leads/penawaran", label: "Permintaan Penawaran" },
+    ],
+  },
+  {
+    label: "Sertifikat",
+    icon: BadgeCheckIcon,
+    children: [
+      { href: "/admin/sertifikat", label: "Daftar" },
+      { href: "/admin/sertifikat/baru", label: "Tambah Satuan" },
+      { href: "/admin/sertifikat/impor", label: "Import Massal" },
+    ],
+  },
+  { href: "/admin/upgrade", label: "Upgrade", icon: ArrowUpCircleIcon },
+  {
+    label: "Materi",
+    icon: BookOpenIcon,
+    children: [
+      { href: "/admin/materi", label: "Materi & Bab" },
       { href: "/admin/materi/file", label: "File" },
-      { href: "/admin/materi/soal", label: "Kuis" },
+      { href: "/admin/materi/soal", label: "Bank Soal" },
     ],
   },
   {
     label: "Produk",
+    icon: PackageIcon,
     children: [
       { href: "/admin/produk", label: "Daftar Produk" },
       { href: "/admin/produk/kategori", label: "Kategori Produk" },
     ],
   },
-  { href: "/admin/pengaturan", label: "Pengaturan" },
+  { href: "/admin/pengaturan", label: "Pengaturan", icon: SettingsIcon },
 ];
 
-function isGroup(item: MenuItem | MenuGroup): item is MenuGroup {
+const COLLAPSE_KEY = "hexatara-admin-sidebar-collapsed";
+
+function isGroup(item: MenuFlat | MenuGroup): item is MenuGroup {
   return "children" in item;
 }
 
 // Dua kasus prefix bertumpuk berbeda di sini:
 // 1. Siblings tanpa hubungan prefix (materi/file vs materi/soal) — tidak masalah.
 // 2. Satu child adalah prefix dari child lain (batch vs batch/kategori,
-//    produk vs produk/kategori) — child yang HREF-nya lebih panjang selalu
-//    lebih spesifik. Kalau child lain yang lebih spesifik itu cocok dengan
-//    pathname, dia yang menang, bukan yang pendek.
+//    produk vs produk/kategori, sertifikat vs sertifikat/baru) — child yang
+//    HREF-nya lebih panjang selalu lebih spesifik. Kalau child lain yang lebih
+//    spesifik itu cocok dengan pathname, dia yang menang, bukan yang pendek.
 function childAktif(pathname: string, href: string, children: MenuItem[]) {
   const lebihSpesifikCocok = children.some(
     (c) => c.href !== href && c.href.length > href.length && pathname.startsWith(c.href)
   );
   if (lebihSpesifikCocok) return false;
   return pathname === href || pathname.startsWith(href + "/");
+}
+
+function groupAktif(pathname: string, group: MenuGroup) {
+  return group.children.some((c) => childAktif(pathname, c.href, group.children));
 }
 
 function NavLink({
@@ -111,16 +162,14 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
   const [grupTerbuka, setGrupTerbuka] = useState<Set<string>>(() => {
     const grup = new Set<string>();
     for (const item of MENU_ADMIN) {
-      if (isGroup(item) && item.children.some((c) => childAktif(pathname, c.href, item.children))) {
-        grup.add(item.label);
-      }
+      if (isGroup(item) && groupAktif(pathname, item)) grup.add(item.label);
     }
     return grup;
   });
 
   useEffect(() => {
     for (const item of MENU_ADMIN) {
-      if (isGroup(item) && item.children.some((c) => childAktif(pathname, c.href, item.children))) {
+      if (isGroup(item) && groupAktif(pathname, item)) {
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setGrupTerbuka((prev) => (prev.has(item.label) ? prev : new Set(prev).add(item.label)));
       }
@@ -173,14 +222,92 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
+// Strip ikon saat navbar desktop di-collapse. Grup tidak punya flyout sub-menu —
+// klik ikon grup langsung ke sub-item pertamanya. Ini disengaja sederhana:
+// satu Admin non-teknis, expand navbar kalau butuh pilih sub-item lain.
+function IconRail() {
+  const pathname = usePathname();
+
+  return (
+    <nav className="flex flex-col items-center gap-1">
+      {MENU_ADMIN.map((item) => {
+        const aktif = isGroup(item)
+          ? groupAktif(pathname, item)
+          : item.href === "/admin"
+            ? pathname === "/admin"
+            : pathname.startsWith(item.href);
+        const href = isGroup(item) ? item.children[0]!.href : item.href;
+        const Icon = item.icon;
+
+        return (
+          <Tooltip key={item.label}>
+            <TooltipTrigger
+              render={
+                <Link
+                  href={href}
+                  aria-label={item.label}
+                  className={cn(
+                    "flex size-11 items-center justify-center rounded-md",
+                    aktif
+                      ? "bg-warna-utama text-warna-latar"
+                      : "text-warna-teks-2 hover:bg-warna-latar-2 hover:text-warna-teks"
+                  )}
+                />
+              }
+            >
+              <Icon className="size-5" />
+            </TooltipTrigger>
+            <TooltipContent>{item.label}</TooltipContent>
+          </Tooltip>
+        );
+      })}
+    </nav>
+  );
+}
+
 export function AdminSidebar() {
   const [terbuka, setTerbuka] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    try {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setCollapsed(localStorage.getItem(COLLAPSE_KEY) === "1");
+    } catch {
+      // localStorage bisa gagal di private window — biarkan default terbuka.
+    }
+  }, []);
+
+  function toggleCollapsed() {
+    const next = !collapsed;
+    setCollapsed(next);
+    try {
+      localStorage.setItem(COLLAPSE_KEY, next ? "1" : "0");
+    } catch {
+      // Preferensi tampilan saja — gagal simpan tidak menghalangi toggle jalan.
+    }
+  }
 
   return (
     <>
-      <aside className="hidden w-56 shrink-0 border-r border-warna-latar-2 bg-warna-latar p-4 md:block">
-        <p className="mb-4 text-lg font-bold text-warna-utama">Hexatara Admin</p>
-        <NavList />
+      <aside
+        className={cn(
+          "hidden shrink-0 border-r border-warna-latar-2 bg-warna-latar p-4 md:block",
+          collapsed ? "w-[4.5rem]" : "w-56"
+        )}
+      >
+        <div className={cn("mb-4 flex items-center", collapsed ? "justify-center" : "justify-between")}>
+          {!collapsed && <p className="text-lg font-bold text-warna-utama">Hexatara Admin</p>}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleCollapsed}
+            aria-label={collapsed ? "Tampilkan navbar" : "Sembunyikan navbar"}
+          >
+            {collapsed ? <PanelLeftIcon className="size-5" /> : <PanelLeftCloseIcon className="size-5" />}
+          </Button>
+        </div>
+        {collapsed ? <IconRail /> : <NavList />}
       </aside>
 
       <div className="flex h-14 items-center gap-3 border-b border-warna-latar-2 bg-warna-latar px-4 md:hidden">

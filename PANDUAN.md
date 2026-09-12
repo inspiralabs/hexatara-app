@@ -5408,8 +5408,7 @@ admin yang ada saat ini.
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji navbar Admin baru sendiri di browser dan hasilnya sesuai,
 termasuk perubahan struktur leads dari tab ke sub-menu. Isi baris terkait:
-Status DONE, Berkas [daftar berkas], Diuji [tanggal], Bukti [ringkas hasil
-uji]. Tambahkan satu baris ke Log verifikasi. Jangan mengubah status baris
+Status DONE, Berkas [daftar berkas], Diuji [tanggal], Bukti [sudah menguji semua sesuai list dan lolos]. Tambahkan satu baris ke Log verifikasi. Jangan mengubah status baris
 fitur lain.
 ```
 
