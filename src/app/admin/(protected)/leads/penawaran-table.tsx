@@ -7,7 +7,7 @@ import { id as localeId } from 'date-fns/locale';
 import { DownloadIcon, Trash2Icon } from 'lucide-react';
 import { hapusPenawaranAction } from './penawaran-actions';
 import { eksporPenawaranCsv } from './penawaran-export';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DataTable, SortableHeader, createDataTableColumnHelper } from '@/components/data-table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -53,7 +53,7 @@ function BarisHapus({ id, nama }: { id: number; nama: string }) {
   return (
     <>
       <Button variant="ghost" size="icon" aria-label={`Hapus permintaan penawaran ${nama}`} onClick={() => setHapusOpen(true)}>
-        <Trash2Icon className="size-4" />
+        <Trash2Icon className="size-4 text-warna-bahaya" />
       </Button>
 
       <AlertDialog open={hapusOpen} onOpenChange={setHapusOpen}>
@@ -75,6 +75,45 @@ function BarisHapus({ id, nama }: { id: number; nama: string }) {
   );
 }
 
+const columnHelper = createDataTableColumnHelper<Penawaran>();
+
+const columns = [
+  columnHelper.accessor('nama', {
+    header: (ctx) => <SortableHeader column={ctx.column} label="Nama" />,
+    cell: (info) => <span className="font-medium text-warna-teks">{info.getValue()}</span>,
+  }),
+  columnHelper.accessor((row) => row.perusahaan ?? '—', { id: 'perusahaan', header: 'Perusahaan' }),
+  columnHelper.accessor('email', { header: (ctx) => <SortableHeader column={ctx.column} label="Email" /> }),
+  columnHelper.accessor((row) => row.whatsapp ?? '—', { id: 'whatsapp', header: 'WhatsApp' }),
+  columnHelper.accessor((row) => row.products?.nama_id ?? '—', { id: 'produk', header: 'Produk' }),
+  columnHelper.display({
+    id: 'kebutuhan',
+    header: 'Kebutuhan',
+    cell: ({ row }) => (
+      <span className="block max-w-[200px] truncate" title={row.original.kebutuhan ?? ''}>
+        {row.original.kebutuhan ?? '—'}
+      </span>
+    ),
+  }),
+  columnHelper.accessor('status', {
+    header: (ctx) => <SortableHeader column={ctx.column} label="Status" />,
+    cell: (info) => <Badge variant="secondary">{LABEL_STATUS[info.getValue()]}</Badge>,
+  }),
+  columnHelper.accessor('created_at', {
+    header: (ctx) => <SortableHeader column={ctx.column} label="Tanggal" />,
+    cell: (info) => format(new Date(info.getValue()), 'd MMM yyyy', { locale: localeId }),
+  }),
+  columnHelper.display({
+    id: 'aksi',
+    header: () => <span className="sr-only">Aksi</span>,
+    cell: ({ row }) => (
+      <div className="flex justify-end">
+        <BarisHapus id={row.original.id} nama={row.original.nama} />
+      </div>
+    ),
+  }),
+];
+
 export function PenawaranTable({ penawaran }: { penawaran: Penawaran[] }) {
   return (
     <div className="flex flex-col gap-4">
@@ -89,52 +128,13 @@ export function PenawaranTable({ penawaran }: { penawaran: Penawaran[] }) {
         </button>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-warna-latar-2">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nama</TableHead>
-              <TableHead>Perusahaan</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>WhatsApp</TableHead>
-              <TableHead>Produk</TableHead>
-              <TableHead>Kebutuhan</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Tanggal</TableHead>
-              <TableHead className="text-right">Aksi</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {penawaran.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={9} className="text-center text-warna-teks-2">
-                  Belum ada permintaan penawaran.
-                </TableCell>
-              </TableRow>
-            ) : (
-              penawaran.map((p) => (
-                <TableRow key={p.id}>
-                  <TableCell className="font-medium text-warna-teks">{p.nama}</TableCell>
-                  <TableCell>{p.perusahaan ?? '—'}</TableCell>
-                  <TableCell>{p.email}</TableCell>
-                  <TableCell>{p.whatsapp ?? '—'}</TableCell>
-                  <TableCell>{p.products?.nama_id ?? '—'}</TableCell>
-                  <TableCell className="max-w-[200px] truncate" title={p.kebutuhan ?? ''}>
-                    {p.kebutuhan ?? '—'}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">{LABEL_STATUS[p.status]}</Badge>
-                  </TableCell>
-                  <TableCell>{format(new Date(p.created_at), 'd MMM yyyy', { locale: localeId })}</TableCell>
-                  <TableCell className="text-right">
-                    <BarisHapus id={p.id} nama={p.nama} />
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      <DataTable
+        columns={columns}
+        data={penawaran}
+        searchColumnId="nama"
+        searchPlaceholder="Cari nama..."
+        emptyMessage="Belum ada permintaan penawaran."
+      />
     </div>
   );
 }

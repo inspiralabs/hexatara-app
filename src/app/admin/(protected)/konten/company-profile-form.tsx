@@ -104,6 +104,8 @@ export function CompanyProfileForm({ profile }: { profile: CompanyProfile }) {
         render={({ field }) => (
           <ImageUploadField
             label="Gambar (opsional)"
+            aspectRatio={16 / 9}
+            suggestedPx="1600×900px"
             value={field.value ?? null}
             onChange={field.onChange}
             onUpload={async (file) => {

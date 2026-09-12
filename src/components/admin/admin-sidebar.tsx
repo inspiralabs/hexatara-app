@@ -10,7 +10,6 @@ import {
   ImageIcon,
   InboxIcon,
   BadgeCheckIcon,
-  ArrowUpCircleIcon,
   BookOpenIcon,
   PackageIcon,
   SettingsIcon,
@@ -74,11 +73,9 @@ const MENU_ADMIN: (MenuFlat | MenuGroup)[] = [
     icon: BadgeCheckIcon,
     children: [
       { href: "/admin/sertifikat", label: "Daftar" },
-      { href: "/admin/sertifikat/baru", label: "Tambah Satuan" },
-      { href: "/admin/sertifikat/impor", label: "Import Massal" },
+      { href: "/admin/upgrade", label: "Upgrade" },
     ],
   },
-  { href: "/admin/upgrade", label: "Upgrade", icon: ArrowUpCircleIcon },
   {
     label: "Materi",
     icon: BookOpenIcon,

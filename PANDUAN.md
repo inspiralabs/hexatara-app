@@ -5478,8 +5478,7 @@ di atas.
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji DataTable generik di seluruh tabel Admin sendiri di
 browser dan hasilnya sesuai. Isi baris terkait: Status DONE, Berkas
-[daftar berkas], Diuji [tanggal], Bukti [ringkas hasil uji, sebutkan
-tabel mana saja yang sudah dimigrasi]. Tambahkan satu baris ke Log
+[daftar berkas], Diuji [tanggal], Bukti [sudah saya uji sesuai list dan lolos. daftar tabel yang migrasi : daftar batch, popup, banner, instruktur, testimoni, pendaftaran minat, permintaan penawaran, sertifikat daftar, upgrade, bank soal, daftar produk. termasuk pengubahan navbar pada sertifikat dan sub nya]. Tambahkan satu baris ke Log
 verifikasi. Jangan mengubah status baris fitur lain.
 ```
 
@@ -5551,8 +5550,7 @@ crop di atas, dan konfirmasi saran ukuran pixel per konteks pemakaian
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji ImageUploadField dengan validasi dan crop sendiri di
 browser di semua form terkait dan hasilnya sesuai. Isi baris terkait:
-Status DONE, Berkas [daftar berkas], Diuji [tanggal], Bukti [ringkas hasil
-uji]. Tambahkan satu baris ke Log verifikasi. Jangan mengubah status baris
+Status DONE, Berkas [daftar berkas], Diuji [tanggal], Bukti [saya sudah menguji fitur sesuai list dan batch, produk, konten/popup, dst berhasil dijalankan]. Tambahkan satu baris ke Log verifikasi. Jangan mengubah status baris
 fitur lain.
 ```
 

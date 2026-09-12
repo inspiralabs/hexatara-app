@@ -154,6 +154,8 @@ export function HeroSlideFormDialog({
             render={({ field }) => (
               <ImageUploadField
                 label="Gambar"
+                aspectRatio={16 / 9}
+                suggestedPx="1920×1080px"
                 value={field.value ?? null}
                 onChange={field.onChange}
                 onUpload={async (file) => {

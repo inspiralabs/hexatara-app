@@ -1,8 +1,7 @@
 import Link from 'next/link';
 import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { SoalRowActions } from './soal-row-actions';
+import { SoalTable } from './soal-table';
 
 export default async function AdminSoalPage() {
   // Layout sudah memanggil requireAdmin(), tapi Server Component ini memanggil
@@ -37,38 +36,7 @@ export default async function AdminSoalPage() {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-warna-latar-2">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Urutan</TableHead>
-              <TableHead>Pertanyaan</TableHead>
-              <TableHead>Aktif</TableHead>
-              <TableHead className="text-right">Aksi</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {!soal || soal.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center text-warna-teks-2">
-                  Belum ada soal.
-                </TableCell>
-              </TableRow>
-            ) : (
-              soal.map((s) => (
-                <TableRow key={s.id}>
-                  <TableCell>{s.urutan}</TableCell>
-                  <TableCell className="font-medium text-warna-teks">{s.pertanyaan_id}</TableCell>
-                  <TableCell>{s.is_active ? 'Ya' : 'Tidak'}</TableCell>
-                  <TableCell className="text-right">
-                    <SoalRowActions id={s.id} pertanyaan={s.pertanyaan_id} />
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      <SoalTable soal={soal ?? []} />
     </div>
   );
 }

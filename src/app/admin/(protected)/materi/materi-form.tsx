@@ -86,6 +86,8 @@ export function MateriForm({
         render={({ field }) => (
           <ImageUploadField
             label="Poster (tampil di kartu halaman Materi publik)"
+            aspectRatio={16 / 9}
+            suggestedPx="1200×675px"
             value={field.value ?? null}
             onChange={field.onChange}
             onUpload={async (file) => {

@@ -1,29 +1,7 @@
 import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { UpgradeRowActions } from './upgrade-row-actions';
-import { StatusPengirimanSelect } from './status-pengiriman-select';
-
-const PAKET_LABEL: Record<string, string> = {
-  cert_only: 'Sertifikat saja',
-  cert_merch: 'Sertifikat + Merchandise',
-  merch_addon: 'Tambah Merchandise',
-};
-
-function formatRupiah(angka: number) {
-  return `Rp ${angka.toLocaleString('id-ID')}`;
-}
-
-function AlamatRingkas({ alamat }: { alamat: unknown }) {
-  const a = alamat as { nama_penerima?: string; kota?: string } | null;
-  if (!a) return <>—</>;
-  return (
-    <>
-      {a.nama_penerima ?? '—'}, {a.kota ?? '—'}
-    </>
-  );
-}
+import { AntreanTable, PengirimanTable } from './upgrade-tables';
 
 export default async function AdminUpgradePage() {
   // Layout sudah memanggil requireAdmin(), dipanggil lagi eksplisit di sini
@@ -71,109 +49,28 @@ export default async function AdminUpgradePage() {
           .createSignedUrl(order.bukti_url, 300);
         buktiUrl = signed?.signedUrl ?? null;
       }
-      return { ...order, buktiUrl };
+      return { ...order, buktiUrl, nama: namaById.get(order.user_id) ?? '—' };
     })
   );
+
+  const pengirimanDenganNama = (pengiriman ?? []).map((order) => ({
+    ...order,
+    nama: namaById.get(order.user_id) ?? '—',
+  }));
 
   return (
     <div className="flex flex-col gap-8">
       <div>
         <h1 className="text-xl font-bold text-warna-teks">Antrean Verifikasi Pembayaran</h1>
-        <div className="mt-4 overflow-x-auto rounded-lg border border-warna-latar-2">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nama</TableHead>
-                <TableHead>Paket</TableHead>
-                <TableHead>Nominal</TableHead>
-                <TableHead>Alamat</TableHead>
-                <TableHead>Bukti</TableHead>
-                <TableHead className="text-right">Aksi</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {antreanDenganUrl.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="text-center text-warna-teks-2">
-                    Tidak ada pesanan menunggu verifikasi.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                antreanDenganUrl.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-medium text-warna-teks">
-                      {namaById.get(order.user_id) ?? '—'}
-                    </TableCell>
-                    <TableCell>{PAKET_LABEL[order.paket] ?? order.paket}</TableCell>
-                    <TableCell>{formatRupiah(order.nominal)}</TableCell>
-                    <TableCell>
-                      <AlamatRingkas alamat={order.alamat_pengiriman} />
-                    </TableCell>
-                    <TableCell>
-                      {order.buktiUrl ? (
-                        <a
-                          href={order.buktiUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-warna-utama underline underline-offset-4"
-                        >
-                          Lihat bukti
-                        </a>
-                      ) : (
-                        '—'
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <UpgradeRowActions orderId={order.id} />
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+        <div className="mt-4">
+          <AntreanTable antrean={antreanDenganUrl} />
         </div>
       </div>
 
       <div>
         <h1 className="text-xl font-bold text-warna-teks">Pengiriman Merchandise</h1>
-        <div className="mt-4 overflow-x-auto rounded-lg border border-warna-latar-2">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nama</TableHead>
-                <TableHead>Paket</TableHead>
-                <TableHead>Alamat</TableHead>
-                <TableHead>Status Pengiriman</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {(pengiriman ?? []).length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center text-warna-teks-2">
-                    Tidak ada merchandise yang perlu dikirim.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                (pengiriman ?? []).map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-medium text-warna-teks">
-                      {namaById.get(order.user_id) ?? '—'}
-                    </TableCell>
-                    <TableCell>{PAKET_LABEL[order.paket] ?? order.paket}</TableCell>
-                    <TableCell>
-                      <AlamatRingkas alamat={order.alamat_pengiriman} />
-                    </TableCell>
-                    <TableCell>
-                      <StatusPengirimanSelect
-                        orderId={order.id}
-                        statusSaatIni={order.status_pengiriman}
-                      />
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+        <div className="mt-4">
+          <PengirimanTable pengiriman={pengirimanDenganNama} />
         </div>
       </div>
     </div>

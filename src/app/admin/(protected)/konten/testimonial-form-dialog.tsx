@@ -147,6 +147,8 @@ export function TestimonialFormDialog({
             render={({ field }) => (
               <ImageUploadField
                 label="Foto (opsional)"
+                aspectRatio={1}
+                suggestedPx="800×800px"
                 value={field.value ?? null}
                 onChange={field.onChange}
                 onUpload={async (file) => {

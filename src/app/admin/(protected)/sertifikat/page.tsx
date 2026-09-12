@@ -1,19 +1,7 @@
 import Link from 'next/link';
 import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { SertifikatRowActions } from './sertifikat-row-actions';
-
-const JENIS_LABEL: Record<string, string> = {
-  free_track: 'Free Track',
-  existing_manual: 'Existing Manual',
-  rpc_certified: 'RPC Certified',
-};
-
-const formatTanggalId = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-function formatTanggal(tanggal: string | null) {
-  return tanggal ? formatTanggalId.format(new Date(tanggal)) : '—';
-}
+import { SertifikatTable } from './sertifikat-table';
 
 export default async function AdminSertifikatPage() {
   // Layout sudah memanggil requireAdmin(), tapi Server Component ini dipanggil
@@ -37,6 +25,10 @@ export default async function AdminSertifikatPage() {
   if (error) console.error('[admin-sertifikat] gagal memuat daftar:', error);
 
   const statusByNomor = new Map((statusRows ?? []).map((s) => [s.nomor_sertifikat, s.status]));
+  const rows = (sertifikat ?? []).map((s) => ({
+    ...s,
+    invalid: statusByNomor.get(s.nomor_sertifikat) === 'invalid',
+  }));
 
   return (
     <div className="flex flex-col gap-4">
@@ -58,60 +50,7 @@ export default async function AdminSertifikatPage() {
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-warna-latar-2">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nomor</TableHead>
-              <TableHead>Jenis</TableHead>
-              <TableHead>Nama</TableHead>
-              <TableHead>Terbit</TableHead>
-              <TableHead>Kedaluwarsa</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>QR Aktif</TableHead>
-              <TableHead className="text-right">Aksi</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {!sertifikat || sertifikat.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={8} className="text-center text-warna-teks-2">
-                  Belum ada sertifikat.
-                </TableCell>
-              </TableRow>
-            ) : (
-              sertifikat.map((s) => {
-                const status = statusByNomor.get(s.nomor_sertifikat);
-                const invalid = status === 'invalid';
-                return (
-                  <TableRow key={s.id}>
-                    <TableCell className="font-medium text-warna-teks">{s.nomor_sertifikat}</TableCell>
-                    <TableCell>{JENIS_LABEL[s.jenis] ?? s.jenis}</TableCell>
-                    <TableCell>{s.nama_lengkap}</TableCell>
-                    <TableCell>{formatTanggal(s.tanggal_terbit)}</TableCell>
-                    <TableCell>
-                      {s.tanggal_kedaluwarsa === null ? 'Tanpa masa berlaku' : formatTanggal(s.tanggal_kedaluwarsa)}
-                    </TableCell>
-                    <TableCell>
-                      <span
-                        className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                          invalid ? 'bg-warna-bahaya/10 text-warna-bahaya' : 'bg-warna-sukses/10 text-warna-sukses'
-                        }`}
-                      >
-                        {invalid ? 'Invalid' : 'Berlaku'}
-                      </span>
-                    </TableCell>
-                    <TableCell>{s.qr_aktif ? 'Ya' : 'Tidak'}</TableCell>
-                    <TableCell className="text-right">
-                      <SertifikatRowActions id={s.id} nomor={s.nomor_sertifikat} />
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      <SertifikatTable sertifikat={rows} />
     </div>
   );
 }

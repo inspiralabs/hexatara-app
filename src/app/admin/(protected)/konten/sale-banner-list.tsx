@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { PlusIcon } from 'lucide-react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DataTable, SortableHeader, createDataTableColumnHelper } from '@/components/data-table';
 import { SaleBannerRowActions } from './sale-banner-row-actions';
 import { SaleBannerActiveSwitch } from './sale-banner-active-switch';
 import { SaleBannerFormDialog } from './sale-banner-form-dialog';
@@ -28,6 +28,8 @@ function keDefaultValues(b: SaleBanner): SaleBannerFormInput {
   };
 }
 
+const columnHelper = createDataTableColumnHelper<SaleBanner>();
+
 export function SaleBannerList({ banners }: { banners: SaleBanner[] }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<SaleBanner | null>(null);
@@ -42,6 +44,39 @@ export function SaleBannerList({ banners }: { banners: SaleBanner[] }) {
     setDialogOpen(true);
   }
 
+  const columns = [
+    columnHelper.accessor('judul_id', {
+      header: (ctx) => <SortableHeader column={ctx.column} label="Judul" />,
+      cell: (info) => <span className="font-medium text-warna-teks">{info.getValue()}</span>,
+    }),
+    columnHelper.display({
+      id: 'tayang',
+      header: 'Tayang',
+      cell: ({ row }) =>
+        row.original.tayang_mulai || row.original.tayang_selesai
+          ? `${row.original.tayang_mulai ?? '…'} – ${row.original.tayang_selesai ?? '…'}`
+          : 'Tanpa batas',
+    }),
+    columnHelper.display({
+      id: 'aktif',
+      header: 'Aktif',
+      cell: ({ row }) => <SaleBannerActiveSwitch bannerId={row.original.id} aktif={row.original.is_active} />,
+    }),
+    columnHelper.display({
+      id: 'aksi',
+      header: () => <span className="sr-only">Aksi</span>,
+      cell: ({ row }) => (
+        <div className="flex justify-end">
+          <SaleBannerRowActions
+            bannerId={row.original.id}
+            judul={row.original.judul_id}
+            onUbah={() => bukaUbah(row.original)}
+          />
+        </div>
+      ),
+    }),
+  ];
+
   return (
     <div className="flex flex-col gap-4 pt-4">
       <div className="flex justify-end">
@@ -54,48 +89,13 @@ export function SaleBannerList({ banners }: { banners: SaleBanner[] }) {
         </button>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-warna-latar-2">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Judul</TableHead>
-              <TableHead>Tayang</TableHead>
-              <TableHead>Aktif</TableHead>
-              <TableHead className="text-right">Aksi</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {banners.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center text-warna-teks-2">
-                  Belum ada sale banner.
-                </TableCell>
-              </TableRow>
-            ) : (
-              banners.map((banner) => (
-                <TableRow key={banner.id}>
-                  <TableCell className="font-medium text-warna-teks">{banner.judul_id}</TableCell>
-                  <TableCell>
-                    {banner.tayang_mulai || banner.tayang_selesai
-                      ? `${banner.tayang_mulai ?? '…'} – ${banner.tayang_selesai ?? '…'}`
-                      : 'Tanpa batas'}
-                  </TableCell>
-                  <TableCell>
-                    <SaleBannerActiveSwitch bannerId={banner.id} aktif={banner.is_active} />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <SaleBannerRowActions
-                      bannerId={banner.id}
-                      judul={banner.judul_id}
-                      onUbah={() => bukaUbah(banner)}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      <DataTable
+        columns={columns}
+        data={banners}
+        searchColumnId="judul_id"
+        searchPlaceholder="Cari judul banner..."
+        emptyMessage="Belum ada sale banner."
+      />
 
       <SaleBannerFormDialog
         open={dialogOpen}

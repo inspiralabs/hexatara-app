@@ -222,6 +222,8 @@ export function ProdukForm({
               render={({ field }) => (
                 <ImageUploadField
                   label="Foto"
+                  aspectRatio={1}
+                  suggestedPx="1200×1200px"
                   value={field.value || null}
                   onChange={(url) => field.onChange(url ?? '')}
                   onUpload={async (file) => {

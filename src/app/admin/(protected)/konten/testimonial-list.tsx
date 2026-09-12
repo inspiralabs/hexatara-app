@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { PlusIcon } from 'lucide-react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DataTable, SortableHeader, createDataTableColumnHelper } from '@/components/data-table';
 import { TestimonialRowActions } from './testimonial-row-actions';
 import { TestimonialActiveSwitch } from './testimonial-active-switch';
 import { TestimonialFormDialog } from './testimonial-form-dialog';
@@ -24,6 +24,8 @@ function keDefaultValues(t: Testimonial): TestimonialFormInput {
   };
 }
 
+const columnHelper = createDataTableColumnHelper<Testimonial>();
+
 export function TestimonialList({ testimonials }: { testimonials: Testimonial[] }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Testimonial | null>(null);
@@ -38,6 +40,34 @@ export function TestimonialList({ testimonials }: { testimonials: Testimonial[] 
     setDialogOpen(true);
   }
 
+  const columns = [
+    columnHelper.accessor('nama', {
+      header: (ctx) => <SortableHeader column={ctx.column} label="Nama" />,
+      cell: (info) => <span className="font-medium text-warna-teks">{info.getValue()}</span>,
+    }),
+    columnHelper.accessor('urutan', {
+      header: (ctx) => <SortableHeader column={ctx.column} label="Urutan" />,
+    }),
+    columnHelper.display({
+      id: 'aktif',
+      header: 'Aktif',
+      cell: ({ row }) => <TestimonialActiveSwitch testimonialId={row.original.id} aktif={row.original.is_active} />,
+    }),
+    columnHelper.display({
+      id: 'aksi',
+      header: () => <span className="sr-only">Aksi</span>,
+      cell: ({ row }) => (
+        <div className="flex justify-end">
+          <TestimonialRowActions
+            testimonialId={row.original.id}
+            nama={row.original.nama}
+            onUbah={() => bukaUbah(row.original)}
+          />
+        </div>
+      ),
+    }),
+  ];
+
   return (
     <div className="flex flex-col gap-4 pt-4">
       <div className="flex justify-end">
@@ -50,44 +80,13 @@ export function TestimonialList({ testimonials }: { testimonials: Testimonial[] 
         </button>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-warna-latar-2">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nama</TableHead>
-              <TableHead>Urutan</TableHead>
-              <TableHead>Aktif</TableHead>
-              <TableHead className="text-right">Aksi</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {testimonials.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center text-warna-teks-2">
-                  Belum ada testimoni.
-                </TableCell>
-              </TableRow>
-            ) : (
-              testimonials.map((testimonial) => (
-                <TableRow key={testimonial.id}>
-                  <TableCell className="font-medium text-warna-teks">{testimonial.nama}</TableCell>
-                  <TableCell>{testimonial.urutan}</TableCell>
-                  <TableCell>
-                    <TestimonialActiveSwitch testimonialId={testimonial.id} aktif={testimonial.is_active} />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <TestimonialRowActions
-                      testimonialId={testimonial.id}
-                      nama={testimonial.nama}
-                      onUbah={() => bukaUbah(testimonial)}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      <DataTable
+        columns={columns}
+        data={testimonials}
+        searchColumnId="nama"
+        searchPlaceholder="Cari nama..."
+        emptyMessage="Belum ada testimoni."
+      />
 
       <TestimonialFormDialog
         open={dialogOpen}

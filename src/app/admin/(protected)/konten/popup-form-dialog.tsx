@@ -122,7 +122,9 @@ export function PopupFormDialog({
             name="gambar_mobile_url"
             render={({ field }) => (
               <ImageUploadField
-                label="Gambar Mobile (potret) — disarankan 1080×1920px"
+                label="Gambar Mobile (potret)"
+                aspectRatio={9 / 16}
+                suggestedPx="1080×1920px"
                 value={field.value ?? null}
                 onChange={field.onChange}
                 onUpload={async (file) => {
@@ -139,7 +141,9 @@ export function PopupFormDialog({
             name="gambar_desktop_url"
             render={({ field }) => (
               <ImageUploadField
-                label="Gambar Desktop (lanskap) — disarankan 1920×1080px"
+                label="Gambar Desktop (lanskap)"
+                aspectRatio={16 / 9}
+                suggestedPx="1920×1080px"
                 value={field.value ?? null}
                 onChange={field.onChange}
                 onUpload={async (file) => {

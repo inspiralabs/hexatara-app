@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { PlusIcon } from 'lucide-react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DataTable, SortableHeader, createDataTableColumnHelper } from '@/components/data-table';
 import { PopupRowActions } from './popup-row-actions';
 import { PopupActiveSwitch } from './popup-active-switch';
 import { PopupFormDialog } from './popup-form-dialog';
@@ -24,6 +24,8 @@ function keDefaultValues(p: Popup): PopupFormInput {
   };
 }
 
+const columnHelper = createDataTableColumnHelper<Popup>();
+
 export function PopupList({ popups }: { popups: Popup[] }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Popup | null>(null);
@@ -38,6 +40,35 @@ export function PopupList({ popups }: { popups: Popup[] }) {
     setDialogOpen(true);
   }
 
+  const columns = [
+    columnHelper.accessor('judul_id', {
+      header: (ctx) => <SortableHeader column={ctx.column} label="Judul" />,
+      cell: (info) => <span className="font-medium text-warna-teks">{info.getValue()}</span>,
+    }),
+    columnHelper.display({
+      id: 'tayang',
+      header: 'Tayang',
+      cell: ({ row }) =>
+        row.original.tayang_mulai || row.original.tayang_selesai
+          ? `${row.original.tayang_mulai ?? '…'} – ${row.original.tayang_selesai ?? '…'}`
+          : 'Tanpa batas',
+    }),
+    columnHelper.display({
+      id: 'aktif',
+      header: 'Aktif',
+      cell: ({ row }) => <PopupActiveSwitch popupId={row.original.id} aktif={row.original.is_active} />,
+    }),
+    columnHelper.display({
+      id: 'aksi',
+      header: () => <span className="sr-only">Aksi</span>,
+      cell: ({ row }) => (
+        <div className="flex justify-end">
+          <PopupRowActions popupId={row.original.id} judul={row.original.judul_id} onUbah={() => bukaUbah(row.original)} />
+        </div>
+      ),
+    }),
+  ];
+
   return (
     <div className="flex flex-col gap-4 pt-4">
       <div className="flex justify-end">
@@ -50,44 +81,7 @@ export function PopupList({ popups }: { popups: Popup[] }) {
         </button>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-warna-latar-2">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Judul</TableHead>
-              <TableHead>Tayang</TableHead>
-              <TableHead>Aktif</TableHead>
-              <TableHead className="text-right">Aksi</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {popups.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4} className="text-center text-warna-teks-2">
-                  Belum ada pop-up.
-                </TableCell>
-              </TableRow>
-            ) : (
-              popups.map((popup) => (
-                <TableRow key={popup.id}>
-                  <TableCell className="font-medium text-warna-teks">{popup.judul_id}</TableCell>
-                  <TableCell>
-                    {popup.tayang_mulai || popup.tayang_selesai
-                      ? `${popup.tayang_mulai ?? '…'} – ${popup.tayang_selesai ?? '…'}`
-                      : 'Tanpa batas'}
-                  </TableCell>
-                  <TableCell>
-                    <PopupActiveSwitch popupId={popup.id} aktif={popup.is_active} />
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <PopupRowActions popupId={popup.id} judul={popup.judul_id} onUbah={() => bukaUbah(popup)} />
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      <DataTable columns={columns} data={popups} searchColumnId="judul_id" searchPlaceholder="Cari judul pop-up..." emptyMessage="Belum ada pop-up." />
 
       <PopupFormDialog
         open={dialogOpen}

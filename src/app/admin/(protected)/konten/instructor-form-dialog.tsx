@@ -146,6 +146,8 @@ export function InstructorFormDialog({
             render={({ field }) => (
               <ImageUploadField
                 label="Foto"
+                aspectRatio={1}
+                suggestedPx="800×800px"
                 value={field.value ?? null}
                 onChange={field.onChange}
                 onUpload={async (file) => {
