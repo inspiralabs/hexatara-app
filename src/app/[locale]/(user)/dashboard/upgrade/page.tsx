@@ -16,7 +16,10 @@ export default async function UpgradePage() {
   if (!profile?.free_track_selesai_at) {
     return (
       <div className="mx-auto max-w-md px-4 py-10">
-        <p className="text-warna-teks-2">
+        <Link href="/dashboard" className="text-sm font-medium text-warna-utama underline underline-offset-4">
+          ← Kembali ke Dashboard
+        </Link>
+        <p className="mt-3 text-warna-teks-2">
           Selesaikan kuis dan daftar akun dulu untuk mengajukan upgrade sertifikat.
         </p>
         <Link href="/kuis" className="mt-3 inline-block text-sm underline underline-offset-4">

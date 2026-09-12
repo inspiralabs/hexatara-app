@@ -1,0 +1,51 @@
+- generic [active] [ref=f5e1]:
+  - generic [ref=f5e2]:
+    - complementary [ref=f5e3]:
+      - generic [ref=f5e4]:
+        - paragraph [ref=f5e5]: ahmad
+        - button "Sembunyikan navbar" [ref=f5e6]
+      - navigation [ref=f5e7]:
+        - link "Dashboard" [ref=f5e8] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Kursus Saya" [ref=f5e14] [cursor=pointer]:
+          - /url: /dashboard/kursus
+        - link "Sertifikat Saya" [ref=f5e18] [cursor=pointer]:
+          - /url: /dashboard/sertifikat
+        - link "Transaksi Saya" [ref=f5e22] [cursor=pointer]:
+          - /url: /dashboard/transaksi
+        - link "Pelatihan" [ref=f5e26] [cursor=pointer]:
+          - /url: /dashboard/pelatihan
+        - link "Setting" [ref=f5e29] [cursor=pointer]:
+          - /url: /dashboard/setting
+    - main [ref=f5e33]:
+      - generic [ref=f5e35]:
+        - generic [ref=f5e36]:
+          - heading "Setting" [level=1] [ref=f5e37]
+          - paragraph [ref=f5e38]: Kelola profil dan keamanan akunmu.
+        - generic [ref=f5e39]:
+          - heading "Profil" [level=2] [ref=f5e40]
+          - generic [ref=f5e42]:
+            - alert [ref=f5e75]:
+              - generic [ref=f5e76]: Profil berhasil disimpan.
+            - generic [ref=f5e43]:
+              - generic [ref=f5e44]: Nama Lengkap
+              - textbox "Nama Lengkap" [ref=f5e45]: ahmad
+            - generic [ref=f5e46]:
+              - generic [ref=f5e47]: WhatsApp
+              - textbox "WhatsApp" [ref=f5e48]: "081234567890"
+            - button "Simpan Profil" [ref=f5e49]
+        - generic [ref=f5e50]:
+          - heading "Kata Sandi" [level=2] [ref=f5e51]
+          - generic [ref=f5e53]:
+            - generic [ref=f5e54]:
+              - generic [ref=f5e55]: Kata Sandi Baru
+              - textbox "Kata Sandi Baru" [ref=f5e56]
+            - generic [ref=f5e57]:
+              - generic [ref=f5e58]: Konfirmasi Kata Sandi
+              - textbox "Konfirmasi Kata Sandi" [ref=f5e59]
+            - button "Ubah Kata Sandi" [ref=f5e60]
+        - generic [ref=f5e61]:
+          - heading "Sesi" [level=2] [ref=f5e62]
+          - button "Keluar" [ref=f5e64]
+  - button "Open Next.js Dev Tools" [ref=f5e70] [cursor=pointer]
+  - alert [ref=f5e74]

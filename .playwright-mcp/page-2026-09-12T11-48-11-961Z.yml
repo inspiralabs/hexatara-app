@@ -1,0 +1,84 @@
+- generic [active] [ref=f4e1]:
+  - generic [ref=f4e2]:
+    - complementary [ref=f4e3]:
+      - generic [ref=f4e4]:
+        - paragraph [ref=f4e5]: ahmad
+        - button "Sembunyikan navbar" [ref=f4e6]
+      - navigation [ref=f4e7]:
+        - link "Dashboard" [ref=f4e8] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Kursus Saya" [ref=f4e14] [cursor=pointer]:
+          - /url: /dashboard/kursus
+        - link "Sertifikat Saya" [ref=f4e18] [cursor=pointer]:
+          - /url: /dashboard/sertifikat
+        - link "Transaksi Saya" [ref=f4e22] [cursor=pointer]:
+          - /url: /dashboard/transaksi
+        - link "Pelatihan" [ref=f4e26] [cursor=pointer]:
+          - /url: /dashboard/pelatihan
+        - link "Setting" [ref=f4e29] [cursor=pointer]:
+          - /url: /dashboard/setting
+    - main [ref=f4e33]:
+      - generic [ref=f4e35]:
+        - generic [ref=f4e36]:
+          - heading "Pelatihan" [level=1] [ref=f4e37]
+          - paragraph [ref=f4e38]: Semua pelatihan Hexatara, termasuk yang gratis.
+        - generic [ref=f4e39]:
+          - paragraph [ref=f4e40]: Belum Yakin Ambil Kelas Berbayar? Coba Materi Gratisnya Dulu.
+          - paragraph [ref=f4e41]: Pelajari dasar keselamatan penerbangan drone, kerjakan kuisnya, dan dapatkan sertifikat digital pertamamu. Semua gratis, tanpa kartu kredit, tanpa risiko gagal.
+          - link "Mulai Sekarang" [ref=f4e42] [cursor=pointer]:
+            - /url: /materi/3
+        - generic [ref=f4e43]:
+          - generic [ref=f4e44]:
+            - generic [ref=f4e45]: "Kategori:"
+            - combobox [ref=f4e46]:
+              - generic [ref=f4e47]: Semua
+              - img [aria-hidden]: ▼
+            - textbox [aria-hidden] [ref=f4e48]: semua
+          - generic [ref=f4e49]:
+            - generic [ref=f4e50]: "Status:"
+            - combobox [ref=f4e51]:
+              - generic [ref=f4e52]: Semua
+              - img [aria-hidden]: ▼
+            - textbox [aria-hidden] [ref=f4e53]: semua
+          - generic [ref=f4e54]:
+            - combobox [ref=f4e55]:
+              - generic [ref=f4e56]: Tanggal Terdekat
+              - img [aria-hidden]: ▼
+            - textbox [aria-hidden] [ref=f4e57]: tanggalTerdekat
+        - generic [ref=f4e58]:
+          - article [ref=f4e59]:
+            - generic [ref=f4e60]:
+              - generic [ref=f4e61]:
+                - generic [ref=f4e62]: Sertifikasi RPC
+                - generic [ref=f4e63]: Ditutup
+              - heading "Pelatihan RPC Batch Agustus 2026" [level=3] [ref=f4e64]
+              - paragraph [ref=f4e65]: 4 Agustus 2026 – 8 Agustus 2026 · Jakarta Selatan
+              - paragraph [ref=f4e66]: Rp 4.500.000
+              - link "Lihat Detail" [ref=f4e68] [cursor=pointer]:
+                - /url: /pelatihan/rpc-agustus-2026
+          - article [ref=f4e69]:
+            - img "Pelatihan RPC Batch Oktober 2026" [ref=f4e71]
+            - generic [ref=f4e72]:
+              - generic [ref=f4e73]:
+                - generic [ref=f4e74]: Sertifikasi RPC
+                - generic [ref=f4e75]: Pendaftaran Dibuka
+              - heading "Pelatihan RPC Batch Oktober 2026" [level=3] [ref=f4e76]
+              - paragraph [ref=f4e77]: Pelatihan pilot drone bersertifikat untuk memperoleh Remote Pilot Certificate (RPC). Cocok untuk pemula maupun yang suda…
+              - paragraph [ref=f4e78]: 6 Oktober 2026 – 10 Oktober 2026 · Jakarta Selatan
+              - paragraph [ref=f4e79]: Rp 4.500.000
+              - link "Lihat Detail" [ref=f4e81] [cursor=pointer]:
+                - /url: /pelatihan/rpc-oktober-2026
+          - article [ref=f4e82]:
+            - img "Pelatihan RPC Batch November 2026" [ref=f4e84]
+            - generic [ref=f4e85]:
+              - generic [ref=f4e86]:
+                - generic [ref=f4e87]: Sertifikasi RPC
+                - generic [ref=f4e88]: Akan Datang
+              - heading "Pelatihan RPC Batch November 2026" [level=3] [ref=f4e89]
+              - paragraph [ref=f4e90]: DESK1
+              - paragraph [ref=f4e91]: 3 November 2026 – 7 November 2026 · Jakarta Selatan
+              - generic "5 dari 5 bintang" [ref=f4e92]
+              - paragraph [ref=f4e103]: Rp 4.500.000
+              - link "Lihat Detail" [ref=f4e105] [cursor=pointer]:
+                - /url: /pelatihan/rpc-november-2026
+  - button "Open Next.js Dev Tools" [ref=f4e111] [cursor=pointer]

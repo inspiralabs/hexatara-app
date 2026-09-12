@@ -1,0 +1,48 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e24] [cursor=pointer]
+  - alert [ref=e28]: Halo, ahmad
+  - generic [ref=e37]:
+    - complementary [ref=e38]:
+      - button "Tampilkan navbar" [ref=e40]
+      - navigation [ref=e41]:
+        - link "Dashboard" [ref=e42] [cursor=pointer]:
+          - /url: /dashboard
+        - link "Kursus Saya" [ref=e48] [cursor=pointer]:
+          - /url: /dashboard/kursus
+        - link "Sertifikat Saya" [ref=e52] [cursor=pointer]:
+          - /url: /dashboard/sertifikat
+        - link "Transaksi Saya" [ref=e56] [cursor=pointer]:
+          - /url: /dashboard/transaksi
+        - link "Pelatihan" [ref=e60] [cursor=pointer]:
+          - /url: /dashboard/pelatihan
+        - link "Setting" [ref=e63] [cursor=pointer]:
+          - /url: /dashboard/setting
+    - main [ref=e67]:
+      - generic [ref=e69]:
+        - generic [ref=e70]:
+          - heading "Halo, ahmad" [level=1] [ref=e71]
+          - paragraph [ref=e72]: Dashboard Saya
+        - generic [ref=e73]:
+          - link [ref=e74] [cursor=pointer]:
+            - /url: /dashboard/sertifikat
+            - generic [ref=e79]:
+              - paragraph [ref=e80]: Sertifikat
+              - paragraph [ref=e81]: Aktif
+          - link [ref=e82] [cursor=pointer]:
+            - /url: /dashboard/kursus
+            - generic [ref=e87]:
+              - paragraph [ref=e88]: Ready To Fly
+              - paragraph [ref=e89]: Tercapai
+          - link [ref=e90] [cursor=pointer]:
+            - /url: /dashboard/transaksi
+            - generic [ref=e95]:
+              - paragraph [ref=e96]: Status Pembayaran
+              - paragraph [ref=e97]: Disetujui
+          - link [ref=e98] [cursor=pointer]:
+            - /url: /dashboard/transaksi
+            - generic [ref=e104]:
+              - paragraph [ref=e105]: Status Pengiriman
+              - paragraph [ref=e106]: Belum Diproses
+        - generic [ref=e107]:
+          - heading "Riwayat Aktivitas" [level=2] [ref=e108]
+          - paragraph [ref=e109]: Belum ada aktivitas.

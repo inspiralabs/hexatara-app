@@ -49,7 +49,13 @@ export async function unduhSertifikatPreviewAction() {
   return { ok: true as const, url: signed.signedUrl };
 }
 
-export async function unduhSertifikatFinalAction() {
+// Generik untuk SETIAP baris certificates milik user (bukan hardcode jenis
+// free_track) — hari ini di praktiknya cuma free_track yang pernah punya
+// user_id (Admin tidak menautkan existing_manual/rpc_certified ke akun), tapi
+// query ini tetap benar kalau itu berubah nanti. PDF final sudah dibuat &
+// diunggah Admin saat approval (admin/upgrade/actions.ts) — di sini cuma
+// re-sign, bukan generate ulang.
+export async function lihatSertifikatAction(certificateId: string) {
   const claims = await requireUser();
 
   // RLS "sertifikat: publik baca yang aktif" (qr_aktif = true) sudah mengizinkan
@@ -58,18 +64,15 @@ export async function unduhSertifikatFinalAction() {
   const supabase = await createClient();
   const { data: cert } = await supabase
     .from('certificates')
-    .select('id, nomor_sertifikat')
+    .select('id')
+    .eq('id', certificateId)
     .eq('user_id', claims.sub)
-    .eq('jenis', 'free_track')
-    .eq('qr_aktif', true)
     .maybeSingle();
 
   if (!cert) {
-    return { ok: false as const, pesan: 'Sertifikat belum aktif.' };
+    return { ok: false as const, pesan: 'Sertifikat tidak ditemukan.' };
   }
 
-  // PDF final sudah dibuat & diunggah Admin saat approval (admin/upgrade/actions.ts) —
-  // di sini cuma re-sign, bukan generate ulang.
   const supabaseAdmin = createAdminClient();
   const { data: signed, error: signError } = await supabaseAdmin.storage
     .from('certificates')

@@ -1,0 +1,23 @@
+- generic [active] [ref=f11e1]:
+  - generic [ref=f11e2]:
+    - generic [ref=f11e3]:
+      - button "Buka menu akun" [ref=f11e4]
+      - paragraph [ref=f11e5]: ahmad
+    - main [ref=f11e6]:
+      - generic [ref=f11e8]:
+        - generic [ref=f11e9]:
+          - heading "Transaksi Saya" [level=1] [ref=f11e10]
+          - paragraph [ref=f11e11]: Status pesanan sertifikat dan merchandise. Setiap pesanan hanya menampilkan status terkini — kirim ulang bukti transfer memperbarui baris yang sama, bukan membuat pesanan baru.
+        - generic [ref=f11e12]:
+          - generic [ref=f11e13]:
+            - heading "Sertifikat + Merchandise" [level=2] [ref=f11e14]
+            - paragraph [ref=f11e15]: Diajukan 9 Sep 2026 · Diperbarui 9 Sep 2026
+          - generic [ref=f11e17]:
+            - paragraph [ref=f11e18]: Pesanan sudah disetujui.
+            - paragraph [ref=f11e19]: "Status Pengiriman: Belum Diproses"
+          - link "Kelola pesanan ini" [ref=f11e20] [cursor=pointer]:
+            - /url: /dashboard/upgrade
+        - link "← Kembali ke Dashboard" [ref=f11e21] [cursor=pointer]:
+          - /url: /dashboard
+  - button "Open Next.js Dev Tools" [ref=f11e27] [cursor=pointer]
+  - alert [ref=f11e31]

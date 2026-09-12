@@ -1,0 +1,58 @@
+- generic [active] [ref=f4e1]:
+  - button "Open Next.js Dev Tools" [ref=f4e115] [cursor=pointer]:
+    - generic [ref=f4e118]:
+      - text: Rendering
+      - generic [ref=f4e119]:
+        - generic [ref=f4e120]: .
+        - generic [ref=f4e121]: .
+        - generic [ref=f4e122]: .
+  - alert [ref=f4e123]
+  - generic [ref=f4e124]:
+    - generic [ref=f4e125]:
+      - link "Hexatara Hexatara" [ref=f4e126] [cursor=pointer]:
+        - /url: /
+        - img "Hexatara" [ref=f4e127]
+        - generic [ref=f4e128]: Hexatara
+      - generic [ref=f4e129]: Pelatihan Gratis untuk Sertifikat
+    - generic [ref=f4e131]:
+      - complementary [ref=f4e132]:
+        - heading "Dasar Keselamatan Penerbangan Drone" [level=1] [ref=f4e133]
+        - paragraph [ref=f4e135]: 0 dari 19 proses selesai
+        - paragraph [ref=f4e136]: Materi
+        - navigation [ref=f4e137]:
+          - button "Pengenalan Keselamatan Penerbangan" [ref=f4e138]
+          - button "Pemeriksaan Pra-Terbang" [disabled] [ref=f4e141]
+          - button "Prosedur Darurat dan Kehilangan Sinyal" [disabled] [ref=f4e146]
+          - button "Memahami Wilayah Udara Terbatas" [disabled] [ref=f4e151]
+          - button "Materi Baru" [disabled] [ref=f4e156]
+        - generic [ref=f4e161]:
+          - generic "Selesaikan semua bab dulu untuk membuka kuis" [ref=f4e162]: Kuis
+          - generic [ref=f4e166]:
+            - button "1" [disabled] [ref=f4e167]
+            - button "2" [disabled] [ref=f4e168]
+            - button "3" [disabled] [ref=f4e169]
+            - button "4" [disabled] [ref=f4e170]
+            - button "5" [disabled] [ref=f4e171]
+            - button "6" [disabled] [ref=f4e172]
+            - button "7" [disabled] [ref=f4e173]
+            - button "8" [disabled] [ref=f4e174]
+            - button "9" [disabled] [ref=f4e175]
+            - button "10" [disabled] [ref=f4e176]
+            - button "11" [disabled] [ref=f4e177]
+            - button "12" [disabled] [ref=f4e178]
+            - button "13" [disabled] [ref=f4e179]
+            - button "14" [disabled] [ref=f4e180]
+          - link "Beranda" [ref=f4e181] [cursor=pointer]:
+            - /url: /
+      - main [ref=f4e182]:
+        - generic [ref=f4e183]:
+          - tablist [ref=f4e185]:
+            - tab "Materi" [selected] [ref=f4e186]
+            - tab "File" [ref=f4e187]
+          - tabpanel "Materi" [ref=f4e188]:
+            - generic [ref=f4e190]:
+              - heading "Pengenalan Keselamatan Penerbangan" [level=2] [ref=f4e191]
+              - generic [ref=f4e192]:
+                - paragraph [ref=f4e193]: Keselamatan penerbangan drone dimulai dari persiapan sebelum lepas landas. Setiap penerbangan, sekecil apa pun tujuannya, wajib melalui pengecekan dasar terhadap kondisi baterai, firmware, dan area sekitar.
+                - paragraph [ref=f4e194]: Modul ini akan membahas prinsip dasar yang berlaku untuk semua jenis drone, baik untuk keperluan hobi maupun operasional profesional seperti survei dan pemetaan.
+            - button "Lanjut ke Bab Berikutnya" [ref=f4e197]

@@ -1,0 +1,20 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e3]:
+    - generic [ref=f1e4]: Masuk
+    - generic [ref=f1e6]:
+      - generic [ref=f1e7]:
+        - generic [ref=f1e8]:
+          - generic [ref=f1e9]: Email
+          - textbox "Email" [ref=f1e10]
+        - generic [ref=f1e11]:
+          - generic [ref=f1e12]: Kata sandi
+          - textbox "Kata sandi" [ref=f1e13]
+        - button "Masuk" [ref=f1e14]
+      - generic [ref=f1e15]:
+        - link "Lupa kata sandi?" [ref=f1e16] [cursor=pointer]:
+          - /url: /lupa-sandi
+        - paragraph [ref=f1e17]:
+          - text: Belum punya akun?
+          - link "Daftar" [ref=f1e18] [cursor=pointer]:
+            - /url: /daftar
+  - button "Open Next.js Dev Tools" [ref=f1e24] [cursor=pointer]

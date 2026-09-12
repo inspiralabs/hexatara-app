@@ -1,0 +1,30 @@
+- generic [ref=f6e1]:
+  - generic [ref=f6e2]:
+    - generic [ref=f6e85]:
+      - button "Buka menu akun" [active] [ref=f6e131]
+      - paragraph [ref=f6e87]: ahmad
+    - main [ref=f6e33]:
+      - generic [ref=f6e132]:
+        - generic [ref=f6e133]:
+          - heading "Kursus Saya" [level=1] [ref=f6e134]
+          - paragraph [ref=f6e135]: Progres pelatihan gratis dan minat pelatihan berbayar yang pernah kamu ajukan.
+        - generic [ref=f6e136]:
+          - heading "Pelatihan Gratis" [level=2] [ref=f6e137]
+          - generic [ref=f6e138]:
+            - generic [ref=f6e139]:
+              - generic [ref=f6e140]:
+                - heading "Dasar Keselamatan Penerbangan Drone" [level=3] [ref=f6e141]
+                - paragraph [ref=f6e142]: 0 dari 5 bab selesai
+              - generic [ref=f6e143]: Belum Mulai
+            - generic [ref=f6e145]: Kuis sudah selesai
+            - link "Mulai Belajar" [ref=f6e149] [cursor=pointer]:
+              - /url: /materi/3
+        - generic [ref=f6e150]:
+          - heading "Minat yang Pernah Diajukan" [level=2] [ref=f6e151]
+          - paragraph [ref=f6e152]: Pelatihan bersertifikat (RPC) diproses manual lewat WhatsApp — ini bukan status pendaftaran resmi, hanya pengingat batch mana yang pernah kamu tanyakan.
+          - generic [ref=f6e153]:
+            - text: Belum ada minat pelatihan berbayar yang tercatat dari email akun ini.
+            - link "Lihat pelatihan tersedia" [ref=f6e154] [cursor=pointer]:
+              - /url: /dashboard/pelatihan
+  - button "Open Next.js Dev Tools" [ref=f6e81] [cursor=pointer]
+  - alert [ref=f6e94]: Kursus Saya

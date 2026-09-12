@@ -1,15 +1,70 @@
+import { CheckCircle2Icon, ClockIcon, LockIcon, PackageIcon, XCircleIcon } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { requireUser } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
-import { Button } from '@/components/ui/button';
-import { logoutAction } from '../actions';
-import { SertifikatCard } from './sertifikat-card';
-import { PesananStatusSection } from '../pesanan-status-section';
+import type { Database } from '@/types/database';
 
 const LABEL_AKSI: Record<string, string> = {
   sertifikat_aktif: 'Sertifikat diaktifkan',
 };
+
+type StatusOrder = Database['public']['Enums']['status_order'];
+type StatusKirim = Database['public']['Enums']['status_kirim'];
+
+const LABEL_STATUS_ORDER: Record<StatusOrder, string> = {
+  menunggu_bukti: 'Menunggu Bukti',
+  menunggu_verifikasi: 'Diperiksa Admin',
+  disetujui: 'Disetujui',
+  ditolak: 'Ditolak',
+};
+
+const LABEL_STATUS_KIRIM: Record<StatusKirim, string> = {
+  tidak_ada: 'Tidak Ada',
+  belum_diproses: 'Belum Diproses',
+  diproses: 'Diproses',
+  dikirim: 'Dikirim',
+  diterima: 'Diterima',
+};
+
+// Kartu angka besar (F03.9, direstyle §12.6) — bukan lagi tabel teks polos,
+// sesuai permintaan "angka sebagai hero". Tetap reuse token shadow/transition
+// yang sama dengan ContentCard, bukan animasi baru.
+function StatTile({
+  icon: Icon,
+  label,
+  value,
+  tone,
+  href,
+}: {
+  icon: typeof CheckCircle2Icon;
+  label: string;
+  value: string;
+  tone: 'sukses' | 'aksen' | 'bahaya' | 'netral';
+  href: string;
+}) {
+  const toneClassName = {
+    sukses: 'bg-warna-sukses/10 text-warna-sukses',
+    aksen: 'bg-warna-aksen/10 text-warna-aksen',
+    bahaya: 'bg-warna-bahaya/10 text-warna-bahaya',
+    netral: 'bg-warna-latar-2 text-warna-teks-2',
+  }[tone];
+
+  return (
+    <Link
+      href={href}
+      className="flex flex-col gap-3 rounded-xl border border-warna-latar-2 bg-warna-latar p-5 shadow-float hover:-translate-y-0.5 hover:shadow-float-hover [transition:var(--transition-hover)]"
+    >
+      <span className={`inline-flex size-10 items-center justify-center rounded-lg ${toneClassName}`}>
+        <Icon className="size-5" />
+      </span>
+      <div>
+        <p className="text-sm text-warna-teks-2">{label}</p>
+        <p className="mt-0.5 text-2xl font-bold text-warna-teks">{value}</p>
+      </div>
+    </Link>
+  );
+}
 
 export default async function DashboardPage() {
   const claims = await requireUser();
@@ -32,26 +87,10 @@ export default async function DashboardPage() {
 
   const { data: pesananUtama } = await supabase
     .from('certificate_orders')
-    .select('id, status, alasan_tolak, status_pengiriman')
+    .select('status, status_pengiriman')
     .eq('user_id', claims.sub)
     .in('paket', ['cert_only', 'cert_merch'])
     .maybeSingle();
-
-  const { data: pesananMerch } = await supabase
-    .from('certificate_orders')
-    .select('id, status, alasan_tolak, status_pengiriman')
-    .eq('user_id', claims.sub)
-    .eq('paket', 'merch_addon')
-    .maybeSingle();
-
-  const { data: rekeningSetting } = await supabase
-    .from('site_settings')
-    .select('value')
-    .eq('key', 'rekening')
-    .maybeSingle();
-  const rekening = rekeningSetting?.value as
-    | { bank?: string; nomor?: string; atas_nama?: string }
-    | undefined;
 
   const { data: aktivitas } = await supabase
     .from('activity_logs')
@@ -60,75 +99,68 @@ export default async function DashboardPage() {
     .order('created_at', { ascending: false })
     .limit(20);
 
+  const statusSertifikat = !profile?.free_track_selesai_at
+    ? { label: 'Selesaikan kuis dulu', tone: 'netral' as const, icon: LockIcon }
+    : sertifikatAktif
+      ? { label: 'Aktif', tone: 'sukses' as const, icon: CheckCircle2Icon }
+      : { label: 'Pratinjau', tone: 'aksen' as const, icon: ClockIcon };
+
+  const statusPembayaran = !pesananUtama
+    ? { label: 'Belum diajukan', tone: 'netral' as const, icon: ClockIcon }
+    : pesananUtama.status === 'ditolak'
+      ? { label: LABEL_STATUS_ORDER.ditolak, tone: 'bahaya' as const, icon: XCircleIcon }
+      : pesananUtama.status === 'disetujui'
+        ? { label: LABEL_STATUS_ORDER.disetujui, tone: 'sukses' as const, icon: CheckCircle2Icon }
+        : { label: LABEL_STATUS_ORDER[pesananUtama.status], tone: 'aksen' as const, icon: ClockIcon };
+
+  const statusKirim =
+    !pesananUtama || pesananUtama.status_pengiriman === 'tidak_ada'
+      ? { label: 'Tidak Ada', tone: 'netral' as const }
+      : pesananUtama.status_pengiriman === 'diterima'
+        ? { label: LABEL_STATUS_KIRIM.diterima, tone: 'sukses' as const }
+        : { label: LABEL_STATUS_KIRIM[pesananUtama.status_pengiriman], tone: 'aksen' as const };
+
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10">
-      <div className="flex items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold text-warna-teks sm:text-3xl">{t('pageTitle')}</h1>
-        <form action={logoutAction}>
-          <Button type="submit" variant="outline">
-            {t('keluar')}
-          </Button>
-        </form>
+    <div className="flex flex-col gap-8">
+      <div>
+        <h1 className="text-2xl font-bold text-warna-teks sm:text-3xl">
+          {t('sapaan', { nama: profile?.nama_lengkap ?? '' })}
+        </h1>
+        <p className="mt-1 text-base text-warna-teks-2">{t('pageTitle')}</p>
       </div>
 
-      <div className="mt-6">
-        {!profile?.free_track_selesai_at ? (
-          <div className="rounded-xl border border-warna-latar-2 bg-warna-latar-2 p-5">
-            <p className="text-sm text-warna-teks-2">{t('belumSelesaiKuis')}</p>
-            <Link
-              href="/kuis"
-              className="mt-3 inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks"
-            >
-              {t('mulaiKuis')}
-            </Link>
-          </div>
-        ) : sertifikatAktif ? (
-          <SertifikatCard
-            status="aktif"
-            namaLengkap={profile.nama_lengkap}
-            nomorSertifikat={sertifikatAktif.nomor_sertifikat}
-          />
-        ) : (
-          <SertifikatCard status="preview" namaLengkap={profile.nama_lengkap} />
-        )}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatTile
+          icon={statusSertifikat.icon}
+          label="Sertifikat"
+          value={statusSertifikat.label}
+          tone={statusSertifikat.tone}
+          href="/dashboard/sertifikat"
+        />
+        <StatTile
+          icon={profile?.free_track_selesai_at ? CheckCircle2Icon : LockIcon}
+          label={t('readyToFly')}
+          value={profile?.free_track_selesai_at ? 'Tercapai' : 'Belum'}
+          tone={profile?.free_track_selesai_at ? 'sukses' : 'netral'}
+          href="/dashboard/kursus"
+        />
+        <StatTile
+          icon={statusPembayaran.icon}
+          label={t('statusPembayaran')}
+          value={statusPembayaran.label}
+          tone={statusPembayaran.tone}
+          href="/dashboard/transaksi"
+        />
+        <StatTile
+          icon={PackageIcon}
+          label="Status Pengiriman"
+          value={statusKirim.label}
+          tone={statusKirim.tone}
+          href="/dashboard/transaksi"
+        />
       </div>
 
-      {profile?.free_track_selesai_at && (
-        <div className="mt-6 rounded-xl border border-warna-latar-2 bg-warna-latar p-5">
-          <h2 className="text-base font-bold text-warna-teks">{t('statusPembayaran')}</h2>
-          <div className="mt-2">
-            {pesananUtama ? (
-              <PesananStatusSection
-                order={pesananUtama}
-                rekening={rekening}
-                paketOptions={['cert_only', 'cert_merch']}
-              />
-            ) : (
-              <p className="text-sm text-warna-teks-2">
-                {t('belumUpgrade')}{' '}
-                <Link href="/dashboard/upgrade" className="underline underline-offset-4">
-                  {t('upgradeSekarang')}
-                </Link>
-              </p>
-            )}
-          </div>
-
-          {pesananMerch && (
-            <div className="mt-4 border-t border-warna-latar-2 pt-4">
-              <h3 className="text-sm font-semibold text-warna-teks">{t('pesananMerchTambahan')}</h3>
-              <div className="mt-2">
-                <PesananStatusSection
-                  order={pesananMerch}
-                  rekening={rekening}
-                  paketOptions={['merch_addon']}
-                />
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      <div className="mt-6 rounded-xl border border-warna-latar-2 bg-warna-latar p-5">
+      <div className="rounded-xl border border-warna-latar-2 bg-warna-latar p-5">
         <h2 className="text-base font-bold text-warna-teks">{t('riwayatAktivitas')}</h2>
         {aktivitas && aktivitas.length > 0 ? (
           <ul className="mt-2 divide-y divide-warna-latar-2">

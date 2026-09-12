@@ -1,0 +1,30 @@
+- generic [ref=f7e1]:
+  - generic [aria-hidden] [ref=f7e2]:
+    - generic [ref=f7e3]:
+      - button [ref=f7e35]
+      - paragraph [ref=f7e5]: ahmad
+    - main [ref=f7e6]:
+      - generic [ref=f7e8]:
+        - generic [ref=f7e9]:
+          - heading [level=1] [ref=f7e36]: Sertifikat Saya
+          - paragraph [ref=f7e11]: Klik kartu untuk melihat sertifikatnya langsung.
+        - generic [ref=f7e13]:
+          - generic [ref=f7e14]:
+            - generic [ref=f7e15]:
+              - generic [ref=f7e16]: Ready To Fly
+              - heading [level=2] [ref=f7e37]: ahmad
+              - paragraph [ref=f7e18]: "Nomor Sertifikat: HXT-FT-000004"
+            - generic [ref=f7e19]: QR aktif
+          - button [ref=f7e38]: Lihat Sertifikat
+  - button "Open Next.js Dev Tools" [ref=f7e39] [cursor=pointer]:
+    - generic [ref=f7e42]:
+      - text: Rendering
+      - generic [ref=f7e43]:
+        - generic [ref=f7e44]: .
+        - generic [ref=f7e45]: .
+        - generic [ref=f7e46]: .
+  - alert [ref=f7e47]
+  - dialog [ref=f7e51]:
+    - heading "Ready To Fly" [level=2] [ref=f7e53]
+    - iframe [active] [ref=f7e54]
+    - button "Close" [ref=f7e55]

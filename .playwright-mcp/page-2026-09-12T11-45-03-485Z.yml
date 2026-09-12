@@ -1,0 +1,27 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e4]: Masuk
+    - generic [ref=e6]:
+      - generic [ref=e7]:
+        - generic [ref=e8]:
+          - generic [ref=e9]: Email
+          - textbox "Email" [ref=e10]: hexatara.inspiralabs@gmail.com
+        - generic [ref=e11]:
+          - generic [ref=e12]: Kata sandi
+          - textbox "Kata sandi" [ref=e13]: "12345678"
+        - button "Memproses…" [disabled]
+      - generic [ref=e15]:
+        - link "Lupa kata sandi?" [ref=e16] [cursor=pointer]:
+          - /url: /lupa-sandi
+        - paragraph [ref=e17]:
+          - text: Belum punya akun?
+          - link "Daftar" [ref=e18] [cursor=pointer]:
+            - /url: /daftar
+  - button "Open Next.js Dev Tools" [ref=e29] [cursor=pointer]:
+    - generic [ref=e32]:
+      - text: Rendering
+      - generic [ref=e33]:
+        - generic [ref=e34]: .
+        - generic [ref=e35]: .
+        - generic [ref=e36]: .
+  - alert [ref=e28]
