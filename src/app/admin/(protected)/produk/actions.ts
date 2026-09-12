@@ -48,6 +48,8 @@ export async function simpanProdukAction(id: number | null, input: ProductFormIn
     nama_en: teks(rest.nama_en),
     slug: rest.slug,
     kategori: teks(rest.kategori),
+    category_id: teks(rest.category_id),
+    rating: angka(rest.rating),
     harga: angka(rest.harga),
     tampilkan_harga: rest.tampilkan_harga,
     urutan: angka(rest.urutan) ?? 0,

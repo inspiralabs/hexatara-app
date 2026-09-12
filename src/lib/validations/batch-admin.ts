@@ -6,6 +6,10 @@ import { z } from 'zod';
 const teksOpsional = z.string().nullable().optional();
 const teksWajib = z.string().min(1, { error: 'Wajib diisi' });
 const angkaOpsional = z.union([z.string(), z.number()]).nullable().optional();
+const ratingOpsional = angkaOpsional.refine(
+  (v) => v == null || v === '' || (Number(v) >= 0 && Number(v) <= 5),
+  { error: 'Rating harus antara 0.0 dan 5.0' }
+);
 const tanggalOpsional = teksOpsional; // disimpan sebagai string yyyy-MM-dd
 
 export const BenefitSchema = z.object({
@@ -41,6 +45,8 @@ export const BatchFormSchema = z.object({
     .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, { error: 'Slug hanya huruf kecil, angka, dan tanda hubung' }),
   kategori_id: teksOpsional,
   kategori_en: teksOpsional,
+  category_id: teksOpsional,
+  rating: ratingOpsional,
   lokasi_id: teksOpsional,
   lokasi_en: teksOpsional,
   alamat: teksOpsional,

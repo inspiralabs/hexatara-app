@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { PlusIcon } from 'lucide-react';
@@ -16,6 +16,13 @@ type Bab = Pick<Database['public']['Tables']['material_chapters']['Row'], 'id' |
 export function BabList({ materialId, bab }: { materialId: number; bab: Bab[] }) {
   const router = useRouter();
   const [daftar, setDaftar] = useState(bab);
+  // Setelah router.refresh(), Server Component ini re-fetch dan mengirim `bab`
+  // baru sebagai prop — tapi useState hanya memakai initial value SEKALI saat
+  // mount, jadi tanpa efek ini daftar lokal tetap basi sampai reload manual.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDaftar(bab);
+  }, [bab]);
   const [pending, startTransition] = useTransition();
   const [pesanError, setPesanError] = useState<string | null>(null);
 

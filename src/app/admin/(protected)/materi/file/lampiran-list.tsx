@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { PlusIcon } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -27,6 +27,14 @@ function keDefaultValues(l: Lampiran): LampiranFormInput {
 export function LampiranList({ chapterId, lampiran }: { chapterId: number; lampiran: Lampiran[] }) {
   const router = useRouter();
   const [daftar, setDaftar] = useState(lampiran);
+  // Setelah router.refresh(), Server Component ini re-fetch dan mengirim
+  // `lampiran` baru sebagai prop — tapi useState hanya memakai initial value
+  // SEKALI saat mount, jadi tanpa efek ini daftar lokal tetap basi sampai
+  // reload manual.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDaftar(lampiran);
+  }, [lampiran]);
   const [pending, startTransition] = useTransition();
   const [pesanError, setPesanError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);

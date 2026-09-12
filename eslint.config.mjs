@@ -27,6 +27,17 @@ const eslintConfig = defineConfig([
     files: ["src/components/ui/label.tsx"],
     rules: { "jsx-a11y/label-has-associated-control": "off" },
   },
+  {
+    // Komponen dasar shadcn (combobox, §12.6.5) — dilarang diedit manual.
+    // onClick di InputGroupAddon murni meneruskan fokus ke <input> di sebelahnya
+    // (klik di area ikon/tombol tetap memfokuskan input), bukan kontrol
+    // interaktif baru yang butuh handler keyboard sendiri.
+    files: ["src/components/ui/input-group.tsx"],
+    rules: {
+      "jsx-a11y/click-events-have-key-events": "off",
+      "jsx-a11y/no-noninteractive-element-interactions": "off",
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

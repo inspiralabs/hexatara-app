@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { DatePickerField } from '@/components/admin/date-picker-field';
 import { RichTextEditor } from '@/components/admin/rich-text-editor';
 import { ImageUploadField } from '@/components/image-upload-field';
+import { KategoriCombobox, type KategoriOption } from '@/components/admin/kategori-combobox';
 
 const STATUS_OPTIONS: { value: BatchFormInput['status']; label: string }[] = [
   { value: 'upcoming', label: 'Akan Datang' },
@@ -45,10 +46,12 @@ export function BatchForm({
   mode,
   batchId,
   defaultValues,
+  kategoriOptions,
 }: {
   mode: 'create' | 'edit';
   batchId?: number;
   defaultValues: BatchFormInput;
+  kategoriOptions: KategoriOption[];
 }) {
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
@@ -125,6 +128,27 @@ export function BatchForm({
             <Input id="kategori_en" {...register('kategori_en')} />
           </Field>
 
+          <div className="lg:col-span-2">
+            <Field label="Kategori (dari daftar kategori)" htmlFor="category_id">
+              <Controller
+                control={control}
+                name="category_id"
+                render={({ field }) => (
+                  <KategoriCombobox
+                    items={kategoriOptions}
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="Cari kategori pelatihan…"
+                  />
+                )}
+              />
+              <p className="text-xs text-warna-teks-2">
+                Dipakai untuk filter kategori di halaman publik. Kelola daftar kategori di menu Batch &rarr; Kategori
+                Pelatihan.
+              </p>
+            </Field>
+          </div>
+
           <Field label="Lokasi (Indonesia)" htmlFor="lokasi_id">
             <Input id="lokasi_id" {...register('lokasi_id')} />
           </Field>
@@ -162,6 +186,12 @@ export function BatchForm({
                 </Select>
               )}
             />
+          </Field>
+
+          <Field label="Rating (0.0 – 5.0)" htmlFor="rating">
+            <Input id="rating" type="number" step="0.1" min={0} max={5} {...register('rating')} />
+            <p className="text-xs text-warna-teks-2">Kosongkan jika belum ada rating.</p>
+            {errors.rating && <p className="text-sm text-destructive">{errors.rating.message}</p>}
           </Field>
         </div>
 
@@ -253,15 +283,14 @@ export function BatchForm({
           <h2 className="text-lg font-bold text-warna-teks">Benefit</h2>
           <button
             type="button"
-            onClick={() => benefits.append({ teks_id: '', teks_en: '', ikon: '' })}
+            onClick={() => benefits.append({ teks_id: '', teks_en: '' })}
             className="flex h-9 items-center gap-1.5 rounded-lg border border-warna-utama px-3 text-sm font-medium text-warna-utama"
           >
             <PlusIcon className="size-4" /> Tambah
           </button>
         </div>
         {benefits.fields.map((f, index) => (
-          <div key={f.id} className="grid grid-cols-1 gap-3 rounded-lg border border-warna-latar-2 p-3 sm:grid-cols-[auto_1fr_1fr_auto]">
-            <Input placeholder="Ikon (emoji, opsional)" className="sm:w-32" {...register(`benefits.${index}.ikon`)} />
+          <div key={f.id} className="grid grid-cols-1 gap-3 rounded-lg border border-warna-latar-2 p-3 sm:grid-cols-[1fr_1fr_auto]">
             <div className="flex flex-col gap-1">
               <Input placeholder="Teks (Indonesia)" {...register(`benefits.${index}.teks_id`)} />
               {errors.benefits?.[index]?.teks_id && (

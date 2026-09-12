@@ -15,12 +15,18 @@ export default async function AdminBatchUbahPage({ params }: { params: Promise<{
   const { data: batch } = await supabase.from('batches').select('*').eq('id', batchId).maybeSingle();
   if (!batch) notFound();
 
-  const [{ data: benefits }, { data: equipment }, { data: faqs }, { data: gallery }] = await Promise.all([
-    supabase.from('batch_benefits').select('teks_id, teks_en, ikon').eq('batch_id', batchId).order('urutan'),
-    supabase.from('batch_equipment').select('teks_id, teks_en').eq('batch_id', batchId).order('urutan'),
-    supabase.from('batch_faqs').select('tanya_id, tanya_en, jawab_id, jawab_en').eq('batch_id', batchId).order('urutan'),
-    supabase.from('batch_gallery').select('gambar_url, caption_id, caption_en').eq('batch_id', batchId).order('urutan'),
-  ]);
+  const [{ data: benefits }, { data: equipment }, { data: faqs }, { data: gallery }, { data: kategoriList }] =
+    await Promise.all([
+      supabase.from('batch_benefits').select('teks_id, teks_en, ikon').eq('batch_id', batchId).order('urutan'),
+      supabase.from('batch_equipment').select('teks_id, teks_en').eq('batch_id', batchId).order('urutan'),
+      supabase.from('batch_faqs').select('tanya_id, tanya_en, jawab_id, jawab_en').eq('batch_id', batchId).order('urutan'),
+      supabase.from('batch_gallery').select('gambar_url, caption_id, caption_en').eq('batch_id', batchId).order('urutan'),
+      supabase.from('batch_categories').select('id, nama_id').order('urutan', { ascending: true }),
+    ]);
+
+  // Admin Panel Bahasa Indonesia saja (ENGINEERING.md §6.3) — label combobox
+  // pakai nama_id langsung, tidak perlu pick() dwibahasa di sini.
+  const kategoriOptions = (kategoriList ?? []).map((k) => ({ value: k.id, label: k.nama_id }));
 
   const defaultValues: BatchFormInput = {
     judul_id: batch.judul_id,
@@ -28,6 +34,8 @@ export default async function AdminBatchUbahPage({ params }: { params: Promise<{
     slug: batch.slug,
     kategori_id: batch.kategori_id ?? '',
     kategori_en: batch.kategori_en ?? '',
+    category_id: batch.category_id,
+    rating: batch.rating ?? '',
     lokasi_id: batch.lokasi_id ?? '',
     lokasi_en: batch.lokasi_en ?? '',
     alamat: batch.alamat ?? '',
@@ -59,7 +67,7 @@ export default async function AdminBatchUbahPage({ params }: { params: Promise<{
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-xl font-bold text-warna-teks">Ubah Batch</h1>
-      <BatchForm mode="edit" batchId={batch.id} defaultValues={defaultValues} />
+      <BatchForm mode="edit" batchId={batch.id} defaultValues={defaultValues} kategoriOptions={kategoriOptions} />
     </div>
   );
 }

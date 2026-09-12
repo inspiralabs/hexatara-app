@@ -5337,7 +5337,7 @@ Paparkan dulu rencana sebelum menulis kode.
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji Admin CRUD kategori dan field rating sendiri di browser
 dan hasilnya sesuai. Isi baris terkait: Status DONE, Berkas [daftar berkas],
-Diuji [tanggal], Bukti [ringkas hasil uji]. Tambahkan satu baris ke Log
+Diuji [tanggal], Bukti [semua list berjalan dengan baik termasuk perbaikan pada bug refresh]. Tambahkan satu baris ke Log
 verifikasi. Jangan mengubah status baris fitur lain.
 ```
 

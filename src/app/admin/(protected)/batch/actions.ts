@@ -26,6 +26,8 @@ export async function simpanBatchAction(batchId: number | null, input: BatchForm
     slug: rest.slug,
     kategori_id: teks(rest.kategori_id),
     kategori_en: teks(rest.kategori_en),
+    category_id: teks(rest.category_id),
+    rating: angka(rest.rating),
     lokasi_id: teks(rest.lokasi_id),
     lokasi_en: teks(rest.lokasi_en),
     alamat: teks(rest.alamat),

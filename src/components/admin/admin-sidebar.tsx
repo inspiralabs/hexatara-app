@@ -25,7 +25,13 @@ type MenuGroup = { label: string; children: MenuItem[] };
 
 const MENU_ADMIN: (MenuItem | MenuGroup)[] = [
   { href: "/admin", label: "Beranda" },
-  { href: "/admin/batch", label: "Batch" },
+  {
+    label: "Batch",
+    children: [
+      { href: "/admin/batch", label: "Daftar Batch" },
+      { href: "/admin/batch/kategori", label: "Kategori Pelatihan" },
+    ],
+  },
   { href: "/admin/konten", label: "Konten" },
   { href: "/admin/leads", label: "Leads" },
   { href: "/admin/sertifikat", label: "Sertifikat" },
@@ -38,7 +44,13 @@ const MENU_ADMIN: (MenuItem | MenuGroup)[] = [
       { href: "/admin/materi/soal", label: "Kuis" },
     ],
   },
-  { href: "/admin/produk", label: "Produk" },
+  {
+    label: "Produk",
+    children: [
+      { href: "/admin/produk", label: "Daftar Produk" },
+      { href: "/admin/produk/kategori", label: "Kategori Produk" },
+    ],
+  },
   { href: "/admin/pengaturan", label: "Pengaturan" },
 ];
 
@@ -46,11 +58,17 @@ function isGroup(item: MenuItem | MenuGroup): item is MenuGroup {
   return "children" in item;
 }
 
-// Prefix-nya bertumpuk (/admin/materi/file dan /admin/materi/soal sama-sama
-// diawali /admin/materi) — cek anak yang lebih spesifik dulu.
+// Dua kasus prefix bertumpuk berbeda di sini:
+// 1. Siblings tanpa hubungan prefix (materi/file vs materi/soal) — tidak masalah.
+// 2. Satu child adalah prefix dari child lain (batch vs batch/kategori,
+//    produk vs produk/kategori) — child yang HREF-nya lebih panjang selalu
+//    lebih spesifik. Kalau child lain yang lebih spesifik itu cocok dengan
+//    pathname, dia yang menang, bukan yang pendek.
 function childAktif(pathname: string, href: string, children: MenuItem[]) {
-  const lain = children.filter((c) => c.href !== href);
-  if (lain.some((c) => pathname.startsWith(c.href))) return false;
+  const lebihSpesifikCocok = children.some(
+    (c) => c.href !== href && c.href.length > href.length && pathname.startsWith(c.href)
+  );
+  if (lebihSpesifikCocok) return false;
   return pathname === href || pathname.startsWith(href + "/");
 }
 

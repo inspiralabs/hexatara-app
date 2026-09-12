@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { PlusIcon } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -34,6 +34,14 @@ function keDefaultValues(s: HeroSlide): HeroSlideFormInput {
 export function HeroSlideList({ slides }: { slides: HeroSlide[] }) {
   const router = useRouter();
   const [daftar, setDaftar] = useState(slides);
+  // Setelah router.refresh(), Server Component ini re-fetch dan mengirim
+  // `slides` baru sebagai prop — tapi useState hanya memakai initial value
+  // SEKALI saat mount, jadi tanpa efek ini daftar lokal tetap basi sampai
+  // reload manual.
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDaftar(slides);
+  }, [slides]);
   const [pending, startTransition] = useTransition();
   const [pesanError, setPesanError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);

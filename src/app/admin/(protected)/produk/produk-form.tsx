@@ -13,6 +13,7 @@ import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { RichTextEditor } from '@/components/admin/rich-text-editor';
 import { ImageUploadField } from '@/components/image-upload-field';
+import { KategoriCombobox, type KategoriOption } from '@/components/admin/kategori-combobox';
 
 function slugify(text: string) {
   return text
@@ -35,10 +36,12 @@ export function ProdukForm({
   mode,
   produkId,
   defaultValues,
+  kategoriOptions,
 }: {
   mode: 'create' | 'edit';
   produkId?: number;
   defaultValues: ProductFormInput;
+  kategoriOptions: KategoriOption[];
 }) {
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
@@ -105,12 +108,36 @@ export function ProdukForm({
           <Field label="Kategori" htmlFor="kategori">
             <Input id="kategori" placeholder="Contoh: Drone Survei" {...register('kategori')} />
           </Field>
+          <Field label="Kategori (dari daftar kategori)" htmlFor="category_id">
+            <Controller
+              control={control}
+              name="category_id"
+              render={({ field }) => (
+                <KategoriCombobox
+                  items={kategoriOptions}
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Cari kategori produk…"
+                />
+              )}
+            />
+            <p className="text-xs text-warna-teks-2">
+              Dipakai untuk filter kategori di halaman publik. Kelola daftar kategori di menu Produk &rarr; Kategori
+              Produk.
+            </p>
+          </Field>
 
           <Field label="Harga (Rupiah)" htmlFor="harga">
             <Input id="harga" type="number" {...register('harga')} />
           </Field>
           <Field label="Urutan" htmlFor="urutan">
             <Input id="urutan" type="number" {...register('urutan')} />
+          </Field>
+
+          <Field label="Rating (0.0 – 5.0)" htmlFor="rating">
+            <Input id="rating" type="number" step="0.1" min={0} max={5} {...register('rating')} />
+            <p className="text-xs text-warna-teks-2">Kosongkan jika belum ada rating.</p>
+            {errors.rating && <p className="text-sm text-destructive">{errors.rating.message}</p>}
           </Field>
         </div>
 
