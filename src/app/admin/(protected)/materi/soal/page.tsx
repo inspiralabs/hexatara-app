@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
-import { SoalTable } from './soal-table';
+import { SoalList } from './soal-list';
 
 export default async function AdminSoalPage() {
   // Layout sudah memanggil requireAdmin(), tapi Server Component ini memanggil
@@ -36,7 +36,7 @@ export default async function AdminSoalPage() {
         </div>
       </div>
 
-      <SoalTable soal={soal ?? []} />
+      <SoalList soal={soal ?? []} />
     </div>
   );
 }

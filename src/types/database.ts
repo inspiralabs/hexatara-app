@@ -1313,6 +1313,10 @@ export type Database = {
         Args: { p_category_ids: string[] }
         Returns: undefined
       }
+      reorder_quiz_questions: {
+        Args: { p_question_ids: number[] }
+        Returns: undefined
+      }
       status_sertifikat: { Args: { p_exp: string }; Returns: string }
     }
     Enums: {

@@ -5623,7 +5623,7 @@ Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji sonner toast, ekspor XLSX, reorder soal kuis, dan
 Combobox searchable sendiri di browser dan hasilnya sesuai. Isi baris
 terkait: Status DONE, Berkas [daftar berkas], Diuji [tanggal], Bukti
-[ringkas hasil uji]. Tambahkan satu baris ke Log verifikasi. Jangan
+[sesuai list sudah saya coba dan berhasil]. Tambahkan satu baris ke Log verifikasi. Jangan
 mengubah status baris fitur lain.
 ```
 

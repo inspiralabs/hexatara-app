@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { setujuiPesananAction, tolakPesananAction } from './actions';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -30,9 +31,11 @@ export function UpgradeRowActions({ orderId }: { orderId: number }) {
       const hasil = await setujuiPesananAction(orderId);
       if (!hasil.ok) {
         setPesanError(hasil.pesan);
+        toast.error(hasil.pesan);
         return;
       }
       setSetujuiOpen(false);
+      toast.success('Pesanan disetujui, sertifikat aktif.');
       router.refresh();
     });
   }
@@ -43,10 +46,12 @@ export function UpgradeRowActions({ orderId }: { orderId: number }) {
       const hasil = await tolakPesananAction(orderId, alasan);
       if (!hasil.ok) {
         setPesanError(hasil.pesan);
+        toast.error(hasil.pesan);
         return;
       }
       setTolakOpen(false);
       setAlasan('');
+      toast.success('Pesanan ditolak.');
       router.refresh();
     });
   }

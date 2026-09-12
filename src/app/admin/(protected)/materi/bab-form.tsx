@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import { BabFormSchema, type BabFormInput } from '@/lib/validations/materi-bab-admin';
 import { simpanBabAction } from './bab-actions';
 import { uploadGambarAdminAction } from '../actions';
@@ -50,8 +51,10 @@ export function BabForm({
     const hasil = await simpanBabAction(materialId, mode === 'edit' ? (babId ?? null) : null, data);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
+      toast.error(hasil.pesan);
       return;
     }
+    toast.success('Bab berhasil disimpan.');
     router.push(mode === 'create' ? `/admin/materi/${hasil.id}` : '/admin/materi');
     router.refresh();
   }

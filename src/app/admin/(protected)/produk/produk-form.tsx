@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, XIcon } from 'lucide-react';
+import { toast } from 'sonner';
 import { ProductFormSchema, type ProductFormInput } from '@/lib/validations/produk-admin';
 import { simpanProdukAction, uploadGambarProdukAction } from './actions';
 import { Input } from '@/components/ui/input';
@@ -64,8 +65,10 @@ export function ProdukForm({
     const hasil = await simpanProdukAction(mode === 'edit' ? (produkId ?? null) : null, data);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
+      toast.error(hasil.pesan);
       return;
     }
+    toast.success('Produk berhasil disimpan.');
     router.push('/admin/produk');
     router.refresh();
   }

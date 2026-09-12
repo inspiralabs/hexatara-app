@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import { TestimonialFormSchema, type TestimonialFormInput } from '@/lib/validations/testimonial-admin';
 import { simpanTestimonialAction } from './testimonial-actions';
 import {
@@ -81,8 +82,10 @@ export function TestimonialFormDialog({
     const hasil = await simpanTestimonialAction(testimonialId, data);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
+      toast.error(hasil.pesan);
       return;
     }
+    toast.success('Testimoni berhasil disimpan.');
     onOpenChange(false);
     router.refresh();
   }

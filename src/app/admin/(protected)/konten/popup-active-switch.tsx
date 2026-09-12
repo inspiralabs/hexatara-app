@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { toggleAktifPopupAction } from './popup-actions';
 import { Switch } from '@/components/ui/switch';
 
@@ -16,8 +17,10 @@ export function PopupActiveSwitch({ popupId, aktif }: { popupId: number; aktif: 
       const hasil = await toggleAktifPopupAction(popupId, next);
       if (!hasil.ok) {
         setChecked(!next);
+        toast.error(hasil.pesan);
         return;
       }
+      toast.success('Status berhasil diubah.');
       router.refresh();
     });
   }

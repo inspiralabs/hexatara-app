@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { MoreVerticalIcon } from 'lucide-react';
+import { toast } from 'sonner';
 import { hapusPopupAction } from './popup-actions';
 import { Button } from '@/components/ui/button';
 import {
@@ -41,9 +42,11 @@ export function PopupRowActions({
       const hasil = await hapusPopupAction(popupId);
       if (!hasil.ok) {
         setPesanError(hasil.pesan);
+        toast.error(hasil.pesan);
         return;
       }
       setHapusOpen(false);
+      toast.success('Pop-up berhasil dihapus.');
       router.refresh();
     });
   }

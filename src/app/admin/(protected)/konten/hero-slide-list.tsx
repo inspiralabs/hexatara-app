@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { PlusIcon } from 'lucide-react';
+import { toast } from 'sonner';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ReorderButtons } from '@/components/admin/reorder-buttons';
 import { moveItem } from '@/lib/reorder';
@@ -66,9 +67,11 @@ export function HeroSlideList({ slides }: { slides: HeroSlide[] }) {
       const hasil = await reorderHeroSlideAction(baru.map((s) => s.id));
       if (!hasil.ok) {
         setPesanError(hasil.pesan);
+        toast.error(hasil.pesan);
         setDaftar(daftar);
         return;
       }
+      toast.success('Urutan hero slide berhasil diubah.');
       router.refresh();
     });
   }

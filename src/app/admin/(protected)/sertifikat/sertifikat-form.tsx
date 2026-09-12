@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm, useWatch, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addYears, format, parse } from 'date-fns';
+import { toast } from 'sonner';
 import { SertifikatFormSchema, type SertifikatFormInput } from '@/lib/validations/sertifikat-admin';
 import { simpanSertifikatAction } from './actions';
 import { Input } from '@/components/ui/input';
@@ -65,8 +66,10 @@ export function SertifikatForm({
     const hasil = await simpanSertifikatAction(mode === 'edit' ? (sertifikatId ?? null) : null, data);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
+      toast.error(hasil.pesan);
       return;
     }
+    toast.success('Sertifikat berhasil disimpan.');
     router.push('/admin/sertifikat');
     router.refresh();
   }

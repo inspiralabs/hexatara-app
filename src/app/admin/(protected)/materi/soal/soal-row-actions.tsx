@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { MoreVerticalIcon } from 'lucide-react';
+import { toast } from 'sonner';
 import { hapusSoalAction } from './actions';
 import { Button } from '@/components/ui/button';
 import {
@@ -34,9 +35,11 @@ export function SoalRowActions({ id, pertanyaan }: { id: number; pertanyaan: str
       const hasil = await hapusSoalAction(id);
       if (!hasil.ok) {
         setPesanError(hasil.pesan);
+        toast.error(hasil.pesan);
         return;
       }
       setHapusOpen(false);
+      toast.success('Soal berhasil dihapus.');
       router.refresh();
     });
   }

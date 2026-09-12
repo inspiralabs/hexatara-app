@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { MoreVerticalIcon } from 'lucide-react';
+import { toast } from 'sonner';
 import { hapusSaleBannerAction } from './sale-banner-actions';
 import { Button } from '@/components/ui/button';
 import {
@@ -41,9 +42,11 @@ export function SaleBannerRowActions({
       const hasil = await hapusSaleBannerAction(bannerId);
       if (!hasil.ok) {
         setPesanError(hasil.pesan);
+        toast.error(hasil.pesan);
         return;
       }
       setHapusOpen(false);
+      toast.success('Sale banner berhasil dihapus.');
       router.refresh();
     });
   }

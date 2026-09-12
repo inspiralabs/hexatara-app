@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { MoreVerticalIcon } from 'lucide-react';
+import { toast } from 'sonner';
 import { hapusInstructorAction } from './instructor-actions';
 import { Button } from '@/components/ui/button';
 import {
@@ -41,9 +42,11 @@ export function InstructorRowActions({
       const hasil = await hapusInstructorAction(instructorId);
       if (!hasil.ok) {
         setPesanError(hasil.pesan);
+        toast.error(hasil.pesan);
         return;
       }
       setHapusOpen(false);
+      toast.success('Instruktur berhasil dihapus.');
       router.refresh();
     });
   }

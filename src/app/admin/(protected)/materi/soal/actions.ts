@@ -2,7 +2,7 @@
 
 import { requireAdmin } from '@/lib/auth/guard';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { teks, angka } from '@/lib/validations/batch-admin';
+import { teks } from '@/lib/validations/batch-admin';
 import { SoalFormSchema, type SoalFormInput } from '@/lib/validations/soal-admin';
 
 const HURUF_OPSI = ['a', 'b', 'c', 'd'] as const;
@@ -29,13 +29,26 @@ export async function simpanSoalAction(id: number | null, input: SoalFormInput) 
   const soal = {
     pertanyaan_id: rest.pertanyaan_id,
     pertanyaan_en: teks(rest.pertanyaan_en),
-    urutan: angka(rest.urutan) ?? 0,
     is_active: rest.is_active,
   };
 
   let soalId = id;
   if (soalId == null) {
-    const { data, error } = await supabaseAdmin.from('quiz_questions').insert(soal).select('id').single();
+    // Urutan diberikan otomatis (ADR-014) — bukan input manual, supaya
+    // tidak ada dua soal berebut nomor yang sama.
+    const { data: existing } = await supabaseAdmin
+      .from('quiz_questions')
+      .select('urutan')
+      .order('urutan', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    const urutan = (existing?.urutan ?? 0) + 1;
+
+    const { data, error } = await supabaseAdmin
+      .from('quiz_questions')
+      .insert({ ...soal, urutan })
+      .select('id')
+      .single();
     if (error || !data) {
       console.error('[admin-soal] gagal membuat soal:', error);
       return { ok: false as const, pesan: 'Gagal menyimpan soal. Coba lagi.' };
@@ -89,6 +102,19 @@ export async function hapusSoalAction(id: number) {
   if (error) {
     console.error('[admin-soal] gagal hapus soal:', error);
     return { ok: false as const, pesan: 'Gagal menghapus. Coba lagi.' };
+  }
+  return { ok: true as const };
+}
+
+export async function reorderSoalAction(questionIds: number[]) {
+  await requireAdmin();
+  const supabaseAdmin = createAdminClient();
+  const { error } = await supabaseAdmin.rpc('reorder_quiz_questions', {
+    p_question_ids: questionIds,
+  });
+  if (error) {
+    console.error('[admin-soal] gagal reorder soal:', error);
+    return { ok: false as const, pesan: 'Gagal mengubah urutan. Coba lagi.' };
   }
   return { ok: true as const };
 }

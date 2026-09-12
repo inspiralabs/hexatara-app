@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 const teksOpsional = z.string().nullable().optional();
 const teksWajib = z.string().min(1, { error: 'Wajib diisi' });
-const angkaOpsional = z.union([z.string(), z.number()]).nullable().optional();
 
 export const OpsiSoalSchema = z.object({
   label_id: teksWajib,
@@ -17,7 +16,6 @@ export const OpsiSoalSchema = z.object({
 export const SoalFormSchema = z.object({
   pertanyaan_id: teksWajib,
   pertanyaan_en: teksOpsional,
-  urutan: angkaOpsional,
   is_active: z.boolean(),
   jawaban_benar: z.enum(['a', 'b', 'c', 'd']),
   opsi_a: OpsiSoalSchema,

@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { toggleAktifTestimonialAction } from './testimonial-actions';
 import { Switch } from '@/components/ui/switch';
 
@@ -16,8 +17,10 @@ export function TestimonialActiveSwitch({ testimonialId, aktif }: { testimonialI
       const hasil = await toggleAktifTestimonialAction(testimonialId, next);
       if (!hasil.ok) {
         setChecked(!next);
+        toast.error(hasil.pesan);
         return;
       }
+      toast.success('Status berhasil diubah.');
       router.refresh();
     });
   }

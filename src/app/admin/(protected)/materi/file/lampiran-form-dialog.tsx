@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import { LampiranFormSchema, type LampiranFormInput } from '@/lib/validations/materi-lampiran-admin';
 import { simpanLampiranAction, uploadLampiranBabAction } from './lampiran-actions';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -75,6 +76,7 @@ export function LampiranFormDialog({
       const hasil = await uploadLampiranBabAction(fd);
       if (!hasil.ok) {
         setPesanError(hasil.pesan);
+        toast.error(hasil.pesan);
         return;
       }
       onChange(hasil.url);
@@ -88,8 +90,10 @@ export function LampiranFormDialog({
     const hasil = await simpanLampiranAction(chapterId, lampiranId, data);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
+      toast.error(hasil.pesan);
       return;
     }
+    toast.success('Lampiran berhasil disimpan.');
     onOpenChange(false);
     router.refresh();
   }

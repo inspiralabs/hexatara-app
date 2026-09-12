@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import {
   CompanyProfileFormSchema,
   type CompanyProfileFormInput,
@@ -52,9 +53,11 @@ export function CompanyProfileForm({ profile }: { profile: CompanyProfile }) {
     const hasil = await simpanCompanyProfileAction(data);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
+      toast.error(hasil.pesan);
       return;
     }
     setPesanSukses('Company profile tersimpan.');
+    toast.success('Company profile berhasil disimpan.');
   }
 
   return (

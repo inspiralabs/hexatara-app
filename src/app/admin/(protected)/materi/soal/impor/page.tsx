@@ -13,7 +13,7 @@ export default async function AdminSoalImporPage() {
         satu per satu — baris lainnya tetap tersimpan.
       </p>
       <a
-        href="/templates/bank-soal-import-template.csv"
+        href="/templates/bank-soal-import-template.xlsx"
         download
         className="inline-flex h-11 w-fit items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama"
       >

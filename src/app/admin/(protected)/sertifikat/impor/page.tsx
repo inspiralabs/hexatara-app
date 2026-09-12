@@ -12,7 +12,7 @@ export default async function AdminSertifikatImporPage() {
         satu — baris lainnya tetap tersimpan.
       </p>
       <a
-        href="/templates/sertifikat-import-template.csv"
+        href="/templates/sertifikat-import-template.xlsx"
         download
         className="inline-flex h-11 w-fit items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama"
       >

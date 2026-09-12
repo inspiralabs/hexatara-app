@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, XIcon } from 'lucide-react';
+import { toast } from 'sonner';
 import { BatchFormSchema, type BatchFormInput } from '@/lib/validations/batch-admin';
 import { simpanBatchAction } from './actions';
 import { uploadGambarAdminAction } from '../actions';
@@ -77,8 +78,10 @@ export function BatchForm({
     const hasil = await simpanBatchAction(mode === 'edit' ? (batchId ?? null) : null, data);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
+      toast.error(hasil.pesan);
       return;
     }
+    toast.success('Batch berhasil disimpan.');
     router.push('/admin/batch');
     router.refresh();
   }

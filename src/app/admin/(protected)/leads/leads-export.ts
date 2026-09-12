@@ -1,10 +1,12 @@
-import Papa from 'papaparse';
 import { format } from 'date-fns';
 import type { Lead } from './leads-table';
 
-// UTF-8 DENGAN BOM (ENGINEERING §5.6) — tanpa BOM, Excel Windows merusak huruf
-// beraksen dan nama peserta jadi berantakan.
-export function eksporLeadsCsv(leads: Lead[]) {
+// XLSX (ADR-016, menggantikan CSV+papaparse) — kolom asli per field, terbuka
+// rapi di Excel tanpa kerusakan huruf beraksen (masalah lama BOM CSV, tidak
+// relevan lagi di format biner XLSX). Dynamic import supaya `xlsx` (lumayan
+// besar) tidak ikut bundle awal halaman leads.
+export async function eksporLeadsXlsx(leads: Lead[]) {
+  const XLSX = await import('xlsx');
   const rows = leads.map((lead) => ({
     Nama: lead.nama,
     WhatsApp: lead.whatsapp,
@@ -16,12 +18,8 @@ export function eksporLeadsCsv(leads: Lead[]) {
     'Waktu Persetujuan': lead.consent_at,
   }));
 
-  const csv = Papa.unparse(rows);
-  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `leads-batch-${format(new Date(), 'yyyy-MM-dd')}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Leads');
+  XLSX.writeFile(wb, `leads-batch-${format(new Date(), 'yyyy-MM-dd')}.xlsx`);
 }

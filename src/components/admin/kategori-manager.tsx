@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, MoreVerticalIcon } from 'lucide-react';
+import { toast } from 'sonner';
 import { KategoriFormSchema, type KategoriFormInput } from '@/lib/validations/kategori-admin';
 import { moveItem } from '@/lib/reorder';
 import { ReorderButtons } from '@/components/admin/reorder-buttons';
@@ -103,10 +104,13 @@ export function KategoriManager({
     startTransition(async () => {
       const hasil = await reorderAction(baru.map((k) => k.id));
       if (!hasil.ok) {
-        setPesanError(hasil.pesan ?? 'Gagal mengubah urutan. Coba lagi.');
+        const pesan = hasil.pesan ?? 'Gagal mengubah urutan. Coba lagi.';
+        setPesanError(pesan);
+        toast.error(pesan);
         setDaftar(daftar);
         return;
       }
+      toast.success('Urutan kategori berhasil diubah.');
       router.refresh();
     });
   }
@@ -117,8 +121,10 @@ export function KategoriManager({
       const hasil = await toggleAktifAction(k.id, next);
       if (!hasil.ok) {
         setDaftar((prev) => prev.map((item) => (item.id === k.id ? { ...item, is_active: !next } : item)));
+        toast.error(hasil.pesan ?? 'Gagal mengubah status. Coba lagi.');
         return;
       }
+      toast.success('Status berhasil diubah.');
       router.refresh();
     });
   }
@@ -128,11 +134,14 @@ export function KategoriManager({
     startHapus(async () => {
       const hasil = await hapusAction(hapusTarget.id);
       if (!hasil.ok) {
-        setHapusError(hasil.pesan ?? 'Gagal menghapus. Coba lagi.');
+        const pesan = hasil.pesan ?? 'Gagal menghapus. Coba lagi.';
+        setHapusError(pesan);
+        toast.error(pesan);
         return;
       }
       setDaftar((prev) => prev.filter((item) => item.id !== hapusTarget.id));
       setHapusTarget(null);
+      toast.success('Kategori berhasil dihapus.');
       router.refresh();
     });
   }
@@ -287,9 +296,12 @@ function KategoriFormDialog({
     setPesanError(null);
     const hasil = await simpanAction(editingId, data);
     if (!hasil.ok) {
-      setPesanError(hasil.pesan ?? 'Gagal menyimpan kategori. Coba lagi.');
+      const pesan = hasil.pesan ?? 'Gagal menyimpan kategori. Coba lagi.';
+      setPesanError(pesan);
+      toast.error(pesan);
       return;
     }
+    toast.success('Kategori berhasil disimpan.');
     onOpenChange(false);
     onSaved();
   }

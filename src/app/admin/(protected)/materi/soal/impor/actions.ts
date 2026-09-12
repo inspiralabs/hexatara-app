@@ -22,7 +22,15 @@ export async function imporSoalAction(formData: FormData) {
   const supabaseAdmin = createAdminClient();
   let berhasil = 0;
   const gagal: BarisGagal[] = [];
-  let urutan = 0;
+  // Lanjutkan dari urutan tertinggi yang sudah ada (ADR-014) — mulai dari 0
+  // di sini akan bentrok dengan soal yang sudah ada di bank soal.
+  const { data: existing } = await supabaseAdmin
+    .from('quiz_questions')
+    .select('urutan')
+    .order('urutan', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  let urutan = (existing?.urutan ?? -1) + 1;
 
   // Satu soal per baris, SENGAJA tanpa transaksi tunggal — satu baris rusak
   // tidak boleh menggagalkan baris lain (ENGINEERING §5.5).

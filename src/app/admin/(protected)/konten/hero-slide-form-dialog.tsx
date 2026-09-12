@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import { HeroSlideFormSchema, type HeroSlideFormInput } from '@/lib/validations/hero-slide-admin';
 import { simpanHeroSlideAction } from './hero-slide-actions';
 import {
@@ -82,8 +83,10 @@ export function HeroSlideFormDialog({
     const hasil = await simpanHeroSlideAction(slideId, data);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
+      toast.error(hasil.pesan);
       return;
     }
+    toast.success('Hero slide berhasil disimpan.');
     onOpenChange(false);
     router.refresh();
   }

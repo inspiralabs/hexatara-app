@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { MoreVerticalIcon } from 'lucide-react';
+import { toast } from 'sonner';
 import { hapusSertifikatAction } from './actions';
 import { Button } from '@/components/ui/button';
 import {
@@ -34,9 +35,11 @@ export function SertifikatRowActions({ id, nomor }: { id: string; nomor: string 
       const hasil = await hapusSertifikatAction(id);
       if (!hasil.ok) {
         setPesanError(hasil.pesan);
+        toast.error(hasil.pesan);
         return;
       }
       setHapusOpen(false);
+      toast.success('Sertifikat berhasil dihapus.');
       router.refresh();
     });
   }

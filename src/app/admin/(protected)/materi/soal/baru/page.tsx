@@ -7,7 +7,6 @@ const OPSI_KOSONG = { label_id: '', label_en: '', penjelasan_id: '', penjelasan_
 const DEFAULT_VALUES: SoalFormInput = {
   pertanyaan_id: '',
   pertanyaan_en: '',
-  urutan: 0,
   is_active: true,
   jawaban_benar: 'a',
   opsi_a: { ...OPSI_KOSONG },

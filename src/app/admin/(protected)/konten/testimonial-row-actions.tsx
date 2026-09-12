@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { MoreVerticalIcon } from 'lucide-react';
+import { toast } from 'sonner';
 import { hapusTestimonialAction } from './testimonial-actions';
 import { Button } from '@/components/ui/button';
 import {
@@ -41,9 +42,11 @@ export function TestimonialRowActions({
       const hasil = await hapusTestimonialAction(testimonialId);
       if (!hasil.ok) {
         setPesanError(hasil.pesan);
+        toast.error(hasil.pesan);
         return;
       }
       setHapusOpen(false);
+      toast.success('Testimoni berhasil dihapus.');
       router.refresh();
     });
   }

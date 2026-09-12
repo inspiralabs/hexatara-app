@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import { MateriFormSchema, type MateriFormInput } from '@/lib/validations/materi-admin';
 import { simpanMateriAction } from './actions';
 import { uploadGambarAdminAction } from '../actions';
@@ -49,8 +50,10 @@ export function MateriForm({
     const hasil = await simpanMateriAction(mode === 'edit' ? (materiId ?? null) : null, data);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
+      toast.error(hasil.pesan);
       return;
     }
+    toast.success('Materi berhasil disimpan.');
     router.push('/admin/materi');
     router.refresh();
   }

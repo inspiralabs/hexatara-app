@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import { InstructorFormSchema, type InstructorFormInput } from '@/lib/validations/instructor-admin';
 import { simpanInstructorAction } from './instructor-actions';
 import {
@@ -81,8 +82,10 @@ export function InstructorFormDialog({
     const hasil = await simpanInstructorAction(instructorId, data);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
+      toast.error(hasil.pesan);
       return;
     }
+    toast.success('Instruktur berhasil disimpan.');
     onOpenChange(false);
     router.refresh();
   }

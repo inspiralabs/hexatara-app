@@ -2,6 +2,7 @@
 
 import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { updateStatusPengirimanAction } from './actions';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { Database } from '@/types/database';
@@ -31,7 +32,12 @@ export function StatusPengirimanSelect({
   function ubah(status: StatusKirim | null) {
     if (!status) return;
     startTransition(async () => {
-      await updateStatusPengirimanAction(orderId, status);
+      const hasil = await updateStatusPengirimanAction(orderId, status);
+      if (!hasil.ok) {
+        toast.error(hasil.pesan);
+        return;
+      }
+      toast.success('Status pengiriman berhasil diubah.');
       router.refresh();
     });
   }

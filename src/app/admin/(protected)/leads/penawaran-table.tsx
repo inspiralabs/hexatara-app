@@ -5,8 +5,9 @@ import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 import { DownloadIcon, Trash2Icon } from 'lucide-react';
+import { toast } from 'sonner';
 import { hapusPenawaranAction } from './penawaran-actions';
-import { eksporPenawaranCsv } from './penawaran-export';
+import { eksporPenawaranXlsx } from './penawaran-export';
 import { DataTable, SortableHeader, createDataTableColumnHelper } from '@/components/data-table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -43,9 +44,11 @@ function BarisHapus({ id, nama }: { id: number; nama: string }) {
       const hasil = await hapusPenawaranAction(id);
       if (!hasil.ok) {
         setPesanError(hasil.pesan);
+        toast.error(hasil.pesan);
         return;
       }
       setHapusOpen(false);
+      toast.success('Permintaan penawaran berhasil dihapus.');
       router.refresh();
     });
   }
@@ -120,11 +123,11 @@ export function PenawaranTable({ penawaran }: { penawaran: Penawaran[] }) {
       <div className="flex justify-end">
         <button
           type="button"
-          onClick={() => eksporPenawaranCsv(penawaran)}
+          onClick={() => eksporPenawaranXlsx(penawaran)}
           disabled={penawaran.length === 0}
           className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks disabled:opacity-50"
         >
-          <DownloadIcon className="size-4" /> Ekspor CSV
+          <DownloadIcon className="size-4" /> Ekspor Excel
         </button>
       </div>
 

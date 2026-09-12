@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import { SaleBannerFormSchema, type SaleBannerFormInput } from '@/lib/validations/sale-banner-admin';
 import { simpanSaleBannerAction } from './sale-banner-actions';
 import {
@@ -83,8 +84,10 @@ export function SaleBannerFormDialog({
     const hasil = await simpanSaleBannerAction(bannerId, data);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
+      toast.error(hasil.pesan);
       return;
     }
+    toast.success('Sale banner berhasil disimpan.');
     onOpenChange(false);
     router.refresh();
   }

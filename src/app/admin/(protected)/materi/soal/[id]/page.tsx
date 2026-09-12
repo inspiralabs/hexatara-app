@@ -35,7 +35,6 @@ export default async function AdminSoalUbahPage({ params }: { params: Promise<{ 
   const defaultValues: SoalFormInput = {
     pertanyaan_id: soal.pertanyaan_id,
     pertanyaan_en: soal.pertanyaan_en ?? '',
-    urutan: soal.urutan,
     is_active: soal.is_active,
     jawaban_benar: (urutanKeHuruf[jawabanBenar] ?? 'a') as SoalFormInput['jawaban_benar'],
     opsi_a: nilaiOpsi('a'),

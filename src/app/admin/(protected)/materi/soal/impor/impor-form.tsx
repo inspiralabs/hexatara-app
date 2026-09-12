@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState, useTransition } from 'react';
+import { toast } from 'sonner';
 import { imporSoalAction, type BarisGagal } from './actions';
 
 type Laporan = { berhasil: number; gagal: BarisGagal[] };
@@ -29,9 +30,11 @@ export function ImporSoalForm() {
       const hasil = await imporSoalAction(formData);
       if (!hasil.ok) {
         setPesanError(hasil.pesan);
+        toast.error(hasil.pesan);
         return;
       }
       setLaporan({ berhasil: hasil.berhasil, gagal: hasil.gagal });
+      toast.success(`Impor selesai: ${hasil.berhasil} berhasil, ${hasil.gagal.length} gagal.`);
       if (fileRef.current) fileRef.current.value = '';
     });
   }

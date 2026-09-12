@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { MoreVerticalIcon } from 'lucide-react';
+import { toast } from 'sonner';
 import { hapusBabAction } from './bab-actions';
 import { Button } from '@/components/ui/button';
 import {
@@ -34,9 +35,11 @@ export function BabRowActions({ babId, judul }: { babId: number; judul: string }
       const hasil = await hapusBabAction(babId);
       if (!hasil.ok) {
         setPesanError(hasil.pesan);
+        toast.error(hasil.pesan);
         return;
       }
       setHapusOpen(false);
+      toast.success('Materi berhasil dihapus.');
       router.refresh();
     });
   }

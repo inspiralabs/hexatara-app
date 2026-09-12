@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, useWatch, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import { SoalFormSchema, type SoalFormInput } from '@/lib/validations/soal-admin';
 import { simpanSoalAction } from './actions';
 import { Input } from '@/components/ui/input';
@@ -93,8 +94,10 @@ export function SoalForm({
     const hasil = await simpanSoalAction(mode === 'edit' ? (soalId ?? null) : null, data);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
+      toast.error(hasil.pesan);
       return;
     }
+    toast.success('Soal berhasil disimpan.');
     router.push('/admin/materi/soal');
     router.refresh();
   }
@@ -129,23 +132,18 @@ export function SoalForm({
         )}
       />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Field label="Urutan" htmlFor="urutan">
-          <Input id="urutan" type="number" {...register('urutan')} />
-        </Field>
-        <Controller
-          control={control}
-          name="is_active"
-          render={({ field }) => (
-            <div className="flex items-center gap-2 self-end pb-2.5">
-              <Switch id="is_active" checked={field.value} onCheckedChange={field.onChange} />
-              <Label htmlFor="is_active" className="font-normal">
-                Aktif — tampil di /kuis publik
-              </Label>
-            </div>
-          )}
-        />
-      </div>
+      <Controller
+        control={control}
+        name="is_active"
+        render={({ field }) => (
+          <div className="flex items-center gap-2">
+            <Switch id="is_active" checked={field.value} onCheckedChange={field.onChange} />
+            <Label htmlFor="is_active" className="font-normal">
+              Aktif — tampil di /kuis publik
+            </Label>
+          </div>
+        )}
+      />
 
       <div className="flex justify-end">
         <button
