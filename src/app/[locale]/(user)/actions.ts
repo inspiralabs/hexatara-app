@@ -6,7 +6,7 @@ import { requireUser } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { PesananSchema } from '@/lib/validations/upgrade';
-import { HARGA_CERT_ONLY, HARGA_CERT_MERCH, HARGA_MERCH_ADDON } from '@/lib/constants';
+import { getHargaUpgrade } from '@/lib/site-settings';
 
 export async function logoutAction() {
   await requireUser();
@@ -16,14 +16,6 @@ export async function logoutAction() {
   const locale = await getLocale();
   redirect({ href: '/login', locale });
 }
-
-// Nominal SELALU dari sini, tidak pernah dari input klien — sale banner atau
-// form yang dimanipulasi tidak boleh bisa mengubah angka (PRD §8.7).
-const NOMINAL_PAKET = {
-  cert_only: HARGA_CERT_ONLY,
-  cert_merch: HARGA_CERT_MERCH,
-  merch_addon: HARGA_MERCH_ADDON,
-} as const;
 
 export async function buatPesananAction(input: unknown) {
   const parsed = PesananSchema.safeParse(input);
@@ -66,12 +58,15 @@ export async function buatPesananAction(input: unknown) {
     return { ok: false as const, pesan: 'Kamu sudah punya pesanan untuk paket ini.' };
   }
 
+  // Nominal dari site_settings (fallback constants) — tidak pernah dari input klien (PRD §8.7).
+  const harga = await getHargaUpgrade();
+
   const { data: order, error } = await supabase
     .from('certificate_orders')
     .insert({
       user_id: claims.sub,
       paket,
-      nominal: NOMINAL_PAKET[paket],
+      nominal: harga[paket],
       alamat_pengiriman: alamat ?? null,
     })
     .select('id')

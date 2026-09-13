@@ -1,4 +1,5 @@
 import { PesananUpgradeForm } from './pesanan-upgrade-form';
+import type { HargaUpgrade } from '@/lib/site-settings';
 import { BuktiTransferUpload } from './bukti-transfer-upload';
 import type { Database } from '@/types/database';
 
@@ -26,13 +27,15 @@ export function PesananStatusSection({
   order,
   rekening,
   paketOptions,
+  harga,
 }: {
   order: Order | null;
   rekening: Rekening;
   paketOptions: Paket[];
+  harga: HargaUpgrade;
 }) {
   if (!order) {
-    return <PesananUpgradeForm paketOptions={paketOptions} />;
+    return <PesananUpgradeForm paketOptions={paketOptions} harga={harga} />;
   }
 
   if (order.status === 'menunggu_verifikasi') {

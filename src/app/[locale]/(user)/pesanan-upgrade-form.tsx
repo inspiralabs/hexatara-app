@@ -5,7 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from '@/i18n/navigation';
 import { PesananSchema, type PesananInput } from '@/lib/validations/upgrade';
-import { HARGA_CERT_ONLY, HARGA_CERT_MERCH, HARGA_MERCH_ADDON } from '@/lib/constants';
+import type { HargaUpgrade } from '@/lib/site-settings';
 import { buatPesananAction } from './actions';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,17 +21,17 @@ const LABEL_PAKET: Record<Paket, string> = {
   merch_addon: 'Tambah Merchandise',
 };
 
-const HARGA_PAKET: Record<Paket, number> = {
-  cert_only: HARGA_CERT_ONLY,
-  cert_merch: HARGA_CERT_MERCH,
-  merch_addon: HARGA_MERCH_ADDON,
-};
-
 function formatRupiah(angka: number) {
   return `Rp ${angka.toLocaleString('id-ID')}`;
 }
 
-export function PesananUpgradeForm({ paketOptions }: { paketOptions: Paket[] }) {
+export function PesananUpgradeForm({
+  paketOptions,
+  harga,
+}: {
+  paketOptions: Paket[];
+  harga: HargaUpgrade;
+}) {
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
   // Dijamin tidak kosong oleh pemanggil (dashboard/upgrade & dashboard/merchandise) —
@@ -89,7 +89,7 @@ export function PesananUpgradeForm({ paketOptions }: { paketOptions: Paket[] }) 
                   <RadioGroupItem value={paket} />
                   <span className="flex-1">{LABEL_PAKET[paket]}</span>
                   <span className="font-semibold text-warna-teks">
-                    {formatRupiah(HARGA_PAKET[paket])}
+                    {formatRupiah(harga[paket])}
                   </span>
                 </Label>
               ))}
@@ -99,7 +99,7 @@ export function PesananUpgradeForm({ paketOptions }: { paketOptions: Paket[] }) 
       ) : (
         <div className="flex items-center justify-between rounded-lg border border-warna-latar-2 p-4">
           <span>{LABEL_PAKET[paketTunggal]}</span>
-          <span className="font-semibold text-warna-teks">{formatRupiah(HARGA_PAKET[paketTunggal])}</span>
+          <span className="font-semibold text-warna-teks">{formatRupiah(harga[paketTunggal])}</span>
         </div>
       )}
 

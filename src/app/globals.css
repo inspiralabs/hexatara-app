@@ -137,6 +137,19 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* Token Hexatara lama — dark-aware cepat sampai migrasi penuh §12.6.9 */
+  --warna-utama: #60A5FA;
+  --warna-aksen: #FBBF24;
+  --warna-sukses: #34D399;
+  --warna-bahaya: #F87171;
+  --warna-teks: #F9FAFB;
+  --warna-teks-2: #D1D5DB;
+  --warna-latar: #111827;
+  --warna-latar-2: #1F2937;
+
+  --shadow-float: 0 1px 3px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-float-hover: 0 4px 12px rgba(0, 0, 0, 0.45), 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 @layer base {

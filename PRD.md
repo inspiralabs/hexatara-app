@@ -635,9 +635,9 @@ PDF dihasilkan di server dengan `pdf-lib`, menimpa template PDF di `public/templ
 
 ### 8.7 F03.5 / F03.6 — upgrade
 
-Harga tetap, konstanta di `src/lib/constants.ts`. Tidak ada yang menghitungnya, tidak ada diskon, tidak ada kupon. **Sale banner aktif tidak mengubah angka ini** — acceptance criteria menguji itu secara khusus.
+**Perubahan 2026-09-13 (disetujui Alif):** harga sekarang dikelola Admin lewat `/admin/pengaturan`, tersimpan di `site_settings`, BUKAN lagi konstanta murni di kode. `src/lib/constants.ts` (`HARGA_CERT_ONLY`, `HARGA_CERT_MERCH`, `HARGA_MERCH_ADDON`) tetap ada sebagai NILAI DEFAULT/fallback (dipakai kalau `site_settings` belum diisi), tidak dihapus. Tidak ada yang menghitung harga secara dinamis (bukan diskon, bukan kupon, bukan hitung mundur) — Admin cuma mengubah angka nominalnya secara manual lewat form, satu per satu, kapan saja. **Sale banner TETAP tidak boleh mengubah angka ini** — larangan `src/lib/constants.ts` diimpor dari komponen Banner (baris di bawah) tetap berlaku penuh; acceptance criteria "harga tidak berubah oleh sale banner aktif" tetap valid, cuma sumber angka defaultnya yang berubah (constants.ts → site_settings, dibaca lewat helper terpusat, bukan Banner mengimpor constants.ts langsung).
 
-| Paket | Nominal | Alamat pengiriman |
+| Paket | Nominal default (bisa diubah Admin) | Alamat pengiriman |
 |---|---|---|
 | `cert_only` | Rp 30.000 | **TIDAK** diminta |
 | `cert_merch` | Rp 150.000 | **WAJIB** |

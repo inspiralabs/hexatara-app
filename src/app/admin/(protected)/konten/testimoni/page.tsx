@@ -13,10 +13,5 @@ export default async function AdminKontenTestimoniPage() {
 
   if (error) console.error('[admin-konten-testimoni] gagal memuat testimoni:', error);
 
-  return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">Konten &rarr; Testimoni</h1>
-      <TestimonialList testimonials={testimonials ?? []} />
-    </div>
-  );
+  return <TestimonialList judul="Konten → Testimoni" testimonials={testimonials ?? []} />;
 }

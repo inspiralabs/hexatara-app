@@ -13,10 +13,5 @@ export default async function AdminLeadsPenawaranPage() {
 
   if (error) console.error('[admin-leads-penawaran] gagal memuat penawaran:', error);
 
-  return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">Leads &rarr; Permintaan Penawaran</h1>
-      <PenawaranTable penawaran={penawaran ?? []} />
-    </div>
-  );
+  return <PenawaranTable judul="Leads → Permintaan Penawaran" penawaran={penawaran ?? []} />;
 }

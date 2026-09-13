@@ -26,7 +26,7 @@ function keDefaultValues(p: Popup): PopupFormInput {
 
 const columnHelper = createDataTableColumnHelper<Popup>();
 
-export function PopupList({ popups }: { popups: Popup[] }) {
+export function PopupList({ popups, judul }: { popups: Popup[]; judul: string }) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Popup | null>(null);
 
@@ -70,12 +70,13 @@ export function PopupList({ popups }: { popups: Popup[] }) {
   ];
 
   return (
-    <div className="flex flex-col gap-4 pt-4">
-      <div className="flex justify-end">
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-xl font-bold text-warna-teks">{judul}</h1>
         <button
           type="button"
           onClick={bukaTambah}
-          className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
+          className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
         >
           <PlusIcon className="size-4" /> Tambah Pop-up
         </button>

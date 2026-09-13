@@ -13,10 +13,5 @@ export default async function AdminKontenBannerPage() {
 
   if (error) console.error('[admin-konten-banner] gagal memuat sale banner:', error);
 
-  return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">Konten &rarr; Sale Banner</h1>
-      <SaleBannerList banners={saleBanners ?? []} />
-    </div>
-  );
+  return <SaleBannerList judul="Konten → Sale Banner" banners={saleBanners ?? []} />;
 }

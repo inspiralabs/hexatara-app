@@ -2,6 +2,7 @@ import { Link } from '@/i18n/navigation';
 import { requireUser } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { PesananStatusSection } from '../../pesanan-status-section';
+import { getHargaUpgrade } from '@/lib/site-settings';
 
 export default async function UpgradePage() {
   const claims = await requireUser();
@@ -45,6 +46,8 @@ export default async function UpgradePage() {
     | { bank?: string; nomor?: string; atas_nama?: string }
     | undefined;
 
+  const harga = await getHargaUpgrade();
+
   return (
     <div className="mx-auto max-w-md px-4 py-10">
       <h1 className="text-2xl font-bold text-warna-teks sm:text-3xl">Upgrade Sertifikat</h1>
@@ -53,6 +56,7 @@ export default async function UpgradePage() {
           order={order}
           rekening={rekening}
           paketOptions={['cert_only', 'cert_merch']}
+          harga={harga}
         />
       </div>
     </div>

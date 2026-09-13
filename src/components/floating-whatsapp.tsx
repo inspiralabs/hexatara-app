@@ -1,7 +1,8 @@
 import { getTranslations } from "next-intl/server";
+import { getWhatsappAdmin } from "@/lib/site-settings";
 
 export async function FloatingWhatsapp() {
-  const nomor = process.env.NEXT_PUBLIC_WA_ADMIN;
+  const nomor = await getWhatsappAdmin();
   if (!nomor) return null;
   const t = await getTranslations("common");
 

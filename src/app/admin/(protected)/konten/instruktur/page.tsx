@@ -13,10 +13,5 @@ export default async function AdminKontenInstrukturPage() {
 
   if (error) console.error('[admin-konten-instruktur] gagal memuat instruktur:', error);
 
-  return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">Konten &rarr; Instruktur</h1>
-      <InstructorList instructors={instructors ?? []} />
-    </div>
-  );
+  return <InstructorList judul="Konten → Instruktur" instructors={instructors ?? []} />;
 }

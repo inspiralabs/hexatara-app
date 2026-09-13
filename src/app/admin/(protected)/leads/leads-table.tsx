@@ -109,15 +109,16 @@ const columns = [
   }),
 ];
 
-export function LeadsTable({ leads }: { leads: Lead[] }) {
+export function LeadsTable({ leads, judul }: { leads: Lead[]; judul: string }) {
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-xl font-bold text-warna-teks">{judul}</h1>
         <button
           type="button"
           onClick={() => eksporLeadsXlsx(leads)}
           disabled={leads.length === 0}
-          className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks disabled:opacity-50"
+          className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks disabled:opacity-50"
         >
           <DownloadIcon className="size-4" /> Ekspor Excel
         </button>

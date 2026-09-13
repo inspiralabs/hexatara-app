@@ -230,6 +230,19 @@
   },
   "auth": {
     "backToLogin": "Kembali ke halaman masuk",
+    "shell": {
+      "tagline": "Pelatihan pilot drone bersertifikat",
+      "taglineSupport": "Remote Pilot Certificate dan jalur belajar gratis dari Hexatara Indonesia.",
+      "highlight1Title": "Sertifikasi Resmi Drone",
+      "highlight1Body": "Jalur pelatihan tersertifikasi mengikuti ketentuan DKPPU, plus materi gratis untuk memulai.",
+      "highlight2Title": "Butuh Bantuan?",
+      "highlight2Body": "Tim Admin Hexatara siap membantu lewat kontak yang sama seperti di footer situs.",
+      "highlight2CtaWa": "Chat WhatsApp Admin",
+      "highlight2CtaEmail": "Kirim email ke Admin"
+    },
+    "passwordHint": "Minimal 8 karakter",
+    "passwordShow": "Tampilkan kata sandi",
+    "passwordHide": "Sembunyikan kata sandi",
     "daftar": {
       "title": "Daftar akun",
       "description": "Buat akun untuk mengakses materi dan sertifikat gratis.",
@@ -238,8 +251,11 @@
       "nameLabel": "Nama lengkap",
       "emailLabel": "Email",
       "passwordLabel": "Kata sandi",
+      "confirmPasswordLabel": "Konfirmasi kata sandi",
       "consentLabel": "Saya menyetujui data ini disimpan Hexatara untuk keperluan pendaftaran.",
-      "submit": "Daftar"
+      "submit": "Daftar",
+      "toastSuccess": "Akun berhasil dibuat. Cek email untuk verifikasi.",
+      "toastError": "Gagal mendaftar"
     },
     "login": {
       "title": "Masuk",
@@ -248,7 +264,10 @@
       "registerLink": "Daftar",
       "emailLabel": "Email",
       "passwordLabel": "Kata sandi",
-      "submit": "Masuk"
+      "rememberLabel": "Ingat saya",
+      "submit": "Masuk",
+      "toastSuccess": "Berhasil masuk",
+      "toastError": "Gagal masuk"
     },
     "lupaSandi": {
       "title": "Lupa kata sandi",
@@ -256,7 +275,8 @@
       "expiredAlert": "Tautan reset sudah tidak berlaku atau sudah dipakai. Minta tautan baru di bawah.",
       "emailLabel": "Email",
       "submit": "Kirim tautan reset",
-      "sending": "Mengirim…"
+      "sending": "Mengirim…",
+      "toastSent": "Jika email terdaftar, tautan reset sudah dikirim."
     },
     "resetSandi": {
       "title": "Atur ulang kata sandi",
@@ -266,7 +286,9 @@
       "newPasswordLabel": "Kata sandi baru",
       "confirmPasswordLabel": "Konfirmasi kata sandi",
       "submit": "Simpan kata sandi baru",
-      "saving": "Menyimpan…"
+      "saving": "Menyimpan…",
+      "toastSuccess": "Kata sandi berhasil diubah. Silakan masuk.",
+      "toastError": "Gagal menyimpan kata sandi"
     },
     "verifikasiEmail": {
       "title": "Verifikasi email",

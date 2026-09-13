@@ -1,5 +1,6 @@
 import 'server-only';
 import { resend, EMAIL_FROM } from './client';
+import { getAdminNotifyEmail } from '@/lib/site-settings';
 import {
   templateVerifikasiEmail,
   templateResetSandi,
@@ -52,13 +53,17 @@ export function kirimEmailPembayaranDitolak(
   return kirim(to, templatePembayaranDitolak(params));
 }
 
-export function kirimEmailLeadBaru(params: {
+export async function kirimEmailLeadBaru(params: {
   jenis: 'minat_batch' | 'penawaran';
   nama: string;
   kontak: string;
   detail: string;
 }) {
-  const to = process.env.ADMIN_NOTIFY_EMAIL!;
+  const to = await getAdminNotifyEmail();
+  if (!to) {
+    console.error('[email] admin_notify_email kosong — lead tidak dikirim');
+    return { ok: false };
+  }
   const tautanAdmin = `${process.env.NEXT_PUBLIC_SITE_URL}/admin/leads`;
   return kirim(to, templateLeadBaru({ ...params, tautanAdmin }));
 }

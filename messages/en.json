@@ -229,49 +229,71 @@
     }
   },
   "auth": {
-    "backToLogin": "Kembali ke halaman masuk",
+    "backToLogin": "Back to sign in",
+    "shell": {
+      "tagline": "Certified drone pilot training",
+      "taglineSupport": "Remote Pilot Certificate and a free learning track from Hexatara Indonesia.",
+      "highlight1Title": "Official Drone Certification",
+      "highlight1Body": "Certified training aligned with DKPPU rules, plus free materials to get started.",
+      "highlight2Title": "Need Help?",
+      "highlight2Body": "Hexatara Admin is available through the same contact details as in the site footer.",
+      "highlight2CtaWa": "Chat Admin on WhatsApp",
+      "highlight2CtaEmail": "Email Admin"
+    },
+    "passwordHint": "At least 8 characters",
+    "passwordShow": "Show password",
+    "passwordHide": "Hide password",
     "daftar": {
-      "title": "Daftar akun",
-      "description": "Buat akun untuk mengakses materi dan sertifikat gratis.",
-      "haveAccount": "Sudah punya akun?",
-      "loginLink": "Masuk",
-      "nameLabel": "Nama lengkap",
+      "title": "Create account",
+      "description": "Create an account to access free materials and certificates.",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Sign in",
+      "nameLabel": "Full name",
       "emailLabel": "Email",
-      "passwordLabel": "Kata sandi",
-      "consentLabel": "Saya menyetujui data ini disimpan Hexatara untuk keperluan pendaftaran.",
-      "submit": "Daftar"
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm password",
+      "consentLabel": "I agree that Hexatara may store this data for registration purposes.",
+      "submit": "Sign up",
+      "toastSuccess": "Account created. Check your email to verify.",
+      "toastError": "Could not sign up"
     },
     "login": {
-      "title": "Masuk",
-      "forgotPassword": "Lupa kata sandi?",
-      "noAccount": "Belum punya akun?",
-      "registerLink": "Daftar",
+      "title": "Sign in",
+      "forgotPassword": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Sign up",
       "emailLabel": "Email",
-      "passwordLabel": "Kata sandi",
-      "submit": "Masuk"
+      "passwordLabel": "Password",
+      "rememberLabel": "Remember me",
+      "submit": "Sign in",
+      "toastSuccess": "Signed in",
+      "toastError": "Could not sign in"
     },
     "lupaSandi": {
-      "title": "Lupa kata sandi",
-      "description": "Masukkan email akun kamu untuk menerima tautan reset.",
-      "expiredAlert": "Tautan reset sudah tidak berlaku atau sudah dipakai. Minta tautan baru di bawah.",
+      "title": "Forgot password",
+      "description": "Enter your account email to receive a reset link.",
+      "expiredAlert": "The reset link is invalid or already used. Request a new one below.",
       "emailLabel": "Email",
-      "submit": "Kirim tautan reset",
-      "sending": "Mengirim…"
+      "submit": "Send reset link",
+      "sending": "Sending…",
+      "toastSent": "If the email is registered, a reset link has been sent."
     },
     "resetSandi": {
-      "title": "Atur ulang kata sandi",
-      "description": "Pilih kata sandi baru untuk akun kamu.",
-      "invalidAlert": "Tautan reset tidak valid atau sudah kadaluwarsa. Minta tautan baru.",
-      "requestNewLink": "Minta tautan reset baru",
-      "newPasswordLabel": "Kata sandi baru",
-      "confirmPasswordLabel": "Konfirmasi kata sandi",
-      "submit": "Simpan kata sandi baru",
-      "saving": "Menyimpan…"
+      "title": "Reset password",
+      "description": "Choose a new password for your account.",
+      "invalidAlert": "The reset link is invalid or expired. Request a new one.",
+      "requestNewLink": "Request a new reset link",
+      "newPasswordLabel": "New password",
+      "confirmPasswordLabel": "Confirm password",
+      "submit": "Save new password",
+      "saving": "Saving…",
+      "toastSuccess": "Password updated. Please sign in.",
+      "toastError": "Could not save password"
     },
     "verifikasiEmail": {
-      "title": "Verifikasi email",
-      "invalidAlert": "Tautan verifikasi tidak valid atau sudah kadaluwarsa. Daftar ulang untuk mendapatkan tautan baru.",
-      "sentMessage": "Kami sudah mengirim tautan verifikasi ke email kamu. Klik tautan itu untuk mengaktifkan akun sebelum bisa masuk.",
+      "title": "Verify email",
+      "invalidAlert": "The verification link is invalid or expired. Sign up again to get a new link.",
+      "sentMessage": "We sent a verification link to your email. Click it to activate your account before signing in.",
       "verifiedMessage": "Your email has been verified. Your account is now active.",
       "goToDashboard": "Go to Dashboard"
     }

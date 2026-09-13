@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -15,6 +16,8 @@ import {
   SettingsIcon,
   PanelLeftIcon,
   LogOutIcon,
+  UserIcon,
+  InfoIcon,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -107,11 +110,6 @@ const MENU_ADMIN: MenuSection[] = [
       { href: "/admin/produk", label: "Daftar Produk" },
       { href: "/admin/produk/kategori", label: "Kategori Produk" },
     ],
-  },
-  {
-    section: "Pengaturan",
-    icon: SettingsIcon,
-    items: [{ href: "/admin/pengaturan", label: "Pengaturan", icon: SettingsIcon }],
   },
 ];
 
@@ -211,9 +209,9 @@ function NavList({ onNavigate }: { onNavigate?: () => void }) {
           <AccordionItem key={section.section} value={section.section} className="border-none">
             <AccordionTrigger
               className={cn(
-                "min-h-10 rounded-md px-2.5 py-0 text-sm font-normal hover:no-underline",
+                "min-h-10 items-center rounded-md px-2.5 py-0 text-sm font-normal hover:no-underline",
                 sectionAktif(pathname, section)
-                  ? "text-sidebar-foreground"
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
                   : "text-sidebar-foreground/80 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
               )}
             >
@@ -292,6 +290,26 @@ function IconRail() {
   );
 }
 
+function AccountMenuItems({ onLogout }: { onLogout: () => void }) {
+  return (
+    <>
+      <DropdownMenuItem render={<Link href="/admin/profil" />}>
+        <UserIcon /> Profil
+      </DropdownMenuItem>
+      <DropdownMenuItem render={<Link href="/admin/tentang-kami" />}>
+        <InfoIcon /> Tentang Kami
+      </DropdownMenuItem>
+      <DropdownMenuItem render={<Link href="/admin/pengaturan" />}>
+        <SettingsIcon /> Pengaturan
+      </DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem variant="destructive" onClick={onLogout}>
+        <LogOutIcon /> Keluar
+      </DropdownMenuItem>
+    </>
+  );
+}
+
 function ProfileMenu({
   nama,
   email,
@@ -336,12 +354,7 @@ function ProfileMenu({
           {email ? <p className="truncate text-xs text-muted-foreground">{email}</p> : null}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem
-          variant="destructive"
-          onClick={() => startTransition(() => logoutAdminAction())}
-        >
-          <LogOutIcon /> Keluar
-        </DropdownMenuItem>
+        <AccountMenuItems onLogout={() => startTransition(() => logoutAdminAction())} />
       </DropdownMenuContent>
     </DropdownMenu>
   );
@@ -389,10 +402,17 @@ export function AdminShell({
       >
         <div
           className={cn(
-            "flex h-14 items-center border-b border-sidebar-border px-3",
+            "flex h-14 items-center gap-2 border-b border-sidebar-border px-3",
             collapsed ? "justify-center" : "px-4"
           )}
         >
+          <Image
+            src="/hexatara-logo.png"
+            alt=""
+            width={28}
+            height={28}
+            className="size-7 shrink-0"
+          />
           {!collapsed && <p className="truncate text-sm font-semibold">Hexatara Admin</p>}
         </div>
         <div className="flex-1 overflow-y-auto py-3">{collapsed ? <IconRail /> : <NavList />}</div>
@@ -461,12 +481,7 @@ export function AdminShell({
                 {email ? <p className="truncate text-xs text-muted-foreground">{email}</p> : null}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={() => startTransition(() => logoutAdminAction())}
-              >
-                <LogOutIcon /> Keluar
-              </DropdownMenuItem>
+              <AccountMenuItems onLogout={() => startTransition(() => logoutAdminAction())} />
             </DropdownMenuContent>
           </DropdownMenu>
         </header>

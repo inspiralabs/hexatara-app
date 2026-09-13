@@ -2,6 +2,7 @@ import { Link } from '@/i18n/navigation';
 import { requireUser } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { PesananStatusSection } from '../../pesanan-status-section';
+import { getHargaUpgrade } from '@/lib/site-settings';
 import type { Database } from '@/types/database';
 
 type Paket = Database['public']['Enums']['paket_upgrade'];
@@ -41,6 +42,8 @@ export default async function TransaksiSayaPage() {
     .maybeSingle();
   const rekening = rekeningSetting?.value as { bank?: string; nomor?: string; atas_nama?: string } | undefined;
 
+  const harga = await getHargaUpgrade();
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -63,7 +66,12 @@ export default async function TransaksiSayaPage() {
           )}
         </div>
         <div className="mt-3">
-          <PesananStatusSection order={pesananUtama ?? null} rekening={rekening} paketOptions={['cert_only', 'cert_merch']} />
+          <PesananStatusSection
+            order={pesananUtama ?? null}
+            rekening={rekening}
+            paketOptions={['cert_only', 'cert_merch']}
+            harga={harga}
+          />
         </div>
         {pesananUtama && (
           <Link
@@ -86,7 +94,12 @@ export default async function TransaksiSayaPage() {
             )}
           </div>
           <div className="mt-3">
-            <PesananStatusSection order={pesananMerch ?? null} rekening={rekening} paketOptions={['merch_addon']} />
+            <PesananStatusSection
+              order={pesananMerch ?? null}
+              rekening={rekening}
+              paketOptions={['merch_addon']}
+              harga={harga}
+            />
           </div>
           {pesananMerch && (
             <Link

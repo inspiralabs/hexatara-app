@@ -2,6 +2,7 @@ import { GraduationCap, ShoppingBag } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getWhatsappAdmin } from "@/lib/site-settings";
 import { pick } from "@/lib/i18n/pick";
 import { HeroCarousel, type HeroSlideItem } from "@/components/hero-carousel";
 
@@ -26,7 +27,7 @@ export async function HeroSection() {
     ctaUrl: s.cta_url,
   }));
 
-  const nomorWa = process.env.NEXT_PUBLIC_WA_ADMIN;
+  const nomorWa = await getWhatsappAdmin();
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">

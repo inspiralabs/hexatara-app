@@ -13,10 +13,5 @@ export default async function AdminKontenPopupPage() {
 
   if (error) console.error('[admin-konten-popup] gagal memuat popup:', error);
 
-  return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">Konten &rarr; Pop-up</h1>
-      <PopupList popups={popups ?? []} />
-    </div>
-  );
+  return <PopupList judul="Konten → Pop-up" popups={popups ?? []} />;
 }

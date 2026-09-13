@@ -1,25 +1,28 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useTranslations } from 'next-intl';
-import { useRouter } from '@/i18n/navigation';
-import { z } from 'zod';
-import { DaftarSchema } from '@/lib/validations/auth';
-import { bacaProgresSesi, hapusProgresSesi } from '@/lib/materi/session-progress';
-import { daftarAction } from './actions';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
+import { toast } from "sonner";
+import { z } from "zod";
+import { DaftarSchema } from "@/lib/validations/auth";
+import { bacaProgresSesi, hapusProgresSesi } from "@/lib/materi/session-progress";
+import { daftarAction } from "./actions";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { PasswordInput } from "@/components/auth/password-input";
 
 type DaftarInput = z.infer<typeof DaftarSchema>;
 
 export function DaftarForm({ kuisSelesai = false }: { kuisSelesai?: boolean }) {
-  const t = useTranslations('auth.daftar');
-  const tCommon = useTranslations('common');
+  const t = useTranslations("auth.daftar");
+  const tAuth = useTranslations("auth");
+  const tCommon = useTranslations("common");
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
   const {
@@ -29,7 +32,13 @@ export function DaftarForm({ kuisSelesai = false }: { kuisSelesai?: boolean }) {
     formState: { errors, isSubmitting },
   } = useForm<DaftarInput>({
     resolver: zodResolver(DaftarSchema),
-    defaultValues: { nama_lengkap: '', email: '', password: '', persetujuan: false },
+    defaultValues: {
+      nama_lengkap: "",
+      email: "",
+      password: "",
+      konfirmasiPassword: "",
+      persetujuan: false,
+    },
   });
 
   async function onSubmit(data: DaftarInput) {
@@ -38,10 +47,12 @@ export function DaftarForm({ kuisSelesai = false }: { kuisSelesai?: boolean }) {
     const hasil = await daftarAction(data, kuisSelesai, progresBab ?? undefined);
     if (!hasil.ok) {
       setPesanError(hasil.pesan);
+      toast.error(t("toastError"), { description: hasil.pesan });
       return;
     }
     hapusProgresSesi();
-    router.push('/verifikasi-email');
+    toast.success(t("toastSuccess"));
+    router.push("/verifikasi-email");
   }
 
   return (
@@ -53,29 +64,45 @@ export function DaftarForm({ kuisSelesai = false }: { kuisSelesai?: boolean }) {
       )}
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="nama_lengkap">{t('nameLabel')}</Label>
-        <Input id="nama_lengkap" autoComplete="name" {...register('nama_lengkap')} />
+        <Label htmlFor="nama_lengkap">{t("nameLabel")}</Label>
+        <Input id="nama_lengkap" autoComplete="name" {...register("nama_lengkap")} />
         {errors.nama_lengkap && (
           <p className="text-sm text-destructive">{errors.nama_lengkap.message}</p>
         )}
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="email">{t('emailLabel')}</Label>
-        <Input id="email" type="email" autoComplete="email" {...register('email')} />
+        <Label htmlFor="email">{t("emailLabel")}</Label>
+        <Input id="email" type="email" autoComplete="email" {...register("email")} />
         {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="password">{t('passwordLabel')}</Label>
-        <Input
+        <Label htmlFor="password">{t("passwordLabel")}</Label>
+        <PasswordInput
           id="password"
-          type="password"
           autoComplete="new-password"
-          {...register('password')}
+          toggleLabelShow={tAuth("passwordShow")}
+          toggleLabelHide={tAuth("passwordHide")}
+          {...register("password")}
         />
+        <p className="text-xs text-muted-foreground">{tAuth("passwordHint")}</p>
         {errors.password && (
           <p className="text-sm text-destructive">{errors.password.message}</p>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-1.5">
+        <Label htmlFor="konfirmasiPassword">{t("confirmPasswordLabel")}</Label>
+        <PasswordInput
+          id="konfirmasiPassword"
+          autoComplete="new-password"
+          toggleLabelShow={tAuth("passwordShow")}
+          toggleLabelHide={tAuth("passwordHide")}
+          {...register("konfirmasiPassword")}
+        />
+        {errors.konfirmasiPassword && (
+          <p className="text-sm text-destructive">{errors.konfirmasiPassword.message}</p>
         )}
       </div>
 
@@ -87,10 +114,10 @@ export function DaftarForm({ kuisSelesai = false }: { kuisSelesai?: boolean }) {
             <Checkbox
               id="persetujuan"
               checked={field.value}
-              onCheckedChange={(checked) => field.onChange(checked)}
+              onCheckedChange={(checked) => field.onChange(checked === true)}
             />
             <Label htmlFor="persetujuan" className="font-normal">
-              {t('consentLabel')}
+              {t("consentLabel")}
             </Label>
           </div>
         )}
@@ -100,7 +127,7 @@ export function DaftarForm({ kuisSelesai = false }: { kuisSelesai?: boolean }) {
       )}
 
       <Button type="submit" size="lg" disabled={isSubmitting}>
-        {isSubmitting ? tCommon('processing') : t('submit')}
+        {isSubmitting ? tCommon("processing") : t("submit")}
       </Button>
     </form>
   );

@@ -26,7 +26,13 @@ function keDefaultValues(i: Instructor): InstructorFormInput {
 
 const columnHelper = createDataTableColumnHelper<Instructor>();
 
-export function InstructorList({ instructors }: { instructors: Instructor[] }) {
+export function InstructorList({
+  instructors,
+  judul,
+}: {
+  instructors: Instructor[];
+  judul: string;
+}) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Instructor | null>(null);
 
@@ -69,12 +75,13 @@ export function InstructorList({ instructors }: { instructors: Instructor[] }) {
   ];
 
   return (
-    <div className="flex flex-col gap-4 pt-4">
-      <div className="flex justify-end">
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-xl font-bold text-warna-teks">{judul}</h1>
         <button
           type="button"
           onClick={bukaTambah}
-          className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
+          className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
         >
           <PlusIcon className="size-4" /> Tambah Instruktur
         </button>
