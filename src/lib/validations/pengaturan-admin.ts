@@ -13,6 +13,7 @@ export const KontakPublikSchema = z.object({
     .regex(/^62\d{8,13}$/, { error: 'Format WA: 62… tanpa + atau spasi (contoh 62812…)' }),
   email: z.email({ error: 'Email kontak tidak valid' }).or(z.literal('')),
   instagram: z.string().optional().default(''),
+  jam_operasional: z.string().optional().default(''),
 });
 
 export const AdminNotifyEmailSchema = z.object({

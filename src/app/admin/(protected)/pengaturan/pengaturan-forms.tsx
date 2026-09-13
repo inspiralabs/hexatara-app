@@ -122,6 +122,7 @@ function KontakForm({ defaults }: { defaults: KontakSettings }) {
       wa: defaults.wa ?? '',
       email: defaults.email ?? '',
       instagram: defaults.instagram ?? '',
+      jam_operasional: defaults.jam_operasional ?? '',
     },
   });
 
@@ -141,26 +142,34 @@ function KontakForm({ defaults }: { defaults: KontakSettings }) {
       <CardHeader>
         <CardTitle>Kontak publik</CardTitle>
         <CardDescription>
-          WhatsApp dipakai floating button & footer. Format: 62… tanpa +.
+          Tampil di footer situs (bukan email notifikasi lead di bawah). WA format: 62… tanpa +.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 sm:grid-cols-3" noValidate>
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 sm:grid-cols-2" noValidate>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="wa">WhatsApp</Label>
             <Input id="wa" placeholder="62812…" {...register('wa')} />
             {errors.wa && <p className="text-sm text-destructive">{errors.wa.message}</p>}
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="email_kontak">Email</Label>
-            <Input id="email_kontak" type="email" {...register('email')} />
+            <Label htmlFor="email_kontak">Email kontak resmi (footer)</Label>
+            <Input id="email_kontak" type="email" placeholder="info@hexatara.com" {...register('email')} />
             {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="instagram">Instagram URL</Label>
             <Input id="instagram" placeholder="https://instagram.com/…" {...register('instagram')} />
           </div>
-          <div className="sm:col-span-3">
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="jam_operasional">Jam operasional</Label>
+            <Input
+              id="jam_operasional"
+              placeholder="Senin - Jumat, 09.00 - 16.00 WIB"
+              {...register('jam_operasional')}
+            />
+          </div>
+          <div className="sm:col-span-2">
             <Button type="submit" disabled={pending}>
               {pending ? 'Menyimpan…' : 'Simpan kontak'}
             </Button>
@@ -197,7 +206,9 @@ function NotifyForm({ defaults }: { defaults: string }) {
     <Card>
       <CardHeader>
         <CardTitle>Email notifikasi Admin</CardTitle>
-        <CardDescription>Tujuan email lead baru. Fallback ke ADMIN_NOTIFY_EMAIL jika kosong.</CardDescription>
+        <CardDescription>
+          Tujuan email lead baru (internal). Bukan email kontak footer — itu di kartu Kontak publik di atas.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 sm:max-w-md" noValidate>

@@ -41,6 +41,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -310,53 +311,34 @@ function AccountMenuItems({ onLogout }: { onLogout: () => void }) {
   );
 }
 
-function ProfileMenu({
+function AccountSidebarCard({
   nama,
   email,
   collapsed,
-  side = "top",
 }: {
   nama: string;
   email: string;
   collapsed?: boolean;
-  side?: "top" | "right" | "bottom";
 }) {
-  const [, startTransition] = useTransition();
-
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        render={
-          <button
-            type="button"
-            className={cn(
-              "flex w-full items-center gap-2 rounded-md p-2 text-left hover:bg-sidebar-accent",
-              collapsed && "justify-center"
-            )}
-          />
-        }
-      >
-        <Avatar size="sm">
-          <AvatarFallback>{inisial(nama)}</AvatarFallback>
-        </Avatar>
-        {!collapsed && (
-          <span className="min-w-0 flex-1">
-            <span className="block truncate text-sm font-medium text-sidebar-foreground">{nama}</span>
-            {email ? (
-              <span className="block truncate text-xs text-muted-foreground">{email}</span>
-            ) : null}
-          </span>
-        )}
-      </DropdownMenuTrigger>
-      <DropdownMenuContent side={side} align="start" className="w-56">
-        <DropdownMenuLabel className="font-normal">
-          <p className="truncate text-sm font-medium">{nama}</p>
-          {email ? <p className="truncate text-xs text-muted-foreground">{email}</p> : null}
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <AccountMenuItems onLogout={() => startTransition(() => logoutAdminAction())} />
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div
+      className={cn(
+        "flex w-full items-center gap-2 rounded-md p-2 text-left",
+        collapsed && "justify-center"
+      )}
+    >
+      <Avatar size="sm">
+        <AvatarFallback>{inisial(nama)}</AvatarFallback>
+      </Avatar>
+      {!collapsed && (
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-sm font-medium text-sidebar-foreground">{nama}</span>
+          {email ? (
+            <span className="block truncate text-xs text-muted-foreground">{email}</span>
+          ) : null}
+        </span>
+      )}
+    </div>
   );
 }
 
@@ -417,7 +399,7 @@ export function AdminShell({
         </div>
         <div className="flex-1 overflow-y-auto py-3">{collapsed ? <IconRail /> : <NavList />}</div>
         <div className="border-t border-sidebar-border p-2">
-          <ProfileMenu nama={nama} email={email} collapsed={collapsed} side={collapsed ? "right" : "top"} />
+          <AccountSidebarCard nama={nama} email={email} collapsed={collapsed} />
         </div>
       </aside>
 
@@ -444,7 +426,7 @@ export function AdminShell({
                 <NavList onNavigate={() => setDrawerOpen(false)} />
               </div>
               <div className="border-t border-sidebar-border p-2">
-                <ProfileMenu nama={nama} email={email} />
+                <AccountSidebarCard nama={nama} email={email} />
               </div>
             </SheetContent>
           </Sheet>
@@ -476,10 +458,12 @@ export function AdminShell({
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel className="font-normal">
-                <p className="truncate text-sm font-medium">{nama}</p>
-                {email ? <p className="truncate text-xs text-muted-foreground">{email}</p> : null}
-              </DropdownMenuLabel>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="font-normal">
+                  <p className="truncate text-sm font-medium">{nama}</p>
+                  {email ? <p className="truncate text-xs text-muted-foreground">{email}</p> : null}
+                </DropdownMenuLabel>
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <AccountMenuItems onLogout={() => startTransition(() => logoutAdminAction())} />
             </DropdownMenuContent>

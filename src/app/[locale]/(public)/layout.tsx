@@ -6,8 +6,8 @@ import { createClient } from "@/lib/supabase/server";
 import { FloatingWhatsapp } from "@/components/floating-whatsapp";
 import { PublicNavMobile } from "@/components/public-nav-mobile";
 import { LanguageSwitcher } from "@/components/language-switcher";
-
-type KontakSettings = { wa?: string; email?: string; instagram?: string };
+import { ThemeProvider } from "@/components/shell/theme-provider";
+import { DEFAULT_JAM_OPERASIONAL, type KontakSettings } from "@/lib/site-settings";
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const tNav = await getTranslations("nav");
@@ -27,7 +27,10 @@ export default async function PublicLayout({ children }: { children: React.React
   ];
   const hrefMasuk = sudahLogin ? "/dashboard" : "/login";
 
+  const jamOperasional = kontak.jam_operasional?.trim() || tFooter("serviceHours") || DEFAULT_JAM_OPERASIONAL;
+
   return (
+    <ThemeProvider forcedTheme="light">
     <div className="flex min-h-full flex-1 flex-col">
       <header className="sticky top-0 z-30 border-b border-warna-latar-2 bg-warna-latar">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
@@ -123,7 +126,7 @@ export default async function PublicLayout({ children }: { children: React.React
                   Instagram
                 </a>
               )}
-              <p>{tFooter("serviceHours")}</p>
+              <p>{jamOperasional}</p>
             </div>
           </div>
         </div>
@@ -135,5 +138,6 @@ export default async function PublicLayout({ children }: { children: React.React
 
       <FloatingWhatsapp />
     </div>
+    </ThemeProvider>
   );
 }

@@ -58,11 +58,12 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
+  /* Snow / off-white — bukan #FFFFFF murni (publik + light default) */
+  --background: oklch(0.985 0.002 247);
   --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
+  --card: oklch(0.995 0.001 247);
   --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
+  --popover: oklch(0.995 0.001 247);
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
@@ -97,8 +98,8 @@
   --warna-bahaya: #DC2626;
   --warna-teks: #111827;
   --warna-teks-2: #4B5563;
-  --warna-latar: #FFFFFF;
-  --warna-latar-2: #F9FAFB;
+  --warna-latar: #F8FAFC;
+  --warna-latar-2: #F1F5F9;
 
   --shadow-float: 0 1px 3px rgba(17, 24, 39, 0.08), 0 1px 2px rgba(17, 24, 39, 0.04);
   --shadow-float-hover: 0 4px 12px rgba(17, 24, 39, 0.10), 0 2px 4px rgba(17, 24, 39, 0.06);

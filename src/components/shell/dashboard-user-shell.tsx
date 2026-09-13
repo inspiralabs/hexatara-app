@@ -31,6 +31,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -190,10 +191,12 @@ function ProfileMenu({
         )}
       </DropdownMenuTrigger>
       <DropdownMenuContent side={side} align="start" className="w-56">
-        <DropdownMenuLabel className="font-normal">
-          <p className="truncate text-sm font-medium">{nama}</p>
-          {email ? <p className="truncate text-xs text-muted-foreground">{email}</p> : null}
-        </DropdownMenuLabel>
+        <DropdownMenuGroup>
+          <DropdownMenuLabel className="font-normal">
+            <p className="truncate text-sm font-medium">{nama}</p>
+            {email ? <p className="truncate text-xs text-muted-foreground">{email}</p> : null}
+          </DropdownMenuLabel>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           variant="destructive"
@@ -326,10 +329,12 @@ export function DashboardUserShell({
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel className="font-normal">
-                <p className="truncate text-sm font-medium">{namaTampil}</p>
-                {email ? <p className="truncate text-xs text-muted-foreground">{email}</p> : null}
-              </DropdownMenuLabel>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="font-normal">
+                  <p className="truncate text-sm font-medium">{namaTampil}</p>
+                  {email ? <p className="truncate text-xs text-muted-foreground">{email}</p> : null}
+                </DropdownMenuLabel>
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 variant="destructive"

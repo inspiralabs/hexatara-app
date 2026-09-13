@@ -18,7 +18,12 @@ export type KontakSettings = {
   wa?: string;
   email?: string;
   instagram?: string;
+  /** Teks bebas, contoh: "Senin - Jumat, 09.00 - 16.00 WIB" */
+  jam_operasional?: string;
 };
+
+/** Fallback footer — mirror messages/id.json footer.serviceHours */
+export const DEFAULT_JAM_OPERASIONAL = 'Senin - Jumat, 09.00 - 16.00 WIB';
 
 export type HargaUpgrade = {
   cert_only: number;
