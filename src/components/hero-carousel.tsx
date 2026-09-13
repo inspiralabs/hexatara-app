@@ -50,9 +50,14 @@ export function HeroCarousel({ slides }: { slides: HeroSlideItem[] }) {
           sizes="(max-width: 640px) 100vw, 50vw"
         />
       )}
-      <div className="absolute inset-0 bg-black/0 [transition:var(--transition-hover)] group-hover:bg-black/10" />
+      {/* Overlay penuh: gelap bawah → transparan atas. pointer-events-none agar
+          tidak menghalangi klik CTA/gambar; panah carousel di sibling luar. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent"
+      />
       {(slide.subjudul || slide.judul) && (
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 to-transparent p-4 text-warna-latar">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] p-4 text-warna-latar">
           <p className="text-base font-bold sm:text-lg">{slide.judul}</p>
           {slide.subjudul && <p className="text-sm text-warna-latar/90">{slide.subjudul}</p>}
         </div>
@@ -76,7 +81,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlideItem[] }) {
             type="button"
             onClick={() => pindah("prev")}
             aria-label="Slide sebelumnya"
-            className="absolute left-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-warna-latar/80 text-warna-teks hover:bg-warna-latar"
+            className="absolute left-2 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-warna-latar/80 text-warna-teks hover:bg-warna-latar"
           >
             <ChevronLeftIcon className="size-5" aria-hidden="true" />
           </button>
@@ -84,7 +89,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlideItem[] }) {
             type="button"
             onClick={() => pindah("next")}
             aria-label="Slide berikutnya"
-            className="absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-warna-latar/80 text-warna-teks hover:bg-warna-latar"
+            className="absolute right-2 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-warna-latar/80 text-warna-teks hover:bg-warna-latar"
           >
             <ChevronRightIcon className="size-5" aria-hidden="true" />
           </button>

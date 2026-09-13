@@ -1,5 +1,6 @@
 import { requireUser } from "@/lib/auth/guard";
 import { createClient } from "@/lib/supabase/server";
+import { ThemeProvider } from "@/components/shell/theme-provider";
 import { DashboardUserShell } from "@/components/shell/dashboard-user-shell";
 
 export default async function UserLayout({ children }: { children: React.ReactNode }) {
@@ -14,8 +15,10 @@ export default async function UserLayout({ children }: { children: React.ReactNo
   const email = typeof claims.email === "string" ? claims.email : "";
 
   return (
-    <DashboardUserShell namaLengkap={profile?.nama_lengkap ?? ""} email={email}>
-      {children}
-    </DashboardUserShell>
+    <ThemeProvider>
+      <DashboardUserShell namaLengkap={profile?.nama_lengkap ?? ""} email={email}>
+        {children}
+      </DashboardUserShell>
+    </ThemeProvider>
   );
 }

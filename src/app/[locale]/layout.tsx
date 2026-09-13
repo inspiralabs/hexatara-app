@@ -4,7 +4,6 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Geist } from "next/font/google";
 import { routing } from "@/i18n/routing";
-import { ThemeProvider } from "@/components/shell/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import "../globals.css";
 
@@ -44,10 +43,8 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={`${geist.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="flex min-h-full flex-col font-sans">
-        <ThemeProvider>
-          <NextIntlClientProvider>{children}</NextIntlClientProvider>
-          <Toaster position="top-center" />
-        </ThemeProvider>
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <Toaster position="top-center" />
       </body>
     </html>
   );

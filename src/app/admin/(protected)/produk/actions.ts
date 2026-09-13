@@ -112,3 +112,17 @@ export async function hapusProdukAction(id: number) {
   }
   return { ok: true as const };
 }
+
+// products.urutan TIDAK unique — aman di-update langsung per baris (pola sama hero_slides).
+export async function reorderProdukAction(produkIds: number[]) {
+  await requireAdmin();
+  const supabaseAdmin = createAdminClient();
+  for (const [index, id] of produkIds.entries()) {
+    const { error } = await supabaseAdmin.from('products').update({ urutan: index }).eq('id', id);
+    if (error) {
+      console.error('[admin-produk] gagal reorder produk:', error);
+      return { ok: false as const, pesan: 'Gagal mengubah urutan. Coba lagi.' };
+    }
+  }
+  return { ok: true as const };
+}

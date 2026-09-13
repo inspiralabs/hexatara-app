@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { FloatingWhatsapp } from "@/components/floating-whatsapp";
 import { PublicNavMobile } from "@/components/public-nav-mobile";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { ThemeProvider } from "@/components/shell/theme-provider";
+import { ForceLightDocument } from "@/components/shell/force-light-document";
 import { DEFAULT_JAM_OPERASIONAL, type KontakSettings } from "@/lib/site-settings";
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
@@ -30,8 +30,8 @@ export default async function PublicLayout({ children }: { children: React.React
   const jamOperasional = kontak.jam_operasional?.trim() || tFooter("serviceHours") || DEFAULT_JAM_OPERASIONAL;
 
   return (
-    <ThemeProvider forcedTheme="light">
     <div className="flex min-h-full flex-1 flex-col">
+      <ForceLightDocument />
       <header className="sticky top-0 z-30 border-b border-warna-latar-2 bg-warna-latar">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2 text-lg font-bold text-warna-utama">
@@ -138,6 +138,5 @@ export default async function PublicLayout({ children }: { children: React.React
 
       <FloatingWhatsapp />
     </div>
-    </ThemeProvider>
   );
 }
