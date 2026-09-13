@@ -11,6 +11,12 @@ const PAKET_LABEL: Record<string, string> = {
   merch_addon: 'Tambah Merchandise',
 };
 
+const PAKET_FILTER_OPTIONS = [
+  { value: 'cert_only', label: 'Sertifikat saja' },
+  { value: 'cert_merch', label: 'Sertifikat + Merchandise' },
+  { value: 'merch_addon', label: 'Tambah Merchandise' },
+];
+
 function formatRupiah(angka: number) {
   return `Rp ${angka.toLocaleString('id-ID')}`;
 }
@@ -37,7 +43,12 @@ const antreanColumns = [
     header: (ctx) => <SortableHeader column={ctx.column} label="Nama" />,
     cell: (info) => <span className="font-medium text-warna-teks">{info.getValue()}</span>,
   }),
-  antreanColumnHelper.accessor((row) => PAKET_LABEL[row.paket] ?? row.paket, { id: 'paket', header: 'Paket' }),
+  antreanColumnHelper.accessor('paket', {
+    id: 'paket',
+    header: 'Paket',
+    filterFn: 'equalsString',
+    cell: (info) => PAKET_LABEL[info.getValue()] ?? info.getValue(),
+  }),
   antreanColumnHelper.accessor('nominal', {
     header: (ctx) => <SortableHeader column={ctx.column} label="Nominal" />,
     cell: (info) => formatRupiah(info.getValue()),
@@ -71,9 +82,11 @@ export function AntreanTable({ antrean }: { antrean: AntreanRow[] }) {
     <DataTable
       columns={antreanColumns}
       data={antrean}
+      getRowId={(row) => String(row.id)}
       searchColumnId="nama"
       searchPlaceholder="Cari nama..."
       emptyMessage="Tidak ada pesanan menunggu verifikasi."
+      columnFilters={[{ id: 'paket', label: 'Paket', options: PAKET_FILTER_OPTIONS }]}
     />
   );
 }
@@ -93,11 +106,18 @@ const pengirimanColumns = [
     header: (ctx) => <SortableHeader column={ctx.column} label="Nama" />,
     cell: (info) => <span className="font-medium text-warna-teks">{info.getValue()}</span>,
   }),
-  pengirimanColumnHelper.accessor((row) => PAKET_LABEL[row.paket] ?? row.paket, { id: 'paket', header: 'Paket' }),
+  pengirimanColumnHelper.accessor('paket', {
+    id: 'paket',
+    header: 'Paket',
+    filterFn: 'equalsString',
+    cell: (info) => PAKET_LABEL[info.getValue()] ?? info.getValue(),
+  }),
   pengirimanColumnHelper.accessor((row) => alamatRingkas(row.alamat_pengiriman), { id: 'alamat', header: 'Alamat' }),
-  pengirimanColumnHelper.display({
+  pengirimanColumnHelper.accessor('status_pengiriman', {
     id: 'status_pengiriman',
     header: 'Status Pengiriman',
+    filterFn: 'equalsString',
+    enableSorting: false,
     cell: ({ row }) => (
       <StatusPengirimanSelect orderId={row.original.id} statusSaatIni={row.original.status_pengiriman} />
     ),
@@ -109,9 +129,23 @@ export function PengirimanTable({ pengiriman }: { pengiriman: PengirimanRow[] })
     <DataTable
       columns={pengirimanColumns}
       data={pengiriman}
+      getRowId={(row) => String(row.id)}
       searchColumnId="nama"
       searchPlaceholder="Cari nama..."
       emptyMessage="Tidak ada merchandise yang perlu dikirim."
+      columnFilters={[
+        { id: 'paket', label: 'Paket', options: PAKET_FILTER_OPTIONS },
+        {
+          id: 'status_pengiriman',
+          label: 'Status',
+          options: [
+            { value: 'belum_diproses', label: 'Belum Diproses' },
+            { value: 'diproses', label: 'Diproses' },
+            { value: 'dikirim', label: 'Dikirim' },
+            { value: 'diterima', label: 'Diterima' },
+          ],
+        },
+      ]}
     />
   );
 }

@@ -29,6 +29,7 @@ const columns = [
   }),
   columnHelper.accessor('status', {
     header: (ctx) => <SortableHeader column={ctx.column} label="Status" />,
+    filterFn: 'equalsString',
     cell: (info) => {
       const status = STATUS_BATCH_LABEL[info.getValue()];
       return (
@@ -36,9 +37,11 @@ const columns = [
       );
     },
   }),
-  columnHelper.display({
-    id: 'aktif',
+  columnHelper.accessor((row) => String(row.is_active), {
+    id: 'is_active',
     header: 'Aktif',
+    filterFn: 'equalsString',
+    enableSorting: false,
     cell: ({ row }) => <BatchActiveSwitch batchId={row.original.id} aktif={row.original.is_active} />,
   }),
   columnHelper.display({
@@ -54,6 +57,32 @@ const columns = [
 
 export function BatchTable({ batches }: { batches: Batch[] }) {
   return (
-    <DataTable columns={columns} data={batches} searchColumnId="judul_id" searchPlaceholder="Cari judul batch..." emptyMessage="Belum ada batch." />
+    <DataTable
+      columns={columns}
+      data={batches}
+      getRowId={(row) => String(row.id)}
+      searchColumnId="judul_id"
+      searchPlaceholder="Cari judul batch..."
+      emptyMessage="Belum ada batch."
+      columnFilters={[
+        {
+          id: 'status',
+          label: 'Status',
+          options: [
+            { value: 'upcoming', label: 'Akan Datang' },
+            { value: 'open', label: 'Pendaftaran Dibuka' },
+            { value: 'closed', label: 'Ditutup' },
+          ],
+        },
+        {
+          id: 'is_active',
+          label: 'Aktif',
+          options: [
+            { value: 'true', label: 'Aktif' },
+            { value: 'false', label: 'Nonaktif' },
+          ],
+        },
+      ]}
+    />
   );
 }

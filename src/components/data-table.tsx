@@ -1,13 +1,16 @@
 'use client';
 
+import { useMemo } from 'react';
 import {
   columnFilteringFeature,
   createColumnHelper,
   createFilteredRowModel,
   createPaginatedRowModel,
   createSortedRowModel,
+  filterFn_equalsString,
   filterFn_includesString,
   rowPaginationFeature,
+  rowSelectionFeature,
   rowSortingFeature,
   sortFn_alphanumeric,
   tableFeatures,
@@ -16,11 +19,19 @@ import {
   type ColumnDef,
   type RowData,
 } from '@tanstack/react-table';
-import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import {
+  ArrowDownIcon,
+  ArrowUpDownIcon,
+  ArrowUpIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ChevronsLeftIcon,
+  ChevronsRightIcon,
+} from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 // Satu instance fitur dipakai semua DataTable di Admin — TanStack Table v9
@@ -30,10 +41,14 @@ export const dataTableFeatures = tableFeatures({
   columnFilteringFeature,
   rowSortingFeature,
   rowPaginationFeature,
+  rowSelectionFeature,
   filteredRowModel: createFilteredRowModel(),
   sortedRowModel: createSortedRowModel(),
   paginatedRowModel: createPaginatedRowModel(),
-  filterFns: { includesString: filterFn_includesString },
+  filterFns: {
+    includesString: filterFn_includesString,
+    equalsString: filterFn_equalsString,
+  },
   sortFns: { alphanumeric: sortFn_alphanumeric },
 });
 
@@ -47,7 +62,16 @@ export function createDataTableColumnHelper<TData extends RowData>() {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type DataTableColumnDef<TData extends RowData> = ColumnDef<typeof dataTableFeatures, TData, any>;
 
+export type DataTableColumnFilter = {
+  id: string;
+  label: string;
+  options: { value: string; label: string }[];
+  /** Nilai Select untuk "tampilkan semua" — jangan bentrok dengan value opsi nyata */
+  allValue?: string;
+};
+
 const PAGE_SIZE_OPTIONS = [10, 20, 30, 50, 100];
+const FILTER_ALL = '__all__';
 
 export function SortableHeader<TData extends RowData, TValue>({
   column,
@@ -63,7 +87,7 @@ export function SortableHeader<TData extends RowData, TValue>({
     <button
       type="button"
       onClick={column.getToggleSortingHandler()}
-      className="flex items-center gap-1 text-left font-medium hover:text-warna-teks"
+      className="flex items-center gap-1 text-left font-medium hover:text-foreground"
     >
       {label}
       {sorted === 'asc' ? (
@@ -71,26 +95,10 @@ export function SortableHeader<TData extends RowData, TValue>({
       ) : sorted === 'desc' ? (
         <ArrowDownIcon className="size-3.5" />
       ) : (
-        <ArrowUpDownIcon className="size-3.5 text-warna-teks-2/40" />
+        <ArrowUpDownIcon className="size-3.5 text-muted-foreground/50" />
       )}
     </button>
   );
-}
-
-// Windowed page numbers: semua halaman kalau <=7, kalau lebih tampilkan
-// pertama/terakhir + tetangga halaman aktif + "…". Cukup untuk daftar admin
-// yang bisa membengkak (sertifikat setelah import massal), tanpa membangun
-// komponen pagination generik yang tidak diminta.
-function pageNumbers(current: number, count: number): (number | 'ellipsis')[] {
-  if (count <= 7) return Array.from({ length: count }, (_, i) => i);
-  const result = new Set([0, count - 1, current - 1, current, current + 1]);
-  const sorted = [...result].filter((p) => p >= 0 && p < count).sort((a, b) => a - b);
-  const withEllipsis: (number | 'ellipsis')[] = [];
-  sorted.forEach((p, i) => {
-    if (i > 0 && p - sorted[i - 1]! > 1) withEllipsis.push('ellipsis');
-    withEllipsis.push(p);
-  });
-  return withEllipsis;
 }
 
 export function DataTable<TData extends RowData>({
@@ -99,43 +107,112 @@ export function DataTable<TData extends RowData>({
   searchColumnId,
   searchPlaceholder = 'Cari...',
   emptyMessage = 'Belum ada data.',
+  columnFilters,
+  enableRowSelection = true,
+  getRowId,
 }: {
   columns: DataTableColumnDef<TData>[];
   data: TData[];
   searchColumnId?: string;
   searchPlaceholder?: string;
   emptyMessage?: string;
+  columnFilters?: DataTableColumnFilter[];
+  enableRowSelection?: boolean;
+  getRowId?: (originalRow: TData, index: number) => string;
 }) {
+  const columnsWithSelect = useMemo(() => {
+    if (!enableRowSelection) return columns;
+    const selectCol = createDataTableColumnHelper<TData>().display({
+      id: '_select',
+      header: ({ table: t }) => (
+        <Checkbox
+          aria-label="Pilih semua baris di halaman ini"
+          checked={t.getIsAllPageRowsSelected()}
+          indeterminate={t.getIsSomePageRowsSelected() && !t.getIsAllPageRowsSelected()}
+          onCheckedChange={(v) => t.toggleAllPageRowsSelected(v === true)}
+        />
+      ),
+      cell: ({ row }) => (
+        <Checkbox
+          aria-label="Pilih baris"
+          checked={row.getIsSelected()}
+          disabled={!row.getCanSelect()}
+          onCheckedChange={(v) => row.toggleSelected(v === true)}
+        />
+      ),
+      enableSorting: false,
+    });
+    return [selectCol, ...columns];
+  }, [columns, enableRowSelection]);
+
   const table = useTable({
     features: dataTableFeatures,
-    columns,
+    columns: columnsWithSelect,
     data,
+    getRowId,
     initialState: { pagination: { pageIndex: 0, pageSize: 10 } },
   });
 
   const searchColumn = searchColumnId ? table.getColumn(searchColumnId) : undefined;
   const rows = table.getRowModel().rows;
   const pageIndex = table.state.pagination.pageIndex;
-  const pageCount = table.getPageCount();
+  const pageCount = Math.max(table.getPageCount(), 1);
+  const colSpan = columnsWithSelect.length;
 
   return (
     <div className="flex flex-col gap-3">
-      {searchColumn && (
-        <Input
-          value={(searchColumn.getFilterValue() as string) ?? ''}
-          onChange={(e) => searchColumn.setFilterValue(e.target.value)}
-          placeholder={searchPlaceholder}
-          className="h-11 max-w-sm"
-        />
-      )}
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+        {searchColumn && (
+          <Input
+            value={(searchColumn.getFilterValue() as string) ?? ''}
+            onChange={(e) => searchColumn.setFilterValue(e.target.value)}
+            placeholder={searchPlaceholder}
+            className="h-11 max-w-sm"
+          />
+        )}
+        {(columnFilters ?? []).map((filter) => {
+          const col = table.getColumn(filter.id);
+          if (!col) return null;
+          const allValue = filter.allValue ?? FILTER_ALL;
+          const raw = col.getFilterValue();
+          const current = typeof raw === 'string' && raw !== '' ? raw : allValue;
+          return (
+            <Select
+              key={filter.id}
+              value={current}
+              onValueChange={(v: string | null) => {
+                if (!v || v === allValue) col.setFilterValue(undefined);
+                else col.setFilterValue(v);
+              }}
+            >
+              <SelectTrigger className="h-11 w-full sm:w-44" aria-label={filter.label}>
+                <SelectValue placeholder={filter.label}>
+                  {current === allValue
+                    ? `${filter.label}: Semua`
+                    : (filter.options.find((o) => o.value === current)?.label ?? filter.label)}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={allValue}>Semua</SelectItem>
+                {filter.options.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          );
+        })}
+      </div>
 
-      <div className="overflow-x-auto rounded-lg border border-warna-latar-2">
-        <Table>
+      {/* Scroll horizontal terbatas di kontainer — halaman shell tidak ikut geser (375px). */}
+      <div className="overflow-x-auto rounded-lg border border-border">
+        <Table className="min-w-[40rem]">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className={header.id === '_select' ? 'w-10' : undefined}>
                     {header.isPlaceholder ? null : <table.FlexRender header={header} />}
                   </TableHead>
                 ))}
@@ -145,13 +222,13 @@ export function DataTable<TData extends RowData>({
           <TableBody>
             {rows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={columns.length} className="text-center text-warna-teks-2">
+                <TableCell colSpan={colSpan} className="text-center text-muted-foreground">
                   {emptyMessage}
                 </TableCell>
               </TableRow>
             ) : (
               rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow key={row.id} data-state={row.getIsSelected() ? 'selected' : undefined}>
                   {row.getAllCells().map((cell) => (
                     <TableCell key={cell.id}>
                       <table.FlexRender cell={cell} />
@@ -164,9 +241,9 @@ export function DataTable<TData extends RowData>({
         </Table>
       </div>
 
-      {rows.length > 0 && (
-        <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
-          <div className="flex items-center gap-2 text-sm text-warna-teks-2">
+      {table.getFilteredRowModel().rows.length > 0 && (
+        <div className="flex flex-col items-stretch justify-between gap-3 sm:flex-row sm:items-center">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
             Baris per halaman
             <Select
               items={PAGE_SIZE_OPTIONS.map((n) => ({ value: String(n), label: String(n) }))}
@@ -186,34 +263,49 @@ export function DataTable<TData extends RowData>({
             </Select>
           </div>
 
-          <div className="flex items-center gap-1">
-            <Button variant="outline" size="sm" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
-              Sebelumnya
+          <div className="flex flex-wrap items-center justify-center gap-1 sm:justify-end">
+            <p className="mr-2 text-sm text-muted-foreground tabular-nums">
+              Halaman {pageIndex + 1} dari {pageCount}
+            </p>
+            <Button
+              variant="outline"
+              size="icon"
+              className="size-9"
+              onClick={() => table.setPageIndex(0)}
+              disabled={!table.getCanPreviousPage()}
+              aria-label="Halaman pertama"
+            >
+              <ChevronsLeftIcon className="size-4" />
             </Button>
-            {pageNumbers(pageIndex, pageCount).map((p, i) =>
-              p === 'ellipsis' ? (
-                <span key={`ellipsis-${i}`} className="px-1.5 text-sm text-warna-teks-2">
-                  …
-                </span>
-              ) : (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => table.setPageIndex(p)}
-                  aria-current={p === pageIndex}
-                  className={cn(
-                    'flex size-9 items-center justify-center rounded-md text-sm',
-                    p === pageIndex
-                      ? 'bg-warna-utama text-warna-latar'
-                      : 'text-warna-teks-2 hover:bg-warna-latar-2 hover:text-warna-teks'
-                  )}
-                >
-                  {p + 1}
-                </button>
-              )
-            )}
-            <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
-              Berikutnya
+            <Button
+              variant="outline"
+              size="icon"
+              className="size-9"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+              aria-label="Halaman sebelumnya"
+            >
+              <ChevronLeftIcon className="size-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="size-9"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+              aria-label="Halaman berikutnya"
+            >
+              <ChevronRightIcon className="size-4" />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="size-9"
+              onClick={() => table.setPageIndex(pageCount - 1)}
+              disabled={!table.getCanNextPage()}
+              aria-label="Halaman terakhir"
+            >
+              <ChevronsRightIcon className="size-4" />
             </Button>
           </div>
         </div>

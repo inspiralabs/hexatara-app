@@ -92,6 +92,7 @@ const columns = [
   }),
   columnHelper.accessor('status', {
     header: (ctx) => <SortableHeader column={ctx.column} label="Status" />,
+    filterFn: 'equalsString',
     cell: (info) => <Badge variant="secondary">{LABEL_STATUS[info.getValue()]}</Badge>,
   }),
   columnHelper.accessor('created_at', {
@@ -124,7 +125,25 @@ export function LeadsTable({ leads, judul }: { leads: Lead[]; judul: string }) {
         </button>
       </div>
 
-      <DataTable columns={columns} data={leads} searchColumnId="nama" searchPlaceholder="Cari nama..." emptyMessage="Belum ada lead." />
+      <DataTable
+        columns={columns}
+        data={leads}
+        getRowId={(row) => String(row.id)}
+        searchColumnId="nama"
+        searchPlaceholder="Cari nama..."
+        emptyMessage="Belum ada lead."
+        columnFilters={[
+          {
+            id: 'status',
+            label: 'Status',
+            options: [
+              { value: 'baru', label: 'Baru' },
+              { value: 'dihubungi', label: 'Dihubungi' },
+              { value: 'selesai', label: 'Selesai' },
+            ],
+          },
+        ]}
+      />
     </div>
   );
 }

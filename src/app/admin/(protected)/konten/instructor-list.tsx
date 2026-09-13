@@ -54,9 +54,11 @@ export function InstructorList({
     columnHelper.accessor('urutan', {
       header: (ctx) => <SortableHeader column={ctx.column} label="Urutan" />,
     }),
-    columnHelper.display({
-      id: 'aktif',
+    columnHelper.accessor((row) => String(row.is_active), {
+      id: 'is_active',
       header: 'Aktif',
+      filterFn: 'equalsString',
+      enableSorting: false,
       cell: ({ row }) => <InstructorActiveSwitch instructorId={row.original.id} aktif={row.original.is_active} />,
     }),
     columnHelper.display({
@@ -90,9 +92,20 @@ export function InstructorList({
       <DataTable
         columns={columns}
         data={instructors}
+        getRowId={(row) => String(row.id)}
         searchColumnId="nama"
         searchPlaceholder="Cari nama instruktur..."
         emptyMessage="Belum ada instruktur."
+        columnFilters={[
+          {
+            id: 'is_active',
+            label: 'Aktif',
+            options: [
+              { value: 'true', label: 'Aktif' },
+              { value: 'false', label: 'Nonaktif' },
+            ],
+          },
+        ]}
       />
 
       <InstructorFormDialog

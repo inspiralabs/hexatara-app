@@ -32,9 +32,11 @@ const columns = [
     header: (ctx) => <SortableHeader column={ctx.column} label="Nomor" />,
     cell: (info) => <span className="font-medium text-warna-teks">{info.getValue()}</span>,
   }),
-  columnHelper.accessor((row) => JENIS_LABEL[row.jenis] ?? row.jenis, {
+  columnHelper.accessor('jenis', {
     id: 'jenis',
     header: (ctx) => <SortableHeader column={ctx.column} label="Jenis" />,
+    filterFn: 'equalsString',
+    cell: (info) => JENIS_LABEL[info.getValue()] ?? info.getValue(),
   }),
   columnHelper.accessor('nama_lengkap', { header: (ctx) => <SortableHeader column={ctx.column} label="Nama" /> }),
   columnHelper.accessor((row) => formatTanggal(row.tanggal_terbit), { id: 'terbit', header: 'Terbit' }),
@@ -44,9 +46,11 @@ const columns = [
     cell: ({ row }) =>
       row.original.tanggal_kedaluwarsa === null ? 'Tanpa masa berlaku' : formatTanggal(row.original.tanggal_kedaluwarsa),
   }),
-  columnHelper.display({
+  columnHelper.accessor((row) => (row.invalid ? 'invalid' : 'berlaku'), {
     id: 'status',
     header: 'Status',
+    filterFn: 'equalsString',
+    enableSorting: false,
     cell: ({ row }) => (
       <span
         className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
@@ -78,9 +82,29 @@ export function SertifikatTable({ sertifikat }: { sertifikat: SertifikatRow[] })
     <DataTable
       columns={columns}
       data={sertifikat}
+      getRowId={(row) => row.id}
       searchColumnId="nomor_sertifikat"
       searchPlaceholder="Cari nomor sertifikat..."
       emptyMessage="Belum ada sertifikat."
+      columnFilters={[
+        {
+          id: 'jenis',
+          label: 'Jenis',
+          options: [
+            { value: 'free_track', label: 'Free Track' },
+            { value: 'existing_manual', label: 'Existing Manual' },
+            { value: 'rpc_certified', label: 'RPC Certified' },
+          ],
+        },
+        {
+          id: 'status',
+          label: 'Status',
+          options: [
+            { value: 'berlaku', label: 'Berlaku' },
+            { value: 'invalid', label: 'Invalid' },
+          ],
+        },
+      ]}
     />
   );
 }

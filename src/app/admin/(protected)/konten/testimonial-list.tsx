@@ -54,9 +54,11 @@ export function TestimonialList({
     columnHelper.accessor('urutan', {
       header: (ctx) => <SortableHeader column={ctx.column} label="Urutan" />,
     }),
-    columnHelper.display({
-      id: 'aktif',
+    columnHelper.accessor((row) => String(row.is_active), {
+      id: 'is_active',
       header: 'Aktif',
+      filterFn: 'equalsString',
+      enableSorting: false,
       cell: ({ row }) => <TestimonialActiveSwitch testimonialId={row.original.id} aktif={row.original.is_active} />,
     }),
     columnHelper.display({
@@ -90,9 +92,20 @@ export function TestimonialList({
       <DataTable
         columns={columns}
         data={testimonials}
+        getRowId={(row) => String(row.id)}
         searchColumnId="nama"
         searchPlaceholder="Cari nama..."
         emptyMessage="Belum ada testimoni."
+        columnFilters={[
+          {
+            id: 'is_active',
+            label: 'Aktif',
+            options: [
+              { value: 'true', label: 'Aktif' },
+              { value: 'false', label: 'Nonaktif' },
+            ],
+          },
+        ]}
       />
 
       <TestimonialFormDialog

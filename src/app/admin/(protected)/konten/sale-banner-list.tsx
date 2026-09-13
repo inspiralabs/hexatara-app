@@ -57,9 +57,11 @@ export function SaleBannerList({ banners, judul }: { banners: SaleBanner[]; judu
           ? `${row.original.tayang_mulai ?? '…'} – ${row.original.tayang_selesai ?? '…'}`
           : 'Tanpa batas',
     }),
-    columnHelper.display({
-      id: 'aktif',
+    columnHelper.accessor((row) => String(row.is_active), {
+      id: 'is_active',
       header: 'Aktif',
+      filterFn: 'equalsString',
+      enableSorting: false,
       cell: ({ row }) => <SaleBannerActiveSwitch bannerId={row.original.id} aktif={row.original.is_active} />,
     }),
     columnHelper.display({
@@ -93,9 +95,20 @@ export function SaleBannerList({ banners, judul }: { banners: SaleBanner[]; judu
       <DataTable
         columns={columns}
         data={banners}
+        getRowId={(row) => String(row.id)}
         searchColumnId="judul_id"
         searchPlaceholder="Cari judul banner..."
         emptyMessage="Belum ada sale banner."
+        columnFilters={[
+          {
+            id: 'is_active',
+            label: 'Aktif',
+            options: [
+              { value: 'true', label: 'Aktif' },
+              { value: 'false', label: 'Nonaktif' },
+            ],
+          },
+        ]}
       />
 
       <SaleBannerFormDialog

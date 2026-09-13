@@ -53,9 +53,11 @@ export function PopupList({ popups, judul }: { popups: Popup[]; judul: string })
           ? `${row.original.tayang_mulai ?? '…'} – ${row.original.tayang_selesai ?? '…'}`
           : 'Tanpa batas',
     }),
-    columnHelper.display({
-      id: 'aktif',
+    columnHelper.accessor((row) => String(row.is_active), {
+      id: 'is_active',
       header: 'Aktif',
+      filterFn: 'equalsString',
+      enableSorting: false,
       cell: ({ row }) => <PopupActiveSwitch popupId={row.original.id} aktif={row.original.is_active} />,
     }),
     columnHelper.display({
@@ -82,7 +84,24 @@ export function PopupList({ popups, judul }: { popups: Popup[]; judul: string })
         </button>
       </div>
 
-      <DataTable columns={columns} data={popups} searchColumnId="judul_id" searchPlaceholder="Cari judul pop-up..." emptyMessage="Belum ada pop-up." />
+      <DataTable
+        columns={columns}
+        data={popups}
+        getRowId={(row) => String(row.id)}
+        searchColumnId="judul_id"
+        searchPlaceholder="Cari judul pop-up..."
+        emptyMessage="Belum ada pop-up."
+        columnFilters={[
+          {
+            id: 'is_active',
+            label: 'Aktif',
+            options: [
+              { value: 'true', label: 'Aktif' },
+              { value: 'false', label: 'Nonaktif' },
+            ],
+          },
+        ]}
+      />
 
       <PopupFormDialog
         open={dialogOpen}
