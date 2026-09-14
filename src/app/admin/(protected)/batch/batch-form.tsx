@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm, useFieldArray, Controller } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, XIcon } from 'lucide-react';
 import { toast } from 'sonner';
@@ -10,11 +10,12 @@ import { BatchFormSchema, type BatchFormInput } from '@/lib/validations/batch-ad
 import { simpanBatchAction } from './actions';
 import { uploadGambarAdminAction } from '../actions';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { DatePickerField } from '@/components/admin/date-picker-field';
 import { RichTextEditor } from '@/components/admin/rich-text-editor';
 import { ImageUploadField } from '@/components/image-upload-field';
@@ -34,15 +35,6 @@ function slugify(text: string) {
     .replace(/^-+|-+$/g, '');
 }
 
-function Field({ label, htmlFor, children }: { label: string; htmlFor: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor={htmlFor}>{label}</Label>
-      {children}
-    </div>
-  );
-}
-
 export function BatchForm({
   mode,
   batchId,
@@ -57,16 +49,16 @@ export function BatchForm({
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
   const [slugDisentuh, setSlugDisentuh] = useState(mode === 'edit');
-  const {
-    register,
-    handleSubmit,
-    control,
-    setValue,
-    formState: { errors, isSubmitting },
-  } = useForm<BatchFormInput>({
+  const form = useForm<BatchFormInput>({
     resolver: zodResolver(BatchFormSchema),
     defaultValues,
   });
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { isSubmitting },
+  } = form;
 
   const benefits = useFieldArray({ control, name: 'benefits' });
   const equipment = useFieldArray({ control, name: 'equipment' });
@@ -87,375 +79,608 @@ export function BatchForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8" noValidate>
-      {pesanError && (
-        <Alert variant="destructive">
-          <AlertDescription>{pesanError}</AlertDescription>
-        </Alert>
-      )}
+    <Form {...form}>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8" noValidate>
+        {pesanError && (
+          <Alert variant="destructive">
+            <AlertDescription>{pesanError}</AlertDescription>
+          </Alert>
+        )}
 
-      <section className="flex flex-col gap-4">
-        <h2 className="text-lg font-bold text-warna-teks">Informasi Utama</h2>
+        <section className="flex flex-col gap-4">
+          <h2 className="text-lg font-semibold text-foreground">Informasi Utama</h2>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Field label="Judul (Indonesia) *" htmlFor="judul_id">
-            <Input
-              id="judul_id"
-              {...register('judul_id', {
-                onBlur: (e) => {
-                  if (!slugDisentuh && e.target.value) setValue('slug', slugify(e.target.value));
-                },
-              })}
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <FormField
+              control={control}
+              name="judul_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Judul (Indonesia) *</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      onBlur={(e) => {
+                        field.onBlur();
+                        if (!slugDisentuh && e.target.value) setValue('slug', slugify(e.target.value));
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.judul_id && <p className="text-sm text-destructive">{errors.judul_id.message}</p>}
-          </Field>
-          <Field label="Judul (Inggris)" htmlFor="judul_en">
-            <Input id="judul_en" {...register('judul_en')} />
-          </Field>
-        </div>
-
-        <Field label="Slug URL *" htmlFor="slug">
-          <Input
-            id="slug"
-            {...register('slug', { onChange: () => setSlugDisentuh(true) })}
-          />
-          <p className="text-xs text-warna-teks-2">Dipakai di alamat halaman: /batch/slug-ini</p>
-          {errors.slug && <p className="text-sm text-destructive">{errors.slug.message}</p>}
-        </Field>
-
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Field label="Kategori (Indonesia)" htmlFor="kategori_id">
-            <Input id="kategori_id" {...register('kategori_id')} />
-          </Field>
-          <Field label="Kategori (Inggris)" htmlFor="kategori_en">
-            <Input id="kategori_en" {...register('kategori_en')} />
-          </Field>
-
-          <div className="lg:col-span-2">
-            <Field label="Kategori (dari daftar kategori)" htmlFor="category_id">
-              <Controller
-                control={control}
-                name="category_id"
-                render={({ field }) => (
-                  <KategoriCombobox
-                    items={kategoriOptions}
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder="Cari kategori pelatihan…"
-                  />
-                )}
-              />
-              <p className="text-xs text-warna-teks-2">
-                Dipakai untuk filter kategori di halaman publik. Kelola daftar kategori di menu Batch &rarr; Kategori
-                Pelatihan.
-              </p>
-            </Field>
+            <FormField
+              control={control}
+              name="judul_en"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Judul (Inggris)</FormLabel>
+                  <FormControl>
+                    <Input {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
 
-          <Field label="Lokasi (Indonesia)" htmlFor="lokasi_id">
-            <Input id="lokasi_id" {...register('lokasi_id')} />
-          </Field>
-          <Field label="Lokasi (Inggris)" htmlFor="lokasi_en">
-            <Input id="lokasi_en" {...register('lokasi_en')} />
-          </Field>
-        </div>
+          <FormField
+            control={control}
+            name="slug"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Slug URL *</FormLabel>
+                <FormControl>
+                  <Input
+                    {...field}
+                    onChange={(e) => {
+                      setSlugDisentuh(true);
+                      field.onChange(e);
+                    }}
+                  />
+                </FormControl>
+                <FormDescription>Dipakai di alamat halaman: /batch/slug-ini</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <Field label="Alamat" htmlFor="alamat">
-          <Textarea id="alamat" rows={2} {...register('alamat')} />
-        </Field>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <FormField
+              control={control}
+              name="kategori_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kategori (Indonesia)</FormLabel>
+                  <FormControl>
+                    <Input {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="kategori_en"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kategori (Inggris)</FormLabel>
+                  <FormControl>
+                    <Input {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Field label="Harga (Rp)" htmlFor="harga">
-            <Input id="harga" type="number" min={0} {...register('harga')} />
-            {errors.harga && <p className="text-sm text-destructive">{errors.harga.message}</p>}
-          </Field>
+            <FormField
+              control={control}
+              name="category_id"
+              render={({ field }) => (
+                <FormItem className="lg:col-span-2">
+                  <FormLabel>Kategori (dari daftar kategori)</FormLabel>
+                  <FormControl>
+                    <KategoriCombobox
+                      items={kategoriOptions}
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Cari kategori pelatihan…"
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Dipakai untuk filter kategori di halaman publik. Kelola daftar kategori di menu Batch → Kategori
+                    Pelatihan.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Field label="Status *" htmlFor="status">
-            <Controller
+            <FormField
+              control={control}
+              name="lokasi_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Lokasi (Indonesia)</FormLabel>
+                  <FormControl>
+                    <Input {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="lokasi_en"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Lokasi (Inggris)</FormLabel>
+                  <FormControl>
+                    <Input {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <FormField
+            control={control}
+            name="alamat"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Alamat</FormLabel>
+                <FormControl>
+                  <Textarea rows={2} {...field} value={field.value ?? ''} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <FormField
+              control={control}
+              name="harga"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Harga (Rp)</FormLabel>
+                  <FormControl>
+                    <Input type="number" min={0} {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
               control={control}
               name="status"
               render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger id="status" className="h-11 w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {STATUS_OPTIONS.map((opt) => (
-                      <SelectItem key={opt.value} value={opt.value}>
-                        {opt.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormItem>
+                  <FormLabel>Status *</FormLabel>
+                  <FormControl>
+                    <Select value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="h-11 w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {STATUS_OPTIONS.map((opt) => (
+                          <SelectItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             />
-          </Field>
 
-          <Field label="Rating (0.0 – 5.0)" htmlFor="rating">
-            <Input id="rating" type="number" step="0.1" min={0} max={5} {...register('rating')} />
-            <p className="text-xs text-warna-teks-2">Kosongkan jika belum ada rating.</p>
-            {errors.rating && <p className="text-sm text-destructive">{errors.rating.message}</p>}
-          </Field>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Controller
-            control={control}
-            name="tanggal_mulai"
-            render={({ field }) => (
-              <DatePickerField label="Tanggal Mulai" value={field.value ?? null} onChange={field.onChange} />
-            )}
-          />
-          <Controller
-            control={control}
-            name="tanggal_selesai"
-            render={({ field }) => (
-              <DatePickerField label="Tanggal Selesai" value={field.value ?? null} onChange={field.onChange} />
-            )}
-          />
-        </div>
-
-        <Controller
-          control={control}
-          name="is_active"
-          render={({ field }) => (
-            <div className="flex items-center gap-2">
-              <Switch id="is_active" checked={field.value} onCheckedChange={field.onChange} />
-              <Label htmlFor="is_active" className="font-normal">
-                Tampilkan di halaman publik
-              </Label>
-            </div>
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="hero_gambar_url"
-          render={({ field }) => (
-            <ImageUploadField
-              label="Gambar Hero"
-              aspectRatio={16 / 9}
-              suggestedPx="1920×1080px"
-              value={field.value ?? null}
-              onChange={field.onChange}
-              onUpload={async (file) => {
-                const fd = new FormData();
-                fd.append('file', file);
-                return uploadGambarAdminAction(fd);
-              }}
+            <FormField
+              control={control}
+              name="rating"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Rating (0.0 – 5.0)</FormLabel>
+                  <FormControl>
+                    <Input type="number" step="0.1" min={0} max={5} {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormDescription>Kosongkan jika belum ada rating.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          )}
-        />
-      </section>
+          </div>
 
-      <section className="flex flex-col gap-4">
-        <h2 className="text-lg font-bold text-warna-teks">Deskripsi & Silabus</h2>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Field label="Deskripsi (Indonesia)" htmlFor="deskripsi_id">
-            <Controller
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <FormField
+              control={control}
+              name="tanggal_mulai"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <DatePickerField label="Tanggal Mulai" value={field.value ?? null} onChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="tanggal_selesai"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <DatePickerField label="Tanggal Selesai" value={field.value ?? null} onChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <FormField
+            control={control}
+            name="is_active"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center gap-2 space-y-0">
+                <FormControl>
+                  <Switch checked={field.value} onCheckedChange={field.onChange} />
+                </FormControl>
+                <FormLabel className="font-normal">Tampilkan di halaman publik</FormLabel>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="hero_gambar_url"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <ImageUploadField
+                    label="Gambar Hero"
+                    aspectRatio={16 / 9}
+                    suggestedPx="1920×1080px"
+                    value={field.value ?? null}
+                    onChange={field.onChange}
+                    onUpload={async (file) => {
+                      const fd = new FormData();
+                      fd.append('file', file);
+                      return uploadGambarAdminAction(fd);
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </section>
+
+        <section className="flex flex-col gap-4">
+          <h2 className="text-lg font-semibold text-foreground">Deskripsi & Silabus</h2>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <FormField
               control={control}
               name="deskripsi_id"
-              render={({ field }) => <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Deskripsi (Indonesia)</FormLabel>
+                  <FormControl>
+                    <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </Field>
-          <Field label="Deskripsi (Inggris)" htmlFor="deskripsi_en">
-            <Controller
+            <FormField
               control={control}
               name="deskripsi_en"
-              render={({ field }) => <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Deskripsi (Inggris)</FormLabel>
+                  <FormControl>
+                    <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </Field>
-
-          <Field label="Silabus (Indonesia)" htmlFor="silabus_id">
-            <Controller
+            <FormField
               control={control}
               name="silabus_id"
-              render={({ field }) => <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Silabus (Indonesia)</FormLabel>
+                  <FormControl>
+                    <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </Field>
-          <Field label="Silabus (Inggris)" htmlFor="silabus_en">
-            <Controller
+            <FormField
               control={control}
               name="silabus_en"
-              render={({ field }) => <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Silabus (Inggris)</FormLabel>
+                  <FormControl>
+                    <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </Field>
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-warna-teks">Benefit</h2>
-          <button
-            type="button"
-            onClick={() => benefits.append({ teks_id: '', teks_en: '' })}
-            className="flex h-9 items-center gap-1.5 rounded-lg border border-warna-utama px-3 text-sm font-medium text-warna-utama"
-          >
-            <PlusIcon className="size-4" /> Tambah
-          </button>
-        </div>
-        {benefits.fields.map((f, index) => (
-          <div key={f.id} className="grid grid-cols-1 gap-3 rounded-lg border border-warna-latar-2 p-3 sm:grid-cols-[1fr_1fr_auto]">
-            <div className="flex flex-col gap-1">
-              <Input placeholder="Teks (Indonesia)" {...register(`benefits.${index}.teks_id`)} />
-              {errors.benefits?.[index]?.teks_id && (
-                <p className="text-sm text-destructive">{errors.benefits[index]?.teks_id?.message}</p>
-              )}
-            </div>
-            <Input placeholder="Teks (Inggris)" {...register(`benefits.${index}.teks_en`)} />
-            <button
-              type="button"
-              onClick={() => benefits.remove(index)}
-              aria-label="Hapus benefit"
-              className="flex size-9 items-center justify-center rounded-lg text-warna-teks-2 hover:bg-warna-latar-2"
-            >
-              <XIcon className="size-4" />
-            </button>
           </div>
-        ))}
-      </section>
+        </section>
 
-      <section className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-warna-teks">Peralatan Belajar</h2>
-          <button
-            type="button"
-            onClick={() => equipment.append({ teks_id: '', teks_en: '' })}
-            className="flex h-9 items-center gap-1.5 rounded-lg border border-warna-utama px-3 text-sm font-medium text-warna-utama"
-          >
-            <PlusIcon className="size-4" /> Tambah
-          </button>
-        </div>
-        {equipment.fields.map((f, index) => (
-          <div key={f.id} className="grid grid-cols-1 gap-3 rounded-lg border border-warna-latar-2 p-3 sm:grid-cols-[1fr_1fr_auto]">
-            <div className="flex flex-col gap-1">
-              <Input placeholder="Teks (Indonesia)" {...register(`equipment.${index}.teks_id`)} />
-              {errors.equipment?.[index]?.teks_id && (
-                <p className="text-sm text-destructive">{errors.equipment[index]?.teks_id?.message}</p>
-              )}
-            </div>
-            <Input placeholder="Teks (Inggris)" {...register(`equipment.${index}.teks_en`)} />
-            <button
-              type="button"
-              onClick={() => equipment.remove(index)}
-              aria-label="Hapus peralatan"
-              className="flex size-9 items-center justify-center rounded-lg text-warna-teks-2 hover:bg-warna-latar-2"
-            >
-              <XIcon className="size-4" />
-            </button>
+        <section className="flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-foreground">Benefit</h2>
+            <Button type="button" variant="outline" size="sm" onClick={() => benefits.append({ teks_id: '', teks_en: '' })}>
+              <PlusIcon className="size-4" /> Tambah
+            </Button>
           </div>
-        ))}
-      </section>
-
-      <section className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-warna-teks">FAQ</h2>
-          <button
-            type="button"
-            onClick={() => faqs.append({ tanya_id: '', tanya_en: '', jawab_id: '', jawab_en: '' })}
-            className="flex h-9 items-center gap-1.5 rounded-lg border border-warna-utama px-3 text-sm font-medium text-warna-utama"
-          >
-            <PlusIcon className="size-4" /> Tambah
-          </button>
-        </div>
-        {faqs.fields.map((f, index) => (
-          <div key={f.id} className="flex flex-col gap-3 rounded-lg border border-warna-latar-2 p-3">
-            <div className="flex items-start justify-between gap-3">
-              <div className="grid flex-1 grid-cols-1 gap-3 lg:grid-cols-2">
-                <div className="flex flex-col gap-1">
-                  <Input placeholder="Pertanyaan (Indonesia)" {...register(`faqs.${index}.tanya_id`)} />
-                  {errors.faqs?.[index]?.tanya_id && (
-                    <p className="text-sm text-destructive">{errors.faqs[index]?.tanya_id?.message}</p>
-                  )}
-                </div>
-                <Input placeholder="Pertanyaan (Inggris)" {...register(`faqs.${index}.tanya_en`)} />
-                <div className="flex flex-col gap-1">
-                  <Textarea rows={2} placeholder="Jawaban (Indonesia)" {...register(`faqs.${index}.jawab_id`)} />
-                  {errors.faqs?.[index]?.jawab_id && (
-                    <p className="text-sm text-destructive">{errors.faqs[index]?.jawab_id?.message}</p>
-                  )}
-                </div>
-                <Textarea rows={2} placeholder="Jawaban (Inggris)" {...register(`faqs.${index}.jawab_en`)} />
-              </div>
-              <button
+          {benefits.fields.map((f, index) => (
+            <div key={f.id} className="grid grid-cols-1 gap-3 rounded-lg border border-border p-3 sm:grid-cols-[1fr_1fr_auto]">
+              <FormField
+                control={control}
+                name={`benefits.${index}.teks_id`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Teks (Indonesia)" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name={`benefits.${index}.teks_en`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Teks (Inggris)" {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
                 type="button"
-                onClick={() => faqs.remove(index)}
-                aria-label="Hapus FAQ"
-                className="flex size-9 shrink-0 items-center justify-center rounded-lg text-warna-teks-2 hover:bg-warna-latar-2"
+                variant="ghost"
+                size="icon"
+                onClick={() => benefits.remove(index)}
+                aria-label="Hapus benefit"
               >
                 <XIcon className="size-4" />
-              </button>
+              </Button>
             </div>
-          </div>
-        ))}
-      </section>
+          ))}
+        </section>
 
-      <section className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-warna-teks">Galeri Dokumentasi</h2>
-          <button
-            type="button"
-            onClick={() => gallery.append({ gambar_url: '', caption_id: '', caption_en: '' })}
-            className="flex h-9 items-center gap-1.5 rounded-lg border border-warna-utama px-3 text-sm font-medium text-warna-utama"
-          >
-            <PlusIcon className="size-4" /> Tambah
-          </button>
-        </div>
-        {gallery.fields.map((f, index) => (
-          <div key={f.id} className="flex flex-col gap-3 rounded-lg border border-warna-latar-2 p-3 sm:flex-row sm:items-start">
-            <Controller
-              control={control}
-              name={`gallery.${index}.gambar_url`}
-              render={({ field }) => (
-                <ImageUploadField
-                  label="Gambar"
-                  aspectRatio={16 / 9}
-                  suggestedPx="1920×1080px"
-                  value={field.value || null}
-                  onChange={(url) => field.onChange(url ?? '')}
-                  onUpload={async (file) => {
-                    const fd = new FormData();
-                    fd.append('file', file);
-                    return uploadGambarAdminAction(fd);
-                  }}
-                />
-              )}
-            />
-            <div className="flex flex-1 flex-col gap-3">
-              <Input placeholder="Keterangan (Indonesia)" {...register(`gallery.${index}.caption_id`)} />
-              <Input placeholder="Keterangan (Inggris)" {...register(`gallery.${index}.caption_en`)} />
-              {errors.gallery?.[index]?.gambar_url && (
-                <p className="text-sm text-destructive">{errors.gallery[index]?.gambar_url?.message}</p>
-              )}
-            </div>
-            <button
+        <section className="flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-foreground">Peralatan Belajar</h2>
+            <Button
               type="button"
-              onClick={() => gallery.remove(index)}
-              aria-label="Hapus foto galeri"
-              className="flex size-9 shrink-0 items-center justify-center self-start rounded-lg text-warna-teks-2 hover:bg-warna-latar-2"
+              variant="outline"
+              size="sm"
+              onClick={() => equipment.append({ teks_id: '', teks_en: '' })}
             >
-              <XIcon className="size-4" />
-            </button>
+              <PlusIcon className="size-4" /> Tambah
+            </Button>
           </div>
-        ))}
-      </section>
+          {equipment.fields.map((f, index) => (
+            <div key={f.id} className="grid grid-cols-1 gap-3 rounded-lg border border-border p-3 sm:grid-cols-[1fr_1fr_auto]">
+              <FormField
+                control={control}
+                name={`equipment.${index}.teks_id`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Teks (Indonesia)" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name={`equipment.${index}.teks_en`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Teks (Inggris)" {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => equipment.remove(index)}
+                aria-label="Hapus peralatan"
+              >
+                <XIcon className="size-4" />
+              </Button>
+            </div>
+          ))}
+        </section>
 
-      <div className="flex gap-3">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks disabled:opacity-50"
-        >
-          {isSubmitting ? 'Menyimpan…' : 'Simpan'}
-        </button>
-        <button
-          type="button"
-          onClick={() => router.push('/admin/batch')}
-          className="inline-flex h-11 items-center justify-center rounded-lg border border-warna-latar-2 px-6 text-base font-semibold text-warna-teks"
-        >
-          Batal
-        </button>
-      </div>
-    </form>
+        <section className="flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-foreground">FAQ</h2>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => faqs.append({ tanya_id: '', tanya_en: '', jawab_id: '', jawab_en: '' })}
+            >
+              <PlusIcon className="size-4" /> Tambah
+            </Button>
+          </div>
+          {faqs.fields.map((f, index) => (
+            <div key={f.id} className="flex flex-col gap-3 rounded-lg border border-border p-3">
+              <div className="flex items-start justify-between gap-3">
+                <div className="grid flex-1 grid-cols-1 gap-3 lg:grid-cols-2">
+                  <FormField
+                    control={control}
+                    name={`faqs.${index}.tanya_id`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="Pertanyaan (Indonesia)" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={control}
+                    name={`faqs.${index}.tanya_en`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input placeholder="Pertanyaan (Inggris)" {...field} value={field.value ?? ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={control}
+                    name={`faqs.${index}.jawab_id`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Textarea rows={2} placeholder="Jawaban (Indonesia)" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={control}
+                    name={`faqs.${index}.jawab_en`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Textarea rows={2} placeholder="Jawaban (Inggris)" {...field} value={field.value ?? ''} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => faqs.remove(index)}
+                  aria-label="Hapus FAQ"
+                  className="shrink-0"
+                >
+                  <XIcon className="size-4" />
+                </Button>
+              </div>
+            </div>
+          ))}
+        </section>
+
+        <section className="flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-foreground">Galeri Dokumentasi</h2>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => gallery.append({ gambar_url: '', caption_id: '', caption_en: '' })}
+            >
+              <PlusIcon className="size-4" /> Tambah
+            </Button>
+          </div>
+          {gallery.fields.map((f, index) => (
+            <div key={f.id} className="flex flex-col gap-3 rounded-lg border border-border p-3 sm:flex-row sm:items-start">
+              <FormField
+                control={control}
+                name={`gallery.${index}.gambar_url`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <ImageUploadField
+                        label="Gambar"
+                        aspectRatio={16 / 9}
+                        suggestedPx="1920×1080px"
+                        value={field.value || null}
+                        onChange={(url) => field.onChange(url ?? '')}
+                        onUpload={async (file) => {
+                          const fd = new FormData();
+                          fd.append('file', file);
+                          return uploadGambarAdminAction(fd);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex flex-1 flex-col gap-3">
+                <FormField
+                  control={control}
+                  name={`gallery.${index}.caption_id`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="Keterangan (Indonesia)" {...field} value={field.value ?? ''} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name={`gallery.${index}.caption_en`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input placeholder="Keterangan (Inggris)" {...field} value={field.value ?? ''} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => gallery.remove(index)}
+                aria-label="Hapus foto galeri"
+                className="self-start"
+              >
+                <XIcon className="size-4" />
+              </Button>
+            </div>
+          ))}
+        </section>
+
+        <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+          <Button type="submit" disabled={isSubmitting} className="h-11 px-6">
+            {isSubmitting ? 'Menyimpan…' : 'Simpan'}
+          </Button>
+          <Button type="button" variant="outline" className="h-11 px-6" onClick={() => router.push('/admin/batch')}>
+            Batal
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 }

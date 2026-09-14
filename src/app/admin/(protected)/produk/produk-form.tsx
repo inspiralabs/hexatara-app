@@ -2,16 +2,17 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm, useFieldArray, Controller } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, XIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { ProductFormSchema, type ProductFormInput } from '@/lib/validations/produk-admin';
 import { simpanProdukAction, uploadGambarProdukAction } from './actions';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { RichTextEditor } from '@/components/admin/rich-text-editor';
 import { ImageUploadField } from '@/components/image-upload-field';
 import { KategoriCombobox, type KategoriOption } from '@/components/admin/kategori-combobox';
@@ -22,15 +23,6 @@ function slugify(text: string) {
     .trim()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '');
-}
-
-function Field({ label, htmlFor, children }: { label: string; htmlFor: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor={htmlFor}>{label}</Label>
-      {children}
-    </div>
-  );
 }
 
 export function ProdukForm({
@@ -47,16 +39,16 @@ export function ProdukForm({
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
   const [slugDisentuh, setSlugDisentuh] = useState(mode === 'edit');
-  const {
-    register,
-    handleSubmit,
-    control,
-    setValue,
-    formState: { errors, isSubmitting },
-  } = useForm<ProductFormInput>({
+  const form = useForm<ProductFormInput>({
     resolver: zodResolver(ProductFormSchema),
     defaultValues,
   });
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { isSubmitting },
+  } = form;
 
   const images = useFieldArray({ control, name: 'images' });
 
@@ -74,200 +66,291 @@ export function ProdukForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8" noValidate>
-      {pesanError && (
-        <Alert variant="destructive">
-          <AlertDescription>{pesanError}</AlertDescription>
-        </Alert>
-      )}
+    <Form {...form}>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8" noValidate>
+        {pesanError && (
+          <Alert variant="destructive">
+            <AlertDescription>{pesanError}</AlertDescription>
+          </Alert>
+        )}
 
-      <section className="flex flex-col gap-4">
-        <h2 className="text-lg font-bold text-warna-teks">Informasi Utama</h2>
+        <section className="flex flex-col gap-4">
+          <h2 className="text-lg font-semibold text-foreground">Informasi Utama</h2>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <div>
-            <Field label="Nama (Indonesia) *" htmlFor="nama_id">
-              <Input
-                id="nama_id"
-                {...register('nama_id', {
-                  onBlur: (e) => {
-                    if (!slugDisentuh && e.target.value) setValue('slug', slugify(e.target.value));
-                  },
-                })}
-              />
-            </Field>
-            {errors.nama_id && <p className="mt-1 text-sm text-destructive">{errors.nama_id.message}</p>}
-          </div>
-          <Field label="Nama (Inggris)" htmlFor="nama_en">
-            <Input id="nama_en" {...register('nama_en')} />
-          </Field>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <FormField
+              control={control}
+              name="nama_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nama (Indonesia) *</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      onBlur={(e) => {
+                        field.onBlur();
+                        if (!slugDisentuh && e.target.value) setValue('slug', slugify(e.target.value));
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="nama_en"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nama (Inggris)</FormLabel>
+                  <FormControl>
+                    <Input {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <div>
-            <Field label="Slug *" htmlFor="slug">
-              <Input id="slug" {...register('slug', { onChange: () => setSlugDisentuh(true) })} />
-            </Field>
-            {errors.slug && <p className="mt-1 text-sm text-destructive">{errors.slug.message}</p>}
-          </div>
-          <Field label="Kategori" htmlFor="kategori">
-            <Input id="kategori" placeholder="Contoh: Drone Survei" {...register('kategori')} />
-          </Field>
-          <Field label="Kategori (dari daftar kategori)" htmlFor="category_id">
-            <Controller
+            <FormField
+              control={control}
+              name="slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Slug *</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      onChange={(e) => {
+                        setSlugDisentuh(true);
+                        field.onChange(e);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="kategori"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kategori</FormLabel>
+                  <FormControl>
+                    <Input {...field} value={field.value ?? ''} placeholder="Contoh: Drone Survei" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
               control={control}
               name="category_id"
               render={({ field }) => (
-                <KategoriCombobox
-                  items={kategoriOptions}
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Cari kategori produk…"
-                />
+                <FormItem className="lg:col-span-2">
+                  <FormLabel>Kategori (dari daftar kategori)</FormLabel>
+                  <FormControl>
+                    <KategoriCombobox
+                      items={kategoriOptions}
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Cari kategori produk…"
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Dipakai untuk filter kategori di halaman publik. Kelola daftar kategori di menu Produk → Kategori
+                    Produk.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
               )}
             />
-            <p className="text-xs text-warna-teks-2">
-              Dipakai untuk filter kategori di halaman publik. Kelola daftar kategori di menu Produk &rarr; Kategori
-              Produk.
-            </p>
-          </Field>
 
-          <Field label="Harga (Rupiah)" htmlFor="harga">
-            <Input id="harga" type="number" {...register('harga')} />
-          </Field>
-          <Field label="Urutan" htmlFor="urutan">
-            <Input id="urutan" type="number" {...register('urutan')} />
-          </Field>
+            <FormField
+              control={control}
+              name="harga"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Harga (Rupiah)</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="urutan"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Urutan</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Field label="Rating (0.0 – 5.0)" htmlFor="rating">
-            <Input id="rating" type="number" step="0.1" min={0} max={5} {...register('rating')} />
-            <p className="text-xs text-warna-teks-2">Kosongkan jika belum ada rating.</p>
-            {errors.rating && <p className="text-sm text-destructive">{errors.rating.message}</p>}
-          </Field>
-        </div>
+            <FormField
+              control={control}
+              name="rating"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Rating (0.0 – 5.0)</FormLabel>
+                  <FormControl>
+                    <Input type="number" step="0.1" min={0} max={5} {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormDescription>Kosongkan jika belum ada rating.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-        <Controller
-          control={control}
-          name="tampilkan_harga"
-          render={({ field }) => (
-            <div className="flex items-center gap-2">
-              <Switch id="tampilkan_harga" checked={field.value} onCheckedChange={field.onChange} />
-              <Label htmlFor="tampilkan_harga" className="font-normal">
-                Tampilkan harga di halaman publik — kalau nonaktif, harga diganti &quot;Hubungi kami untuk harga&quot;
-              </Label>
-            </div>
-          )}
-        />
+          <FormField
+            control={control}
+            name="tampilkan_harga"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center gap-2 space-y-0">
+                <FormControl>
+                  <Switch checked={field.value} onCheckedChange={field.onChange} />
+                </FormControl>
+                <FormLabel className="font-normal">
+                  Tampilkan harga di halaman publik — kalau nonaktif, harga diganti &quot;Hubungi kami untuk harga&quot;
+                </FormLabel>
+              </FormItem>
+            )}
+          />
 
-        <Controller
-          control={control}
-          name="is_active"
-          render={({ field }) => (
-            <div className="flex items-center gap-2">
-              <Switch id="is_active" checked={field.value} onCheckedChange={field.onChange} />
-              <Label htmlFor="is_active" className="font-normal">
-                Aktif — tampil di /katalog
-              </Label>
-            </div>
-          )}
-        />
-      </section>
+          <FormField
+            control={control}
+            name="is_active"
+            render={({ field }) => (
+              <FormItem className="flex flex-row items-center gap-2 space-y-0">
+                <FormControl>
+                  <Switch checked={field.value} onCheckedChange={field.onChange} />
+                </FormControl>
+                <FormLabel className="font-normal">Aktif — tampil di /katalog</FormLabel>
+              </FormItem>
+            )}
+          />
+        </section>
 
-      <section className="flex flex-col gap-4">
-        <h2 className="text-lg font-bold text-warna-teks">Deskripsi & Spesifikasi</h2>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <Field label="Deskripsi (Indonesia)" htmlFor="deskripsi_id">
-            <Controller
+        <section className="flex flex-col gap-4">
+          <h2 className="text-lg font-semibold text-foreground">Deskripsi & Spesifikasi</h2>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <FormField
               control={control}
               name="deskripsi_id"
-              render={({ field }) => <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />}
-            />
-          </Field>
-          <Field label="Deskripsi (Inggris)" htmlFor="deskripsi_en">
-            <Controller
-              control={control}
-              name="deskripsi_en"
-              render={({ field }) => <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />}
-            />
-          </Field>
-
-          <Field label="Spesifikasi (Indonesia)" htmlFor="spesifikasi_id">
-            <Controller
-              control={control}
-              name="spesifikasi_id"
-              render={({ field }) => <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />}
-            />
-          </Field>
-          <Field label="Spesifikasi (Inggris)" htmlFor="spesifikasi_en">
-            <Controller
-              control={control}
-              name="spesifikasi_en"
-              render={({ field }) => <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />}
-            />
-          </Field>
-        </div>
-      </section>
-
-      <section className="flex flex-col gap-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-warna-teks">Foto Produk</h2>
-          <button
-            type="button"
-            onClick={() => images.append({ url: '' })}
-            className="flex h-9 items-center gap-1.5 rounded-lg border border-warna-utama px-3 text-sm font-medium text-warna-utama"
-          >
-            <PlusIcon className="size-4" /> Tambah
-          </button>
-        </div>
-        {images.fields.map((f, index) => (
-          <div key={f.id} className="flex flex-col gap-3 rounded-lg border border-warna-latar-2 p-3 sm:flex-row sm:items-start">
-            <Controller
-              control={control}
-              name={`images.${index}.url`}
               render={({ field }) => (
-                <ImageUploadField
-                  label="Foto"
-                  aspectRatio={1}
-                  suggestedPx="1200×1200px"
-                  value={field.value || null}
-                  onChange={(url) => field.onChange(url ?? '')}
-                  onUpload={async (file) => {
-                    const fd = new FormData();
-                    fd.append('file', file);
-                    return uploadGambarProdukAction(fd);
-                  }}
-                />
+                <FormItem>
+                  <FormLabel>Deskripsi (Indonesia)</FormLabel>
+                  <FormControl>
+                    <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
             />
-            {errors.images?.[index]?.url && (
-              <p className="text-sm text-destructive">{errors.images[index]?.url?.message}</p>
-            )}
-            <button
-              type="button"
-              onClick={() => images.remove(index)}
-              aria-label="Hapus foto"
-              className="flex size-9 shrink-0 items-center justify-center self-start rounded-lg text-warna-teks-2 hover:bg-warna-latar-2"
-            >
-              <XIcon className="size-4" />
-            </button>
+            <FormField
+              control={control}
+              name="deskripsi_en"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Deskripsi (Inggris)</FormLabel>
+                  <FormControl>
+                    <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="spesifikasi_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Spesifikasi (Indonesia)</FormLabel>
+                  <FormControl>
+                    <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="spesifikasi_en"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Spesifikasi (Inggris)</FormLabel>
+                  <FormControl>
+                    <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
-        ))}
-      </section>
+        </section>
 
-      <div className="flex gap-3">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks disabled:opacity-50"
-        >
-          {isSubmitting ? 'Menyimpan…' : 'Simpan'}
-        </button>
-        <button
-          type="button"
-          onClick={() => router.push('/admin/produk')}
-          className="inline-flex h-11 items-center justify-center rounded-lg border border-warna-latar-2 px-6 text-base font-semibold text-warna-teks"
-        >
-          Batal
-        </button>
-      </div>
-    </form>
+        <section className="flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-foreground">Foto Produk</h2>
+            <Button type="button" variant="outline" size="sm" onClick={() => images.append({ url: '' })}>
+              <PlusIcon className="size-4" /> Tambah
+            </Button>
+          </div>
+          {images.fields.map((f, index) => (
+            <div key={f.id} className="flex flex-col gap-3 rounded-lg border border-border p-3 sm:flex-row sm:items-start">
+              <FormField
+                control={control}
+                name={`images.${index}.url`}
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormControl>
+                      <ImageUploadField
+                        label="Foto"
+                        aspectRatio={1}
+                        suggestedPx="1200×1200px"
+                        value={field.value || null}
+                        onChange={(url) => field.onChange(url ?? '')}
+                        onUpload={async (file) => {
+                          const fd = new FormData();
+                          fd.append('file', file);
+                          return uploadGambarProdukAction(fd);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => images.remove(index)}
+                aria-label="Hapus foto"
+                className="self-start"
+              >
+                <XIcon className="size-4" />
+              </Button>
+            </div>
+          ))}
+        </section>
+
+        <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+          <Button type="submit" disabled={isSubmitting} className="h-11 px-6">
+            {isSubmitting ? 'Menyimpan…' : 'Simpan'}
+          </Button>
+          <Button type="button" variant="outline" className="h-11 px-6" onClick={() => router.push('/admin/produk')}>
+            Batal
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 }

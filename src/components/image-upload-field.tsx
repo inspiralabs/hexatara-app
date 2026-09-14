@@ -13,8 +13,9 @@ import ReactCrop, {
 } from 'react-image-crop';
 import 'react-image-crop/dist/ReactCrop.css';
 import { toast } from 'sonner';
-import { ImagePlusIcon, XIcon } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { ImagePlusIcon, Loader2Icon, XIcon } from 'lucide-react';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 type HasilUpload = { ok: true; url: string } | { ok: false; pesan: string };
 
@@ -109,18 +110,20 @@ export function ImageUploadField({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="text-sm font-medium text-warna-teks">{label}</span>
+      <span className="text-sm font-medium text-foreground">{label}</span>
       {value ? (
-        <div className="relative aspect-video w-full max-w-xs overflow-hidden rounded-lg border border-warna-latar-2">
+        <div className="relative aspect-video w-full max-w-xs overflow-hidden rounded-lg border border-border">
           <Image src={value} alt="" fill className="object-cover" sizes="320px" />
-          <button
+          <Button
             type="button"
+            variant="secondary"
+            size="icon-sm"
             onClick={() => onChange(null)}
             aria-label="Hapus gambar"
-            className="absolute top-1 right-1 flex size-8 items-center justify-center rounded-full bg-warna-teks/70 text-warna-latar"
+            className="absolute top-1.5 right-1.5 size-8 rounded-full"
           >
             <XIcon className="size-4" />
-          </button>
+          </Button>
         </div>
       ) : (
         <div className="flex flex-col gap-1.5">
@@ -135,56 +138,73 @@ export function ImageUploadField({
           />
           <label
             htmlFor={inputId}
-            className="inline-flex h-11 w-fit cursor-pointer items-center gap-1.5 rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama [transition:var(--transition-hover)] hover:bg-warna-utama/5 has-disabled:pointer-events-none has-disabled:opacity-50"
+            className={
+              uploading
+                ? 'pointer-events-none opacity-50'
+                : 'inline-flex h-11 w-fit cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-5 text-sm font-medium hover:bg-muted'
+            }
           >
             <ImagePlusIcon className="size-4" /> Pilih Gambar
           </label>
-          <p className="text-xs text-warna-teks-2">
+          <p className="text-xs text-muted-foreground">
             Format {FORMAT_LABEL}, maksimal {formatMB(UKURAN_MAKS)} sebelum kompresi.
             {suggestedPx && <> Disarankan sekitar {suggestedPx}.</>}
           </p>
         </div>
       )}
-      {uploading && !pending && <p className="text-sm text-warna-teks-2">Mengunggah…</p>}
+      {uploading && !pending && (
+        <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
+          <Loader2Icon className="size-3.5 animate-spin" /> Mengunggah…
+        </p>
+      )}
 
-      <Dialog open={pending != null} onOpenChange={(open) => !open && tutupDialogCrop()}>
-        <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-lg">
+      <Dialog open={pending != null} onOpenChange={(open) => !open && !uploading && tutupDialogCrop()}>
+        <DialogContent className="max-h-[90vh] gap-0 overflow-y-auto p-4 sm:max-w-lg sm:p-6">
           <DialogHeader>
             <DialogTitle>Sesuaikan Area Gambar</DialogTitle>
           </DialogHeader>
           {pending && (
-            <div className="flex flex-col gap-4">
-              <ReactCrop
-                crop={crop}
-                onChange={(_, percentCrop) => setCrop(percentCrop)}
-                onComplete={(c) => setCompletedCrop(c)}
-                aspect={aspectRatio}
-                className="mx-auto max-h-[60vh]"
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element -- object URL sementara, next/image tidak perlu di sini */}
-                <img ref={imgRef} src={pending.objectUrl} alt="" onLoad={onImageLoad} className="max-h-[60vh]" />
-              </ReactCrop>
-              <p className="text-xs text-warna-teks-2">
+            <div className="flex flex-col gap-4 pt-2">
+              <div className="flex min-h-[240px] items-center justify-center overflow-hidden rounded-lg bg-muted/40">
+                <ReactCrop
+                  crop={crop}
+                  onChange={(_, percentCrop) => setCrop(percentCrop)}
+                  onComplete={(c) => setCompletedCrop(c)}
+                  aspect={aspectRatio}
+                  className="mx-auto max-h-[55vh]"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element -- object URL sementara, next/image tidak perlu di sini */}
+                  <img
+                    ref={imgRef}
+                    src={pending.objectUrl}
+                    alt=""
+                    onLoad={onImageLoad}
+                    className="max-h-[55vh] w-auto max-w-full"
+                  />
+                </ReactCrop>
+              </div>
+              <p className="text-xs text-muted-foreground">
                 Geser dan sesuaikan area yang akan tampil{aspectRatio ? '' : ' — bebas, tidak terkunci rasio tertentu'}.
               </p>
-              <div className="flex gap-3">
-                <button
+              <DialogFooter className="flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <Button type="button" variant="outline" className="h-11 w-full sm:w-auto" onClick={tutupDialogCrop} disabled={uploading}>
+                  Batal
+                </Button>
+                <Button
                   type="button"
+                  className="h-11 w-full sm:w-auto"
                   onClick={konfirmasiCrop}
                   disabled={uploading || !completedCrop}
-                  className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks disabled:opacity-50"
                 >
-                  {uploading ? 'Mengunggah…' : 'Gunakan Gambar Ini'}
-                </button>
-                <button
-                  type="button"
-                  onClick={tutupDialogCrop}
-                  disabled={uploading}
-                  className="inline-flex h-11 items-center justify-center rounded-lg border border-warna-latar-2 px-6 text-base font-semibold text-warna-teks disabled:opacity-50"
-                >
-                  Batal
-                </button>
-              </div>
+                  {uploading ? (
+                    <>
+                      <Loader2Icon className="size-4 animate-spin" /> Mengunggah…
+                    </>
+                  ) : (
+                    'Gunakan Gambar Ini'
+                  )}
+                </Button>
+              </DialogFooter>
             </div>
           )}
         </DialogContent>

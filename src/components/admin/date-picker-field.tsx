@@ -6,6 +6,7 @@ import { id as localeId } from 'date-fns/locale';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from 'cn';
 
 // Nilai disimpan sebagai string "yyyy-MM-dd" (format tanggal Postgres), bukan
 // objek Date — konsisten dari form sampai Server Action, tanpa konversi di batas apa pun.
@@ -25,13 +26,18 @@ export function DatePickerField({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <span className="text-sm font-medium text-warna-teks">{label}</span>
+      <span className="text-sm font-medium text-foreground">{label}</span>
       <Popover open={open && !disabled} onOpenChange={(next) => setOpen(disabled ? false : next)}>
         <PopoverTrigger
           disabled={disabled}
-          className="flex h-11 items-center gap-2 rounded-lg border border-warna-latar-2 px-3 text-left text-sm text-warna-teks disabled:cursor-not-allowed disabled:opacity-50"
+          className={cn(
+            'flex h-11 w-full items-center gap-2 rounded-lg border border-input bg-background px-3 text-left text-sm outline-none transition-colors',
+            'hover:bg-muted focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50',
+            'disabled:cursor-not-allowed disabled:opacity-50',
+            !selected && 'text-muted-foreground',
+          )}
         >
-          <CalendarIcon className="size-4 text-warna-teks-2" aria-hidden="true" />
+          <CalendarIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
           {selected ? format(selected, 'd MMMM yyyy', { locale: localeId }) : 'Pilih tanggal'}
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
