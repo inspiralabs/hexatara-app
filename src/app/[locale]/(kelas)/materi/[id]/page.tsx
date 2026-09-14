@@ -122,8 +122,8 @@ export default async function MateriCoursePage({
   const judulMateri = pick(material.judul_id, material.judul_en, locale) ?? material.judul_id;
 
   return (
-    <div className="flex min-h-full flex-1 flex-col">
-      <div className="flex items-center gap-3 border-b border-warna-latar-2 bg-warna-utama px-4 py-3 text-warna-latar">
+    <div className="flex min-h-full flex-1 flex-col bg-background">
+      <div className="flex items-center gap-3 border-b border-border bg-primary px-4 py-3 text-primary-foreground">
         <Link href="/" className="flex shrink-0 items-center gap-2 text-base font-bold">
           <Image src="/hexatara-logo.png" alt="Hexatara" width={28} height={28} className="h-7 w-7" priority />
           <span className="hidden sm:inline">Hexatara</span>
@@ -133,10 +133,10 @@ export default async function MateriCoursePage({
 
       {chapters.length === 0 ? (
         <div className="mx-auto max-w-md px-4 py-16 text-center">
-          <p className="text-base text-warna-teks-2">{t("kosongBab")}</p>
+          <p className="text-base text-muted-foreground">{t("kosongBab")}</p>
           <Link
             href="/pelatihan"
-            className="mt-4 inline-block text-sm font-semibold text-warna-utama underline underline-offset-4"
+            className="mt-4 inline-block text-sm font-semibold text-primary underline underline-offset-4"
           >
             {t("kembali")}
           </Link>

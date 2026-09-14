@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { CheckCircle2, XCircle } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { selesaikanKuisLoginAction } from './actions';
 
 export type QuizOption = {
@@ -34,8 +36,8 @@ export function QuizQuestionCard({
   onPilih: (opsi: QuizOption) => void;
 }) {
   return (
-    <div className="rounded-xl border border-warna-latar-2 bg-warna-latar p-5">
-      <h2 className="text-lg font-bold text-warna-teks">{soal.pertanyaan}</h2>
+    <div className="rounded-xl border border-border bg-card p-5">
+      <h2 className="text-lg font-semibold text-foreground">{soal.pertanyaan}</h2>
 
       <div className="mt-4 flex flex-col gap-2">
         {soal.options.map((opsi) => {
@@ -49,20 +51,23 @@ export function QuizQuestionCard({
                 type="button"
                 onClick={() => onPilih(opsi)}
                 disabled={benar}
-                className={`flex w-full items-center gap-2 rounded-lg border p-3 text-left text-base disabled:cursor-not-allowed ${
+                className={cn(
+                  'flex w-full items-center gap-2 rounded-lg border p-3 text-left text-base disabled:cursor-not-allowed',
                   benarDipilih
-                    ? 'border-warna-sukses bg-warna-sukses/10 text-warna-teks'
+                    ? 'border-emerald-600/40 bg-emerald-500/10 text-foreground'
                     : salahDipilih
-                      ? 'border-warna-bahaya bg-warna-bahaya/10 text-warna-teks'
-                      : 'border-warna-latar-2 text-warna-teks disabled:opacity-60'
-                }`}
+                      ? 'border-destructive/40 bg-destructive/10 text-foreground'
+                      : 'border-border text-foreground disabled:opacity-60'
+                )}
               >
-                {benarDipilih && <CheckCircle2 className="size-5 shrink-0 text-warna-sukses" aria-hidden="true" />}
-                {salahDipilih && <XCircle className="size-5 shrink-0 text-warna-bahaya" aria-hidden="true" />}
+                {benarDipilih && (
+                  <CheckCircle2 className="size-5 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+                )}
+                {salahDipilih && <XCircle className="size-5 shrink-0 text-destructive" aria-hidden="true" />}
                 <span>{opsi.label}</span>
               </button>
               {salahDipilih && opsi.penjelasan && (
-                <p className="mt-1.5 px-1 text-sm text-warna-teks-2">{opsi.penjelasan}</p>
+                <p className="mt-1.5 px-1 text-sm text-muted-foreground">{opsi.penjelasan}</p>
               )}
             </div>
           );
@@ -77,11 +82,10 @@ export function QuizQuestionCard({
 // Alur F03.4 existing, tidak berubah: anonim -> /daftar, login -> Server Action.
 export function QuizFinishScreen({ sudahLogin = false }: { sudahLogin?: boolean }) {
   const t = useTranslations('quiz');
-  const tombolClassName =
-    'mt-4 inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks';
+  const tombolClassName = cn(buttonVariants(), 'mt-4 h-11 px-6');
   return (
-    <div className="mt-6 rounded-xl border border-warna-sukses/30 bg-warna-sukses/5 p-6 text-center">
-      <p className="text-lg font-bold text-warna-sukses">{t('selesai')}</p>
+    <div className="mt-6 rounded-xl border border-emerald-600/30 bg-emerald-500/5 p-6 text-center">
+      <p className="text-lg font-semibold text-emerald-700 dark:text-emerald-400">{t('selesai')}</p>
       {sudahLogin ? (
         <form action={selesaikanKuisLoginAction}>
           <button type="submit" className={tombolClassName}>
@@ -129,20 +133,16 @@ export function QuizEngine({
 
   return (
     <div className="mt-6 flex flex-col gap-4">
-      <p className="text-sm font-medium text-warna-teks-2">
+      <p className="text-sm font-medium text-muted-foreground">
         {t('progres', { sekarang: index + 1, total: questions.length })}
       </p>
 
       <QuizQuestionCard soal={soal} dipilih={dipilih} benar={benar} onPilih={pilihOpsi} />
 
       {benar && (
-        <button
-          type="button"
-          onClick={lanjut}
-          className="inline-flex h-11 w-fit items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks"
-        >
+        <Button type="button" onClick={lanjut} className="h-11 w-fit px-6">
           {t('lanjut')}
-        </button>
+        </Button>
       )}
     </div>
   );

@@ -1,4 +1,5 @@
 import { QuizQuestionCard, type QuizOption, type QuizQuestion } from '@/app/[locale]/(public)/kuis/quiz-engine';
+import { cn } from '@/lib/utils';
 
 export type JawabanKuis = Record<number, { dipilihId: number; benar: boolean }>;
 
@@ -33,11 +34,13 @@ export function EmbeddedQuiz({
               key={q.id}
               type="button"
               onClick={() => onPilihSoal(q.id)}
-              className={`flex size-10 shrink-0 items-center justify-center rounded-lg border text-sm font-semibold [transition:var(--transition-hover)] ${
+              className={cn(
+                'flex size-10 shrink-0 items-center justify-center rounded-lg border text-sm font-semibold transition-colors',
                 terjawab
-                  ? 'border-warna-aksen bg-warna-aksen text-warna-teks'
-                  : 'border-warna-latar-2 text-warna-teks-2'
-              } ${aktif ? 'ring-2 ring-warna-utama ring-offset-2' : ''}`}
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : 'border-border text-muted-foreground',
+                aktif && 'ring-2 ring-ring ring-offset-2 ring-offset-background'
+              )}
             >
               {i + 1}
             </button>

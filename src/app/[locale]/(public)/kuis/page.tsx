@@ -45,11 +45,11 @@ export default async function KuisPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10">
-      <h1 className="text-2xl font-bold text-warna-teks sm:text-3xl">{t("pageTitle")}</h1>
-      <p className="mt-2 text-base text-warna-teks-2">{t("pageSubtitle")}</p>
+      <h1 className="text-2xl font-semibold text-foreground sm:text-3xl">{t("pageTitle")}</h1>
+      <p className="mt-2 text-base text-muted-foreground">{t("pageSubtitle")}</p>
 
       {questions.length === 0 ? (
-        <p className="mt-6 rounded-xl border border-warna-latar-2 bg-warna-latar-2 p-5 text-sm text-warna-teks-2">
+        <p className="mt-6 rounded-xl border border-border bg-muted/40 p-5 text-sm text-muted-foreground">
           {t("kosong")}
         </p>
       ) : (
