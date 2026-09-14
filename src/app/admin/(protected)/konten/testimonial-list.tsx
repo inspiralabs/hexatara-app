@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { PlusIcon } from 'lucide-react';
 import { DataTable, SortableHeader, createDataTableColumnHelper } from '@/components/data-table';
+import { Button } from '@/components/ui/button';
 import { TestimonialRowActions } from './testimonial-row-actions';
 import { TestimonialActiveSwitch } from './testimonial-active-switch';
 import { TestimonialFormDialog } from './testimonial-form-dialog';
@@ -49,7 +50,7 @@ export function TestimonialList({
   const columns = [
     columnHelper.accessor('nama', {
       header: (ctx) => <SortableHeader column={ctx.column} label="Nama" />,
-      cell: (info) => <span className="font-medium text-warna-teks">{info.getValue()}</span>,
+      cell: (info) => <span className="font-medium text-foreground">{info.getValue()}</span>,
     }),
     columnHelper.accessor('urutan', {
       header: (ctx) => <SortableHeader column={ctx.column} label="Urutan" />,
@@ -79,14 +80,10 @@ export function TestimonialList({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-xl font-bold text-warna-teks">{judul}</h1>
-        <button
-          type="button"
-          onClick={bukaTambah}
-          className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
-        >
+        <h1 className="text-xl font-semibold text-foreground">{judul}</h1>
+        <Button type="button" className="h-11 shrink-0 px-5" onClick={bukaTambah}>
           <PlusIcon className="size-4" /> Tambah Testimoni
-        </button>
+        </Button>
       </div>
 
       <DataTable

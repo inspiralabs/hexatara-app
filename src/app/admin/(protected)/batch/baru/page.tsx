@@ -44,7 +44,7 @@ export default async function AdminBatchBaruPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">Tambah Batch</h1>
+      <h1 className="text-xl font-semibold text-foreground">Tambah Batch</h1>
       <BatchForm mode="create" defaultValues={DEFAULT_VALUES} kategoriOptions={kategoriOptions} />
     </div>
   );

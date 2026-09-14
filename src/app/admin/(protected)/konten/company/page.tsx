@@ -16,7 +16,7 @@ export default async function AdminKontenCompanyPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">Konten &rarr; Company Profile</h1>
+      <h1 className="text-xl font-semibold text-foreground">Konten &rarr; Company Profile</h1>
       {companyProfile ? (
         <CompanyProfileForm profile={companyProfile} />
       ) : (

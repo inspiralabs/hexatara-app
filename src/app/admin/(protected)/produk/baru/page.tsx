@@ -35,7 +35,7 @@ export default async function AdminProdukBaruPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">Tambah Produk</h1>
+      <h1 className="text-xl font-semibold text-foreground">Tambah Produk</h1>
       <ProdukForm mode="create" defaultValues={DEFAULT_VALUES} kategoriOptions={kategoriOptions} />
     </div>
   );

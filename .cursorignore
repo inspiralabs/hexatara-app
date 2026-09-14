@@ -1,0 +1,15 @@
+# --- Dependencies & Build Artifacts (Paling Wajib) ---
+node_modules/
+.next/
+.pnpm-store/
+.vitest/
+.playwright-mcp/
+
+# --- Cache, Logs & Tool Outputs ---
+.claude/
+Claude outputs/
+tsconfig.tsbuildinfo
+*.log
+
+# --- Large Lockfiles (Opsional tapi direkomendasikan jika context seret) ---
+pnpm-lock.yaml

@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { SaleBannerFormSchema, type SaleBannerFormInput } from '@/lib/validations/sale-banner-admin';
@@ -15,9 +14,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { DatePickerField } from '@/components/admin/date-picker-field';
 
 const DEFAULT_VALUES: SaleBannerFormInput = {
@@ -35,15 +35,6 @@ const DEFAULT_VALUES: SaleBannerFormInput = {
   is_active: false,
 };
 
-function Field({ label, htmlFor, children }: { label: string; htmlFor: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor={htmlFor}>{label}</Label>
-      {children}
-    </div>
-  );
-}
-
 export function SaleBannerFormDialog({
   open,
   onOpenChange,
@@ -57,16 +48,16 @@ export function SaleBannerFormDialog({
 }) {
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<SaleBannerFormInput>({
+  const form = useForm<SaleBannerFormInput>({
     resolver: zodResolver(SaleBannerFormSchema),
     defaultValues: defaultValues ?? DEFAULT_VALUES,
   });
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = form;
 
   // Form dipakai ulang untuk tambah maupun ubah — isi ulang setiap kali dialog
   // dibuka dengan banner yang berbeda (atau dikosongkan untuk tambah baru).
@@ -99,96 +90,197 @@ export function SaleBannerFormDialog({
           <DialogTitle>{bannerId == null ? 'Tambah Sale Banner' : 'Ubah Sale Banner'}</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
-          {pesanError && (
-            <Alert variant="destructive">
-              <AlertDescription>{pesanError}</AlertDescription>
-            </Alert>
-          )}
-
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <Field label="Judul (Indonesia) *" htmlFor="judul_id">
-              <Input id="judul_id" {...register('judul_id')} />
-              {errors.judul_id && <p className="text-sm text-destructive">{errors.judul_id.message}</p>}
-            </Field>
-            <Field label="Judul (Inggris)" htmlFor="judul_en">
-              <Input id="judul_en" {...register('judul_en')} />
-            </Field>
-
-            <Field label="Teks Penawaran (Indonesia)" htmlFor="teks_id">
-              <Input id="teks_id" {...register('teks_id')} />
-            </Field>
-            <Field label="Teks Penawaran (Inggris)" htmlFor="teks_en">
-              <Input id="teks_en" {...register('teks_en')} />
-            </Field>
-
-            <Field label="Pesan Urgensi (Indonesia)" htmlFor="urgensi_id">
-              <Input id="urgensi_id" placeholder="mis. Kuota terbatas bulan ini" {...register('urgensi_id')} />
-            </Field>
-            <Field label="Pesan Urgensi (Inggris)" htmlFor="urgensi_en">
-              <Input id="urgensi_en" {...register('urgensi_en')} />
-            </Field>
-
-            <Field label="Teks Tombol (Indonesia)" htmlFor="tombol_teks_id">
-              <Input id="tombol_teks_id" {...register('tombol_teks_id')} />
-            </Field>
-            <Field label="Teks Tombol (Inggris)" htmlFor="tombol_teks_en">
-              <Input id="tombol_teks_en" {...register('tombol_teks_en')} />
-            </Field>
-          </div>
-
-          <Field label="Tautan Tombol" htmlFor="tombol_url">
-            <Input id="tombol_url" placeholder="/katalog atau https://..." {...register('tombol_url')} />
-          </Field>
-
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <Controller
-              control={control}
-              name="tayang_mulai"
-              render={({ field }) => (
-                <DatePickerField label="Tayang Mulai" value={field.value ?? null} onChange={field.onChange} />
-              )}
-            />
-            <Controller
-              control={control}
-              name="tayang_selesai"
-              render={({ field }) => (
-                <DatePickerField label="Tayang Selesai" value={field.value ?? null} onChange={field.onChange} />
-              )}
-            />
-          </div>
-          <p className="text-xs text-warna-teks-2">Kosongkan salah satu atau keduanya untuk tayang tanpa batas.</p>
-
-          <Controller
-            control={control}
-            name="is_active"
-            render={({ field }) => (
-              <div className="flex items-center gap-2">
-                <Switch id="is_active" checked={field.value} onCheckedChange={field.onChange} />
-                <Label htmlFor="is_active" className="font-normal">
-                  Aktifkan sale banner ini
-                </Label>
-              </div>
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
+            {pesanError && (
+              <Alert variant="destructive">
+                <AlertDescription>{pesanError}</AlertDescription>
+              </Alert>
             )}
-          />
 
-          <div className="flex gap-3 pt-2">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks disabled:opacity-50"
-            >
-              {isSubmitting ? 'Menyimpan…' : 'Simpan'}
-            </button>
-            <button
-              type="button"
-              onClick={() => onOpenChange(false)}
-              className="inline-flex h-11 items-center justify-center rounded-lg border border-warna-latar-2 px-6 text-base font-semibold text-warna-teks"
-            >
-              Batal
-            </button>
-          </div>
-        </form>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <FormField
+                control={control}
+                name="judul_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Judul (Indonesia) *</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="judul_en"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Judul (Inggris)</FormLabel>
+                    <FormControl>
+                      <Input {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name="teks_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Teks Penawaran (Indonesia)</FormLabel>
+                    <FormControl>
+                      <Input {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="teks_en"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Teks Penawaran (Inggris)</FormLabel>
+                    <FormControl>
+                      <Input {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name="urgensi_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pesan Urgensi (Indonesia)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="mis. Kuota terbatas bulan ini" {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="urgensi_en"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Pesan Urgensi (Inggris)</FormLabel>
+                    <FormControl>
+                      <Input {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name="tombol_teks_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Teks Tombol (Indonesia)</FormLabel>
+                    <FormControl>
+                      <Input {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="tombol_teks_en"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Teks Tombol (Inggris)</FormLabel>
+                    <FormControl>
+                      <Input {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={control}
+              name="tombol_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tautan Tombol</FormLabel>
+                  <FormControl>
+                    <Input placeholder="/katalog atau https://..." {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <FormField
+                control={control}
+                name="tayang_mulai"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <DatePickerField
+                        label="Tayang Mulai"
+                        value={field.value ?? null}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="tayang_selesai"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <DatePickerField
+                        label="Tayang Selesai"
+                        value={field.value ?? null}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">Kosongkan salah satu atau keduanya untuk tayang tanpa batas.</p>
+
+            <FormField
+              control={control}
+              name="is_active"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center gap-2 space-y-0">
+                  <FormControl>
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
+                  <FormLabel className="font-normal">Aktifkan sale banner ini</FormLabel>
+                </FormItem>
+              )}
+            />
+
+            <div className="flex gap-3 pt-2">
+              <Button type="submit" disabled={isSubmitting} className="h-11 px-6">
+                {isSubmitting ? 'Menyimpan…' : 'Simpan'}
+              </Button>
+              <Button type="button" variant="outline" className="h-11 px-6" onClick={() => onOpenChange(false)}>
+                Batal
+              </Button>
+            </div>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

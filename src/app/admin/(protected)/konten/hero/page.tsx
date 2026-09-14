@@ -15,7 +15,7 @@ export default async function AdminKontenHeroPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">Konten &rarr; Hero</h1>
+      <h1 className="text-xl font-semibold text-foreground">Konten &rarr; Hero</h1>
       <HeroSlideList slides={heroSlides ?? []} />
     </div>
   );

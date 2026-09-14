@@ -12,10 +12,10 @@ import { ReorderButtons } from '@/components/admin/reorder-buttons';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import {
   AlertDialog,
@@ -42,15 +42,6 @@ const DEFAULT_VALUES: KategoriFormInput = { nama_id: '', nama_en: '' };
 
 function keDefaultValues(k: KategoriRow): KategoriFormInput {
   return { nama_id: k.nama_id, nama_en: k.nama_en ?? '' };
-}
-
-function Field({ label, htmlFor, children }: { label: string; htmlFor: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor={htmlFor}>{label}</Label>
-      {children}
-    </div>
-  );
 }
 
 export function KategoriManager({
@@ -149,19 +140,15 @@ export function KategoriManager({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-warna-teks">{judul}</h1>
-        <button
-          type="button"
-          onClick={bukaTambah}
-          className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
-        >
+        <h1 className="text-xl font-semibold text-foreground">{judul}</h1>
+        <Button type="button" className="h-11 px-5" onClick={bukaTambah}>
           <PlusIcon className="size-4" /> Tambah Kategori
-        </button>
+        </Button>
       </div>
 
       {pesanError && <p className="text-sm text-destructive">{pesanError}</p>}
 
-      <div className="overflow-x-auto rounded-lg border border-warna-latar-2">
+      <div className="overflow-x-auto rounded-lg border border-border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -174,7 +161,7 @@ export function KategoriManager({
           <TableBody>
             {daftar.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="text-center text-warna-teks-2">
+                <TableCell colSpan={4} className="text-center text-muted-foreground">
                   Belum ada kategori. Tambah kategori pertama untuk mulai mengisi filter publik.
                 </TableCell>
               </TableRow>
@@ -190,7 +177,7 @@ export function KategoriManager({
                       onDown={() => pindah(index, 'down')}
                     />
                   </TableCell>
-                  <TableCell className="font-medium text-warna-teks">{k.nama_id}</TableCell>
+                  <TableCell className="font-medium text-foreground">{k.nama_id}</TableCell>
                   <TableCell>
                     <Switch
                       checked={k.is_active}
@@ -273,15 +260,16 @@ function KategoriFormDialog({
   onSaved: () => void;
 }) {
   const [pesanError, setPesanError] = useState<string | null>(null);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<KategoriFormInput>({
+  const form = useForm<KategoriFormInput>({
     resolver: zodResolver(KategoriFormSchema),
     defaultValues: defaultValues ?? DEFAULT_VALUES,
   });
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = form;
 
   useEffect(() => {
     if (open) {
@@ -313,38 +301,51 @@ function KategoriFormDialog({
           <DialogTitle>{editingId == null ? 'Tambah Kategori' : 'Ubah Kategori'}</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
-          {pesanError && (
-            <Alert variant="destructive">
-              <AlertDescription>{pesanError}</AlertDescription>
-            </Alert>
-          )}
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
+            {pesanError && (
+              <Alert variant="destructive">
+                <AlertDescription>{pesanError}</AlertDescription>
+              </Alert>
+            )}
 
-          <Field label="Nama (Indonesia) *" htmlFor="nama_id">
-            <Input id="nama_id" {...register('nama_id')} />
-            {errors.nama_id && <p className="text-sm text-destructive">{errors.nama_id.message}</p>}
-          </Field>
-          <Field label="Nama (Inggris)" htmlFor="nama_en">
-            <Input id="nama_en" {...register('nama_en')} />
-          </Field>
+            <FormField
+              control={control}
+              name="nama_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nama (Indonesia) *</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="nama_en"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Nama (Inggris)</FormLabel>
+                  <FormControl>
+                    <Input {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <div className="flex gap-3 pt-2">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks disabled:opacity-50"
-            >
-              {isSubmitting ? 'Menyimpan…' : 'Simpan'}
-            </button>
-            <button
-              type="button"
-              onClick={() => onOpenChange(false)}
-              className="inline-flex h-11 items-center justify-center rounded-lg border border-warna-latar-2 px-6 text-base font-semibold text-warna-teks"
-            >
-              Batal
-            </button>
-          </div>
-        </form>
+            <div className="flex gap-3 pt-2">
+              <Button type="submit" disabled={isSubmitting} className="h-11 px-6">
+                {isSubmitting ? 'Menyimpan…' : 'Simpan'}
+              </Button>
+              <Button type="button" variant="outline" className="h-11 px-6" onClick={() => onOpenChange(false)}>
+                Batal
+              </Button>
+            </div>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

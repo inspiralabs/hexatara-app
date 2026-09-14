@@ -74,7 +74,7 @@ export function ProdukTable({ produk }: { produk: ProdukRow[] }) {
         aria-label="Cari nama produk"
       />
 
-      <div className="overflow-x-auto rounded-lg border border-warna-latar-2">
+      <div className="overflow-x-auto rounded-lg border border-border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -91,7 +91,7 @@ export function ProdukTable({ produk }: { produk: ProdukRow[] }) {
           <TableBody>
             {terfilter.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={6} className="text-center text-warna-teks-2">
+                <TableCell colSpan={6} className="text-center text-muted-foreground">
                   Belum ada produk.
                 </TableCell>
               </TableRow>
@@ -114,7 +114,7 @@ export function ProdukTable({ produk }: { produk: ProdukRow[] }) {
                         onDown={() => pindah(row.id, 'down')}
                       />
                     </TableCell>
-                    <TableCell className="font-medium text-warna-teks">{row.nama_id}</TableCell>
+                    <TableCell className="font-medium text-foreground">{row.nama_id}</TableCell>
                     <TableCell>{row.kategori ?? '—'}</TableCell>
                     <TableCell>
                       {row.tampilkan_harga

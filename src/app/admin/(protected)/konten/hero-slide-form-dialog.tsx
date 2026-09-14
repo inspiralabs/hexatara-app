@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { HeroSlideFormSchema, type HeroSlideFormInput } from '@/lib/validations/hero-slide-admin';
@@ -15,9 +14,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { ImageUploadField } from '@/components/image-upload-field';
 import { uploadGambarAdminAction } from '../actions';
 
@@ -34,15 +34,6 @@ const DEFAULT_VALUES: HeroSlideFormInput = {
   is_active: true,
 };
 
-function Field({ label, htmlFor, children }: { label: string; htmlFor: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor={htmlFor}>{label}</Label>
-      {children}
-    </div>
-  );
-}
-
 export function HeroSlideFormDialog({
   open,
   onOpenChange,
@@ -56,16 +47,16 @@ export function HeroSlideFormDialog({
 }) {
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<HeroSlideFormInput>({
+  const form = useForm<HeroSlideFormInput>({
     resolver: zodResolver(HeroSlideFormSchema),
     defaultValues: defaultValues ?? DEFAULT_VALUES,
   });
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = form;
 
   // Form dipakai ulang untuk tambah maupun ubah — isi ulang setiap kali dialog
   // dibuka dengan slide yang berbeda (atau dikosongkan untuk tambah baru).
@@ -98,95 +89,173 @@ export function HeroSlideFormDialog({
           <DialogTitle>{slideId == null ? 'Tambah Hero Slide' : 'Ubah Hero Slide'}</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
-          {pesanError && (
-            <Alert variant="destructive">
-              <AlertDescription>{pesanError}</AlertDescription>
-            </Alert>
-          )}
-
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <Field label="Judul (Indonesia) *" htmlFor="judul_id">
-              <Input id="judul_id" {...register('judul_id')} />
-              {errors.judul_id && <p className="text-sm text-destructive">{errors.judul_id.message}</p>}
-            </Field>
-            <Field label="Judul (Inggris)" htmlFor="judul_en">
-              <Input id="judul_en" {...register('judul_en')} />
-            </Field>
-
-            <Field label="Subjudul (Indonesia)" htmlFor="subjudul_id">
-              <Input id="subjudul_id" {...register('subjudul_id')} />
-            </Field>
-            <Field label="Subjudul (Inggris)" htmlFor="subjudul_en">
-              <Input id="subjudul_en" {...register('subjudul_en')} />
-            </Field>
-
-            <Field label="Teks Tombol (Indonesia)" htmlFor="cta_teks_id">
-              <Input id="cta_teks_id" {...register('cta_teks_id')} />
-            </Field>
-            <Field label="Teks Tombol (Inggris)" htmlFor="cta_teks_en">
-              <Input id="cta_teks_en" {...register('cta_teks_en')} />
-            </Field>
-          </div>
-
-          <Field label="Tautan Tombol" htmlFor="cta_url">
-            <Input id="cta_url" placeholder="/katalog atau https://..." {...register('cta_url')} />
-          </Field>
-
-          <Field label="Urutan" htmlFor="urutan">
-            <Input id="urutan" type="number" step={1} {...register('urutan')} className="max-w-[8rem]" />
-          </Field>
-          <p className="-mt-2 text-xs text-warna-teks-2">Angka lebih kecil tampil lebih dulu.</p>
-
-          <Controller
-            control={control}
-            name="is_active"
-            render={({ field }) => (
-              <div className="flex items-center gap-2">
-                <Switch id="is_active" checked={field.value} onCheckedChange={field.onChange} />
-                <Label htmlFor="is_active" className="font-normal">
-                  Aktifkan slide ini
-                </Label>
-              </div>
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
+            {pesanError && (
+              <Alert variant="destructive">
+                <AlertDescription>{pesanError}</AlertDescription>
+              </Alert>
             )}
-          />
 
-          <Controller
-            control={control}
-            name="gambar_url"
-            render={({ field }) => (
-              <ImageUploadField
-                label="Gambar"
-                aspectRatio={16 / 9}
-                suggestedPx="1920×1080px"
-                value={field.value ?? null}
-                onChange={field.onChange}
-                onUpload={async (file) => {
-                  const fd = new FormData();
-                  fd.append('file', file);
-                  return uploadGambarAdminAction(fd);
-                }}
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <FormField
+                control={control}
+                name="judul_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Judul (Indonesia) *</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            )}
-          />
+              <FormField
+                control={control}
+                name="judul_en"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Judul (Inggris)</FormLabel>
+                    <FormControl>
+                      <Input {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-          <div className="flex gap-3 pt-2">
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks disabled:opacity-50"
-            >
-              {isSubmitting ? 'Menyimpan…' : 'Simpan'}
-            </button>
-            <button
-              type="button"
-              onClick={() => onOpenChange(false)}
-              className="inline-flex h-11 items-center justify-center rounded-lg border border-warna-latar-2 px-6 text-base font-semibold text-warna-teks"
-            >
-              Batal
-            </button>
-          </div>
-        </form>
+              <FormField
+                control={control}
+                name="subjudul_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Subjudul (Indonesia)</FormLabel>
+                    <FormControl>
+                      <Input {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="subjudul_en"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Subjudul (Inggris)</FormLabel>
+                    <FormControl>
+                      <Input {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name="cta_teks_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Teks Tombol (Indonesia)</FormLabel>
+                    <FormControl>
+                      <Input {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="cta_teks_en"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Teks Tombol (Inggris)</FormLabel>
+                    <FormControl>
+                      <Input {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={control}
+              name="cta_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tautan Tombol</FormLabel>
+                  <FormControl>
+                    <Input placeholder="/katalog atau https://..." {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="urutan"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Urutan</FormLabel>
+                  <FormControl>
+                    <Input type="number" step={1} {...field} value={field.value ?? ''} className="max-w-[8rem]" />
+                  </FormControl>
+                  <FormDescription>Angka lebih kecil tampil lebih dulu.</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="is_active"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-center gap-2 space-y-0">
+                  <FormControl>
+                    <Switch checked={field.value} onCheckedChange={field.onChange} />
+                  </FormControl>
+                  <FormLabel className="font-normal">Aktifkan slide ini</FormLabel>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="gambar_url"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <ImageUploadField
+                      label="Gambar"
+                      aspectRatio={16 / 9}
+                      suggestedPx="1920×1080px"
+                      value={field.value ?? null}
+                      onChange={field.onChange}
+                      onUpload={async (file) => {
+                        const fd = new FormData();
+                        fd.append('file', file);
+                        return uploadGambarAdminAction(fd);
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex gap-3 pt-2">
+              <Button type="submit" disabled={isSubmitting} className="h-11 px-6">
+                {isSubmitting ? 'Menyimpan…' : 'Simpan'}
+              </Button>
+              <Button type="button" variant="outline" className="h-11 px-6" onClick={() => onOpenChange(false)}>
+                Batal
+              </Button>
+            </div>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

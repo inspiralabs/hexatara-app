@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { PlusIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ReorderButtons } from '@/components/admin/reorder-buttons';
@@ -89,29 +90,25 @@ export function HeroSlideList({ slides }: { slides: HeroSlide[] }) {
   return (
     <div className="flex flex-col gap-4 pt-4">
       <div>
-        <p className="mb-2 text-sm font-semibold text-warna-teks-2">Preview carousel (yang aktif, sesuai urutan)</p>
+        <p className="mb-2 text-sm font-semibold text-muted-foreground">Preview carousel (yang aktif, sesuai urutan)</p>
         {previewSlides.length > 0 ? (
           <div className="max-w-md">
             <HeroCarousel slides={previewSlides} />
           </div>
         ) : (
-          <p className="text-sm text-warna-teks-2">Belum ada slide aktif untuk dipratinjau.</p>
+          <p className="text-sm text-muted-foreground">Belum ada slide aktif untuk dipratinjau.</p>
         )}
       </div>
 
       <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={bukaTambah}
-          className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
-        >
+        <Button type="button" className="h-11 px-5" onClick={bukaTambah}>
           <PlusIcon className="size-4" /> Tambah Hero Slide
-        </button>
+        </Button>
       </div>
 
       {pesanError && <p className="text-sm text-destructive">{pesanError}</p>}
 
-      <div className="overflow-x-auto rounded-lg border border-warna-latar-2">
+      <div className="overflow-x-auto rounded-lg border border-border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -124,7 +121,7 @@ export function HeroSlideList({ slides }: { slides: HeroSlide[] }) {
           <TableBody>
             {daftar.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="text-center text-warna-teks-2">
+                <TableCell colSpan={4} className="text-center text-muted-foreground">
                   Belum ada hero slide.
                 </TableCell>
               </TableRow>
@@ -140,7 +137,7 @@ export function HeroSlideList({ slides }: { slides: HeroSlide[] }) {
                       onDown={() => pindah(index, 'down')}
                     />
                   </TableCell>
-                  <TableCell className="font-medium text-warna-teks">{slide.judul_id}</TableCell>
+                  <TableCell className="font-medium text-foreground">{slide.judul_id}</TableCell>
                   <TableCell>
                     <HeroSlideActiveSwitch slideId={slide.id} aktif={slide.is_active} />
                   </TableCell>

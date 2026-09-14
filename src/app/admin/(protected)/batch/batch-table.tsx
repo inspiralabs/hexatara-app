@@ -16,7 +16,7 @@ const columnHelper = createDataTableColumnHelper<Batch>();
 const columns = [
   columnHelper.accessor('judul_id', {
     header: (ctx) => <SortableHeader column={ctx.column} label="Judul" />,
-    cell: (info) => <span className="font-medium text-warna-teks">{info.getValue()}</span>,
+    cell: (info) => <span className="font-medium text-foreground">{info.getValue()}</span>,
   }),
   columnHelper.accessor('kategori_id', {
     header: (ctx) => <SortableHeader column={ctx.column} label="Kategori" />,

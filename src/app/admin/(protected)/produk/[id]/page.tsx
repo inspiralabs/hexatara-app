@@ -41,7 +41,7 @@ export default async function AdminProdukUbahPage({ params }: { params: Promise<
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">Ubah Produk</h1>
+      <h1 className="text-xl font-semibold text-foreground">Ubah Produk</h1>
       <ProdukForm mode="edit" produkId={produk.id} defaultValues={defaultValues} kategoriOptions={kategoriOptions} />
     </div>
   );

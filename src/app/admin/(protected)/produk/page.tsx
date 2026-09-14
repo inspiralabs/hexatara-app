@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from 'cn';
 import { ProdukTable } from './produk-table';
 
 export default async function AdminProdukPage() {
@@ -18,12 +20,9 @@ export default async function AdminProdukPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-warna-teks">Produk</h1>
-        <Link
-          href="/admin/produk/baru"
-          className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
-        >
+      <div className="flex items-center justify-between gap-3">
+        <h1 className="text-xl font-semibold text-foreground">Produk</h1>
+        <Link href="/admin/produk/baru" className={cn(buttonVariants(), 'h-11 px-5')}>
           Tambah Produk
         </Link>
       </div>

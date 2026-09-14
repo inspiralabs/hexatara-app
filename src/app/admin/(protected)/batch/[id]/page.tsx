@@ -66,7 +66,7 @@ export default async function AdminBatchUbahPage({ params }: { params: Promise<{
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">Ubah Batch</h1>
+      <h1 className="text-xl font-semibold text-foreground">Ubah Batch</h1>
       <BatchForm mode="edit" batchId={batch.id} defaultValues={defaultValues} kategoriOptions={kategoriOptions} />
     </div>
   );

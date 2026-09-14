@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { PlusIcon } from 'lucide-react';
 import { DataTable, SortableHeader, createDataTableColumnHelper } from '@/components/data-table';
+import { Button } from '@/components/ui/button';
 import { PopupRowActions } from './popup-row-actions';
 import { PopupActiveSwitch } from './popup-active-switch';
 import { PopupFormDialog } from './popup-form-dialog';
@@ -43,7 +44,7 @@ export function PopupList({ popups, judul }: { popups: Popup[]; judul: string })
   const columns = [
     columnHelper.accessor('judul_id', {
       header: (ctx) => <SortableHeader column={ctx.column} label="Judul" />,
-      cell: (info) => <span className="font-medium text-warna-teks">{info.getValue()}</span>,
+      cell: (info) => <span className="font-medium text-foreground">{info.getValue()}</span>,
     }),
     columnHelper.display({
       id: 'tayang',
@@ -74,14 +75,10 @@ export function PopupList({ popups, judul }: { popups: Popup[]; judul: string })
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
-        <h1 className="text-xl font-bold text-warna-teks">{judul}</h1>
-        <button
-          type="button"
-          onClick={bukaTambah}
-          className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
-        >
+        <h1 className="text-xl font-semibold text-foreground">{judul}</h1>
+        <Button type="button" className="h-11 shrink-0 px-5" onClick={bukaTambah}>
           <PlusIcon className="size-4" /> Tambah Pop-up
-        </button>
+        </Button>
       </div>
 
       <DataTable
