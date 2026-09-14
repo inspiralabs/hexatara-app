@@ -23,7 +23,7 @@ export async function logoutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   const locale = await getLocale();
-  redirect({ href: '/login', locale });
+  redirect({ href: '/', locale });
 }
 
 export async function buatPesananAction(input: unknown) {

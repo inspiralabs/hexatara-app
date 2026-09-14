@@ -14,6 +14,8 @@ import {
   SettingsIcon,
   PanelLeftIcon,
   LogOutIcon,
+  UserIcon,
+  InfoIcon,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -48,13 +50,11 @@ const MENU_USER: MenuItem[] = [
   { href: "/dashboard/sertifikat", labelKey: "navSertifikat", icon: BadgeCheckIcon },
   { href: "/dashboard/transaksi", labelKey: "navTransaksi", icon: ReceiptIcon },
   { href: "/dashboard/pelatihan", labelKey: "navPelatihan", icon: CalendarDaysIcon },
-  { href: "/dashboard/setting", labelKey: "navSetting", icon: SettingsIcon },
 ];
 
 const COLLAPSE_KEY = "hexatara-user-sidebar-collapsed";
 
 function itemAktif(pathname: string, href: string) {
-  // Pathname locale-aware: /id/dashboard atau /en/dashboard
   const bare = pathname.replace(/^\/(id|en)(?=\/|$)/, "") || "/";
   return href === "/dashboard" ? bare === "/dashboard" : bare.startsWith(href);
 }
@@ -151,61 +151,54 @@ function IconRail() {
   );
 }
 
-function ProfileMenu({
+function AccountMenuItems({ onLogout }: { onLogout: () => void }) {
+  return (
+    <>
+      <DropdownMenuItem render={<Link href="/dashboard/profil" />}>
+        <UserIcon /> Profil
+      </DropdownMenuItem>
+      <DropdownMenuItem render={<Link href="/dashboard/tentang-kami" />}>
+        <InfoIcon /> Tentang Kami
+      </DropdownMenuItem>
+      <DropdownMenuItem render={<Link href="/dashboard/setting" />}>
+        <SettingsIcon /> Setting
+      </DropdownMenuItem>
+      <DropdownMenuSeparator />
+      <DropdownMenuItem variant="destructive" onClick={onLogout}>
+        <LogOutIcon /> Keluar
+      </DropdownMenuItem>
+    </>
+  );
+}
+
+function AccountSidebarCard({
   nama,
   email,
   collapsed,
-  side = "top",
 }: {
   nama: string;
   email: string;
   collapsed?: boolean;
-  side?: "top" | "right" | "bottom";
 }) {
-  const t = useTranslations("dashboard");
-  const [, startTransition] = useTransition();
-
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        render={
-          <button
-            type="button"
-            className={cn(
-              "flex w-full items-center gap-2 rounded-md p-2 text-left hover:bg-sidebar-accent",
-              collapsed && "justify-center"
-            )}
-          />
-        }
-      >
-        <Avatar size="sm">
-          <AvatarFallback>{inisial(nama)}</AvatarFallback>
-        </Avatar>
-        {!collapsed && (
-          <span className="min-w-0 flex-1">
-            <span className="block truncate text-sm font-medium text-sidebar-foreground">{nama}</span>
-            {email ? (
-              <span className="block truncate text-xs text-muted-foreground">{email}</span>
-            ) : null}
-          </span>
-        )}
-      </DropdownMenuTrigger>
-      <DropdownMenuContent side={side} align="start" className="w-56">
-        <DropdownMenuGroup>
-          <DropdownMenuLabel className="font-normal">
-            <p className="truncate text-sm font-medium">{nama}</p>
-            {email ? <p className="truncate text-xs text-muted-foreground">{email}</p> : null}
-          </DropdownMenuLabel>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          variant="destructive"
-          onClick={() => startTransition(() => logoutAction())}
-        >
-          <LogOutIcon /> {t("keluar")}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div
+      className={cn(
+        "flex w-full items-center gap-2 rounded-md p-2 text-left",
+        collapsed && "justify-center"
+      )}
+    >
+      <Avatar size="sm">
+        <AvatarFallback>{inisial(nama)}</AvatarFallback>
+      </Avatar>
+      {!collapsed && (
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-sm font-medium text-sidebar-foreground">{nama}</span>
+          {email ? (
+            <span className="block truncate text-xs text-muted-foreground">{email}</span>
+          ) : null}
+        </span>
+      )}
+    </div>
   );
 }
 
@@ -243,6 +236,10 @@ export function DashboardUserShell({
     }
   }
 
+  function handleLogout() {
+    startTransition(() => logoutAction());
+  }
+
   return (
     <div className="flex min-h-screen w-full bg-background text-foreground">
       <aside
@@ -265,12 +262,7 @@ export function DashboardUserShell({
         </div>
         <div className="flex-1 overflow-y-auto py-3">{collapsed ? <IconRail /> : <NavList />}</div>
         <div className="border-t border-sidebar-border p-2">
-          <ProfileMenu
-            nama={namaTampil}
-            email={email}
-            collapsed={collapsed}
-            side={collapsed ? "right" : "top"}
-          />
+          <AccountSidebarCard nama={namaTampil} email={email} collapsed={collapsed} />
         </div>
       </aside>
 
@@ -297,7 +289,7 @@ export function DashboardUserShell({
                 <NavList onNavigate={() => setDrawerOpen(false)} />
               </div>
               <div className="border-t border-sidebar-border p-2">
-                <ProfileMenu nama={namaTampil} email={email} />
+                <AccountSidebarCard nama={namaTampil} email={email} />
               </div>
             </SheetContent>
           </Sheet>
@@ -336,12 +328,7 @@ export function DashboardUserShell({
                 </DropdownMenuLabel>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={() => startTransition(() => logoutAction())}
-              >
-                <LogOutIcon /> {t("keluar")}
-              </DropdownMenuItem>
+              <AccountMenuItems onLogout={handleLogout} />
             </DropdownMenuContent>
           </DropdownMenu>
         </header>

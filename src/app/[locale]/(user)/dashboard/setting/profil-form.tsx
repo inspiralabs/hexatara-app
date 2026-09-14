@@ -8,8 +8,16 @@ import { simpanProfilAction } from './actions';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 
-export function ProfilForm({ defaultValues }: { defaultValues: ProfilInput }) {
+export function ProfilForm({
+  defaultValues,
+  variant,
+}: {
+  defaultValues: ProfilInput;
+  /** profil = nama; kontak = WhatsApp (nilai lain ikut terkirim agar tidak terhapus) */
+  variant: 'profil' | 'kontak';
+}) {
   const [pesanError, setPesanError] = useState<string | null>(null);
   const [pesanSukses, setPesanSukses] = useState<string | null>(null);
   const {
@@ -26,7 +34,7 @@ export function ProfilForm({ defaultValues }: { defaultValues: ProfilInput }) {
       setPesanError(hasil.pesan);
       return;
     }
-    setPesanSukses('Profil berhasil disimpan.');
+    setPesanSukses(variant === 'profil' ? 'Profil berhasil disimpan.' : 'Nomor WhatsApp berhasil disimpan.');
   }
 
   return (
@@ -42,24 +50,24 @@ export function ProfilForm({ defaultValues }: { defaultValues: ProfilInput }) {
         </Alert>
       )}
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="nama_lengkap">Nama Lengkap</Label>
-        <Input id="nama_lengkap" {...register('nama_lengkap')} />
-        {errors.nama_lengkap && <p className="text-sm text-destructive">{errors.nama_lengkap.message}</p>}
-      </div>
+      {variant === 'profil' ? (
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="nama_lengkap">Nama Lengkap</Label>
+          <Input id="nama_lengkap" {...register('nama_lengkap')} />
+          {errors.nama_lengkap && <p className="text-sm text-destructive">{errors.nama_lengkap.message}</p>}
+          <input type="hidden" {...register('whatsapp')} />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="whatsapp">WhatsApp</Label>
+          <Input id="whatsapp" {...register('whatsapp')} placeholder="08…" />
+          <input type="hidden" {...register('nama_lengkap')} />
+        </div>
+      )}
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="whatsapp">WhatsApp</Label>
-        <Input id="whatsapp" {...register('whatsapp')} />
-      </div>
-
-      <button
-        type="submit"
-        disabled={isSubmitting}
-        className="inline-flex h-11 w-fit items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks disabled:opacity-50"
-      >
-        {isSubmitting ? 'Menyimpan…' : 'Simpan Profil'}
-      </button>
+      <Button type="submit" disabled={isSubmitting} className="w-fit">
+        {isSubmitting ? 'Menyimpan…' : variant === 'profil' ? 'Simpan Profil' : 'Simpan WhatsApp'}
+      </Button>
     </form>
   );
 }

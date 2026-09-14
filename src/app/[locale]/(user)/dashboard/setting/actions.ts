@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { requireUser } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { ProfilSchema } from '@/lib/validations/profil';
@@ -24,6 +25,7 @@ export async function simpanProfilAction(input: unknown) {
     return { ok: false as const, pesan: 'Gagal menyimpan profil. Coba lagi.' };
   }
 
+  revalidatePath('/dashboard');
   return { ok: true as const };
 }
 

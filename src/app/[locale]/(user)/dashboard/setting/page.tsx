@@ -1,14 +1,10 @@
-import { getTranslations } from 'next-intl/server';
 import { requireUser } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
-import { Button } from '@/components/ui/button';
-import { logoutAction } from '../../actions';
 import { ProfilForm } from './profil-form';
 import { GantiPasswordForm } from './ganti-password-form';
 
 export default async function SettingPage() {
   const claims = await requireUser();
-  const t = await getTranslations('dashboard');
   const supabase = await createClient();
 
   const { data: profile } = await supabase
@@ -20,14 +16,15 @@ export default async function SettingPage() {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <h1 className="text-2xl font-bold text-warna-teks sm:text-3xl">Setting</h1>
-        <p className="mt-1 text-base text-warna-teks-2">Kelola profil dan keamanan akunmu.</p>
+        <h1 className="text-2xl font-semibold text-foreground sm:text-3xl">Setting</h1>
+        <p className="mt-1 text-base text-muted-foreground">Ubah nomor WhatsApp dan kata sandi akun.</p>
       </div>
 
-      <section className="max-w-md rounded-xl border border-warna-latar-2 bg-warna-latar p-5">
-        <h2 className="text-base font-bold text-warna-teks">Profil</h2>
+      <section className="max-w-md rounded-xl border border-border bg-card p-5">
+        <h2 className="text-base font-semibold text-foreground">WhatsApp</h2>
         <div className="mt-4">
           <ProfilForm
+            variant="kontak"
             defaultValues={{
               nama_lengkap: profile?.nama_lengkap ?? '',
               whatsapp: profile?.whatsapp ?? '',
@@ -36,20 +33,11 @@ export default async function SettingPage() {
         </div>
       </section>
 
-      <section className="max-w-md rounded-xl border border-warna-latar-2 bg-warna-latar p-5">
-        <h2 className="text-base font-bold text-warna-teks">Kata Sandi</h2>
+      <section className="max-w-md rounded-xl border border-border bg-card p-5">
+        <h2 className="text-base font-semibold text-foreground">Kata Sandi</h2>
         <div className="mt-4">
           <GantiPasswordForm />
         </div>
-      </section>
-
-      <section className="max-w-md rounded-xl border border-warna-latar-2 bg-warna-latar p-5">
-        <h2 className="text-base font-bold text-warna-teks">Sesi</h2>
-        <form action={logoutAction} className="mt-4">
-          <Button type="submit" variant="outline">
-            {t('keluar')}
-          </Button>
-        </form>
       </section>
     </div>
   );
