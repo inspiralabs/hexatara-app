@@ -26,8 +26,8 @@ export default async function AdminMateriPage() {
   if (materialId == null) {
     return (
       <div className="flex flex-col gap-4">
-        <h1 className="text-xl font-bold text-warna-teks">Materi</h1>
-        <p className="text-sm text-warna-teks-2">
+        <h1 className="text-xl font-semibold text-foreground">Materi</h1>
+        <p className="text-sm text-muted-foreground">
           Lengkapi pengaturan kartu halaman Materi dulu — ini cuma sekali, sebelum bisa menambah Materi.
         </p>
         <MateriForm mode="create" defaultValues={DEFAULT_VALUES} />
@@ -58,10 +58,10 @@ export default async function AdminMateriPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">Materi</h1>
+      <h1 className="text-xl font-semibold text-foreground">Materi</h1>
 
       <Accordion defaultValue={[]}>
-        <AccordionItem value="pengaturan" className="rounded-lg border border-warna-latar-2 px-4">
+        <AccordionItem value="pengaturan" className="rounded-lg border border-border px-4">
           <AccordionTrigger className="hover:no-underline">Pengaturan Kartu Materi</AccordionTrigger>
           <AccordionContent>
             <MateriForm mode="edit" materiId={materialId} defaultValues={defaultValues} />

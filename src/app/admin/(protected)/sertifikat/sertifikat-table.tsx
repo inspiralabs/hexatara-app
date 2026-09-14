@@ -30,7 +30,7 @@ const columnHelper = createDataTableColumnHelper<SertifikatRow>();
 const columns = [
   columnHelper.accessor('nomor_sertifikat', {
     header: (ctx) => <SortableHeader column={ctx.column} label="Nomor" />,
-    cell: (info) => <span className="font-medium text-warna-teks">{info.getValue()}</span>,
+    cell: (info) => <span className="font-medium text-foreground">{info.getValue()}</span>,
   }),
   columnHelper.accessor('jenis', {
     id: 'jenis',
@@ -54,7 +54,9 @@ const columns = [
     cell: ({ row }) => (
       <span
         className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-          row.original.invalid ? 'bg-warna-bahaya/10 text-warna-bahaya' : 'bg-warna-sukses/10 text-warna-sukses'
+          row.original.invalid
+            ? 'bg-destructive/10 text-destructive'
+            : 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400'
         }`}
       >
         {row.original.invalid ? 'Invalid' : 'Berlaku'}

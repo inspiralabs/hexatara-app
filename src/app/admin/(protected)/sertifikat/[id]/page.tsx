@@ -25,7 +25,7 @@ export default async function AdminSertifikatUbahPage({ params }: { params: Prom
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">Ubah Sertifikat</h1>
+      <h1 className="text-xl font-semibold text-foreground">Ubah Sertifikat</h1>
       <SertifikatForm mode="edit" sertifikatId={sertifikat.id} defaultValues={defaultValues} />
     </div>
   );

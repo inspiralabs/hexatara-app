@@ -45,7 +45,7 @@ export default async function AdminSoalUbahPage({ params }: { params: Promise<{ 
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">Ubah Soal</h1>
+      <h1 className="text-xl font-semibold text-foreground">Ubah Soal</h1>
       <SoalForm mode="edit" soalId={soal.id} defaultValues={defaultValues} />
     </div>
   );

@@ -2,26 +2,19 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm, useWatch, Controller } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { SoalFormSchema, type SoalFormInput } from '@/lib/validations/soal-admin';
 import { simpanSoalAction } from './actions';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-
-function Field({ label, htmlFor, children }: { label: string; htmlFor: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor={htmlFor}>{label}</Label>
-      {children}
-    </div>
-  );
-}
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Label } from '@/components/ui/label';
 
 // Empat opsi TETAP — bukan useFieldArray, karena kuis correctable (PRD §8.5)
 // selalu punya persis 4 opsi, tidak pernah kurang atau lebih.
@@ -38,7 +31,7 @@ function OpsiBlock({
 }) {
   const benar = jawabanBenar === huruf;
   return (
-    <div className="flex flex-col gap-3 rounded-lg border border-warna-latar-2 p-4">
+    <div className="flex flex-col gap-3 rounded-lg border border-border p-4">
       <div className="flex items-center gap-2">
         <RadioGroupItem value={huruf} id={`benar-${huruf}`} />
         <Label htmlFor={`benar-${huruf}`} className="font-normal">
@@ -55,7 +48,7 @@ function OpsiBlock({
         <Input placeholder={`Teks opsi ${huruf.toUpperCase()} (Inggris)`} {...register(`opsi_${huruf}.label_en`)} />
       </div>
       {benar ? (
-        <p className="text-xs text-warna-teks-2">Jawaban benar tidak butuh penjelasan.</p>
+        <p className="text-xs text-muted-foreground">Jawaban benar tidak butuh penjelasan.</p>
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <Textarea rows={2} placeholder="Penjelasan kalau opsi ini dipilih (Indonesia)" {...register(`opsi_${huruf}.penjelasan_id`)} />
@@ -77,15 +70,16 @@ export function SoalForm({
 }) {
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
+  const form = useForm<SoalFormInput>({
+    resolver: zodResolver(SoalFormSchema),
+    defaultValues,
+  });
   const {
     register,
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<SoalFormInput>({
-    resolver: zodResolver(SoalFormSchema),
-    defaultValues,
-  });
+  } = form;
 
   const jawabanBenar = useWatch({ control, name: 'jawaban_benar' });
 
@@ -103,57 +97,79 @@ export function SoalForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
-      {pesanError && (
-        <Alert variant="destructive">
-          <AlertDescription>{pesanError}</AlertDescription>
-        </Alert>
-      )}
-
-      <Field label="Pertanyaan (Indonesia) *" htmlFor="pertanyaan_id">
-        <Textarea id="pertanyaan_id" rows={2} {...register('pertanyaan_id')} />
-        {errors.pertanyaan_id && <p className="text-sm text-destructive">{errors.pertanyaan_id.message}</p>}
-      </Field>
-
-      <Field label="Pertanyaan (Inggris)" htmlFor="pertanyaan_en">
-        <Textarea id="pertanyaan_en" rows={2} {...register('pertanyaan_en')} />
-      </Field>
-
-      <Controller
-        control={control}
-        name="jawaban_benar"
-        render={({ field }) => (
-          <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-3">
-            <OpsiBlock huruf="a" jawabanBenar={jawabanBenar} register={register} errors={errors} />
-            <OpsiBlock huruf="b" jawabanBenar={jawabanBenar} register={register} errors={errors} />
-            <OpsiBlock huruf="c" jawabanBenar={jawabanBenar} register={register} errors={errors} />
-            <OpsiBlock huruf="d" jawabanBenar={jawabanBenar} register={register} errors={errors} />
-          </RadioGroup>
+    <Form {...form}>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
+        {pesanError && (
+          <Alert variant="destructive">
+            <AlertDescription>{pesanError}</AlertDescription>
+          </Alert>
         )}
-      />
 
-      <Controller
-        control={control}
-        name="is_active"
-        render={({ field }) => (
-          <div className="flex items-center gap-2">
-            <Switch id="is_active" checked={field.value} onCheckedChange={field.onChange} />
-            <Label htmlFor="is_active" className="font-normal">
-              Aktif — tampil di /kuis publik
-            </Label>
-          </div>
-        )}
-      />
+        <FormField
+          control={control}
+          name="pertanyaan_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Pertanyaan (Indonesia) *</FormLabel>
+              <FormControl>
+                <Textarea rows={2} {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks disabled:opacity-50"
-        >
-          {isSubmitting ? 'Menyimpan…' : 'Simpan'}
-        </button>
-      </div>
-    </form>
+        <FormField
+          control={control}
+          name="pertanyaan_en"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Pertanyaan (Inggris)</FormLabel>
+              <FormControl>
+                <Textarea rows={2} {...field} value={field.value ?? ''} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={control}
+          name="jawaban_benar"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-3">
+                  <OpsiBlock huruf="a" jawabanBenar={jawabanBenar} register={register} errors={errors} />
+                  <OpsiBlock huruf="b" jawabanBenar={jawabanBenar} register={register} errors={errors} />
+                  <OpsiBlock huruf="c" jawabanBenar={jawabanBenar} register={register} errors={errors} />
+                  <OpsiBlock huruf="d" jawabanBenar={jawabanBenar} register={register} errors={errors} />
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={control}
+          name="is_active"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center gap-2 space-y-0">
+              <FormControl>
+                <Switch checked={field.value} onCheckedChange={field.onChange} />
+              </FormControl>
+              <FormLabel className="font-normal">Aktif — tampil di /kuis publik</FormLabel>
+            </FormItem>
+          )}
+        />
+
+        <div className="flex justify-end">
+          <Button type="submit" disabled={isSubmitting} className="h-11 px-6">
+            {isSubmitting ? 'Menyimpan…' : 'Simpan'}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 }

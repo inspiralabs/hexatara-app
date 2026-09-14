@@ -2,26 +2,18 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { BabFormSchema, type BabFormInput } from '@/lib/validations/materi-bab-admin';
 import { simpanBabAction } from './bab-actions';
 import { uploadGambarAdminAction } from '../actions';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { RichTextEditor } from '@/components/admin/rich-text-editor';
 import { ImageUploadField } from '@/components/image-upload-field';
-
-function Field({ label, htmlFor, children }: { label: string; htmlFor: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor={htmlFor}>{label}</Label>
-      {children}
-    </div>
-  );
-}
 
 export function BabForm({
   mode,
@@ -36,15 +28,15 @@ export function BabForm({
 }) {
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors, isSubmitting },
-  } = useForm<BabFormInput>({
+  const form = useForm<BabFormInput>({
     resolver: zodResolver(BabFormSchema),
     defaultValues,
   });
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = form;
 
   async function onSubmit(data: BabFormInput) {
     setPesanError(null);
@@ -60,70 +52,113 @@ export function BabForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
-      {pesanError && (
-        <Alert variant="destructive">
-          <AlertDescription>{pesanError}</AlertDescription>
-        </Alert>
-      )}
+    <Form {...form}>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
+        {pesanError && (
+          <Alert variant="destructive">
+            <AlertDescription>{pesanError}</AlertDescription>
+          </Alert>
+        )}
 
-      <Field label="Judul (Indonesia) *" htmlFor="judul_id">
-        <Input id="judul_id" {...register('judul_id')} />
-        {errors.judul_id && <p className="text-sm text-destructive">{errors.judul_id.message}</p>}
-      </Field>
+        <FormField
+          control={control}
+          name="judul_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Judul (Indonesia) *</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <Field label="Judul (Inggris)" htmlFor="judul_en">
-        <Input id="judul_en" {...register('judul_en')} />
-      </Field>
+        <FormField
+          control={control}
+          name="judul_en"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Judul (Inggris)</FormLabel>
+              <FormControl>
+                <Input {...field} value={field.value ?? ''} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <Field label="Konten (Indonesia) *" htmlFor="konten_id">
-        <Controller
+        <FormField
           control={control}
           name="konten_id"
-          render={({ field }) => <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Konten (Indonesia) *</FormLabel>
+              <FormControl>
+                <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        {errors.konten_id && <p className="text-sm text-destructive">{errors.konten_id.message}</p>}
-      </Field>
 
-      <Field label="Konten (Inggris)" htmlFor="konten_en">
-        <Controller
+        <FormField
           control={control}
           name="konten_en"
-          render={({ field }) => <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Konten (Inggris)</FormLabel>
+              <FormControl>
+                <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-      </Field>
 
-      <Field label="URL Video (opsional)" htmlFor="video_url">
-        <Input id="video_url" placeholder="https://www.youtube.com/embed/..." {...register('video_url')} />
-        <p className="text-xs text-warna-teks-2">URL embed, tampil sebagai video pengantar di atas konten materi.</p>
-      </Field>
+        <FormField
+          control={control}
+          name="video_url"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>URL Video (opsional)</FormLabel>
+              <FormControl>
+                <Input placeholder="https://www.youtube.com/embed/..." {...field} value={field.value ?? ''} />
+              </FormControl>
+              <FormDescription>URL embed, tampil sebagai video pengantar di atas konten materi.</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <Controller
-        control={control}
-        name="gambar_url"
-        render={({ field }) => (
-          <ImageUploadField
-            label="Gambar Pendukung (opsional)"
-            value={field.value ?? null}
-            onChange={field.onChange}
-            onUpload={async (file) => {
-              const fd = new FormData();
-              fd.append('file', file);
-              return uploadGambarAdminAction(fd);
-            }}
-          />
-        )}
-      />
+        <FormField
+          control={control}
+          name="gambar_url"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <ImageUploadField
+                  label="Gambar Pendukung (opsional)"
+                  value={field.value ?? null}
+                  onChange={field.onChange}
+                  onUpload={async (file) => {
+                    const fd = new FormData();
+                    fd.append('file', file);
+                    return uploadGambarAdminAction(fd);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks disabled:opacity-50"
-        >
-          {isSubmitting ? 'Menyimpan…' : 'Simpan'}
-        </button>
-      </div>
-    </form>
+        <div className="flex justify-end">
+          <Button type="submit" disabled={isSubmitting} className="h-11 px-6">
+            {isSubmitting ? 'Menyimpan…' : 'Simpan'}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 }

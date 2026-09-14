@@ -12,10 +12,10 @@ export default async function AdminFilePage() {
   if (materialId == null) {
     return (
       <div className="flex flex-col gap-4">
-        <h1 className="text-xl font-bold text-warna-teks">File</h1>
-        <p className="text-sm text-warna-teks-2">
+        <h1 className="text-xl font-semibold text-foreground">File</h1>
+        <p className="text-sm text-muted-foreground">
           Belum ada Materi. Buat Materi dulu di menu{' '}
-          <Link href="/admin/materi" className="text-warna-utama underline">
+          <Link href="/admin/materi" className="text-primary underline">
             Materi
           </Link>{' '}
           sebelum menambah File.
@@ -41,23 +41,23 @@ export default async function AdminFilePage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">File</h1>
-      <p className="text-sm text-warna-teks-2">
+      <h1 className="text-xl font-semibold text-foreground">File</h1>
+      <p className="text-sm text-muted-foreground">
         File dikelompokkan per Materi — tombol Tambah pada tiap kelompok otomatis mengaitkan file ke Materi itu.
       </p>
 
       {!bab || bab.length === 0 ? (
-        <p className="rounded-lg border border-warna-latar-2 p-4 text-sm text-warna-teks-2">
+        <p className="rounded-lg border border-border p-4 text-sm text-muted-foreground">
           Belum ada Materi.{' '}
-          <Link href="/admin/materi/baru" className="text-warna-utama underline">
+          <Link href="/admin/materi/baru" className="text-primary underline">
             Tambah Materi
           </Link>{' '}
           dulu sebelum menambah File.
         </p>
       ) : (
         bab.map((b) => (
-          <div key={b.id} className="flex flex-col gap-2 rounded-lg border border-warna-latar-2 p-4">
-            <h2 className="text-base font-bold text-warna-teks">{b.judul_id}</h2>
+          <div key={b.id} className="flex flex-col gap-2 rounded-lg border border-border p-4">
+            <h2 className="text-base font-semibold text-foreground">{b.judul_id}</h2>
             <LampiranList chapterId={b.id} lampiran={(lampiran ?? []).filter((l) => l.chapter_id === b.id)} />
           </div>
         ))

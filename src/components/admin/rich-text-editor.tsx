@@ -25,8 +25,8 @@ function ToolbarButton({
       onClick={onClick}
       aria-label={label}
       className={cn(
-        'flex size-8 items-center justify-center rounded-md',
-        aktif ? 'bg-warna-utama text-warna-latar' : 'text-warna-teks-2 hover:bg-warna-latar-2'
+        'flex size-9 shrink-0 items-center justify-center rounded-md',
+        aktif ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:bg-muted'
       )}
     >
       {children}
@@ -72,8 +72,8 @@ export function RichTextEditor({
   }
 
   return (
-    <div className="rounded-lg border border-warna-latar-2">
-      <div className="flex items-center gap-1 border-b border-warna-latar-2 p-1">
+    <div className="rounded-lg border border-border">
+      <div className="flex flex-wrap items-center gap-1 border-b border-border p-1">
         <ToolbarButton
           label="Heading"
           aktif={editor.isActive('heading', { level: 2 })}
@@ -115,7 +115,7 @@ export function RichTextEditor({
       </div>
       <EditorContent
         editor={editor}
-        className="prose-sm max-w-none px-3 py-2 text-sm text-warna-teks [&_.ProseMirror]:min-h-24 [&_.ProseMirror]:outline-none [&_a]:text-warna-utama [&_a]:underline [&_h2]:text-base [&_h2]:font-bold [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5"
+        className="prose-sm max-w-none px-3 py-2 text-sm text-foreground [&_.ProseMirror]:min-h-24 [&_.ProseMirror]:outline-none [&_a]:text-primary [&_a]:underline [&_h2]:text-base [&_h2]:font-bold [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5"
       />
     </div>
   );

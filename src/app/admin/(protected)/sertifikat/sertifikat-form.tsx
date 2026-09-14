@@ -2,18 +2,19 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm, useWatch, Controller } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addYears, format, parse } from 'date-fns';
 import { toast } from 'sonner';
 import { SertifikatFormSchema, type SertifikatFormInput } from '@/lib/validations/sertifikat-admin';
 import { simpanSertifikatAction } from './actions';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
+import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { DatePickerField } from '@/components/admin/date-picker-field';
 
 const JENIS_OPTIONS: { value: SertifikatFormInput['jenis']; label: string }[] = [
@@ -24,15 +25,6 @@ const JENIS_OPTIONS: { value: SertifikatFormInput['jenis']; label: string }[] = 
 
 function tambahDuaTahun(tanggalTerbit: string) {
   return format(addYears(parse(tanggalTerbit, 'yyyy-MM-dd', new Date()), 2), 'yyyy-MM-dd');
-}
-
-function Field({ label, htmlFor, children }: { label: string; htmlFor: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor={htmlFor}>{label}</Label>
-      {children}
-    </div>
-  );
 }
 
 export function SertifikatForm({
@@ -46,17 +38,17 @@ export function SertifikatForm({
 }) {
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
-  const {
-    register,
-    handleSubmit,
-    control,
-    getValues,
-    setValue,
-    formState: { errors, isSubmitting },
-  } = useForm<SertifikatFormInput>({
+  const form = useForm<SertifikatFormInput>({
     resolver: zodResolver(SertifikatFormSchema),
     defaultValues,
   });
+  const {
+    control,
+    handleSubmit,
+    getValues,
+    setValue,
+    formState: { isSubmitting },
+  } = form;
 
   const jenis = useWatch({ control, name: 'jenis' });
   const tanpaMasaBerlaku = jenis === 'free_track';
@@ -75,133 +67,161 @@ export function SertifikatForm({
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
-      {pesanError && (
-        <Alert variant="destructive">
-          <AlertDescription>{pesanError}</AlertDescription>
-        </Alert>
-      )}
+    <Form {...form}>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
+        {pesanError && (
+          <Alert variant="destructive">
+            <AlertDescription>{pesanError}</AlertDescription>
+          </Alert>
+        )}
 
-      <Field label="Nomor Sertifikat" htmlFor="nomor_sertifikat">
-        <Input
-          id="nomor_sertifikat"
-          placeholder="(otomatis saat disimpan)"
-          {...register('nomor_sertifikat')}
+        <FormField
+          control={control}
+          name="nomor_sertifikat"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nomor Sertifikat</FormLabel>
+              <FormControl>
+                <Input placeholder="(otomatis saat disimpan)" {...field} value={field.value ?? ''} />
+              </FormControl>
+              <FormDescription>
+                Kosongkan untuk dibuatkan otomatis sesuai jenis, atau isi manual bila perlu mencocokkan sertifikat
+                fisik.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
         />
-        <p className="text-xs text-warna-teks-2">
-          Kosongkan untuk dibuatkan otomatis sesuai jenis, atau isi manual bila perlu mencocokkan sertifikat fisik.
-        </p>
-      </Field>
 
-      <Field label="Jenis Sertifikat *" htmlFor="jenis">
-        <Controller
+        <FormField
           control={control}
           name="jenis"
           render={({ field }) => (
-            <Select
-              value={field.value}
-              onValueChange={(value) => {
-                field.onChange(value);
-                const terbit = getValues('tanggal_terbit');
-                if (value === 'free_track') {
-                  setValue('tanggal_kedaluwarsa', null);
-                } else if (terbit) {
-                  setValue('tanggal_kedaluwarsa', tambahDuaTahun(terbit));
-                }
-              }}
-            >
-              <SelectTrigger id="jenis" className="h-11 w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {JENIS_OPTIONS.map((opt) => (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-      </Field>
-
-      <Field label="Nama Lengkap *" htmlFor="nama_lengkap">
-        <Input id="nama_lengkap" {...register('nama_lengkap')} />
-        {errors.nama_lengkap && <p className="text-sm text-destructive">{errors.nama_lengkap.message}</p>}
-      </Field>
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Controller
-          control={control}
-          name="tanggal_terbit"
-          render={({ field }) => (
-            <div>
-              <DatePickerField
-                label="Tanggal Terbit *"
-                value={field.value ?? null}
-                onChange={(value) => {
+            <FormItem>
+              <FormLabel>Jenis Sertifikat *</FormLabel>
+              <Select
+                value={field.value}
+                onValueChange={(value) => {
                   field.onChange(value);
-                  if (value && jenis !== 'free_track') {
-                    setValue('tanggal_kedaluwarsa', tambahDuaTahun(value));
+                  const terbit = getValues('tanggal_terbit');
+                  if (value === 'free_track') {
+                    setValue('tanggal_kedaluwarsa', null);
+                  } else if (terbit) {
+                    setValue('tanggal_kedaluwarsa', tambahDuaTahun(terbit));
                   }
                 }}
-              />
-              {errors.tanggal_terbit && (
-                <p className="mt-1 text-sm text-destructive">{errors.tanggal_terbit.message}</p>
-              )}
-            </div>
+              >
+                <FormControl>
+                  <SelectTrigger className="h-11 w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {JENIS_OPTIONS.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
           )}
         />
-        <Controller
+
+        <FormField
           control={control}
-          name="tanggal_kedaluwarsa"
+          name="nama_lengkap"
           render={({ field }) => (
-            <div>
-              <DatePickerField
-                label="Tanggal Kedaluwarsa"
-                value={tanpaMasaBerlaku ? null : (field.value ?? null)}
-                onChange={field.onChange}
-                disabled={tanpaMasaBerlaku}
-              />
-              <p className="mt-1 text-xs text-warna-teks-2">
-                {tanpaMasaBerlaku
-                  ? 'Free track tidak pernah kedaluwarsa — kolom ini dinonaktifkan.'
-                  : 'Terisi otomatis dari tanggal terbit + 2 tahun, bisa ditimpa bila sertifikat fisik berbeda.'}
-              </p>
-              {errors.tanggal_kedaluwarsa && (
-                <p className="mt-1 text-sm text-destructive">{errors.tanggal_kedaluwarsa.message}</p>
-              )}
-            </div>
+            <FormItem>
+              <FormLabel>Nama Lengkap *</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
         />
-      </div>
 
-      <Controller
-        control={control}
-        name="qr_aktif"
-        render={({ field }) => (
-          <div className="flex items-center gap-2">
-            <Switch id="qr_aktif" checked={field.value} onCheckedChange={field.onChange} />
-            <Label htmlFor="qr_aktif" className="font-normal">
-              QR aktif — bisa diverifikasi publik di /verify
-            </Label>
-          </div>
-        )}
-      />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <FormField
+            control={control}
+            name="tanggal_terbit"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <DatePickerField
+                    label="Tanggal Terbit *"
+                    value={field.value ?? null}
+                    onChange={(value) => {
+                      field.onChange(value);
+                      if (value && jenis !== 'free_track') {
+                        setValue('tanggal_kedaluwarsa', tambahDuaTahun(value));
+                      }
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="tanggal_kedaluwarsa"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <DatePickerField
+                    label="Tanggal Kedaluwarsa"
+                    value={tanpaMasaBerlaku ? null : (field.value ?? null)}
+                    onChange={field.onChange}
+                    disabled={tanpaMasaBerlaku}
+                  />
+                </FormControl>
+                <FormDescription>
+                  {tanpaMasaBerlaku
+                    ? 'Free track tidak pernah kedaluwarsa — kolom ini dinonaktifkan.'
+                    : 'Terisi otomatis dari tanggal terbit + 2 tahun, bisa ditimpa bila sertifikat fisik berbeda.'}
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-      <Field label="Catatan" htmlFor="catatan">
-        <Textarea id="catatan" rows={3} {...register('catatan')} />
-      </Field>
+        <FormField
+          control={control}
+          name="qr_aktif"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center gap-2 space-y-0">
+              <FormControl>
+                <Switch checked={field.value} onCheckedChange={field.onChange} />
+              </FormControl>
+              <FormLabel className="font-normal">QR aktif — bisa diverifikasi publik di /verify</FormLabel>
+            </FormItem>
+          )}
+        />
 
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks disabled:opacity-50"
-        >
-          {isSubmitting ? 'Menyimpan…' : 'Simpan'}
-        </button>
-      </div>
-    </form>
+        <FormField
+          control={control}
+          name="catatan"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Catatan</FormLabel>
+              <FormControl>
+                <Textarea rows={3} {...field} value={field.value ?? ''} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="flex justify-end">
+          <Button type="submit" disabled={isSubmitting} className="h-11 px-6">
+            {isSubmitting ? 'Menyimpan…' : 'Simpan'}
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 }

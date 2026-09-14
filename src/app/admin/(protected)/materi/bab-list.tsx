@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { PlusIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { ReorderButtons } from '@/components/admin/reorder-buttons';
 import { moveItem } from '@/lib/reorder';
 import { reorderBabAction } from './bab-actions';
@@ -50,19 +52,16 @@ export function BabList({ materialId, bab }: { materialId: number; bab: Bab[] })
 
   return (
     <div className="flex flex-col gap-4 pt-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-warna-teks">Daftar Materi</h2>
-        <Link
-          href="/admin/materi/baru"
-          className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
-        >
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 className="text-lg font-semibold text-foreground">Daftar Materi</h2>
+        <Link href="/admin/materi/baru" className={cn(buttonVariants(), 'h-11 gap-1.5 px-5')}>
           <PlusIcon className="size-4" /> Tambah Materi
         </Link>
       </div>
 
       {pesanError && <p className="text-sm text-destructive">{pesanError}</p>}
 
-      <div className="overflow-x-auto rounded-lg border border-warna-latar-2">
+      <div className="overflow-x-auto rounded-lg border border-border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -74,7 +73,7 @@ export function BabList({ materialId, bab }: { materialId: number; bab: Bab[] })
           <TableBody>
             {daftar.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={3} className="text-center text-warna-teks-2">
+                <TableCell colSpan={3} className="text-center text-muted-foreground">
                   Belum ada materi. Tambah materi pertama untuk mulai mengisi halaman ini.
                 </TableCell>
               </TableRow>
@@ -90,7 +89,7 @@ export function BabList({ materialId, bab }: { materialId: number; bab: Bab[] })
                       onDown={() => pindah(index, 'down')}
                     />
                   </TableCell>
-                  <TableCell className="font-medium text-warna-teks">{b.judul_id}</TableCell>
+                  <TableCell className="font-medium text-foreground">{b.judul_id}</TableCell>
                   <TableCell className="text-right">
                     <BabRowActions babId={b.id} judul={b.judul_id} />
                   </TableCell>

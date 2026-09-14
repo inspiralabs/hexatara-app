@@ -2,6 +2,8 @@
 
 import { useRef, useState, useTransition } from 'react';
 import { toast } from 'sonner';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import { imporSoalAction, type BarisGagal } from './actions';
 
 type Laporan = { berhasil: number; gagal: BarisGagal[] };
@@ -42,35 +44,29 @@ export function ImporSoalForm() {
   return (
     <div className="flex flex-col gap-6">
       <form onSubmit={onSubmit} className="flex flex-col gap-3">
-        <label htmlFor="berkas" className="text-sm font-medium text-warna-teks">
-          Berkas CSV atau Excel
-        </label>
+        <Label htmlFor="berkas">Berkas CSV atau Excel</Label>
         <input
           ref={fileRef}
           id="berkas"
           name="berkas"
           type="file"
           accept=".csv,.xlsx,.xls"
-          className="h-11 w-full rounded-lg border border-warna-latar-2 px-3 text-sm text-warna-teks file:mr-3 file:h-full file:border-0 file:bg-transparent file:font-medium file:text-warna-utama"
+          className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground file:mr-3 file:h-full file:border-0 file:bg-transparent file:font-medium file:text-primary"
         />
-        <button
-          type="submit"
-          disabled={pending}
-          className="inline-flex h-11 w-fit items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks disabled:opacity-50"
-        >
+        <Button type="submit" disabled={pending} className="h-11 w-fit px-6">
           {pending ? 'Memproses…' : 'Impor'}
-        </button>
+        </Button>
       </form>
 
       {pesanError && <p className="text-sm text-destructive">{pesanError}</p>}
 
       {laporan && (
-        <div className="rounded-lg border border-warna-latar-2 p-4">
-          <p className="font-medium text-warna-sukses">Berhasil: {laporan.berhasil} baris</p>
+        <div className="rounded-lg border border-border p-4">
+          <p className="font-medium text-emerald-700 dark:text-emerald-400">Berhasil: {laporan.berhasil} baris</p>
           {laporan.gagal.length > 0 && (
             <div className="mt-2">
-              <p className="font-medium text-warna-bahaya">Gagal: {laporan.gagal.length} baris</p>
-              <ul className="mt-1 list-disc pl-5 text-sm text-warna-teks-2">
+              <p className="font-medium text-destructive">Gagal: {laporan.gagal.length} baris</p>
+              <ul className="mt-1 list-disc pl-5 text-sm text-muted-foreground">
                 {laporan.gagal.map((g) => (
                   <li key={g.baris}>
                     Baris {g.baris} — {g.alasan}

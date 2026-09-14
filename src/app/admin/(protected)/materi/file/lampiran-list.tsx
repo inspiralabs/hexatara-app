@@ -2,9 +2,15 @@
 
 import { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { PlusIcon } from 'lucide-react';
+import {
+  FileIcon,
+  FileSpreadsheetIcon,
+  FileTextIcon,
+  PlusIcon,
+  PresentationIcon,
+} from 'lucide-react';
 import { toast } from 'sonner';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button } from '@/components/ui/button';
 import { ReorderButtons } from '@/components/admin/reorder-buttons';
 import { moveItem } from '@/lib/reorder';
 import { reorderLampiranAction } from './lampiran-actions';
@@ -23,6 +29,32 @@ function keDefaultValues(l: Lampiran): LampiranFormInput {
     deskripsi_en: l.deskripsi_en ?? '',
     url_file: l.url_file,
   };
+}
+
+function ekstensiDariUrl(url: string) {
+  const path = url.split('?')[0] ?? '';
+  const bagian = path.split('.');
+  return (bagian[bagian.length - 1] ?? '').toLowerCase();
+}
+
+function IkonTipeFile({ url }: { url: string }) {
+  const ext = ekstensiDariUrl(url);
+  const Icon =
+    ext === 'pdf'
+      ? FileTextIcon
+      : ext === 'xls' || ext === 'xlsx'
+        ? FileSpreadsheetIcon
+        : ext === 'ppt' || ext === 'pptx'
+          ? PresentationIcon
+          : ext === 'doc' || ext === 'docx'
+            ? FileTextIcon
+            : FileIcon;
+
+  return (
+    <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+      <Icon className="size-6" aria-hidden />
+    </div>
+  );
 }
 
 export function LampiranList({ chapterId, lampiran }: { chapterId: number; lampiran: Lampiran[] }) {
@@ -75,55 +107,43 @@ export function LampiranList({ chapterId, lampiran }: { chapterId: number; lampi
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-end">
-        <button
-          type="button"
-          onClick={bukaTambah}
-          className="inline-flex h-11 items-center gap-1.5 rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
-        >
+        <Button type="button" onClick={bukaTambah} className="h-11 gap-1.5 px-5">
           <PlusIcon className="size-4" /> Tambah Lampiran
-        </button>
+        </Button>
       </div>
 
       {pesanError && <p className="text-sm text-destructive">{pesanError}</p>}
 
-      <div className="overflow-x-auto rounded-lg border border-warna-latar-2">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-16">Urutan</TableHead>
-              <TableHead>Judul</TableHead>
-              <TableHead className="text-right">Aksi</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {daftar.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={3} className="text-center text-warna-teks-2">
-                  Belum ada lampiran untuk bab ini.
-                </TableCell>
-              </TableRow>
-            ) : (
-              daftar.map((l, index) => (
-                <TableRow key={l.id}>
-                  <TableCell>
-                    <ReorderButtons
-                      label={l.judul_id}
-                      disabledUp={index === 0 || pending}
-                      disabledDown={index === daftar.length - 1 || pending}
-                      onUp={() => pindah(index, 'up')}
-                      onDown={() => pindah(index, 'down')}
-                    />
-                  </TableCell>
-                  <TableCell className="font-medium text-warna-teks">{l.judul_id}</TableCell>
-                  <TableCell className="text-right">
-                    <LampiranRowActions lampiranId={l.id} judul={l.judul_id} onUbah={() => bukaUbah(l)} />
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      {daftar.length === 0 ? (
+        <p className="rounded-lg border border-border p-4 text-center text-sm text-muted-foreground">
+          Belum ada lampiran untuk bab ini.
+        </p>
+      ) : (
+        <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {daftar.map((l, index) => (
+            <li
+              key={l.id}
+              className="flex items-start gap-2 rounded-lg border border-border p-3 sm:gap-3 sm:p-4"
+            >
+              <ReorderButtons
+                label={l.judul_id}
+                disabledUp={index === 0 || pending}
+                disabledDown={index === daftar.length - 1 || pending}
+                onUp={() => pindah(index, 'up')}
+                onDown={() => pindah(index, 'down')}
+              />
+              <IkonTipeFile url={l.url_file} />
+              <div className="min-w-0 flex-1">
+                <p className="truncate font-medium text-foreground">{l.judul_id}</p>
+                {l.deskripsi_id ? (
+                  <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">{l.deskripsi_id}</p>
+                ) : null}
+              </div>
+              <LampiranRowActions lampiranId={l.id} judul={l.judul_id} onUbah={() => bukaUbah(l)} />
+            </li>
+          ))}
+        </ul>
+      )}
 
       <LampiranFormDialog
         open={dialogOpen}

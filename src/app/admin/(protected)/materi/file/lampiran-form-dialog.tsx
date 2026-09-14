@@ -2,16 +2,17 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 import { LampiranFormSchema, type LampiranFormInput } from '@/lib/validations/materi-lampiran-admin';
 import { simpanLampiranAction, uploadLampiranBabAction } from './lampiran-actions';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 const DEFAULT_VALUES: LampiranFormInput = {
   judul_id: '',
@@ -20,15 +21,6 @@ const DEFAULT_VALUES: LampiranFormInput = {
   deskripsi_en: '',
   url_file: '',
 };
-
-function Field({ label, htmlFor, children }: { label: string; htmlFor: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor={htmlFor}>{label}</Label>
-      {children}
-    </div>
-  );
-}
 
 export function LampiranFormDialog({
   open,
@@ -46,16 +38,16 @@ export function LampiranFormDialog({
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors, isSubmitting },
-  } = useForm<LampiranFormInput>({
+  const form = useForm<LampiranFormInput>({
     resolver: zodResolver(LampiranFormSchema),
     defaultValues: defaultValues ?? DEFAULT_VALUES,
   });
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = form;
 
   useEffect(() => {
     if (open) {
@@ -105,77 +97,116 @@ export function LampiranFormDialog({
           <DialogTitle>{lampiranId == null ? 'Tambah Lampiran' : 'Ubah Lampiran'}</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
-          {pesanError && (
-            <Alert variant="destructive">
-              <AlertDescription>{pesanError}</AlertDescription>
-            </Alert>
-          )}
-
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <Field label="Judul (Indonesia) *" htmlFor="judul_id">
-              <Input id="judul_id" {...register('judul_id')} />
-              {errors.judul_id && <p className="text-sm text-destructive">{errors.judul_id.message}</p>}
-            </Field>
-            <Field label="Judul (Inggris)" htmlFor="judul_en">
-              <Input id="judul_en" {...register('judul_en')} />
-            </Field>
-
-            <Field label="Deskripsi (Indonesia)" htmlFor="deskripsi_id">
-              <Textarea id="deskripsi_id" rows={2} {...register('deskripsi_id')} />
-            </Field>
-            <Field label="Deskripsi (Inggris)" htmlFor="deskripsi_en">
-              <Textarea id="deskripsi_en" rows={2} {...register('deskripsi_en')} />
-            </Field>
-          </div>
-
-          <Controller
-            control={control}
-            name="url_file"
-            render={({ field }) => (
-              <div className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-warna-teks">Berkas (PDF/PPT/Excel/Word) *</span>
-                {field.value ? (
-                  <div className="flex items-center gap-3">
-                    <a href={field.value} target="_blank" rel="noopener noreferrer" className="text-sm text-warna-utama underline">
-                      Lihat berkas saat ini
-                    </a>
-                    <button type="button" onClick={() => field.onChange('')} className="text-sm text-destructive">
-                      Ganti
-                    </button>
-                  </div>
-                ) : (
-                  <input
-                    type="file"
-                    accept=".pdf,.ppt,.pptx,.xls,.xlsx,.doc,.docx"
-                    disabled={uploading}
-                    onChange={(e) => handleFile(e.target.files?.[0], field.onChange)}
-                    className="text-sm text-warna-teks-2"
-                  />
-                )}
-                {uploading && <p className="text-sm text-warna-teks-2">Mengunggah…</p>}
-                {errors.url_file && <p className="text-sm text-destructive">{errors.url_file.message}</p>}
-              </div>
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
+            {pesanError && (
+              <Alert variant="destructive">
+                <AlertDescription>{pesanError}</AlertDescription>
+              </Alert>
             )}
-          />
 
-          <div className="flex gap-3 pt-2">
-            <button
-              type="submit"
-              disabled={isSubmitting || uploading}
-              className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks disabled:opacity-50"
-            >
-              {isSubmitting ? 'Menyimpan…' : 'Simpan'}
-            </button>
-            <button
-              type="button"
-              onClick={() => onOpenChange(false)}
-              className="inline-flex h-11 items-center justify-center rounded-lg border border-warna-latar-2 px-6 text-base font-semibold text-warna-teks"
-            >
-              Batal
-            </button>
-          </div>
-        </form>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <FormField
+                control={control}
+                name="judul_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Judul (Indonesia) *</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="judul_en"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Judul (Inggris)</FormLabel>
+                    <FormControl>
+                      <Input {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="deskripsi_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Deskripsi (Indonesia)</FormLabel>
+                    <FormControl>
+                      <Textarea rows={2} {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name="deskripsi_en"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Deskripsi (Inggris)</FormLabel>
+                    <FormControl>
+                      <Textarea rows={2} {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={control}
+              name="url_file"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Berkas (PDF/PPT/Excel/Word) *</FormLabel>
+                  <FormControl>
+                    {field.value ? (
+                      <div className="flex flex-wrap items-center gap-3">
+                        <a
+                          href={field.value}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-primary underline"
+                        >
+                          Lihat berkas saat ini
+                        </a>
+                        <Button type="button" variant="ghost" size="sm" onClick={() => field.onChange('')}>
+                          Ganti
+                        </Button>
+                      </div>
+                    ) : (
+                      <input
+                        type="file"
+                        accept=".pdf,.ppt,.pptx,.xls,.xlsx,.doc,.docx"
+                        disabled={uploading}
+                        onChange={(e) => handleFile(e.target.files?.[0], field.onChange)}
+                        className="text-sm text-muted-foreground"
+                      />
+                    )}
+                  </FormControl>
+                  {uploading && <p className="text-sm text-muted-foreground">Mengunggah…</p>}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex gap-3 pt-2">
+              <Button type="submit" disabled={isSubmitting || uploading} className="h-11 px-6">
+                {isSubmitting ? 'Menyimpan…' : 'Simpan'}
+              </Button>
+              <Button type="button" variant="outline" className="h-11 px-6" onClick={() => onOpenChange(false)}>
+                Batal
+              </Button>
+            </div>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

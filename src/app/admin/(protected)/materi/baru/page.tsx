@@ -20,7 +20,7 @@ export default async function AdminMateriBaruPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">Tambah Materi</h1>
+      <h1 className="text-xl font-semibold text-foreground">Tambah Materi</h1>
       <BabForm mode="create" materialId={materialId} defaultValues={DEFAULT_VALUES} />
     </div>
   );

@@ -27,7 +27,7 @@ export default async function AdminMateriUbahPage({ params }: { params: Promise<
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-bold text-warna-teks">Ubah Materi</h1>
+      <h1 className="text-xl font-semibold text-foreground">Ubah Materi</h1>
       <BabForm mode="edit" materialId={materialId} babId={bab.id} defaultValues={defaultValues} />
     </div>
   );

@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { SertifikatTable } from './sertifikat-table';
 
 export default async function AdminSertifikatPage() {
@@ -32,19 +34,13 @@ export default async function AdminSertifikatPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-warna-teks">Sertifikat</h1>
-        <div className="flex gap-2">
-          <Link
-            href="/admin/sertifikat/impor"
-            className="inline-flex h-11 items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama"
-          >
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-xl font-semibold text-foreground">Sertifikat</h1>
+        <div className="flex flex-wrap gap-2">
+          <Link href="/admin/sertifikat/impor" className={cn(buttonVariants({ variant: 'outline' }), 'h-11 px-5')}>
             Impor Massal
           </Link>
-          <Link
-            href="/admin/sertifikat/baru"
-            className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
-          >
+          <Link href="/admin/sertifikat/baru" className={cn(buttonVariants(), 'h-11 px-5')}>
             Tambah Sertifikat
           </Link>
         </div>

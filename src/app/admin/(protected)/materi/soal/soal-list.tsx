@@ -46,7 +46,7 @@ export function SoalList({ soal }: { soal: Soal[] }) {
     <div className="flex flex-col gap-4">
       {pesanError && <p className="text-sm text-destructive">{pesanError}</p>}
 
-      <div className="overflow-x-auto rounded-lg border border-warna-latar-2">
+      <div className="overflow-x-auto rounded-lg border border-border">
         <Table>
           <TableHeader>
             <TableRow>
@@ -59,7 +59,7 @@ export function SoalList({ soal }: { soal: Soal[] }) {
           <TableBody>
             {daftar.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="text-center text-warna-teks-2">
+                <TableCell colSpan={4} className="text-center text-muted-foreground">
                   Belum ada soal.
                 </TableCell>
               </TableRow>
@@ -75,7 +75,7 @@ export function SoalList({ soal }: { soal: Soal[] }) {
                       onDown={() => pindah(index, 'down')}
                     />
                   </TableCell>
-                  <TableCell className="font-medium text-warna-teks">{s.pertanyaan_id}</TableCell>
+                  <TableCell className="font-medium text-foreground">{s.pertanyaan_id}</TableCell>
                   <TableCell>{s.is_active ? 'Ya' : 'Tidak'}</TableCell>
                   <TableCell className="text-right">
                     <SoalRowActions id={s.id} pertanyaan={s.pertanyaan_id} />
