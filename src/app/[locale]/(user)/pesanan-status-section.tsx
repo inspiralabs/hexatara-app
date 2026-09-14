@@ -1,3 +1,4 @@
+import { CheckCircle2Icon, ClockIcon, PackageIcon } from 'lucide-react';
 import { PesananUpgradeForm } from './pesanan-upgrade-form';
 import type { HargaUpgrade } from '@/lib/site-settings';
 import { BuktiTransferUpload } from './bukti-transfer-upload';
@@ -21,8 +22,8 @@ const LABEL_STATUS_KIRIM: Record<StatusKirim, string> = {
   diterima: 'Diterima',
 };
 
-// Dipakai bersama oleh /dashboard/upgrade (F03.5+F03.6) dan /dashboard/merchandise
-// (F03.10) — keduanya cuma beda paket mana yang ditawarkan, alur statusnya sama persis.
+// Dipakai bersama oleh /dashboard/transaksi (utama), /dashboard/upgrade (redirect),
+// dan /dashboard/merchandise — alur status sama persis per kelompok paket.
 export function PesananStatusSection({
   order,
   rekening,
@@ -39,20 +40,35 @@ export function PesananStatusSection({
   }
 
   if (order.status === 'menunggu_verifikasi') {
-    return <p className="text-warna-teks-2">Bukti transfer sedang diperiksa Admin.</p>;
+    return (
+      <div className="flex flex-col gap-2 rounded-lg border border-border bg-muted/40 p-4">
+        <div className="flex items-center gap-2 text-foreground">
+          <ClockIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden />
+          <p className="font-medium">Bukti transfer sedang diperiksa Admin</p>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Kami akan menghubungi kamu setelah verifikasi selesai. Tidak perlu mengunggah ulang kecuali
+          diminta.
+        </p>
+      </div>
+    );
   }
 
   if (order.status === 'disetujui') {
     return (
-      <div>
-        <p className="text-warna-teks-2">Pesanan sudah disetujui.</p>
-        {order.status_pengiriman !== 'tidak_ada' && (
-          <p className="mt-1 text-sm text-warna-teks-2">
-            Status Pengiriman:{' '}
-            <span className="font-medium text-warna-teks">
-              {LABEL_STATUS_KIRIM[order.status_pengiriman]}
-            </span>
+      <div className="flex flex-col gap-2 rounded-lg border border-emerald-600/30 bg-emerald-500/5 p-4">
+        <div className="flex items-center gap-2 text-foreground">
+          <CheckCircle2Icon className="size-5 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden />
+          <p className="font-medium">Pesanan sudah disetujui</p>
+        </div>
+        {order.status_pengiriman !== 'tidak_ada' ? (
+          <p className="flex items-center gap-2 text-sm text-muted-foreground">
+            <PackageIcon className="size-4 shrink-0" aria-hidden />
+            Status pengiriman:{' '}
+            <span className="font-medium text-foreground">{LABEL_STATUS_KIRIM[order.status_pengiriman]}</span>
           </p>
+        ) : (
+          <p className="text-sm text-muted-foreground">Sertifikat QR aktif sudah tersedia di menu Sertifikat Saya.</p>
         )}
       </div>
     );
@@ -64,13 +80,18 @@ export function PesananStatusSection({
       {order.status === 'ditolak' && (
         <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-4">
           <p className="text-sm font-medium text-destructive">Bukti transfer ditolak</p>
-          <p className="mt-1 text-sm text-warna-teks-2">{order.alasan_tolak}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{order.alasan_tolak}</p>
         </div>
       )}
+      {order.status === 'menunggu_bukti' && (
+        <p className="text-sm text-muted-foreground">
+          Pesanan sudah dibuat. Transfer sesuai instruksi di bawah, lalu unggah bukti pembayarannya.
+        </p>
+      )}
       {rekening && (
-        <div className="rounded-lg border border-warna-latar-2 bg-warna-latar-2 p-4">
-          <p className="text-sm font-medium text-warna-teks">Instruksi Transfer</p>
-          <p className="mt-1 text-sm text-warna-teks-2">
+        <div className="rounded-lg border border-border bg-muted/40 p-4">
+          <p className="text-sm font-medium text-foreground">Instruksi Transfer</p>
+          <p className="mt-1 text-sm text-muted-foreground">
             {rekening.bank} — {rekening.nomor} a.n. {rekening.atas_nama}
           </p>
         </div>

@@ -34,7 +34,7 @@ export function PesananUpgradeForm({
 }) {
   const router = useRouter();
   const [pesanError, setPesanError] = useState<string | null>(null);
-  // Dijamin tidak kosong oleh pemanggil (dashboard/upgrade & dashboard/merchandise) —
+  // Dijamin tidak kosong oleh pemanggil (dashboard/transaksi & dashboard/merchandise) —
   // dipisah dari paketOptions[0] langsung supaya lolos noUncheckedIndexedAccess.
   const paketTunggal = paketOptions[0] as Paket;
   const [paketDipilih, setPaketDipilih] = useState<Paket>(paketTunggal);
@@ -57,6 +57,8 @@ export function PesananUpgradeForm({
       setPesanError(hasil.pesan);
       return;
     }
+    // Pastikan RSC Transaksi memuat ulang order baru → UI ganti ke unggah bukti
+    // tanpa butuh hard refresh (revalidatePath di action + refresh di sini).
     router.refresh();
   }
 
@@ -84,27 +86,25 @@ export function PesananUpgradeForm({
               {paketOptions.map((paket) => (
                 <Label
                   key={paket}
-                  className="flex items-center gap-3 rounded-lg border border-warna-latar-2 p-4 font-normal"
+                  className="flex items-center gap-3 rounded-lg border border-border p-4 font-normal"
                 >
                   <RadioGroupItem value={paket} />
                   <span className="flex-1">{LABEL_PAKET[paket]}</span>
-                  <span className="font-semibold text-warna-teks">
-                    {formatRupiah(harga[paket])}
-                  </span>
+                  <span className="font-semibold text-foreground">{formatRupiah(harga[paket])}</span>
                 </Label>
               ))}
             </RadioGroup>
           )}
         />
       ) : (
-        <div className="flex items-center justify-between rounded-lg border border-warna-latar-2 p-4">
+        <div className="flex items-center justify-between rounded-lg border border-border p-4">
           <span>{LABEL_PAKET[paketTunggal]}</span>
-          <span className="font-semibold text-warna-teks">{formatRupiah(harga[paketTunggal])}</span>
+          <span className="font-semibold text-foreground">{formatRupiah(harga[paketTunggal])}</span>
         </div>
       )}
 
       {perluAlamat && (
-        <div className="flex flex-col gap-3 rounded-lg border border-warna-latar-2 p-4">
+        <div className="flex flex-col gap-3 rounded-lg border border-border p-4">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="nama_penerima">Nama penerima</Label>
             <Input id="nama_penerima" {...register('alamat.nama_penerima')} />

@@ -113,7 +113,7 @@ export async function tolakPesananAction(orderId: number, alasan: string) {
     await kirimEmailPembayaranDitolak(email, {
       nama: profile?.nama_lengkap ?? '',
       alasan,
-      tautanUpload: `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard/upgrade`,
+      tautanUpload: `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard/transaksi`,
     });
   }
 

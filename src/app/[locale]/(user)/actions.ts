@@ -1,5 +1,6 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
 import { getLocale } from 'next-intl/server';
 import { redirect } from '@/i18n/navigation';
 import { requireUser } from '@/lib/auth/guard';
@@ -7,6 +8,14 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { PesananSchema } from '@/lib/validations/upgrade';
 import { getHargaUpgrade } from '@/lib/site-settings';
+
+function revalidateDashboardPesanan() {
+  // Layout locale-aware — revalidate path tanpa locale (Next cocokkan semua).
+  revalidatePath('/dashboard/transaksi');
+  revalidatePath('/dashboard/upgrade');
+  revalidatePath('/dashboard/merchandise');
+  revalidatePath('/dashboard');
+}
 
 export async function logoutAction() {
   await requireUser();
@@ -76,6 +85,7 @@ export async function buatPesananAction(input: unknown) {
     return { ok: false as const, pesan: 'Gagal membuat pesanan. Coba lagi.' };
   }
 
+  revalidateDashboardPesanan();
   return { ok: true as const, orderId: order.id };
 }
 
@@ -126,5 +136,6 @@ export async function unggahBuktiTransferAction(orderId: number, formData: FormD
     return { ok: false as const, pesan: 'Gagal menyimpan status pesanan. Coba lagi.' };
   }
 
+  revalidateDashboardPesanan();
   return { ok: true as const };
 }
