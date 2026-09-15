@@ -59,7 +59,6 @@ export function InstructorFormDialog({
   // dibuka dengan instruktur yang berbeda (atau dikosongkan untuk tambah baru).
   useEffect(() => {
     if (open) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       reset(defaultValues ?? DEFAULT_VALUES);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

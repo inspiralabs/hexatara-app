@@ -147,7 +147,7 @@ export default async function PublicLayout({ children }: { children: React.React
                   className="inline-flex items-center gap-2 hover:text-foreground"
                 >
                   <InstagramIcon className="size-4 shrink-0" />
-                  <span>Instagram</span>
+                  <span>@hexatara</span>
                 </a>
               )}
               {kontak.email && (
