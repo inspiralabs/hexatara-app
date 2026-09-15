@@ -19,7 +19,7 @@ export async function CompanyProfileSection() {
   const konten = pick(data.konten_id, data.konten_en, locale);
 
   return (
-    <section className="bg-warna-latar-2">
+    <section className="bg-muted">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:flex sm:items-center sm:gap-8 md:py-24">
         {data.gambar_url && (
           <div className="relative mb-6 aspect-video w-full overflow-hidden rounded-xl sm:mb-0 sm:w-1/2">
@@ -33,12 +33,12 @@ export async function CompanyProfileSection() {
           </div>
         )}
         <div className={data.gambar_url ? "sm:w-1/2" : ""}>
-          {judul && <h2 className="text-xl font-bold text-warna-teks sm:text-2xl">{judul}</h2>}
+          {judul && <h2 className="text-xl font-bold text-foreground sm:text-2xl">{judul}</h2>}
           {konten && (
             // konten diisi lewat Tiptap di Admin Panel (ENGINEERING §5.8) — HTML dari
             // Admin, bukan input publik, jadi dangerouslySetInnerHTML aman di sini.
             <div
-              className="mt-3 space-y-3 text-base text-warna-teks-2 [&_a]:underline [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-warna-teks [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-5"
+              className="mt-3 space-y-3 text-base text-muted-foreground [&_a]:underline [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-foreground [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-5"
               dangerouslySetInnerHTML={{ __html: konten }}
             />
           )}

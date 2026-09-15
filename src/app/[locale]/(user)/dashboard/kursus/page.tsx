@@ -123,12 +123,14 @@ export default async function KursusPage() {
               Kuis {kuisSelesai ? 'sudah selesai' : 'belum dikerjakan'}
             </div>
 
-            <Link
-              href={`/materi/${material.id}`}
-              className="mt-4 inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks"
-            >
-              {babSelesai === 0 ? 'Mulai Belajar' : 'Lanjutkan Belajar'}
-            </Link>
+            {!kuisSelesai && (
+              <Link
+                href={`/materi/${material.id}`}
+                className="mt-4 inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks"
+              >
+                {babSelesai === 0 ? 'Mulai Belajar' : 'Lanjutkan Belajar'}
+              </Link>
+            )}
           </div>
         )}
       </section>

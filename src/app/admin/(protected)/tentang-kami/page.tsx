@@ -7,7 +7,7 @@ export default async function AdminTentangKamiPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-warna-teks">Tentang Kami</h1>
+        <h1 className="text-xl font-bold text-foreground">Tentang Kami</h1>
       </div>
 
       <div className="mx-auto flex w-full max-w-2xl flex-col items-center gap-6 rounded-xl border border-border bg-card p-8 text-center">

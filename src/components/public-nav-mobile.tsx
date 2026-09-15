@@ -49,7 +49,7 @@ export function PublicNavMobile({
               key={item.href}
               href={item.href}
               onClick={() => setTerbuka(false)}
-              className="flex min-h-11 items-center text-base text-warna-teks hover:text-warna-utama"
+              className="flex min-h-11 items-center text-base text-foreground hover:text-foreground"
             >
               {item.label}
             </Link>
@@ -57,7 +57,7 @@ export function PublicNavMobile({
           <Link
             href={hrefMasuk}
             onClick={() => setTerbuka(false)}
-            className="flex min-h-11 items-center text-base font-semibold text-warna-utama"
+            className="flex min-h-11 items-center text-base font-semibold text-foreground"
           >
             {labelMasuk}
           </Link>

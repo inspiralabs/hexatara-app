@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,7 +17,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { DatePickerField } from '@/components/admin/date-picker-field';
 import { ImageUploadField } from '@/components/image-upload-field';
@@ -45,7 +44,6 @@ export function PopupFormDialog({
   defaultValues: PopupFormInput | null;
 }) {
   const router = useRouter();
-  const [pesanError, setPesanError] = useState<string | null>(null);
   const form = useForm<PopupFormInput>({
     resolver: zodResolver(PopupFormSchema),
     defaultValues: defaultValues ?? DEFAULT_VALUES,
@@ -62,17 +60,14 @@ export function PopupFormDialog({
   useEffect(() => {
     if (open) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setPesanError(null);
       reset(defaultValues ?? DEFAULT_VALUES);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, popupId]);
 
   async function onSubmit(data: PopupFormInput) {
-    setPesanError(null);
     const hasil = await simpanPopupAction(popupId, data);
     if (!hasil.ok) {
-      setPesanError(hasil.pesan);
       toast.error(hasil.pesan);
       return;
     }
@@ -90,11 +85,6 @@ export function PopupFormDialog({
 
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
-            {pesanError && (
-              <Alert variant="destructive">
-                <AlertDescription>{pesanError}</AlertDescription>
-              </Alert>
-            )}
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <FormField

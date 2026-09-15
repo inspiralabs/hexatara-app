@@ -11,7 +11,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 
 const DEFAULT_VALUES: LampiranFormInput = {
@@ -36,7 +35,6 @@ export function LampiranFormDialog({
   defaultValues: LampiranFormInput | null;
 }) {
   const router = useRouter();
-  const [pesanError, setPesanError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const form = useForm<LampiranFormInput>({
     resolver: zodResolver(LampiranFormSchema),
@@ -52,7 +50,6 @@ export function LampiranFormDialog({
   useEffect(() => {
     if (open) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setPesanError(null);
       reset(defaultValues ?? DEFAULT_VALUES);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,14 +57,12 @@ export function LampiranFormDialog({
 
   async function handleFile(file: File | undefined, onChange: (url: string) => void) {
     if (!file) return;
-    setPesanError(null);
     setUploading(true);
     try {
       const fd = new FormData();
       fd.append('file', file);
       const hasil = await uploadLampiranBabAction(fd);
       if (!hasil.ok) {
-        setPesanError(hasil.pesan);
         toast.error(hasil.pesan);
         return;
       }
@@ -78,10 +73,8 @@ export function LampiranFormDialog({
   }
 
   async function onSubmit(data: LampiranFormInput) {
-    setPesanError(null);
     const hasil = await simpanLampiranAction(chapterId, lampiranId, data);
     if (!hasil.ok) {
-      setPesanError(hasil.pesan);
       toast.error(hasil.pesan);
       return;
     }
@@ -99,11 +92,6 @@ export function LampiranFormDialog({
 
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
-            {pesanError && (
-              <Alert variant="destructive">
-                <AlertDescription>{pesanError}</AlertDescription>
-              </Alert>
-            )}
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <FormField

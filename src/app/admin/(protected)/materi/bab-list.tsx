@@ -27,12 +27,10 @@ export function BabList({ materialId, bab }: { materialId: number; bab: Bab[] })
     setDaftar(bab);
   }, [bab]);
   const [pending, startTransition] = useTransition();
-  const [pesanError, setPesanError] = useState<string | null>(null);
 
   function pindah(index: number, arah: 'up' | 'down') {
     const baru = moveItem(daftar, index, arah);
     if (baru === daftar) return;
-    setPesanError(null);
     setDaftar(baru);
     startTransition(async () => {
       const hasil = await reorderBabAction(
@@ -40,7 +38,6 @@ export function BabList({ materialId, bab }: { materialId: number; bab: Bab[] })
         baru.map((b) => b.id)
       );
       if (!hasil.ok) {
-        setPesanError(hasil.pesan);
         toast.error(hasil.pesan);
         setDaftar(daftar); // batalkan optimistic update
         return;
@@ -58,8 +55,6 @@ export function BabList({ materialId, bab }: { materialId: number; bab: Bab[] })
           <PlusIcon className="size-4" /> Tambah Materi
         </Link>
       </div>
-
-      {pesanError && <p className="text-sm text-destructive">{pesanError}</p>}
 
       <div className="overflow-x-auto rounded-lg border border-border">
         <Table>

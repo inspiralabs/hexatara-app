@@ -82,14 +82,14 @@ export default async function PelatihanPage({
   return (
     <div className="pb-16">
       {/* Hero freemium */}
-      <section className="border-b border-warna-latar-2 bg-warna-latar-2">
+      <section className="border-b border-border bg-muted">
         <div className="mx-auto max-w-4xl px-4 py-12 text-center">
-          <h1 className="text-2xl font-bold text-warna-teks sm:text-3xl">{t("freemiumHeroTitle")}</h1>
-          <p className="mx-auto mt-3 max-w-xl text-base text-warna-teks-2">{t("freemiumHeroDesc")}</p>
+          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">{t("freemiumHeroTitle")}</h1>
+          <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground">{t("freemiumHeroDesc")}</p>
           {materiHref && (
             <Link
               href={materiHref}
-              className="mt-6 inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
+              className="mt-6 inline-flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
             >
               {t("freemiumHeroCta")}
             </Link>
@@ -98,8 +98,8 @@ export default async function PelatihanPage({
       </section>
 
       <div className="mx-auto max-w-6xl px-4 py-10">
-        <h2 className="text-xl font-bold text-warna-teks sm:text-2xl">{t("pageTitle")}</h2>
-        <p className="mt-2 text-base text-warna-teks-2">{t("pageSubtitle")}</p>
+        <h2 className="text-xl font-bold text-foreground sm:text-2xl">{t("pageTitle")}</h2>
+        <p className="mt-2 text-base text-muted-foreground">{t("pageSubtitle")}</p>
 
         {/* Filter + sort */}
         <div className="mt-6">
@@ -113,7 +113,7 @@ export default async function PelatihanPage({
 
         {/* Grid */}
         {!data || data.length === 0 ? (
-          <p className="mt-6 rounded-xl border border-warna-latar-2 bg-warna-latar-2 p-5 text-sm text-warna-teks-2">
+          <p className="mt-6 rounded-xl border border-border bg-muted p-5 text-sm text-muted-foreground">
             {t("kosong")}
           </p>
         ) : (
@@ -131,15 +131,15 @@ export default async function PelatihanPage({
         )}
 
         {/* CTA custom training */}
-        <div className="mt-16 flex flex-col items-center gap-4 rounded-xl border border-warna-latar-2 bg-warna-latar-2 p-8 text-center sm:p-12">
-          <h2 className="text-xl font-bold text-warna-teks sm:text-2xl">{t("customCtaHeading")}</h2>
-          <p className="max-w-xl text-base text-warna-teks-2">{t("customCtaDesc")}</p>
+        <div className="mt-16 flex flex-col items-center gap-4 rounded-xl border border-border bg-muted p-8 text-center sm:p-12">
+          <h2 className="text-xl font-bold text-foreground sm:text-2xl">{t("customCtaHeading")}</h2>
+          <p className="max-w-xl text-base text-muted-foreground">{t("customCtaDesc")}</p>
           {waCustomLink && (
             <a
               href={waCustomLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
+              className="mt-2 inline-flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
             >
               {t("customCtaButton")}
             </a>

@@ -61,14 +61,14 @@ export default async function AdminUpgradePage() {
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <h1 className="text-xl font-bold text-warna-teks">Antrean Verifikasi Pembayaran</h1>
+        <h1 className="text-xl font-bold text-foreground">Antrean Verifikasi Pembayaran</h1>
         <div className="mt-4">
           <AntreanTable antrean={antreanDenganUrl} />
         </div>
       </div>
 
       <div>
-        <h1 className="text-xl font-bold text-warna-teks">Pengiriman Merchandise</h1>
+        <h1 className="text-xl font-bold text-foreground">Pengiriman Merchandise</h1>
         <div className="mt-4">
           <PengirimanTable pengiriman={pengirimanDenganNama} />
         </div>

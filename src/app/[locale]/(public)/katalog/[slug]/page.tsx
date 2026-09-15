@@ -10,7 +10,7 @@ import { ProdukCard } from "../produk-card";
 import { QuoteDialog } from "./quote-dialog";
 
 const KONTEN_HTML_CLASS =
-  "mt-2 space-y-3 text-base text-warna-teks-2 [&_a]:underline [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-warna-teks [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-5";
+  "mt-2 space-y-3 text-base text-muted-foreground [&_a]:underline [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-foreground [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-5";
 
 function buildWaProdukLink(nomor: string | undefined, namaProduk: string) {
   if (!nomor) return null;
@@ -80,7 +80,7 @@ export default async function KatalogDetailPage({
   return (
     <div className="pb-16">
       <div className="mx-auto max-w-6xl px-4 py-8">
-        <Link href="/katalog" className="text-sm text-warna-utama underline">
+        <Link href="/katalog" className="text-sm text-foreground underline">
           &larr; {t("backToCatalog")}
         </Link>
 
@@ -91,30 +91,30 @@ export default async function KatalogDetailPage({
           {/* Kanan: info */}
           <div className="flex flex-col gap-3">
             {produk.kategori && (
-              <span className="w-fit rounded-full bg-warna-utama/10 px-2.5 py-0.5 text-xs font-medium text-warna-utama">
+              <span className="w-fit rounded-full bg-foreground/10 px-2.5 py-0.5 text-xs font-medium text-foreground">
                 {produk.kategori}
               </span>
             )}
-            <h1 className="text-2xl font-bold text-warna-teks sm:text-3xl">{nama}</h1>
+            <h1 className="text-2xl font-bold text-foreground sm:text-3xl">{nama}</h1>
             <StarRating rating={produk.rating} />
 
             {deskripsi?.trim() && (
               <div>
-                <h2 className="text-lg font-bold text-warna-teks">{t("descriptionHeading")}</h2>
+                <h2 className="text-lg font-bold text-foreground">{t("descriptionHeading")}</h2>
                 <div className={KONTEN_HTML_CLASS} dangerouslySetInnerHTML={{ __html: deskripsi }} />
               </div>
             )}
 
             {spesifikasi?.trim() && (
               <div>
-                <h2 className="text-lg font-bold text-warna-teks">{t("specHeading")}</h2>
+                <h2 className="text-lg font-bold text-foreground">{t("specHeading")}</h2>
                 {/* HTML dari Tiptap di Admin Panel (F04.6, ENGINEERING §5.8) — hanya Admin
                     yang mengisi, dangerouslySetInnerHTML aman di sini. */}
                 <div className={KONTEN_HTML_CLASS} dangerouslySetInnerHTML={{ __html: spesifikasi }} />
               </div>
             )}
 
-            <p className="mt-2 text-3xl font-bold text-warna-teks">
+            <p className="mt-2 text-3xl font-bold text-foreground">
               {produk.harga != null ? formatRupiah(produk.harga) : t("hargaHubungiKami")}
             </p>
 
@@ -124,7 +124,7 @@ export default async function KatalogDetailPage({
                   href={waLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-11 flex-1 items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama [transition:var(--transition-hover)] hover:bg-warna-utama/5"
+                  className="inline-flex h-11 flex-1 items-center justify-center rounded-lg border border-foreground px-5 text-base font-semibold text-foreground [transition:var(--transition-hover)] hover:bg-muted"
                 >
                   {t("contactWhatsapp")}
                 </a>
@@ -138,7 +138,7 @@ export default async function KatalogDetailPage({
       {/* Suggest produk lain */}
       {suggestions && suggestions.length > 0 && (
         <div className="mx-auto max-w-6xl px-4 pb-4">
-          <h2 className="text-xl font-bold text-warna-teks sm:text-2xl">{t("suggestHeading")}</h2>
+          <h2 className="text-xl font-bold text-foreground sm:text-2xl">{t("suggestHeading")}</h2>
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {suggestions.map((s) => {
               if (s.id == null) return null;
@@ -158,15 +158,15 @@ export default async function KatalogDetailPage({
 
       {/* CTA tanya lebih lanjut */}
       <div className="mx-auto max-w-4xl px-4 pt-6">
-        <div className="flex flex-col items-center gap-4 rounded-xl border border-warna-latar-2 bg-warna-latar-2 p-8 text-center sm:p-12">
-          <h2 className="text-xl font-bold text-warna-teks sm:text-2xl">{t("finalCtaHeading")}</h2>
-          <p className="max-w-xl text-base text-warna-teks-2">{t("finalCtaDesc")}</p>
+        <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-muted p-8 text-center sm:p-12">
+          <h2 className="text-xl font-bold text-foreground sm:text-2xl">{t("finalCtaHeading")}</h2>
+          <p className="max-w-xl text-base text-muted-foreground">{t("finalCtaDesc")}</p>
           {waLink && (
             <a
               href={waLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
+              className="mt-2 inline-flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
             >
               {t("finalCtaButton")}
             </a>

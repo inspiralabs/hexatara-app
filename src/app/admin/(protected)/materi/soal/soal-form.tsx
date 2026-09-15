@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,7 +10,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Label } from '@/components/ui/label';
@@ -69,7 +67,6 @@ export function SoalForm({
   defaultValues: SoalFormInput;
 }) {
   const router = useRouter();
-  const [pesanError, setPesanError] = useState<string | null>(null);
   const form = useForm<SoalFormInput>({
     resolver: zodResolver(SoalFormSchema),
     defaultValues,
@@ -84,10 +81,8 @@ export function SoalForm({
   const jawabanBenar = useWatch({ control, name: 'jawaban_benar' });
 
   async function onSubmit(data: SoalFormInput) {
-    setPesanError(null);
     const hasil = await simpanSoalAction(mode === 'edit' ? (soalId ?? null) : null, data);
     if (!hasil.ok) {
-      setPesanError(hasil.pesan);
       toast.error(hasil.pesan);
       return;
     }
@@ -99,11 +94,6 @@ export function SoalForm({
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
-        {pesanError && (
-          <Alert variant="destructive">
-            <AlertDescription>{pesanError}</AlertDescription>
-          </Alert>
-        )}
 
         <FormField
           control={control}

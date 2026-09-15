@@ -32,17 +32,17 @@ export async function SaleBanner() {
   const tombolTeks = pick(banner.tombol_teks_id, banner.tombol_teks_en, locale);
 
   return (
-    <div className="bg-warna-utama px-4 py-3 text-warna-latar">
+    <div className="bg-primary px-4 py-3 text-background">
       <div className="mx-auto flex max-w-6xl flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-base font-semibold">{judul}</p>
-          {teks && <p className="text-sm text-warna-latar/90">{teks}</p>}
-          {urgensi && <p className="text-sm font-medium text-warna-aksen">{urgensi}</p>}
+          {teks && <p className="text-sm text-background/90">{teks}</p>}
+          {urgensi && <p className="text-sm font-medium text-foreground">{urgensi}</p>}
         </div>
         {tombolTeks && banner.tombol_url && (
           <a
             href={banner.tombol_url}
-            className="inline-flex h-11 shrink-0 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
+            className="inline-flex h-11 shrink-0 items-center justify-center rounded-lg bg-primary px-5 text-base font-semibold text-primary-foreground"
           >
             {tombolTeks}
           </a>

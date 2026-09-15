@@ -89,7 +89,7 @@ export function LanguageSwitcher() {
           <button
             type="button"
             aria-label={t("languageAriaLabel")}
-            className="flex min-h-11 min-w-11 items-center justify-center rounded-md hover:bg-warna-latar-2"
+            className="flex min-h-11 min-w-11 items-center justify-center rounded-md hover:bg-muted"
           />
         }
       >

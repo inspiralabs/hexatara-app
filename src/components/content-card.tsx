@@ -25,7 +25,7 @@ export function ContentCard({
   return (
     <article
       className={cn(
-        "flex flex-col overflow-hidden rounded-lg border border-warna-latar-2 bg-warna-latar",
+        "flex flex-col overflow-hidden rounded-lg border border-border bg-background",
         "shadow-float hover:-translate-y-0.5 hover:shadow-float-hover [transition:var(--transition-hover)]",
         className
       )}
@@ -43,14 +43,14 @@ export function ContentCard({
       )}
       <div className="flex flex-1 flex-col gap-2 p-4">
         {badges && <div className="flex flex-wrap items-center gap-2">{badges}</div>}
-        <h3 className="text-lg font-bold text-warna-teks">{title}</h3>
+        <h3 className="text-lg font-bold text-foreground">{title}</h3>
         {meta?.map((line, i) => (
-          <p key={i} className="text-sm text-warna-teks-2">
+          <p key={i} className="text-sm text-muted-foreground">
             {line}
           </p>
         ))}
         {rating !== undefined && <StarRating rating={rating} />}
-        {price && <p className="text-3xl font-bold text-warna-teks">{price}</p>}
+        {price && <p className="text-3xl font-bold text-foreground">{price}</p>}
         {cta && <div className="mt-auto pt-2">{cta}</div>}
       </div>
     </article>

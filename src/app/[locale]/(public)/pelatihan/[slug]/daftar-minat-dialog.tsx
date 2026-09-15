@@ -59,7 +59,7 @@ export function DaftarMinatDialog({ batchId }: { batchId: number }) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks">
+      <DialogTrigger className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-lg bg-primary px-5 text-base font-semibold text-primary-foreground">
         {t('registerNow')}
       </DialogTrigger>
       <DialogContent>
@@ -68,13 +68,13 @@ export function DaftarMinatDialog({ batchId }: { batchId: number }) {
             <DialogHeader>
               <DialogTitle>{t('dialog.successTitle')}</DialogTitle>
             </DialogHeader>
-            <p className="text-sm text-warna-teks-2">{t('dialog.successBody')}</p>
+            <p className="text-sm text-muted-foreground">{t('dialog.successBody')}</p>
             {waLink && (
               <a
                 href={waLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-warna-sukses px-5 text-base font-semibold text-warna-latar"
+                className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-emerald-600 px-5 text-base font-semibold text-primary-foreground"
               >
                 {t('dialog.continueWhatsapp')}
               </a>
@@ -126,12 +126,12 @@ export function DaftarMinatDialog({ batchId }: { batchId: number }) {
               <p className="text-sm text-destructive">{errors.persetujuan.message}</p>
             )}
 
-            <p className="text-xs text-warna-teks-2">{t('dialog.disclaimer')}</p>
+            <p className="text-xs text-muted-foreground">{t('dialog.disclaimer')}</p>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks disabled:opacity-50"
+              className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-primary px-5 text-base font-semibold text-primary-foreground disabled:opacity-50"
             >
               {isSubmitting ? tCommon('processing') : t('dialog.submit')}
             </button>

@@ -1,6 +1,6 @@
 import 'server-only';
 import { resend, EMAIL_FROM } from './client';
-import { getAdminNotifyEmail } from '@/lib/site-settings';
+import { getAdminNotifyEmail, getKontak } from '@/lib/site-settings';
 import {
   templateVerifikasiEmail,
   templateResetSandi,
@@ -31,26 +31,30 @@ async function kirim(to: string, template: EmailTemplate): Promise<HasilKirim> {
   }
 }
 
-export function kirimEmailVerifikasi(to: string, params: { nama: string; tautan: string }) {
-  return kirim(to, templateVerifikasiEmail(params));
+export async function kirimEmailVerifikasi(to: string, params: { nama: string; tautan: string }) {
+  const kontak = await getKontak();
+  return kirim(to, templateVerifikasiEmail(params, kontak));
 }
 
-export function kirimEmailResetSandi(to: string, params: { tautan: string }) {
-  return kirim(to, templateResetSandi(params));
+export async function kirimEmailResetSandi(to: string, params: { tautan: string }) {
+  const kontak = await getKontak();
+  return kirim(to, templateResetSandi(params, kontak));
 }
 
-export function kirimEmailPembayaranDisetujui(
+export async function kirimEmailPembayaranDisetujui(
   to: string,
   params: { nama: string; tautanDashboard: string }
 ) {
-  return kirim(to, templatePembayaranDisetujui(params));
+  const kontak = await getKontak();
+  return kirim(to, templatePembayaranDisetujui(params, kontak));
 }
 
-export function kirimEmailPembayaranDitolak(
+export async function kirimEmailPembayaranDitolak(
   to: string,
   params: { nama: string; alasan: string; tautanUpload: string }
 ) {
-  return kirim(to, templatePembayaranDitolak(params));
+  const kontak = await getKontak();
+  return kirim(to, templatePembayaranDitolak(params, kontak));
 }
 
 export async function kirimEmailLeadBaru(params: {
@@ -65,5 +69,6 @@ export async function kirimEmailLeadBaru(params: {
     return { ok: false };
   }
   const tautanAdmin = `${process.env.NEXT_PUBLIC_SITE_URL}/admin/leads`;
-  return kirim(to, templateLeadBaru({ ...params, tautanAdmin }));
+  const kontakSite = await getKontak();
+  return kirim(to, templateLeadBaru({ ...params, tautanAdmin }, kontakSite));
 }

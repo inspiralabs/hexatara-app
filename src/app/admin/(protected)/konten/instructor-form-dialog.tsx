@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,7 +17,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { ImageUploadField } from '@/components/image-upload-field';
 import { uploadGambarAdminAction } from '../actions';
@@ -45,7 +44,6 @@ export function InstructorFormDialog({
   defaultValues: InstructorFormInput | null;
 }) {
   const router = useRouter();
-  const [pesanError, setPesanError] = useState<string | null>(null);
   const form = useForm<InstructorFormInput>({
     resolver: zodResolver(InstructorFormSchema),
     defaultValues: defaultValues ?? DEFAULT_VALUES,
@@ -62,17 +60,14 @@ export function InstructorFormDialog({
   useEffect(() => {
     if (open) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setPesanError(null);
       reset(defaultValues ?? DEFAULT_VALUES);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, instructorId]);
 
   async function onSubmit(data: InstructorFormInput) {
-    setPesanError(null);
     const hasil = await simpanInstructorAction(instructorId, data);
     if (!hasil.ok) {
-      setPesanError(hasil.pesan);
       toast.error(hasil.pesan);
       return;
     }
@@ -90,11 +85,6 @@ export function InstructorFormDialog({
 
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
-            {pesanError && (
-              <Alert variant="destructive">
-                <AlertDescription>{pesanError}</AlertDescription>
-              </Alert>
-            )}
 
             <FormField
               control={control}

@@ -13,8 +13,8 @@ export async function FaqAccordion() {
     <Accordion>
       {items.map((item, i) => (
         <AccordionItem key={i} value={String(i)}>
-          <AccordionTrigger className="text-base text-warna-teks">{item.question}</AccordionTrigger>
-          <AccordionContent className="text-warna-teks-2">{item.answer}</AccordionContent>
+          <AccordionTrigger className="text-base text-foreground">{item.question}</AccordionTrigger>
+          <AccordionContent className="text-muted-foreground">{item.answer}</AccordionContent>
         </AccordionItem>
       ))}
     </Accordion>

@@ -28,13 +28,11 @@ export function BabRowActions({ babId, judul }: { babId: number; judul: string }
   const router = useRouter();
   const [hapusOpen, setHapusOpen] = useState(false);
   const [pending, startTransition] = useTransition();
-  const [pesanError, setPesanError] = useState<string | null>(null);
 
   function konfirmasiHapus() {
     startTransition(async () => {
       const hasil = await hapusBabAction(babId);
       if (!hasil.ok) {
-        setPesanError(hasil.pesan);
         toast.error(hasil.pesan);
         return;
       }
@@ -67,7 +65,6 @@ export function BabRowActions({ babId, judul }: { babId: number; judul: string }
               materi ini ikut hilang. Tindakan ini tidak bisa dibatalkan.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          {pesanError && <p className="px-4 text-sm text-destructive">{pesanError}</p>}
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
             <AlertDialogAction onClick={konfirmasiHapus} disabled={pending}>

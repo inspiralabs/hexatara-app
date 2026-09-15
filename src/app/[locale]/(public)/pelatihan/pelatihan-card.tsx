@@ -49,7 +49,7 @@ export function PelatihanCard({
       badges={
         <>
           {kategori && (
-            <span className="rounded-full bg-warna-utama/10 px-2.5 py-0.5 text-xs font-medium text-warna-utama">
+            <span className="rounded-full bg-foreground/10 px-2.5 py-0.5 text-xs font-medium text-foreground">
               {kategori}
             </span>
           )}
@@ -65,7 +65,7 @@ export function PelatihanCard({
       cta={
         <Link
           href={`/pelatihan/${batch.slug}`}
-          className="inline-flex h-11 w-fit items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama"
+          className="inline-flex h-11 w-fit items-center justify-center rounded-lg border border-foreground px-5 text-base font-semibold text-foreground"
         >
           {detailLabel}
         </Link>

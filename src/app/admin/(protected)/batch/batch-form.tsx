@@ -13,7 +13,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { DatePickerField } from '@/components/admin/date-picker-field';
@@ -47,7 +46,6 @@ export function BatchForm({
   kategoriOptions: KategoriOption[];
 }) {
   const router = useRouter();
-  const [pesanError, setPesanError] = useState<string | null>(null);
   const [slugDisentuh, setSlugDisentuh] = useState(mode === 'edit');
   const form = useForm<BatchFormInput>({
     resolver: zodResolver(BatchFormSchema),
@@ -66,10 +64,8 @@ export function BatchForm({
   const gallery = useFieldArray({ control, name: 'gallery' });
 
   async function onSubmit(data: BatchFormInput) {
-    setPesanError(null);
     const hasil = await simpanBatchAction(mode === 'edit' ? (batchId ?? null) : null, data);
     if (!hasil.ok) {
-      setPesanError(hasil.pesan);
       toast.error(hasil.pesan);
       return;
     }
@@ -81,12 +77,6 @@ export function BatchForm({
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8" noValidate>
-        {pesanError && (
-          <Alert variant="destructive">
-            <AlertDescription>{pesanError}</AlertDescription>
-          </Alert>
-        )}
-
         <section className="flex flex-col gap-4">
           <h2 className="text-lg font-semibold text-foreground">Informasi Utama</h2>
 

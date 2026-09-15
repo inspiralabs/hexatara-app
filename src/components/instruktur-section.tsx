@@ -20,11 +20,11 @@ export async function InstrukturSection({ limit }: { limit?: number } = {}) {
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
-      <h2 className="text-xl font-bold text-warna-teks sm:text-2xl">{t("instructorsHeading")}</h2>
+      <h2 className="text-xl font-bold text-foreground sm:text-2xl">{t("instructorsHeading")}</h2>
       <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
         {data.map((instruktur) => (
           <div key={instruktur.id} className="flex flex-col items-center gap-2 text-center">
-            <div className="relative size-24 overflow-hidden rounded-full bg-warna-latar-2 sm:size-32">
+            <div className="relative size-24 overflow-hidden rounded-full bg-muted sm:size-32">
               {instruktur.foto_url && (
                 <Image
                   src={instruktur.foto_url}
@@ -35,9 +35,9 @@ export async function InstrukturSection({ limit }: { limit?: number } = {}) {
                 />
               )}
             </div>
-            <p className="text-base font-semibold text-warna-teks">{instruktur.nama}</p>
+            <p className="text-base font-semibold text-foreground">{instruktur.nama}</p>
             {instruktur.jabatan_id && (
-              <p className="text-sm text-warna-teks-2">{pick(instruktur.jabatan_id, instruktur.jabatan_en, locale)}</p>
+              <p className="text-sm text-muted-foreground">{pick(instruktur.jabatan_id, instruktur.jabatan_en, locale)}</p>
             )}
           </div>
         ))}

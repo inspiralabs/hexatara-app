@@ -41,8 +41,8 @@ export async function ProdukSection() {
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
-      <h2 className="text-xl font-bold text-warna-teks sm:text-2xl">{t("produkHeading")}</h2>
-      <p className="mt-2 text-base text-warna-teks-2">{t("produkSubheading")}</p>
+      <h2 className="text-xl font-bold text-foreground sm:text-2xl">{t("produkHeading")}</h2>
+      <p className="mt-2 text-base text-muted-foreground">{t("produkSubheading")}</p>
 
       <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {produk.map((p) => {
@@ -55,7 +55,7 @@ export async function ProdukSection() {
               image={cover ? { src: cover, alt: nama } : undefined}
               badges={
                 p.kategori && (
-                  <span className="rounded-full bg-warna-utama/10 px-2.5 py-0.5 text-xs font-medium text-warna-utama">
+                  <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary-foreground">
                     {p.kategori}
                   </span>
                 )
@@ -65,7 +65,7 @@ export async function ProdukSection() {
               cta={
                 <Link
                   href={`/katalog/${p.slug}`}
-                  className="inline-flex h-11 items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama"
+                  className="inline-flex h-11 items-center justify-center rounded-lg border border-foreground px-5 text-base font-semibold text-foreground"
                 >
                   {tCatalog("lihatDetail")}
                 </Link>
@@ -78,7 +78,7 @@ export async function ProdukSection() {
       <div className="mt-8 flex justify-center">
         <Link
           href="/katalog"
-          className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
+          className="inline-flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
         >
           {t("lihatSemuaProduk")}
         </Link>

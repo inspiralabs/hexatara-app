@@ -36,7 +36,7 @@ export function FilterBar({
   return (
     <div className="flex flex-col gap-3 md:flex-row md:flex-wrap md:items-center">
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-warna-teks-2">{t('filterKategoriLabel')}</span>
+        <span className="text-sm font-medium text-muted-foreground">{t('filterKategoriLabel')}</span>
         <Select
           items={kategoriItems}
           value={kategoriValue ?? ALL_VALUE}

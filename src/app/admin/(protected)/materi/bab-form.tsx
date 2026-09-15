@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,7 +9,6 @@ import { simpanBabAction } from './bab-actions';
 import { uploadGambarAdminAction } from '../actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { RichTextEditor } from '@/components/admin/rich-text-editor';
 import { ImageUploadField } from '@/components/image-upload-field';
@@ -27,7 +25,6 @@ export function BabForm({
   defaultValues: BabFormInput;
 }) {
   const router = useRouter();
-  const [pesanError, setPesanError] = useState<string | null>(null);
   const form = useForm<BabFormInput>({
     resolver: zodResolver(BabFormSchema),
     defaultValues,
@@ -39,10 +36,8 @@ export function BabForm({
   } = form;
 
   async function onSubmit(data: BabFormInput) {
-    setPesanError(null);
     const hasil = await simpanBabAction(materialId, mode === 'edit' ? (babId ?? null) : null, data);
     if (!hasil.ok) {
-      setPesanError(hasil.pesan);
       toast.error(hasil.pesan);
       return;
     }
@@ -54,12 +49,6 @@ export function BabForm({
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
-        {pesanError && (
-          <Alert variant="destructive">
-            <AlertDescription>{pesanError}</AlertDescription>
-          </Alert>
-        )}
-
         <FormField
           control={control}
           name="judul_id"

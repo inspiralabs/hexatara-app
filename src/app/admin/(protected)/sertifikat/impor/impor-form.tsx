@@ -11,17 +11,15 @@ type Laporan = { berhasil: number; gagal: BarisGagal[] };
 export function ImporForm() {
   const fileRef = useRef<HTMLInputElement>(null);
   const [pending, startTransition] = useTransition();
-  const [pesanError, setPesanError] = useState<string | null>(null);
   const [laporan, setLaporan] = useState<Laporan | null>(null);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setPesanError(null);
     setLaporan(null);
 
     const berkas = fileRef.current?.files?.[0];
     if (!berkas) {
-      setPesanError('Pilih berkas CSV atau Excel terlebih dahulu.');
+      toast.error('Pilih berkas CSV atau Excel terlebih dahulu.');
       return;
     }
 
@@ -31,7 +29,6 @@ export function ImporForm() {
     startTransition(async () => {
       const hasil = await imporSertifikatAction(formData);
       if (!hasil.ok) {
-        setPesanError(hasil.pesan);
         toast.error(hasil.pesan);
         return;
       }
@@ -57,8 +54,6 @@ export function ImporForm() {
           {pending ? 'Memproses…' : 'Impor'}
         </Button>
       </form>
-
-      {pesanError && <p className="text-sm text-destructive">{pesanError}</p>}
 
       {laporan && (
         <div className="rounded-lg border border-border p-4">

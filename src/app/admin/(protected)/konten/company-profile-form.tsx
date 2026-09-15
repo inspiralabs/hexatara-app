@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -11,7 +10,6 @@ import {
 import { simpanCompanyProfileAction } from './company-profile-actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { RichTextEditor } from '@/components/admin/rich-text-editor';
 import { ImageUploadField } from '@/components/image-upload-field';
@@ -21,8 +19,6 @@ import type { Database } from '@/types/database';
 type CompanyProfile = Database['public']['Tables']['company_profile']['Row'];
 
 export function CompanyProfileForm({ profile }: { profile: CompanyProfile }) {
-  const [pesanError, setPesanError] = useState<string | null>(null);
-  const [pesanSukses, setPesanSukses] = useState<string | null>(null);
   const form = useForm<CompanyProfileFormInput>({
     resolver: zodResolver(CompanyProfileFormSchema),
     defaultValues: {
@@ -40,32 +36,17 @@ export function CompanyProfileForm({ profile }: { profile: CompanyProfile }) {
   } = form;
 
   async function onSubmit(data: CompanyProfileFormInput) {
-    setPesanError(null);
-    setPesanSukses(null);
     const hasil = await simpanCompanyProfileAction(data);
     if (!hasil.ok) {
-      setPesanError(hasil.pesan);
       toast.error(hasil.pesan);
       return;
     }
-    setPesanSukses('Company profile tersimpan.');
     toast.success('Company profile berhasil disimpan.');
   }
 
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 pt-4" noValidate>
-        {pesanError && (
-          <Alert variant="destructive">
-            <AlertDescription>{pesanError}</AlertDescription>
-          </Alert>
-        )}
-        {pesanSukses && (
-          <Alert>
-            <AlertDescription>{pesanSukses}</AlertDescription>
-          </Alert>
-        )}
-
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <FormField
             control={control}

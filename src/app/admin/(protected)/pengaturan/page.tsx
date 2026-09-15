@@ -20,7 +20,7 @@ export default async function AdminPengaturanPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-warna-teks">Pengaturan</h1>
+        <h1 className="text-xl font-bold text-foreground">Pengaturan</h1>
       </div>
       <PengaturanForms
         rekening={rekening}

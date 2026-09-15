@@ -23,7 +23,7 @@ import { PelatihanCard } from "../pelatihan-card";
 import { DaftarMinatDialog } from "./daftar-minat-dialog";
 
 const KONTEN_HTML_CLASS =
-  "mt-2 space-y-3 text-base text-warna-teks-2 [&_a]:underline [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-warna-teks [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-5";
+  "mt-2 space-y-3 text-base text-muted-foreground [&_a]:underline [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-foreground [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-5";
 
 function buildWaTanyaLink(nomor: string | undefined, judul: string) {
   if (!nomor) return null;
@@ -95,11 +95,11 @@ export default async function BatchDetailPage({
   return (
     <div className="pb-10">
       {/* 1. Hero judul */}
-      <section className="border-b border-warna-latar-2 bg-warna-latar-2">
+      <section className="border-b border-border bg-muted">
         <div className="mx-auto max-w-4xl px-4 py-8">
           <div className="flex flex-wrap items-center gap-2">
             {kategori && (
-              <span className="rounded-full bg-warna-utama/10 px-2.5 py-0.5 text-xs font-medium text-warna-utama">
+              <span className="rounded-full bg-foreground/10 px-2.5 py-0.5 text-xs font-medium text-foreground">
                 {kategori}
               </span>
             )}
@@ -107,7 +107,7 @@ export default async function BatchDetailPage({
               {t(`status.${batch.status}`)}
             </span>
           </div>
-          <h1 className="mt-3 text-2xl font-bold text-warna-teks sm:text-3xl">{judul}</h1>
+          <h1 className="mt-3 text-2xl font-bold text-foreground sm:text-3xl">{judul}</h1>
           {batch.hero_gambar_url && (
             <div className="relative mt-6 aspect-video w-full overflow-hidden rounded-xl">
               <Image
@@ -130,7 +130,7 @@ export default async function BatchDetailPage({
             {benefits.map((b) => (
               <span
                 key={b.id}
-                className="inline-flex items-center gap-1.5 rounded-full border border-warna-latar-2 bg-warna-latar px-3 py-1.5 text-sm text-warna-teks"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1.5 text-sm text-foreground"
               >
                 {b.ikon && <span aria-hidden="true">{b.ikon}</span>}
                 {pick(b.teks_id, b.teks_en, locale)}
@@ -163,43 +163,43 @@ export default async function BatchDetailPage({
 
         {/* 4–6. Jadwal & Investasi / Dukungan Peserta / Peralatan Belajar */}
         <div className="grid grid-cols-1 gap-4 pt-8 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="rounded-xl border border-warna-latar-2 bg-warna-latar p-5">
-            <h2 className="text-lg font-bold text-warna-teks">{t("scheduleInvestmentHeading")}</h2>
-            <dl className="mt-3 space-y-1.5 text-sm text-warna-teks-2">
+          <div className="rounded-xl border border-border bg-background p-5">
+            <h2 className="text-lg font-bold text-foreground">{t("scheduleInvestmentHeading")}</h2>
+            <dl className="mt-3 space-y-1.5 text-sm text-muted-foreground">
               {tanggal && (
                 <div>
-                  <dt className="inline font-medium text-warna-teks">{t("timeLabel")}</dt>
+                  <dt className="inline font-medium text-foreground">{t("timeLabel")}</dt>
                   <dd className="inline">{tanggal}</dd>
                 </div>
               )}
               {lokasi && (
                 <div>
-                  <dt className="inline font-medium text-warna-teks">{t("locationLabel")}</dt>
+                  <dt className="inline font-medium text-foreground">{t("locationLabel")}</dt>
                   <dd className="inline">{lokasi}</dd>
                 </div>
               )}
               {batch.alamat && (
                 <div>
-                  <dt className="inline font-medium text-warna-teks">{t("addressLabel")}</dt>
+                  <dt className="inline font-medium text-foreground">{t("addressLabel")}</dt>
                   <dd className="inline">{batch.alamat}</dd>
                 </div>
               )}
             </dl>
             {batch.harga != null && (
-              <p className="mt-3 text-xl font-bold text-warna-teks">{formatRupiah(batch.harga)}</p>
+              <p className="mt-3 text-xl font-bold text-foreground">{formatRupiah(batch.harga)}</p>
             )}
             {batch.status !== "closed" && <DaftarMinatDialog batchId={batch.id} />}
           </div>
 
-          <div className="rounded-xl border border-warna-latar-2 bg-warna-latar p-5">
-            <h2 className="text-lg font-bold text-warna-teks">{t("supportHeading")}</h2>
-            <p className="mt-2 text-sm text-warna-teks-2">{t("supportDescription")}</p>
+          <div className="rounded-xl border border-border bg-background p-5">
+            <h2 className="text-lg font-bold text-foreground">{t("supportHeading")}</h2>
+            <p className="mt-2 text-sm text-muted-foreground">{t("supportDescription")}</p>
             {waTanyaLink && (
               <a
                 href={waTanyaLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama"
+                className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-lg border border-foreground px-5 text-base font-semibold text-foreground"
               >
                 {t("contactAdmin")}
               </a>
@@ -207,9 +207,9 @@ export default async function BatchDetailPage({
           </div>
 
           {equipment && equipment.length > 0 && (
-            <div className="rounded-xl border border-warna-latar-2 bg-warna-latar p-5">
-              <h2 className="text-lg font-bold text-warna-teks">{t("equipmentHeading")}</h2>
-              <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm text-warna-teks-2">
+            <div className="rounded-xl border border-border bg-background p-5">
+              <h2 className="text-lg font-bold text-foreground">{t("equipmentHeading")}</h2>
+              <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm text-muted-foreground">
                 {equipment.map((item) => (
                   <li key={item.id}>{pick(item.teks_id, item.teks_en, locale)}</li>
                 ))}
@@ -221,14 +221,14 @@ export default async function BatchDetailPage({
         {/* 7a. FAQ */}
         {faqs && faqs.length > 0 && (
           <div className="pt-10">
-            <h2 className="text-xl font-bold text-warna-teks">{t("faqHeading")}</h2>
+            <h2 className="text-xl font-bold text-foreground">{t("faqHeading")}</h2>
             <Accordion className="mt-4">
               {faqs.map((faq) => (
                 <AccordionItem key={faq.id} value={String(faq.id)}>
-                  <AccordionTrigger className="text-base text-warna-teks">
+                  <AccordionTrigger className="text-base text-foreground">
                     {pick(faq.tanya_id, faq.tanya_en, locale)}
                   </AccordionTrigger>
-                  <AccordionContent className="text-warna-teks-2">
+                  <AccordionContent className="text-muted-foreground">
                     {pick(faq.jawab_id, faq.jawab_en, locale)}
                   </AccordionContent>
                 </AccordionItem>
@@ -240,7 +240,7 @@ export default async function BatchDetailPage({
         {/* 7b. Galeri dokumentasi */}
         {gallery && gallery.length > 0 && (
           <div className="pt-10">
-            <h2 className="text-xl font-bold text-warna-teks">{t("galleryHeading")}</h2>
+            <h2 className="text-xl font-bold text-foreground">{t("galleryHeading")}</h2>
             <Carousel className="mt-4">
               <CarouselContent>
                 {gallery.map((item) => {
@@ -256,7 +256,7 @@ export default async function BatchDetailPage({
                           sizes="(max-width: 640px) 100vw, 50vw"
                         />
                       </div>
-                      {caption && <p className="mt-2 text-sm text-warna-teks-2">{caption}</p>}
+                      {caption && <p className="mt-2 text-sm text-muted-foreground">{caption}</p>}
                     </CarouselItem>
                   );
                 })}
@@ -268,9 +268,9 @@ export default async function BatchDetailPage({
         )}
 
         {/* 8. Info sertifikat */}
-        <div className="mt-10 rounded-xl border border-warna-latar-2 bg-warna-latar-2 p-5">
-          <h2 className="text-lg font-bold text-warna-teks">{t("certificateInfoHeading")}</h2>
-          <p className="mt-2 text-sm text-warna-teks-2">{t("certificateInfoBody")}</p>
+        <div className="mt-10 rounded-xl border border-border bg-muted p-5">
+          <h2 className="text-lg font-bold text-foreground">{t("certificateInfoHeading")}</h2>
+          <p className="mt-2 text-sm text-muted-foreground">{t("certificateInfoBody")}</p>
         </div>
       </div>
 
@@ -280,7 +280,7 @@ export default async function BatchDetailPage({
       {/* 10. Suggest pelatihan lain */}
       {suggestions && suggestions.length > 0 && (
         <div className="mx-auto max-w-6xl px-4 pb-10">
-          <h2 className="text-xl font-bold text-warna-teks sm:text-2xl">{t("suggestHeading")}</h2>
+          <h2 className="text-xl font-bold text-foreground sm:text-2xl">{t("suggestHeading")}</h2>
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {suggestions.map((s) => (
               <PelatihanCard
@@ -297,15 +297,15 @@ export default async function BatchDetailPage({
 
       {/* 11. CTA tanya lebih lanjut */}
       <div className="mx-auto max-w-4xl px-4 pb-10">
-        <div className="flex flex-col items-center gap-4 rounded-xl border border-warna-latar-2 bg-warna-latar-2 p-8 text-center sm:p-12">
-          <h2 className="text-xl font-bold text-warna-teks sm:text-2xl">{t("finalCtaHeading")}</h2>
-          <p className="max-w-xl text-base text-warna-teks-2">{t("finalCtaDesc")}</p>
+        <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-muted p-8 text-center sm:p-12">
+          <h2 className="text-xl font-bold text-foreground sm:text-2xl">{t("finalCtaHeading")}</h2>
+          <p className="max-w-xl text-base text-muted-foreground">{t("finalCtaDesc")}</p>
           {waTanyaLink && (
             <a
               href={waTanyaLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
+              className="mt-2 inline-flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
             >
               {t("finalCtaButton")}
             </a>

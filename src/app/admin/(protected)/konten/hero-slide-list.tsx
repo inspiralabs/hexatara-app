@@ -45,7 +45,6 @@ export function HeroSlideList({ slides }: { slides: HeroSlide[] }) {
     setDaftar(slides);
   }, [slides]);
   const [pending, startTransition] = useTransition();
-  const [pesanError, setPesanError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<HeroSlide | null>(null);
 
@@ -62,12 +61,10 @@ export function HeroSlideList({ slides }: { slides: HeroSlide[] }) {
   function pindah(index: number, arah: 'up' | 'down') {
     const baru = moveItem(daftar, index, arah);
     if (baru === daftar) return;
-    setPesanError(null);
     setDaftar(baru);
     startTransition(async () => {
       const hasil = await reorderHeroSlideAction(baru.map((s) => s.id));
       if (!hasil.ok) {
-        setPesanError(hasil.pesan);
         toast.error(hasil.pesan);
         setDaftar(daftar);
         return;
@@ -105,8 +102,6 @@ export function HeroSlideList({ slides }: { slides: HeroSlide[] }) {
           <PlusIcon className="size-4" /> Tambah Hero Slide
         </Button>
       </div>
-
-      {pesanError && <p className="text-sm text-destructive">{pesanError}</p>}
 
       <div className="overflow-x-auto rounded-lg border border-border">
         <Table>

@@ -27,7 +27,7 @@ export function ProdukCard({
       image={produk.cover ? { src: produk.cover, alt: nama } : null}
       badges={
         produk.kategori ? (
-          <span className="rounded-full bg-warna-utama/10 px-2.5 py-0.5 text-xs font-medium text-warna-utama">
+          <span className="rounded-full bg-foreground/10 px-2.5 py-0.5 text-xs font-medium text-foreground">
             {produk.kategori}
           </span>
         ) : undefined
@@ -39,7 +39,7 @@ export function ProdukCard({
         produk.slug ? (
           <Link
             href={`/katalog/${produk.slug}`}
-            className="inline-flex h-11 w-fit items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama [transition:var(--transition-hover)] hover:bg-warna-utama/5"
+            className="inline-flex h-11 w-fit items-center justify-center rounded-lg border border-foreground px-5 text-base font-semibold text-foreground [transition:var(--transition-hover)] hover:bg-muted"
           >
             {detailLabel}
           </Link>

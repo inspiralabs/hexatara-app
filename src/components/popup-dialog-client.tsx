@@ -49,7 +49,7 @@ export function PopupDialogClient({ popup }: { popup: PopupAktif }) {
           type="button"
           onClick={tutup}
           aria-label={t("closeAriaLabel")}
-          className="absolute right-2 top-2 z-10 flex size-11 items-center justify-center rounded-full bg-warna-latar/80 text-warna-teks hover:bg-warna-latar"
+          className="absolute right-2 top-2 z-10 flex size-11 items-center justify-center rounded-full bg-background/80 text-foreground hover:bg-background"
         >
           <XIcon className="size-5" aria-hidden="true" />
         </button>

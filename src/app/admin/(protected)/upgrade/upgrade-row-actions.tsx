@@ -23,14 +23,11 @@ export function UpgradeRowActions({ orderId }: { orderId: number }) {
   const [tolakOpen, setTolakOpen] = useState(false);
   const [alasan, setAlasan] = useState('');
   const [pending, startTransition] = useTransition();
-  const [pesanError, setPesanError] = useState<string | null>(null);
 
   function konfirmasiSetujui() {
     startTransition(async () => {
-      setPesanError(null);
       const hasil = await setujuiPesananAction(orderId);
       if (!hasil.ok) {
-        setPesanError(hasil.pesan);
         toast.error(hasil.pesan);
         return;
       }
@@ -42,10 +39,8 @@ export function UpgradeRowActions({ orderId }: { orderId: number }) {
 
   function konfirmasiTolak() {
     startTransition(async () => {
-      setPesanError(null);
       const hasil = await tolakPesananAction(orderId, alasan);
       if (!hasil.ok) {
-        setPesanError(hasil.pesan);
         toast.error(hasil.pesan);
         return;
       }
@@ -74,7 +69,6 @@ export function UpgradeRowActions({ orderId }: { orderId: number }) {
               bisa dibatalkan.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          {pesanError && <p className="px-4 text-sm text-destructive">{pesanError}</p>}
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
             <AlertDialogAction onClick={konfirmasiSetujui} disabled={pending}>
@@ -99,7 +93,6 @@ export function UpgradeRowActions({ orderId }: { orderId: number }) {
             placeholder="Alasan penolakan"
             className="mx-4 w-auto"
           />
-          {pesanError && <p className="px-4 text-sm text-destructive">{pesanError}</p>}
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
             <AlertDialogAction onClick={konfirmasiTolak} disabled={pending || alasan.trim() === ''}>

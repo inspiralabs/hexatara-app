@@ -41,7 +41,7 @@ const antreanColumnHelper = createDataTableColumnHelper<AntreanRow>();
 const antreanColumns = [
   antreanColumnHelper.accessor('nama', {
     header: (ctx) => <SortableHeader column={ctx.column} label="Nama" />,
-    cell: (info) => <span className="font-medium text-warna-teks">{info.getValue()}</span>,
+    cell: (info) => <span className="font-medium text-foreground">{info.getValue()}</span>,
   }),
   antreanColumnHelper.accessor('paket', {
     id: 'paket',
@@ -59,7 +59,7 @@ const antreanColumns = [
     header: 'Bukti',
     cell: ({ row }) =>
       row.original.buktiUrl ? (
-        <a href={row.original.buktiUrl} target="_blank" rel="noopener noreferrer" className="text-warna-utama underline underline-offset-4">
+        <a href={row.original.buktiUrl} target="_blank" rel="noopener noreferrer" className="text-foreground underline underline-offset-4">
           Lihat bukti
         </a>
       ) : (
@@ -104,7 +104,7 @@ const pengirimanColumnHelper = createDataTableColumnHelper<PengirimanRow>();
 const pengirimanColumns = [
   pengirimanColumnHelper.accessor('nama', {
     header: (ctx) => <SortableHeader column={ctx.column} label="Nama" />,
-    cell: (info) => <span className="font-medium text-warna-teks">{info.getValue()}</span>,
+    cell: (info) => <span className="font-medium text-foreground">{info.getValue()}</span>,
   }),
   pengirimanColumnHelper.accessor('paket', {
     id: 'paket',

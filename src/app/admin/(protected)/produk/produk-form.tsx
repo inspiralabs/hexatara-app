@@ -11,7 +11,6 @@ import { simpanProdukAction, uploadGambarProdukAction } from './actions';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { RichTextEditor } from '@/components/admin/rich-text-editor';
 import { ImageUploadField } from '@/components/image-upload-field';
@@ -37,7 +36,6 @@ export function ProdukForm({
   kategoriOptions: KategoriOption[];
 }) {
   const router = useRouter();
-  const [pesanError, setPesanError] = useState<string | null>(null);
   const [slugDisentuh, setSlugDisentuh] = useState(mode === 'edit');
   const form = useForm<ProductFormInput>({
     resolver: zodResolver(ProductFormSchema),
@@ -53,10 +51,8 @@ export function ProdukForm({
   const images = useFieldArray({ control, name: 'images' });
 
   async function onSubmit(data: ProductFormInput) {
-    setPesanError(null);
     const hasil = await simpanProdukAction(mode === 'edit' ? (produkId ?? null) : null, data);
     if (!hasil.ok) {
-      setPesanError(hasil.pesan);
       toast.error(hasil.pesan);
       return;
     }
@@ -68,12 +64,6 @@ export function ProdukForm({
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8" noValidate>
-        {pesanError && (
-          <Alert variant="destructive">
-            <AlertDescription>{pesanError}</AlertDescription>
-          </Alert>
-        )}
-
         <section className="flex flex-col gap-4">
           <h2 className="text-lg font-semibold text-foreground">Informasi Utama</h2>
 

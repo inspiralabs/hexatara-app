@@ -69,7 +69,6 @@ export function LampiranList({ chapterId, lampiran }: { chapterId: number; lampi
     setDaftar(lampiran);
   }, [lampiran]);
   const [pending, startTransition] = useTransition();
-  const [pesanError, setPesanError] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Lampiran | null>(null);
 
@@ -86,7 +85,6 @@ export function LampiranList({ chapterId, lampiran }: { chapterId: number; lampi
   function pindah(index: number, arah: 'up' | 'down') {
     const baru = moveItem(daftar, index, arah);
     if (baru === daftar) return;
-    setPesanError(null);
     setDaftar(baru);
     startTransition(async () => {
       const hasil = await reorderLampiranAction(
@@ -94,7 +92,6 @@ export function LampiranList({ chapterId, lampiran }: { chapterId: number; lampi
         baru.map((l) => l.id)
       );
       if (!hasil.ok) {
-        setPesanError(hasil.pesan);
         toast.error(hasil.pesan);
         setDaftar(daftar);
         return;
@@ -111,8 +108,6 @@ export function LampiranList({ chapterId, lampiran }: { chapterId: number; lampi
           <PlusIcon className="size-4" /> Tambah Lampiran
         </Button>
       </div>
-
-      {pesanError && <p className="text-sm text-destructive">{pesanError}</p>}
 
       {daftar.length === 0 ? (
         <p className="rounded-lg border border-border p-4 text-center text-sm text-muted-foreground">

@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,7 +11,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { DatePickerField } from '@/components/admin/date-picker-field';
@@ -37,7 +35,6 @@ export function SertifikatForm({
   defaultValues: SertifikatFormInput;
 }) {
   const router = useRouter();
-  const [pesanError, setPesanError] = useState<string | null>(null);
   const form = useForm<SertifikatFormInput>({
     resolver: zodResolver(SertifikatFormSchema),
     defaultValues,
@@ -54,10 +51,8 @@ export function SertifikatForm({
   const tanpaMasaBerlaku = jenis === 'free_track';
 
   async function onSubmit(data: SertifikatFormInput) {
-    setPesanError(null);
     const hasil = await simpanSertifikatAction(mode === 'edit' ? (sertifikatId ?? null) : null, data);
     if (!hasil.ok) {
-      setPesanError(hasil.pesan);
       toast.error(hasil.pesan);
       return;
     }
@@ -69,11 +64,6 @@ export function SertifikatForm({
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
-        {pesanError && (
-          <Alert variant="destructive">
-            <AlertDescription>{pesanError}</AlertDescription>
-          </Alert>
-        )}
 
         <FormField
           control={control}

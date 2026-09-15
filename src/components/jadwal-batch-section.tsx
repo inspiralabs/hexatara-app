@@ -43,7 +43,7 @@ export function BatchCard({
       badges={
         <>
           {kategori && (
-            <span className="rounded-full bg-warna-utama/10 px-2.5 py-0.5 text-xs font-medium text-warna-utama">
+            <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary-foreground">
               {kategori}
             </span>
           )}
@@ -57,7 +57,7 @@ export function BatchCard({
         batch.status !== "closed" && (
           <Link
             href={`/pelatihan/${batch.slug}`}
-            className="inline-flex h-11 w-fit items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
+            className="inline-flex h-11 w-fit items-center justify-center rounded-lg bg-primary px-5 text-base font-semibold text-primary-foreground"
           >
             {registerNowLabel}
           </Link>
@@ -85,7 +85,7 @@ export async function JadwalBatchSection() {
 
   return (
     <section id="jadwal" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 md:py-24">
-      <h2 className="text-xl font-bold text-warna-teks sm:text-2xl">{t("scheduleHeading")}</h2>
+      <h2 className="text-xl font-bold text-foreground sm:text-2xl">{t("scheduleHeading")}</h2>
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {data.map((batch) => (
           <BatchCard
@@ -101,7 +101,7 @@ export async function JadwalBatchSection() {
       <div className="mt-8 flex justify-center">
         <Link
           href="/pelatihan"
-          className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
+          className="inline-flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
         >
           {t("lihatSemuaPelatihan")}
         </Link>

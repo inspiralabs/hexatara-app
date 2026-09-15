@@ -1,7 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { AuthShell } from '@/components/auth/auth-shell';
 import { createClient } from '@/lib/supabase/server';
 import { VerifikasiPoller } from './verifikasi-poller';
 
@@ -25,33 +26,25 @@ export default async function VerifikasiEmailPage({
   const sudahLogin = !!data?.claims;
 
   return (
-    <div className="mx-auto flex min-h-[70vh] w-full max-w-md flex-col justify-center px-4 py-10">
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('title')}</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          {status === 'gagal' ? (
-            <Alert variant="destructive">
-              <AlertDescription>{t('invalidAlert')}</AlertDescription>
-            </Alert>
-          ) : sudahLogin ? (
-            <p className="text-sm text-muted-foreground">{t('verifiedMessage')}</p>
-          ) : (
-            <p className="text-sm text-muted-foreground">{t('sentMessage')}</p>
-          )}
-          {status !== 'gagal' && sudahLogin ? (
-            <Link href="/dashboard" className="text-sm underline underline-offset-4">
-              {t('goToDashboard')}
-            </Link>
-          ) : (
-            <Link href="/login" className="text-sm underline underline-offset-4">
-              {tAuth('backToLogin')}
-            </Link>
-          )}
-        </CardContent>
-      </Card>
+    <AuthShell title={t('title')} description={status === 'gagal' ? undefined : sudahLogin ? t('verifiedMessage') : t('sentMessage')}>
+      <div className="flex flex-col gap-4">
+        {status === 'gagal' ? (
+          <Alert variant="destructive">
+            <AlertDescription>{t('invalidAlert')}</AlertDescription>
+          </Alert>
+        ) : null}
+
+        {status !== 'gagal' && sudahLogin ? (
+          <Button render={<Link href="/dashboard" />} size="lg" className="w-full">
+            {t('goToDashboard')}
+          </Button>
+        ) : (
+          <Button render={<Link href="/login" />} variant="outline" size="lg" className="w-full">
+            {tAuth('backToLogin')}
+          </Button>
+        )}
+      </div>
       {status !== 'gagal' && <VerifikasiPoller sudahLogin={sudahLogin} />}
-    </div>
+    </AuthShell>
   );
 }

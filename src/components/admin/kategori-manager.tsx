@@ -12,7 +12,6 @@ import { ReorderButtons } from '@/components/admin/reorder-buttons';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -69,13 +68,11 @@ export function KategoriManager({
     setDaftar(items);
   }, [items]);
   const [pending, startTransition] = useTransition();
-  const [pesanError, setPesanError] = useState<string | null>(null);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<KategoriRow | null>(null);
   const [hapusTarget, setHapusTarget] = useState<KategoriRow | null>(null);
   const [hapusPending, startHapus] = useTransition();
-  const [hapusError, setHapusError] = useState<string | null>(null);
 
   function bukaTambah() {
     setEditing(null);
@@ -90,13 +87,11 @@ export function KategoriManager({
   function pindah(index: number, arah: 'up' | 'down') {
     const baru = moveItem(daftar, index, arah);
     if (baru === daftar) return;
-    setPesanError(null);
     setDaftar(baru);
     startTransition(async () => {
       const hasil = await reorderAction(baru.map((k) => k.id));
       if (!hasil.ok) {
         const pesan = hasil.pesan ?? 'Gagal mengubah urutan. Coba lagi.';
-        setPesanError(pesan);
         toast.error(pesan);
         setDaftar(daftar);
         return;
@@ -126,7 +121,6 @@ export function KategoriManager({
       const hasil = await hapusAction(hapusTarget.id);
       if (!hasil.ok) {
         const pesan = hasil.pesan ?? 'Gagal menghapus. Coba lagi.';
-        setHapusError(pesan);
         toast.error(pesan);
         return;
       }
@@ -145,8 +139,6 @@ export function KategoriManager({
           <PlusIcon className="size-4" /> Tambah Kategori
         </Button>
       </div>
-
-      {pesanError && <p className="text-sm text-destructive">{pesanError}</p>}
 
       <div className="overflow-x-auto rounded-lg border border-border">
         <Table>
@@ -197,7 +189,6 @@ export function KategoriManager({
                         <DropdownMenuItem
                           variant="destructive"
                           onClick={() => {
-                            setHapusError(null);
                             setHapusTarget(k);
                           }}
                         >
@@ -231,7 +222,6 @@ export function KategoriManager({
               dibatalkan.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          {hapusError && <p className="px-4 text-sm text-destructive">{hapusError}</p>}
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
             <AlertDialogAction onClick={konfirmasiHapus} disabled={hapusPending}>
@@ -259,7 +249,6 @@ function KategoriFormDialog({
   simpanAction: (id: string | null, input: KategoriFormInput) => Promise<ActionResult>;
   onSaved: () => void;
 }) {
-  const [pesanError, setPesanError] = useState<string | null>(null);
   const form = useForm<KategoriFormInput>({
     resolver: zodResolver(KategoriFormSchema),
     defaultValues: defaultValues ?? DEFAULT_VALUES,
@@ -274,18 +263,15 @@ function KategoriFormDialog({
   useEffect(() => {
     if (open) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
-      setPesanError(null);
       reset(defaultValues ?? DEFAULT_VALUES);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, editingId]);
 
   async function onSubmit(data: KategoriFormInput) {
-    setPesanError(null);
     const hasil = await simpanAction(editingId, data);
     if (!hasil.ok) {
       const pesan = hasil.pesan ?? 'Gagal menyimpan kategori. Coba lagi.';
-      setPesanError(pesan);
       toast.error(pesan);
       return;
     }
@@ -303,11 +289,6 @@ function KategoriFormDialog({
 
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
-            {pesanError && (
-              <Alert variant="destructive">
-                <AlertDescription>{pesanError}</AlertDescription>
-              </Alert>
-            )}
 
             <FormField
               control={control}

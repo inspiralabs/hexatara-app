@@ -37,28 +37,28 @@ export async function HeroSection() {
             terlihat tanpa scroll di 375px (PRD §1.3/§6.1). */}
         <div className="flex flex-col gap-4">
           <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-1.5 rounded-xl border border-warna-latar-2 bg-warna-latar p-4">
-              <GraduationCap className="size-6 text-warna-utama" aria-hidden="true" />
-              <h2 className="text-base font-bold leading-tight text-warna-teks">{t("offerTrainingTitle")}</h2>
-              <p className="hidden text-sm text-warna-teks-2 sm:block">{t("offerTrainingDesc")}</p>
+            <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-background p-4">
+              <GraduationCap className="size-6 text-foreground" aria-hidden="true" />
+              <h2 className="text-base font-bold leading-tight text-foreground">{t("offerTrainingTitle")}</h2>
+              <p className="hidden text-sm text-muted-foreground sm:block">{t("offerTrainingDesc")}</p>
             </div>
-            <div className="flex flex-col gap-1.5 rounded-xl border border-warna-latar-2 bg-warna-latar p-4">
-              <ShoppingBag className="size-6 text-warna-utama" aria-hidden="true" />
-              <h2 className="text-base font-bold leading-tight text-warna-teks">{t("offerRetailTitle")}</h2>
-              <p className="hidden text-sm text-warna-teks-2 sm:block">{t("offerRetailDesc")}</p>
+            <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-background p-4">
+              <ShoppingBag className="size-6 text-foreground" aria-hidden="true" />
+              <h2 className="text-base font-bold leading-tight text-foreground">{t("offerRetailTitle")}</h2>
+              <p className="hidden text-sm text-muted-foreground sm:block">{t("offerRetailDesc")}</p>
             </div>
           </div>
 
           <div className="flex flex-wrap gap-3">
             <Link
               href="/pelatihan"
-              className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
+              className="inline-flex h-11 items-center justify-center rounded-lg bg-primary px-5 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
             >
               {t("offerTrainingCta")}
             </Link>
             <Link
               href="/katalog"
-              className="inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
+              className="inline-flex h-11 items-center justify-center rounded-lg bg-primary px-5 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
             >
               {t("offerRetailCta")}
             </Link>
@@ -68,7 +68,7 @@ export async function HeroSection() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={tCommon("whatsappAriaLabel")}
-                className="inline-flex h-11 items-center justify-center rounded-lg border border-warna-utama px-5 text-base font-semibold text-warna-utama [transition:var(--transition-hover)] hover:bg-warna-utama/5"
+                className="inline-flex h-11 items-center justify-center rounded-lg border border-foreground px-5 text-base font-semibold text-foreground [transition:var(--transition-hover)] hover:bg-primary/5"
               >
                 {t("contactCta")}
               </a>

@@ -27,7 +27,7 @@ export function ProductGallery({ images, alt }: { images: { id: number; url: str
   }, [api]);
 
   if (images.length === 0) {
-    return <div className="aspect-square w-full rounded-xl bg-warna-latar-2" />;
+    return <div className="aspect-square w-full rounded-xl bg-muted" />;
   }
 
   return (
@@ -36,7 +36,7 @@ export function ProductGallery({ images, alt }: { images: { id: number; url: str
         <CarouselContent>
           {images.map((img) => (
             <CarouselItem key={img.id}>
-              <div className="relative aspect-square overflow-hidden rounded-xl bg-warna-latar-2">
+              <div className="relative aspect-square overflow-hidden rounded-xl bg-muted">
                 <Image src={img.url} alt={alt} fill priority className="object-cover" sizes="(max-width: 768px) 100vw, 768px" />
               </div>
             </CarouselItem>
@@ -58,9 +58,9 @@ export function ProductGallery({ images, alt }: { images: { id: number; url: str
               type="button"
               onClick={() => api?.scrollTo(index)}
               className={cn(
-                'relative aspect-square overflow-hidden rounded-lg bg-warna-latar-2 ring-2 ring-offset-2',
+                'relative aspect-square overflow-hidden rounded-lg bg-muted ring-2 ring-offset-2',
                 '[transition:var(--transition-hover)] hover:opacity-80',
-                current === index ? 'ring-warna-aksen' : 'ring-transparent'
+                current === index ? 'ring-foreground' : 'ring-transparent'
               )}
               aria-label={`Gambar ${index + 1}`}
               aria-current={current === index}

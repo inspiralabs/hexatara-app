@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,7 +11,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { ImageUploadField } from '@/components/image-upload-field';
 
@@ -26,7 +24,6 @@ export function MateriForm({
   defaultValues: MateriFormInput;
 }) {
   const router = useRouter();
-  const [pesanError, setPesanError] = useState<string | null>(null);
   const form = useForm<MateriFormInput>({
     resolver: zodResolver(MateriFormSchema),
     defaultValues,
@@ -38,10 +35,8 @@ export function MateriForm({
   } = form;
 
   async function onSubmit(data: MateriFormInput) {
-    setPesanError(null);
     const hasil = await simpanMateriAction(mode === 'edit' ? (materiId ?? null) : null, data);
     if (!hasil.ok) {
-      setPesanError(hasil.pesan);
       toast.error(hasil.pesan);
       return;
     }
@@ -53,12 +48,6 @@ export function MateriForm({
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6" noValidate>
-        {pesanError && (
-          <Alert variant="destructive">
-            <AlertDescription>{pesanError}</AlertDescription>
-          </Alert>
-        )}
-
         <FormField
           control={control}
           name="judul_id"

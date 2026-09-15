@@ -40,12 +40,12 @@ export default async function VerifyPage({
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10">
-      <h1 className="text-2xl font-bold text-warna-teks sm:text-3xl">{t("pageTitle")}</h1>
-      <p className="mt-2 text-base text-warna-teks-2">{t("pageSubtitle")}</p>
+      <h1 className="text-2xl font-bold text-foreground sm:text-3xl">{t("pageTitle")}</h1>
+      <p className="mt-2 text-base text-muted-foreground">{t("pageSubtitle")}</p>
 
       <form className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="flex flex-1 flex-col gap-1.5">
-          <label htmlFor="nomor" className="text-sm font-medium text-warna-teks">
+          <label htmlFor="nomor" className="text-sm font-medium text-foreground">
             {t("searchLabel")}
           </label>
           <input
@@ -54,20 +54,20 @@ export default async function VerifyPage({
             type="text"
             defaultValue={nomorDicari ?? ""}
             placeholder={t("searchPlaceholder")}
-            className="h-11 w-full rounded-lg border border-warna-teks-2/30 bg-warna-latar px-3 text-base text-warna-teks placeholder:text-warna-teks-2 focus:border-warna-utama focus:outline-none"
+            className="h-11 w-full rounded-lg border border-input bg-background px-3 text-base text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none"
           />
         </div>
         <button
           type="submit"
-          className="h-11 shrink-0 rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks"
+          className="h-11 shrink-0 rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground"
         >
           {t("searchButton")}
         </button>
       </form>
-      <p className="mt-2 text-sm text-warna-teks-2">{t("searchHint")}</p>
+      <p className="mt-2 text-sm text-muted-foreground">{t("searchHint")}</p>
 
       {nomorDicari && rateLimited && (
-        <p className="mt-6 rounded-xl border border-warna-teks-2/20 bg-warna-latar-2 p-5 text-sm text-warna-teks-2">
+        <p className="mt-6 rounded-xl border border-border bg-muted p-5 text-sm text-muted-foreground">
           {t("rateLimited")}
         </p>
       )}

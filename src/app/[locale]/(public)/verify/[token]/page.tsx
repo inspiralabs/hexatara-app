@@ -22,12 +22,12 @@ export default async function VerifyTokenPage({
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10">
-      <h1 className="text-2xl font-bold text-warna-teks sm:text-3xl">{t("pageTitle")}</h1>
-      <p className="mt-2 text-sm text-warna-teks-2">{t("tokenResultHint")}</p>
+      <h1 className="text-2xl font-bold text-foreground sm:text-3xl">{t("pageTitle")}</h1>
+      <p className="mt-2 text-sm text-muted-foreground">{t("tokenResultHint")}</p>
 
       <CertificateResult row={row} locale={locale} />
 
-      <Link href="/verify" className="mt-6 inline-block text-sm font-medium text-warna-utama underline">
+      <Link href="/verify" className="mt-6 inline-block text-sm font-medium text-foreground underline">
         {t("searchAgain")}
       </Link>
     </div>

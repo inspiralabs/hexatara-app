@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { PasswordInput } from '@/components/auth/password-input';
 
 type LoginInput = z.infer<typeof LoginSchema>;
 
@@ -50,9 +51,8 @@ export function AdminLoginForm() {
 
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="password">Kata sandi</Label>
-        <Input
+        <PasswordInput
           id="password"
-          type="password"
           autoComplete="current-password"
           {...register('password')}
         />

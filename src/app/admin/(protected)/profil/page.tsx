@@ -15,7 +15,7 @@ export default async function AdminProfilPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold text-warna-teks">Profil</h1>
+        <h1 className="text-xl font-bold text-foreground">Profil</h1>
       </div>
       <ProfilAdminForms namaLengkap={profile?.nama_lengkap ?? ''} email={email} />
     </div>
