@@ -1,6 +1,6 @@
 # Plan §12.6.9 — Redesign visual halaman publik (Cobalt Mist)
 
-> **Status:** Tahap 3 selesai kode — menunggu uji Alif (Pelatihan fix + Katalog).  
+> **Status:** Tahap 4 selesai kode — menunggu uji Alif (halaman statis + verify).  
 > **Blok:** §12.6.9. **Scope:** `(public)` saja.
 
 ---
@@ -21,9 +21,9 @@
 |-------|-----|--------|
 | 0 | Fondasi token + Fraunces + data-surface | SELESAI (uji OK) |
 | 1 | Beranda + nav/footer/WA | SELESAI (uji OK + logo) |
-| 2 | Pelatihan listing + detail | KODE — fix hero/stars; suggest = data |
-| 3 | Katalog + detail + F04.3 | KODE — tunggu uji |
-| 4 | Halaman statis | BELUM |
+| 2 | Pelatihan listing + detail | SELESAI (uji OK + fix) |
+| 3 | Katalog + detail + F04.3 | SELESAI (uji OK) |
+| 4 | Halaman statis | KODE — tunggu uji |
 
 ---
 
@@ -40,3 +40,4 @@
 | 2026-09-16 | Tahap 2 fix | KODE | PublicHeroMist; stars amber; suggest = data gap (2/3 tanpa category_id) |
 | 2026-09-16 | Tahap 3 | KODE | Katalog listing+detail Cobalt Mist; query products_public tetap |
 | 2026-09-17 | Tahap 2 fix2 | KODE | Suggest A+B; Jadwal dominan; silabus accordion; testimoni+instruktur restyle |
+| 2026-09-17 | Tahap 4 | KODE | StaticPageBody/FAQ/verify: PublicHeroMist + public-ui CTA/heading |

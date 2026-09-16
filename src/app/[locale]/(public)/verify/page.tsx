@@ -2,6 +2,9 @@ import { headers } from "next/headers";
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { cekRateLimitVerify } from "@/lib/rate-limit/verify";
+import { PublicHeroMist } from "@/components/public-hero-mist";
+import { Input } from "@/components/ui/input";
+import { publicCtaPrimary, publicSectionHeading } from "@/lib/public-ui";
 import { CertificateResult } from "./certificate-result";
 
 async function getClientIp() {
@@ -39,39 +42,42 @@ export default async function VerifyPage({
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10">
-      <h1 className="text-2xl font-bold text-foreground sm:text-3xl">{t("pageTitle")}</h1>
-      <p className="mt-2 text-base text-muted-foreground">{t("pageSubtitle")}</p>
-
-      <form className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-end">
-        <div className="flex flex-1 flex-col gap-1.5">
-          <label htmlFor="nomor" className="text-sm font-medium text-foreground">
-            {t("searchLabel")}
-          </label>
-          <input
-            id="nomor"
-            name="nomor"
-            type="text"
-            defaultValue={nomorDicari ?? ""}
-            placeholder={t("searchPlaceholder")}
-            className="h-11 w-full rounded-lg border border-input bg-background px-3 text-base text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none"
-          />
+    <div className="bg-background pb-16">
+      <PublicHeroMist className="border-b border-border">
+        <div className="mx-auto max-w-2xl px-4 py-12 text-center md:py-16">
+          <h1 className={publicSectionHeading}>{t("pageTitle")}</h1>
+          <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground">{t("pageSubtitle")}</p>
         </div>
-        <button
-          type="submit"
-          className="h-11 shrink-0 rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground"
-        >
-          {t("searchButton")}
-        </button>
-      </form>
-      <p className="mt-2 text-sm text-muted-foreground">{t("searchHint")}</p>
+      </PublicHeroMist>
 
-      {nomorDicari && rateLimited && (
-        <p className="mt-6 rounded-xl border border-border bg-muted p-5 text-sm text-muted-foreground">
-          {t("rateLimited")}
-        </p>
-      )}
-      {nomorDicari && !rateLimited && <CertificateResult row={row} locale={locale} />}
+      <div className="mx-auto max-w-2xl px-4 py-10 md:py-16">
+        <form className="flex flex-col gap-3 sm:flex-row sm:items-end">
+          <div className="flex flex-1 flex-col gap-1.5">
+            <label htmlFor="nomor" className="text-sm font-medium text-foreground">
+              {t("searchLabel")}
+            </label>
+            <Input
+              id="nomor"
+              name="nomor"
+              type="text"
+              defaultValue={nomorDicari ?? ""}
+              placeholder={t("searchPlaceholder")}
+              className="h-11"
+            />
+          </div>
+          <button type="submit" className={publicCtaPrimary}>
+            {t("searchButton")}
+          </button>
+        </form>
+        <p className="mt-2 text-sm text-muted-foreground">{t("searchHint")}</p>
+
+        {nomorDicari && rateLimited && (
+          <p className="mt-6 rounded-xl border border-border bg-card p-5 text-sm text-muted-foreground">
+            {t("rateLimited")}
+          </p>
+        )}
+        {nomorDicari && !rateLimited && <CertificateResult row={row} locale={locale} />}
+      </div>
     </div>
   );
 }

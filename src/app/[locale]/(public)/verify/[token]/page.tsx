@@ -1,6 +1,8 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Link } from "@/i18n/navigation";
+import { PublicHeroMist } from "@/components/public-hero-mist";
+import { publicSectionHeading } from "@/lib/public-ui";
 import { CertificateResult } from "../certificate-result";
 
 export default async function VerifyTokenPage({
@@ -21,15 +23,24 @@ export default async function VerifyTokenPage({
   if (error) console.error("[verify/token] gagal mencari sertifikat:", error);
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10">
-      <h1 className="text-2xl font-bold text-foreground sm:text-3xl">{t("pageTitle")}</h1>
-      <p className="mt-2 text-sm text-muted-foreground">{t("tokenResultHint")}</p>
+    <div className="bg-background pb-16">
+      <PublicHeroMist className="border-b border-border">
+        <div className="mx-auto max-w-2xl px-4 py-12 text-center md:py-16">
+          <h1 className={publicSectionHeading}>{t("pageTitle")}</h1>
+          <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground">{t("tokenResultHint")}</p>
+        </div>
+      </PublicHeroMist>
 
-      <CertificateResult row={row} locale={locale} />
+      <div className="mx-auto max-w-2xl px-4 py-10 md:py-16">
+        <CertificateResult row={row} locale={locale} />
 
-      <Link href="/verify" className="mt-6 inline-block text-sm font-medium text-foreground underline">
-        {t("searchAgain")}
-      </Link>
+        <Link
+          href="/verify"
+          className="mt-6 inline-block text-sm font-medium text-muted-foreground underline hover:text-foreground"
+        >
+          {t("searchAgain")}
+        </Link>
+      </div>
     </div>
   );
 }

@@ -26,10 +26,10 @@ export async function CertificateResult({
 
   if (!row) {
     return (
-      <div className="mt-6 rounded-xl border border-border bg-muted p-5">
+      <div className="mt-6 rounded-xl border border-border bg-card p-5">
         <div className="flex items-center gap-2">
           <SearchX className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-          <h2 className="text-lg font-bold text-foreground">{t("notFoundTitle")}</h2>
+          <h2 className="font-heading text-lg font-semibold text-foreground">{t("notFoundTitle")}</h2>
         </div>
         <p className="mt-2 text-sm text-muted-foreground">{t("notFoundBody")}</p>
       </div>
@@ -51,7 +51,7 @@ export async function CertificateResult({
         ) : (
           <CheckCircle2 className="size-5 shrink-0 text-emerald-600" aria-hidden="true" />
         )}
-        <h2 className="text-lg font-bold text-foreground">{invalid ? t("invalidTitle") : t("validTitle")}</h2>
+        <h2 className="font-heading text-lg font-semibold text-foreground">{invalid ? t("invalidTitle") : t("validTitle")}</h2>
       </div>
 
       <span
