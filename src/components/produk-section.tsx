@@ -21,7 +21,7 @@ export async function ProdukSection({ limit = 6 }: { limit?: number } = {}) {
 
   const { data: produk, error } = await supabase
     .from("products_public")
-    .select("id, slug, nama_id, nama_en, kategori, harga")
+    .select("id, slug, nama_id, nama_en, kategori, harga, rating")
     .order("urutan")
     .limit(limit);
 
@@ -58,6 +58,7 @@ export async function ProdukSection({ limit = 6 }: { limit?: number } = {}) {
               image={cover ? { src: cover, alt: nama } : undefined}
               badges={p.kategori && <span className={publicBadgeKategori}>{p.kategori}</span>}
               title={nama}
+              rating={p.rating}
               price={p.harga != null ? formatRupiah(p.harga) : tCatalog("hargaHubungiKami")}
               cta={
                 <Link href={`/katalog/${p.slug}`} className={publicCtaSecondary}>

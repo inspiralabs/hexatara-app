@@ -2,7 +2,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
-import { formatRupiah, formatTanggalBatch } from "@/lib/batch";
+import { formatRupiah, formatTanggalBatch, splitHtmlByHeadings } from "@/lib/batch";
 import { pick } from "@/lib/i18n/pick";
 import {
   Accordion,
@@ -34,6 +34,9 @@ const KONTEN_HTML_CLASS =
   "mt-2 space-y-3 text-base text-muted-foreground [&_a]:underline [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-foreground [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-5";
 
 const cardHeading = "font-heading text-lg font-semibold tracking-tight text-foreground";
+
+const SUGGEST_SELECT =
+  "id, slug, judul_id, judul_en, kategori_id, kategori_en, lokasi_id, lokasi_en, deskripsi_id, deskripsi_en, harga, status, rating, hero_gambar_url, tanggal_mulai, tanggal_selesai";
 
 function buildWaTanyaLink(nomor: string | undefined, judul: string) {
   if (!nomor) return null;
@@ -71,21 +74,32 @@ export default async function BatchDetailPage({
     supabase.from("batch_gallery").select("id, gambar_url, caption_id, caption_en").eq("batch_id", batch.id).order("urutan"),
   ]);
 
-  // Suggest pelatihan lain — kategori sama, exclude diri sendiri. Kalau batch ini
-  // belum punya category_id (F06.4 belum jalan, ADR-012), section disembunyikan
-  // daripada fallback ke batch acak.
-  const { data: suggestions } = batch.category_id
-    ? await supabase
-        .from("batches")
-        .select(
-          "id, slug, judul_id, judul_en, kategori_id, kategori_en, lokasi_id, lokasi_en, deskripsi_id, deskripsi_en, harga, status, rating, hero_gambar_url, tanggal_mulai, tanggal_selesai"
-        )
-        .eq("category_id", batch.category_id)
-        .eq("is_active", true)
-        .neq("id", batch.id)
-        .order("tanggal_mulai", { ascending: true })
-        .limit(3)
-    : { data: null };
+  // Suggest: utamakan category_id; fallback kategori_id teks; sembunyikan jika kosong (bukan acak).
+  let suggestions: Parameters<typeof PelatihanCard>[0]["batch"][] | null = null;
+
+  if (batch.category_id) {
+    const { data } = await supabase
+      .from("batches")
+      .select(SUGGEST_SELECT)
+      .eq("category_id", batch.category_id)
+      .eq("is_active", true)
+      .neq("id", batch.id)
+      .order("tanggal_mulai", { ascending: true })
+      .limit(3);
+    if (data && data.length > 0) suggestions = data;
+  }
+
+  if ((!suggestions || suggestions.length === 0) && batch.kategori_id?.trim()) {
+    const { data } = await supabase
+      .from("batches")
+      .select(SUGGEST_SELECT)
+      .eq("kategori_id", batch.kategori_id)
+      .eq("is_active", true)
+      .neq("id", batch.id)
+      .order("tanggal_mulai", { ascending: true })
+      .limit(3);
+    if (data && data.length > 0) suggestions = data;
+  }
 
   const nomorWa = process.env.NEXT_PUBLIC_WA_ADMIN;
   const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai);
@@ -95,15 +109,10 @@ export default async function BatchDetailPage({
   const deskripsi = pick(batch.deskripsi_id, batch.deskripsi_en, locale);
   const silabus = pick(batch.silabus_id, batch.silabus_en, locale);
   const waTanyaLink = buildWaTanyaLink(nomorWa, batch.judul_id);
-
-  const tabItems = [
-    deskripsi?.trim() ? { value: "deskripsi", label: t("descriptionTab"), html: deskripsi } : null,
-    silabus?.trim() ? { value: "silabus", label: t("syllabusTab"), html: silabus } : null,
-  ].filter((item): item is { value: string; label: string; html: string } => item !== null);
+  const silabusItems = silabus?.trim() ? splitHtmlByHeadings(silabus) : [];
 
   return (
     <div className="bg-background pb-10">
-      {/* 1. Hero judul */}
       <PublicHeroMist className="border-b border-border">
         <div className="mx-auto max-w-4xl px-4 py-8 md:py-12">
           <div className="flex flex-wrap items-center gap-2">
@@ -127,7 +136,6 @@ export default async function BatchDetailPage({
       </PublicHeroMist>
 
       <div className="mx-auto max-w-4xl px-4">
-        {/* 2. Benefit pills */}
         {benefits && benefits.length > 0 && (
           <div className="flex flex-wrap gap-2 pt-6">
             {benefits.map((b) => (
@@ -142,47 +150,63 @@ export default async function BatchDetailPage({
           </div>
         )}
 
-        {/* 3. Tab Deskripsi + Silabus */}
-        {tabItems.length > 0 && (
+        {/* Deskripsi (tab/blok) + Silabus sebagai akordion */}
+        {(deskripsi?.trim() || silabus?.trim()) && (
           <div className="pt-8">
-            <Tabs defaultValue={tabItems[0]?.value}>
-              <TabsList>
-                {tabItems.map((tab) => (
-                  <TabsTrigger key={tab.value} value={tab.value}>
-                    {tab.label}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-              {tabItems.map((tab) => (
-                <TabsContent key={tab.value} value={tab.value}>
-                  {/* HTML dari Tiptap di Admin Panel (ENGINEERING §5.8) — hanya Admin
-                      yang mengisi, dangerouslySetInnerHTML aman di sini. */}
-                  <div className={KONTEN_HTML_CLASS} dangerouslySetInnerHTML={{ __html: tab.html }} />
+            {deskripsi?.trim() && silabus?.trim() ? (
+              <Tabs defaultValue="deskripsi">
+                <TabsList>
+                  <TabsTrigger value="deskripsi">{t("descriptionTab")}</TabsTrigger>
+                  <TabsTrigger value="silabus">{t("syllabusTab")}</TabsTrigger>
+                </TabsList>
+                <TabsContent value="deskripsi">
+                  <div className={KONTEN_HTML_CLASS} dangerouslySetInnerHTML={{ __html: deskripsi }} />
                 </TabsContent>
-              ))}
-            </Tabs>
+                <TabsContent value="silabus">
+                  <SilabusAccordion
+                    items={silabusItems}
+                    fallbackHtml={silabus}
+                    fallbackTitle={t("syllabusTab")}
+                  />
+                </TabsContent>
+              </Tabs>
+            ) : deskripsi?.trim() ? (
+              <div>
+                <h2 className={publicSectionHeading}>{t("descriptionTab")}</h2>
+                <div className={KONTEN_HTML_CLASS} dangerouslySetInnerHTML={{ __html: deskripsi }} />
+              </div>
+            ) : (
+              <div>
+                <h2 className={publicSectionHeading}>{t("syllabusTab")}</h2>
+                <SilabusAccordion
+                  items={silabusItems}
+                  fallbackHtml={silabus!}
+                  fallbackTitle={t("syllabusTab")}
+                />
+              </div>
+            )}
           </div>
         )}
 
-        {/* 4–6. Jadwal & Investasi / Dukungan Peserta / Peralatan Belajar */}
-        <div className="grid grid-cols-1 gap-4 pt-8 sm:grid-cols-2 lg:grid-cols-3">
-          <div className="rounded-xl border border-border bg-card p-5 shadow-none">
+        {/* Jadwal dominan full-width → Peralatan → Dukungan */}
+        <div className="grid grid-cols-1 gap-4 pt-8 sm:grid-cols-2">
+          <div className="rounded-xl border border-border bg-card p-5 shadow-none sm:col-span-2 sm:p-6">
             <h2 className={cardHeading}>{t("scheduleInvestmentHeading")}</h2>
-            <dl className="mt-3 space-y-1.5 text-sm text-muted-foreground">
+            <dl className="mt-3 space-y-1.5 text-sm text-muted-foreground sm:columns-2 sm:gap-8">
               {tanggal && (
-                <div>
+                <div className="break-inside-avoid">
                   <dt className="inline font-medium text-foreground">{t("timeLabel")}</dt>
                   <dd className="inline">{tanggal}</dd>
                 </div>
               )}
               {lokasi && (
-                <div>
+                <div className="break-inside-avoid">
                   <dt className="inline font-medium text-foreground">{t("locationLabel")}</dt>
                   <dd className="inline">{lokasi}</dd>
                 </div>
               )}
               {batch.alamat && (
-                <div>
+                <div className="break-inside-avoid">
                   <dt className="inline font-medium text-foreground">{t("addressLabel")}</dt>
                   <dd className="inline">{batch.alamat}</dd>
                 </div>
@@ -193,6 +217,17 @@ export default async function BatchDetailPage({
             )}
             {batch.status !== "closed" && <DaftarMinatDialog batchId={batch.id} />}
           </div>
+
+          {equipment && equipment.length > 0 && (
+            <div className="rounded-xl border border-border bg-card p-5 shadow-none">
+              <h2 className={cardHeading}>{t("equipmentHeading")}</h2>
+              <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm text-muted-foreground">
+                {equipment.map((item) => (
+                  <li key={item.id}>{pick(item.teks_id, item.teks_en, locale)}</li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <div className="rounded-xl border border-border bg-card p-5 shadow-none">
             <h2 className={cardHeading}>{t("supportHeading")}</h2>
@@ -208,20 +243,8 @@ export default async function BatchDetailPage({
               </a>
             )}
           </div>
-
-          {equipment && equipment.length > 0 && (
-            <div className="rounded-xl border border-border bg-card p-5 shadow-none">
-              <h2 className={cardHeading}>{t("equipmentHeading")}</h2>
-              <ul className="mt-3 list-disc space-y-1.5 pl-5 text-sm text-muted-foreground">
-                {equipment.map((item) => (
-                  <li key={item.id}>{pick(item.teks_id, item.teks_en, locale)}</li>
-                ))}
-              </ul>
-            </div>
-          )}
         </div>
 
-        {/* 7a. FAQ */}
         {faqs && faqs.length > 0 && (
           <div className="pt-10">
             <h2 className={publicSectionHeading}>{t("faqHeading")}</h2>
@@ -240,7 +263,6 @@ export default async function BatchDetailPage({
           </div>
         )}
 
-        {/* 7b. Galeri dokumentasi */}
         {gallery && gallery.length > 0 && (
           <div className="pt-10">
             <h2 className={publicSectionHeading}>{t("galleryHeading")}</h2>
@@ -270,17 +292,14 @@ export default async function BatchDetailPage({
           </div>
         )}
 
-        {/* 8. Info sertifikat */}
         <div className="mt-10 rounded-xl border border-border bg-card p-5">
           <h2 className={cardHeading}>{t("certificateInfoHeading")}</h2>
           <p className="mt-2 text-sm text-muted-foreground">{t("certificateInfoBody")}</p>
         </div>
       </div>
 
-      {/* 9. Top instruktur */}
       <InstrukturSection limit={3} />
 
-      {/* 10. Suggest pelatihan lain */}
       {suggestions && suggestions.length > 0 && (
         <div className="mx-auto max-w-6xl px-4 pb-10">
           <h2 className={publicSectionHeading}>{t("suggestHeading")}</h2>
@@ -298,7 +317,6 @@ export default async function BatchDetailPage({
         </div>
       )}
 
-      {/* 11. CTA tanya lebih lanjut */}
       <div className="mx-auto max-w-4xl px-4 pb-10">
         <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-card p-8 text-center sm:p-12">
           <h2 className={publicSectionHeading}>{t("finalCtaHeading")}</h2>
@@ -316,5 +334,42 @@ export default async function BatchDetailPage({
         </div>
       </div>
     </div>
+  );
+}
+
+function SilabusAccordion({
+  items,
+  fallbackHtml,
+  fallbackTitle,
+}: {
+  items: { title: string; body: string }[];
+  fallbackHtml: string;
+  fallbackTitle: string;
+}) {
+  if (items.length > 0) {
+    return (
+      <Accordion className="mt-2">
+        {items.map((item, i) => (
+          <AccordionItem key={`${item.title}-${i}`} value={`silabus-${i}`}>
+            <AccordionTrigger className="text-base text-foreground">{item.title}</AccordionTrigger>
+            <AccordionContent>
+              <div className={KONTEN_HTML_CLASS} dangerouslySetInnerHTML={{ __html: item.body }} />
+            </AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    );
+  }
+
+  // Tanpa h2/h3 — satu item akordion (bukan split teks mentah).
+  return (
+    <Accordion className="mt-2">
+      <AccordionItem value="silabus-0">
+        <AccordionTrigger className="text-base text-foreground">{fallbackTitle}</AccordionTrigger>
+        <AccordionContent>
+          <div className={KONTEN_HTML_CLASS} dangerouslySetInnerHTML={{ __html: fallbackHtml }} />
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 }

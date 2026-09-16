@@ -35,3 +35,21 @@ export function stripHtmlExcerpt(html: string | null, maxLen = 120): string | nu
   if (!teks) return null;
   return teks.length > maxLen ? `${teks.slice(0, maxLen).trimEnd()}…` : teks;
 }
+
+/** Pecah HTML Tiptap jadi item akordion per `<h2>`/`<h3>`. Kosong = tidak ada heading. */
+export function splitHtmlByHeadings(html: string): { title: string; body: string }[] {
+  const re = /<h([23])\b[^>]*>([\s\S]*?)<\/h\1>/gi;
+  const matches = [...html.matchAll(re)];
+  if (matches.length === 0) return [];
+
+  const items: { title: string; body: string }[] = [];
+  for (let i = 0; i < matches.length; i++) {
+    const match = matches[i]!;
+    const title = match[2]!.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    const start = match.index! + match[0].length;
+    const end = i + 1 < matches.length ? matches[i + 1]!.index! : html.length;
+    const body = html.slice(start, end).trim();
+    if (title) items.push({ title, body });
+  }
+  return items;
+}

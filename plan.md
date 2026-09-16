@@ -39,3 +39,4 @@
 | 2026-09-16 | Tahap 2 | KODE | Pelatihan listing+detail: public-ui CTA/heading/badge, ContentCard public |
 | 2026-09-16 | Tahap 2 fix | KODE | PublicHeroMist; stars amber; suggest = data gap (2/3 tanpa category_id) |
 | 2026-09-16 | Tahap 3 | KODE | Katalog listing+detail Cobalt Mist; query products_public tetap |
+| 2026-09-17 | Tahap 2 fix2 | KODE | Suggest A+B; Jadwal dominan; silabus accordion; testimoni+instruktur restyle |

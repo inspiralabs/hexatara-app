@@ -22,32 +22,34 @@ export async function InstrukturSection({ limit }: { limit?: number } = {}) {
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
       <h2 className={publicSectionHeading}>{t("instructorsHeading")}</h2>
-      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {data.map((instruktur) => (
-          <div
+          <article
             key={instruktur.id}
-            className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-4 text-center shadow-none [transition:var(--transition-hover)] hover:-translate-y-0.5 hover:shadow-float-hover"
+            className="overflow-hidden rounded-2xl border border-border bg-card shadow-none [transition:var(--transition-hover)] hover:-translate-y-0.5 hover:shadow-float-hover"
           >
-            <div className="relative size-24 overflow-hidden rounded-full bg-muted sm:size-28">
-              {instruktur.foto_url && (
+            <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted">
+              {instruktur.foto_url ? (
                 <Image
                   src={instruktur.foto_url}
                   alt=""
                   fill
-                  className="object-cover"
-                  sizes="128px"
+                  className="object-cover object-top transition-transform duration-300 hover:scale-105"
+                  sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                 />
-              )}
+              ) : null}
             </div>
-            <div className="flex flex-col gap-1">
-              <p className="text-base font-semibold leading-snug text-foreground">{instruktur.nama}</p>
+            <div className="px-4 py-4">
+              <p className="font-heading text-base font-semibold leading-snug text-foreground">
+                {instruktur.nama}
+              </p>
               {instruktur.jabatan_id && (
-                <p className="text-sm text-muted-foreground">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {pick(instruktur.jabatan_id, instruktur.jabatan_en, locale)}
                 </p>
               )}
             </div>
-          </div>
+          </article>
         ))}
       </div>
     </section>

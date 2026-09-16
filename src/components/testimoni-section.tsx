@@ -1,7 +1,7 @@
-import Image from "next/image";
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { pick } from "@/lib/i18n/pick";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { publicSectionHeading } from "@/lib/public-ui";
 
 export async function TestimoniSection() {
@@ -21,31 +21,49 @@ export async function TestimoniSection() {
     <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
       <h2 className={publicSectionHeading}>{t("testimonialsHeading")}</h2>
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {data.map((testi) => (
-          <figure
-            key={testi.id}
-            className="flex flex-col gap-3 overflow-hidden rounded-xl border border-border bg-card p-4 shadow-none [transition:var(--transition-hover)] hover:-translate-y-0.5 hover:shadow-float-hover"
-          >
-            <blockquote className="text-base leading-relaxed text-foreground">
-              &ldquo;{pick(testi.isi_id, testi.isi_en, locale)}&rdquo;
-            </blockquote>
-            <figcaption className="mt-auto flex items-center gap-3 border-t border-border pt-3">
-              <div className="relative size-10 shrink-0 overflow-hidden rounded-full bg-muted">
-                {testi.foto_url && (
-                  <Image src={testi.foto_url} alt="" fill className="object-cover" sizes="40px" />
-                )}
+        {data.map((testi) => {
+          const peran = pick(testi.peran_id, testi.peran_en, locale);
+          const initials = testi.nama
+            .split(/\s+/)
+            .slice(0, 2)
+            .map((w) => w[0])
+            .join("")
+            .toUpperCase();
+
+          return (
+            <figure
+              key={testi.id}
+              className="flex flex-col rounded-xl border border-border bg-gradient-to-b from-card to-muted/20 p-4 text-start shadow-none [transition:var(--transition-hover)] hover:-translate-y-0.5 hover:from-card hover:to-muted/40 hover:shadow-float-hover sm:p-6"
+            >
+              <div className="flex items-center gap-3">
+                <Avatar
+                  size="lg"
+                  className="size-12 rounded-md after:rounded-md data-[size=lg]:size-12"
+                >
+                  {testi.foto_url ? (
+                    <AvatarImage
+                      src={testi.foto_url}
+                      alt=""
+                      className="rounded-md"
+                    />
+                  ) : null}
+                  <AvatarFallback className="rounded-md bg-muted text-sm font-medium text-muted-foreground">
+                    {initials || "?"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex min-w-0 flex-col items-start">
+                  <figcaption className="truncate text-base font-semibold leading-none text-foreground">
+                    {testi.nama}
+                  </figcaption>
+                  {peran && <p className="mt-1 truncate text-sm text-muted-foreground">{peran}</p>}
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-semibold text-foreground">{testi.nama}</p>
-                {testi.peran_id && (
-                  <p className="text-sm text-muted-foreground">
-                    {pick(testi.peran_id, testi.peran_en, locale)}
-                  </p>
-                )}
-              </div>
-            </figcaption>
-          </figure>
-        ))}
+              <blockquote className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
+                {pick(testi.isi_id, testi.isi_en, locale)}
+              </blockquote>
+            </figure>
+          );
+        })}
       </div>
     </section>
   );
