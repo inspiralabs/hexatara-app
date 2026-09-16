@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getWhatsappAdmin } from "@/lib/site-settings";
 import { pick } from "@/lib/i18n/pick";
 import { HeroCarousel, type HeroSlideItem } from "@/components/hero-carousel";
+import { PublicHeroMist } from "@/components/public-hero-mist";
 import { publicCtaPrimary, publicCtaSecondary } from "@/lib/public-ui";
 
 const cardCtaClass = `${publicCtaPrimary} mt-auto w-full px-3 text-sm sm:px-5 sm:text-base`;
@@ -33,18 +34,8 @@ export async function HeroSection() {
   const nomorWa = await getWhatsappAdmin();
 
   return (
-    <section className="relative overflow-hidden bg-background bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-      {/* Dekorasi soft — hanya hero, tanpa foto stok */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-28 -right-20 size-72 rounded-full bg-primary/10 blur-3xl"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -bottom-24 -left-16 size-56 rounded-full bg-secondary/15 blur-3xl"
-      />
-
-      <div className="relative mx-auto max-w-6xl px-4 py-16 md:py-24">
+    <PublicHeroMist>
+      <div className="mx-auto max-w-6xl px-4 py-16 md:py-24">
         <div className="grid grid-cols-1 gap-6 sm:gap-10 md:grid-cols-2 md:items-center">
           <div className="flex flex-col gap-5">
             <div className="grid grid-cols-2 gap-3">
@@ -90,6 +81,6 @@ export async function HeroSection() {
           <HeroCarousel slides={slides} />
         </div>
       </div>
-    </section>
+    </PublicHeroMist>
   );
 }

@@ -3,6 +3,8 @@ import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { pick } from "@/lib/i18n/pick";
 import { getMateriHeroHref } from "@/lib/materi";
+import { PublicHeroMist } from "@/components/public-hero-mist";
+import { publicCtaPrimary, publicSectionHeading } from "@/lib/public-ui";
 import { PelatihanCard } from "./pelatihan-card";
 import { FilterBar } from "./filter-bar";
 import { SORT_VALUES, type PelatihanSort } from "./sort-options";
@@ -80,28 +82,24 @@ export default async function PelatihanPage({
   }));
 
   return (
-    <div className="pb-16">
+    <div className="bg-background pb-16">
       {/* Hero freemium */}
-      <section className="border-b border-border bg-muted">
-        <div className="mx-auto max-w-4xl px-4 py-12 text-center">
-          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">{t("freemiumHeroTitle")}</h1>
+      <PublicHeroMist className="border-b border-border">
+        <div className="mx-auto max-w-4xl px-4 py-12 text-center md:py-16">
+          <h1 className={publicSectionHeading}>{t("freemiumHeroTitle")}</h1>
           <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground">{t("freemiumHeroDesc")}</p>
           {materiHref && (
-            <Link
-              href={materiHref}
-              className="mt-6 inline-flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
-            >
+            <Link href={materiHref} className={`mt-6 ${publicCtaPrimary}`}>
               {t("freemiumHeroCta")}
             </Link>
           )}
         </div>
-      </section>
+      </PublicHeroMist>
 
-      <div className="mx-auto max-w-6xl px-4 py-10">
-        <h2 className="text-xl font-bold text-foreground sm:text-2xl">{t("pageTitle")}</h2>
+      <div className="mx-auto max-w-6xl px-4 py-10 md:py-16">
+        <h2 className={publicSectionHeading}>{t("pageTitle")}</h2>
         <p className="mt-2 text-base text-muted-foreground">{t("pageSubtitle")}</p>
 
-        {/* Filter + sort */}
         <div className="mt-6">
           <FilterBar
             kategoriOptions={kategoriOptions}
@@ -111,9 +109,8 @@ export default async function PelatihanPage({
           />
         </div>
 
-        {/* Grid */}
         {!data || data.length === 0 ? (
-          <p className="mt-6 rounded-xl border border-border bg-muted p-5 text-sm text-muted-foreground">
+          <p className="mt-6 rounded-xl border border-border bg-card p-5 text-sm text-muted-foreground">
             {t("kosong")}
           </p>
         ) : (
@@ -130,16 +127,15 @@ export default async function PelatihanPage({
           </div>
         )}
 
-        {/* CTA custom training */}
-        <div className="mt-16 flex flex-col items-center gap-4 rounded-xl border border-border bg-muted p-8 text-center sm:p-12">
-          <h2 className="text-xl font-bold text-foreground sm:text-2xl">{t("customCtaHeading")}</h2>
+        <div className="mt-16 flex flex-col items-center gap-4 rounded-xl border border-border bg-card p-8 text-center sm:p-12">
+          <h2 className={publicSectionHeading}>{t("customCtaHeading")}</h2>
           <p className="max-w-xl text-base text-muted-foreground">{t("customCtaDesc")}</p>
           {waCustomLink && (
             <a
               href={waCustomLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 inline-flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
+              className={`mt-2 ${publicCtaPrimary}`}
             >
               {t("customCtaButton")}
             </a>

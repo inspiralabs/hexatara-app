@@ -19,7 +19,7 @@ export function StarRating({
           key={i}
           className={cn(
             "size-4",
-            i < rounded ? "fill-primary text-foreground" : "fill-none text-muted-foreground/30"
+            i < rounded ? "fill-amber-400 text-amber-400" : "fill-none text-muted-foreground/30"
           )}
         />
       ))}

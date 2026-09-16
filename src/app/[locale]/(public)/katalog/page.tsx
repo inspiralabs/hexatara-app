@@ -1,6 +1,8 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { pick } from "@/lib/i18n/pick";
+import { PublicHeroMist } from "@/components/public-hero-mist";
+import { publicCtaPrimary, publicSectionHeading } from "@/lib/public-ui";
 import { ProdukCard } from "./produk-card";
 import { FilterBar } from "./filter-bar";
 import { SORT_VALUES, type ProdukSort } from "./sort-options";
@@ -89,37 +91,34 @@ export default async function KatalogPage({
   }));
 
   return (
-    <div className="pb-16">
-      {/* Hero produk Autel */}
-      <section className="border-b border-border bg-muted">
-        <div className="mx-auto max-w-4xl px-4 py-12 text-center">
-          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">{t("heroTitle")}</h1>
+    <div className="bg-background pb-16">
+      <PublicHeroMist className="border-b border-border">
+        <div className="mx-auto max-w-4xl px-4 py-12 text-center md:py-16">
+          <h1 className={publicSectionHeading}>{t("heroTitle")}</h1>
           <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground">{t("heroDesc")}</p>
           {waKonsultasiLink && (
             <a
               href={waKonsultasiLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-6 inline-flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
+              className={`mt-6 ${publicCtaPrimary}`}
             >
               {t("heroCta")}
             </a>
           )}
         </div>
-      </section>
+      </PublicHeroMist>
 
-      <div className="mx-auto max-w-6xl px-4 py-10">
-        <h2 className="text-xl font-bold text-foreground sm:text-2xl">{t("pageTitle")}</h2>
+      <div className="mx-auto max-w-6xl px-4 py-10 md:py-16">
+        <h2 className={publicSectionHeading}>{t("pageTitle")}</h2>
         <p className="mt-2 text-base text-muted-foreground">{t("pageSubtitle")}</p>
 
-        {/* Filter + sort */}
         <div className="mt-6">
           <FilterBar kategoriOptions={kategoriOptions} kategoriValue={kategoriId} sortValue={sortValue} />
         </div>
 
-        {/* Grid */}
         {!produk || produk.length === 0 ? (
-          <p className="mt-6 rounded-xl border border-border bg-muted p-5 text-sm text-muted-foreground">
+          <p className="mt-6 rounded-xl border border-border bg-card p-5 text-sm text-muted-foreground">
             {t("kosong")}
           </p>
         ) : (
@@ -139,16 +138,15 @@ export default async function KatalogPage({
           </div>
         )}
 
-        {/* CTA partai besar / masih bingung memilih */}
-        <div className="mt-16 flex flex-col items-center gap-4 rounded-xl border border-border bg-muted p-8 text-center sm:p-12">
-          <h2 className="text-xl font-bold text-foreground sm:text-2xl">{t("bulkCtaHeading")}</h2>
+        <div className="mt-16 flex flex-col items-center gap-4 rounded-xl border border-border bg-card p-8 text-center sm:p-12">
+          <h2 className={publicSectionHeading}>{t("bulkCtaHeading")}</h2>
           <p className="max-w-xl text-base text-muted-foreground">{t("bulkCtaDesc")}</p>
           {waBulkLink && (
             <a
               href={waBulkLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-2 inline-flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
+              className={`mt-2 ${publicCtaPrimary}`}
             >
               {t("bulkCtaButton")}
             </a>

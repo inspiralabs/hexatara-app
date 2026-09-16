@@ -19,6 +19,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { publicCtaPrimary, publicCtaSecondary } from '@/lib/public-ui';
+import { cn } from '@/lib/utils';
 
 type QuoteInput = z.infer<typeof QuoteRequestFormSchema>;
 
@@ -67,7 +69,7 @@ export function QuoteDialog({ productId }: { productId: number }) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger className="inline-flex h-11 flex-1 items-center justify-center rounded-lg bg-primary px-5 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]">
+      <DialogTrigger className={cn(publicCtaPrimary, 'flex-1')}>
         {t('dialog.trigger')}
       </DialogTrigger>
       <DialogContent>
@@ -80,7 +82,7 @@ export function QuoteDialog({ productId }: { productId: number }) {
             <button
               type="button"
               onClick={() => handleOpenChange(false)}
-              className="inline-flex h-11 w-full items-center justify-center rounded-lg border border-foreground px-5 text-base font-semibold text-foreground [transition:var(--transition-hover)] hover:bg-muted"
+              className={cn(publicCtaSecondary, 'w-full')}
             >
               {t('dialog.close')}
             </button>
@@ -148,7 +150,7 @@ export function QuoteDialog({ productId }: { productId: number }) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-primary px-5 text-base font-semibold text-primary-foreground shadow-float [transition:var(--transition-hover)] hover:shadow-float-hover disabled:opacity-50"
+              className={cn(publicCtaPrimary, 'w-full disabled:opacity-50')}
             >
               {isSubmitting ? tCommon('processing') : t('dialog.submit')}
             </button>

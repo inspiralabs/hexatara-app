@@ -18,6 +18,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { publicCtaPrimary } from '@/lib/public-ui';
+import { cn } from '@/lib/utils';
 
 type BatchLeadInput = z.infer<typeof BatchLeadFormSchema>;
 
@@ -59,7 +61,7 @@ export function DaftarMinatDialog({ batchId }: { batchId: number }) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger className="mt-4 inline-flex h-11 w-full items-center justify-center rounded-lg bg-primary px-5 text-base font-semibold text-primary-foreground">
+      <DialogTrigger className={cn(publicCtaPrimary, 'mt-4 w-full')}>
         {t('registerNow')}
       </DialogTrigger>
       <DialogContent>
@@ -74,7 +76,7 @@ export function DaftarMinatDialog({ batchId }: { batchId: number }) {
                 href={waLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-emerald-600 px-5 text-base font-semibold text-primary-foreground"
+                className={cn(publicCtaPrimary, 'w-full bg-emerald-600 hover:bg-emerald-600/90')}
               >
                 {t('dialog.continueWhatsapp')}
               </a>
@@ -131,7 +133,7 @@ export function DaftarMinatDialog({ batchId }: { batchId: number }) {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-primary px-5 text-base font-semibold text-primary-foreground disabled:opacity-50"
+              className={cn(publicCtaPrimary, 'w-full disabled:opacity-50')}
             >
               {isSubmitting ? tCommon('processing') : t('dialog.submit')}
             </button>

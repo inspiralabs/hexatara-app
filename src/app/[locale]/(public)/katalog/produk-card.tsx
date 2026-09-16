@@ -2,6 +2,7 @@ import { Link } from "@/i18n/navigation";
 import { formatRupiah } from "@/lib/batch";
 import { pick } from "@/lib/i18n/pick";
 import { ContentCard } from "@/components/content-card";
+import { publicBadgeKategori, publicCtaSecondary } from "@/lib/public-ui";
 import type { Database } from "@/types/database";
 
 export type ProdukCardProduk = Pick<
@@ -24,23 +25,17 @@ export function ProdukCard({
 
   return (
     <ContentCard
+      variant="public"
       image={produk.cover ? { src: produk.cover, alt: nama } : null}
       badges={
-        produk.kategori ? (
-          <span className="rounded-full bg-foreground/10 px-2.5 py-0.5 text-xs font-medium text-foreground">
-            {produk.kategori}
-          </span>
-        ) : undefined
+        produk.kategori ? <span className={publicBadgeKategori}>{produk.kategori}</span> : undefined
       }
       title={nama}
       rating={produk.rating}
       price={produk.harga != null ? formatRupiah(produk.harga) : hargaHubungiKami}
       cta={
         produk.slug ? (
-          <Link
-            href={`/katalog/${produk.slug}`}
-            className="inline-flex h-11 w-fit items-center justify-center rounded-lg border border-foreground px-5 text-base font-semibold text-foreground [transition:var(--transition-hover)] hover:bg-muted"
-          >
+          <Link href={`/katalog/${produk.slug}`} className={publicCtaSecondary}>
             {detailLabel}
           </Link>
         ) : undefined

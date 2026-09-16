@@ -2,7 +2,11 @@ import { Link } from "@/i18n/navigation";
 import { formatRupiah, formatTanggalBatch, stripHtmlExcerpt } from "@/lib/batch";
 import { pick } from "@/lib/i18n/pick";
 import { ContentCard } from "@/components/content-card";
-import { StatusBadge } from "@/components/status-badge";
+import {
+  publicBadgeKategori,
+  publicCtaSecondary,
+  publicStatusBatchClass,
+} from "@/lib/public-ui";
 import type { Database } from "@/types/database";
 
 export type PelatihanCardBatch = Pick<
@@ -45,15 +49,12 @@ export function PelatihanCard({
 
   return (
     <ContentCard
+      variant="public"
       image={batch.hero_gambar_url ? { src: batch.hero_gambar_url, alt: judul } : null}
       badges={
         <>
-          {kategori && (
-            <span className="rounded-full bg-foreground/10 px-2.5 py-0.5 text-xs font-medium text-foreground">
-              {kategori}
-            </span>
-          )}
-          <StatusBadge status={batch.status} label={statusLabel} />
+          {kategori && <span className={publicBadgeKategori}>{kategori}</span>}
+          <span className={publicStatusBatchClass[batch.status]}>{statusLabel}</span>
         </>
       }
       title={judul}
@@ -63,10 +64,7 @@ export function PelatihanCard({
       rating={batch.rating}
       price={batch.harga != null ? formatRupiah(batch.harga) : undefined}
       cta={
-        <Link
-          href={`/pelatihan/${batch.slug}`}
-          className="inline-flex h-11 w-fit items-center justify-center rounded-lg border border-foreground px-5 text-base font-semibold text-foreground"
-        >
+        <Link href={`/pelatihan/${batch.slug}`} className={publicCtaSecondary}>
           {detailLabel}
         </Link>
       }
