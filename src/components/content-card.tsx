@@ -11,6 +11,7 @@ export function ContentCard({
   rating,
   price,
   cta,
+  variant = "default",
   className,
 }: {
   image?: { src: string; alt: string } | null;
@@ -20,13 +21,19 @@ export function ContentCard({
   rating?: number | null;
   price?: ReactNode;
   cta?: ReactNode;
+  /** `public` = border saja, shadow hanya hover (§12.6.9). Default tetap untuk dashboard. */
+  variant?: "default" | "public";
   className?: string;
 }) {
+  const isPublic = variant === "public";
+
   return (
     <article
       className={cn(
-        "flex flex-col overflow-hidden rounded-lg border border-border bg-background",
-        "shadow-float hover:-translate-y-0.5 hover:shadow-float-hover [transition:var(--transition-hover)]",
+        "flex flex-col overflow-hidden border border-border bg-background [transition:var(--transition-hover)]",
+        isPublic
+          ? "rounded-xl bg-card shadow-none hover:-translate-y-0.5 hover:shadow-float-hover"
+          : "rounded-lg shadow-float hover:-translate-y-0.5 hover:shadow-float-hover",
         className
       )}
     >
@@ -43,14 +50,30 @@ export function ContentCard({
       )}
       <div className="flex flex-1 flex-col gap-2 p-4">
         {badges && <div className="flex flex-wrap items-center gap-2">{badges}</div>}
-        <h3 className="text-lg font-bold text-foreground">{title}</h3>
+        <h3
+          className={cn(
+            "font-semibold text-foreground",
+            isPublic ? "text-base leading-snug" : "text-lg font-bold"
+          )}
+        >
+          {title}
+        </h3>
         {meta?.map((line, i) => (
           <p key={i} className="text-sm text-muted-foreground">
             {line}
           </p>
         ))}
         {rating !== undefined && <StarRating rating={rating} />}
-        {price && <p className="text-3xl font-bold text-foreground">{price}</p>}
+        {price && (
+          <p
+            className={cn(
+              "font-bold",
+              isPublic ? "text-2xl text-primary sm:text-3xl" : "text-3xl text-foreground"
+            )}
+          >
+            {price}
+          </p>
+        )}
         {cta && <div className="mt-auto pt-2">{cta}</div>}
       </div>
     </article>

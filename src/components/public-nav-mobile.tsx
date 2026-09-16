@@ -13,6 +13,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { publicCtaSecondary } from "@/lib/public-ui";
 
 export function PublicNavMobile({
   items,
@@ -57,7 +58,7 @@ export function PublicNavMobile({
           <Link
             href={hrefMasuk}
             onClick={() => setTerbuka(false)}
-            className="flex min-h-11 items-center text-base font-semibold text-foreground"
+            className={`${publicCtaSecondary} mt-2 w-full`}
           >
             {labelMasuk}
           </Link>

@@ -58,7 +58,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlideItem[] }) {
       />
       {(slide.subjudul || slide.judul) && (
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] p-4 text-background">
-          <p className="text-base font-bold sm:text-lg">{slide.judul}</p>
+          <p className="font-heading text-base font-bold sm:text-lg">{slide.judul}</p>
           {slide.subjudul && <p className="text-sm text-background/90">{slide.subjudul}</p>}
         </div>
       )}

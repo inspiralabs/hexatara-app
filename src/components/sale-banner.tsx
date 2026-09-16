@@ -1,6 +1,7 @@
 import { getLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { pick } from "@/lib/i18n/pick";
+import { publicCtaSecondary } from "@/lib/public-ui";
 
 export async function SaleBanner() {
   const supabase = await createClient();
@@ -32,18 +33,15 @@ export async function SaleBanner() {
   const tombolTeks = pick(banner.tombol_teks_id, banner.tombol_teks_en, locale);
 
   return (
-    <div className="bg-primary px-4 py-3 text-background">
-      <div className="mx-auto flex max-w-6xl flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div className="bg-primary px-4 py-4 text-primary-foreground">
+      <div className="mx-auto flex max-w-6xl flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-base font-semibold">{judul}</p>
-          {teks && <p className="text-sm text-background/90">{teks}</p>}
-          {urgensi && <p className="text-sm font-medium text-foreground">{urgensi}</p>}
+          <p className="font-heading text-base font-semibold sm:text-lg">{judul}</p>
+          {teks && <p className="mt-1 text-sm text-primary-foreground/90">{teks}</p>}
+          {urgensi && <p className="mt-1 text-sm font-medium text-primary-foreground/80">{urgensi}</p>}
         </div>
         {tombolTeks && banner.tombol_url && (
-          <a
-            href={banner.tombol_url}
-            className="inline-flex h-11 shrink-0 items-center justify-center rounded-lg bg-primary px-5 text-base font-semibold text-primary-foreground"
-          >
+          <a href={banner.tombol_url} className={`${publicCtaSecondary} bg-primary-foreground text-primary hover:bg-primary-foreground/90 hover:text-primary`}>
             {tombolTeks}
           </a>
         )}

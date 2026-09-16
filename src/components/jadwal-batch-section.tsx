@@ -1,9 +1,10 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { STATUS_BATCH_LABEL, formatRupiah, formatTanggalBatch } from "@/lib/batch";
+import { formatRupiah, formatTanggalBatch } from "@/lib/batch";
 import { pick } from "@/lib/i18n/pick";
 import { ContentCard } from "@/components/content-card";
+import { publicBadgeKategori, publicCtaPrimary, publicSectionHeading, publicStatusBatchClass } from "@/lib/public-ui";
 import type { Database } from "@/types/database";
 
 export type Batch = Pick<
@@ -34,20 +35,16 @@ export function BatchCard({
   registerNowLabel: string;
 }) {
   const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai);
-  const status = STATUS_BATCH_LABEL[batch.status];
   const kategori = pick(batch.kategori_id, batch.kategori_en, locale);
   const lokasi = pick(batch.lokasi_id, batch.lokasi_en, locale);
 
   return (
     <ContentCard
+      variant="public"
       badges={
         <>
-          {kategori && (
-            <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary-foreground">
-              {kategori}
-            </span>
-          )}
-          <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${status.className}`}>{statusLabel}</span>
+          {kategori && <span className={publicBadgeKategori}>{kategori}</span>}
+          <span className={publicStatusBatchClass[batch.status]}>{statusLabel}</span>
         </>
       }
       title={pick(batch.judul_id, batch.judul_en, locale)}
@@ -55,10 +52,7 @@ export function BatchCard({
       price={batch.harga != null ? formatRupiah(batch.harga) : undefined}
       cta={
         batch.status !== "closed" && (
-          <Link
-            href={`/pelatihan/${batch.slug}`}
-            className="inline-flex h-11 w-fit items-center justify-center rounded-lg bg-primary px-5 text-base font-semibold text-primary-foreground"
-          >
+          <Link href={`/pelatihan/${batch.slug}`} className={publicCtaPrimary}>
             {registerNowLabel}
           </Link>
         )
@@ -67,7 +61,7 @@ export function BatchCard({
   );
 }
 
-export async function JadwalBatchSection() {
+export async function JadwalBatchSection({ limit = 6 }: { limit?: number } = {}) {
   const supabase = await createClient();
   const locale = await getLocale();
   const t = await getTranslations("landing");
@@ -78,14 +72,15 @@ export async function JadwalBatchSection() {
       "id, slug, judul_id, judul_en, kategori_id, kategori_en, lokasi_id, lokasi_en, harga, status, tanggal_mulai, tanggal_selesai"
     )
     .eq("is_active", true)
-    .order("tanggal_mulai", { ascending: true });
+    .order("tanggal_mulai", { ascending: true })
+    .limit(limit);
 
   if (error) console.error("[jadwal-batch] gagal memuat:", error);
   if (!data || data.length === 0) return null;
 
   return (
     <section id="jadwal" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 md:py-24">
-      <h2 className="text-xl font-bold text-foreground sm:text-2xl">{t("scheduleHeading")}</h2>
+      <h2 className={publicSectionHeading}>{t("scheduleHeading")}</h2>
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {data.map((batch) => (
           <BatchCard
@@ -99,10 +94,7 @@ export async function JadwalBatchSection() {
       </div>
 
       <div className="mt-8 flex justify-center">
-        <Link
-          href="/pelatihan"
-          className="inline-flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
-        >
+        <Link href="/pelatihan" className={publicCtaPrimary}>
           {t("lihatSemuaPelatihan")}
         </Link>
       </div>

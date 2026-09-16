@@ -8,7 +8,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
-  --font-heading: var(--font-sans);
+  --font-heading: var(--font-heading);
   --color-warna-utama: var(--warna-utama);
   --color-warna-aksen: var(--warna-aksen);
   --color-warna-sukses: var(--warna-sukses);
@@ -106,6 +106,21 @@
   --transition-hover: 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* §12.6.9 Cobalt Mist — hanya permukaan publik (lihat (public)/layout.tsx).
+   Jangan tulis ulang di :root: Admin / User / Auth tetap Neutral.
+   --font-heading di sini supaya resolve Fraunces di permukaan ini (variable
+   --font-fraunces di <html> locale layout; class font-heading hanya dipakai publik). */
+[data-surface="public"] {
+  --primary: oklch(0.47 0.16 255);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.75 0.14 155);
+  --secondary-foreground: oklch(0.145 0 0);
+  --accent: oklch(0.93 0.03 255);
+  --accent-foreground: oklch(0.47 0.16 255);
+  --ring: oklch(0.47 0.16 255);
+  --font-heading: var(--font-fraunces), ui-serif, Georgia, serif;
+}
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -157,10 +172,11 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     @apply font-sans;
+    --font-heading: var(--font-sans);
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }

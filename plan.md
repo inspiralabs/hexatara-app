@@ -1,41 +1,29 @@
-# Plan §12.6.10 — Polish Admin: toast, XLSX, reorder soal, Combobox
+# Plan §12.6.9 — Redesign visual halaman publik (Cobalt Mist)
 
-> **Status sesi:** Lanjutan Fase 12.6.  
-> **Blok ini:** §12.6.10 (F06.16 polish).  
-> **Warna:** Neutral. **Dep baru:** tidak. **SQL:** tidak.  
-> **Kode:** selesai (tsc/lint/build OK). Menunggu uji Alif.
+> **Status:** Tahap 1 selesai kode — menunggu uji Alif di Beranda.  
+> **Blok:** §12.6.9. **Scope:** `(public)` saja.
 
 ---
 
-## Keputusan Alif (2026-09-15)
+## Keputusan Alif (2026-09-16) — final
 
-1. Reorder soal: **A — tetap ReorderButtons** (bukan DnD) → 0 kode.
-2. Feedback: **A — toast saja**; hapus Alert/pesanError duplikat (FormMessage field tetap; login admin Alert tetap).
-3. **§12.6.9:** belum ditutup. Alif masih evaluasi; halaman depan **akan dibuat tidak setema** dengan dashboard admin/user atau auth (login/daftar/lupa sandi). Commit/registry §12.6.9 ditunda.
+1. **Scoping warna: 1A** — `[data-surface="public"]` override; `:root` Neutral.
+2. **Shared: 2A** — `ContentCard variant="public"`; badge status publik di `publicStatusBatchClass` (bukan ubah `STATUS_BATCH_LABEL` admin).
+3. **Font:** Fraunces → `font-heading` di heading section publik.
+4. **CTA pill:** `publicCtaPrimary` / `publicCtaSecondary` di `src/lib/public-ui.ts`.
+5. **Hero background:** snow `--background`; section `bg-background` eksplisit.
 
 ---
 
-## Checklist
+## Urutan
 
-### A — Toast
-- [x] Hapus duplikasi toast + Alert/`pesanError` di ~29 file Admin
-- [x] Login admin Alert tetap
-- [x] FormMessage field tetap
-
-### B — Ekspor XLSX
-- [x] Tombol Ekspor Excel → `Button` Neutral (`leads-table`, `penawaran-table`)
-- [x] Heading/warna sisa di leads + beberapa page admin → Neutral
-
-### C — Reorder soal
-- [x] Tetap ReorderButtons (tidak diubah)
-
-### D — Combobox
-- [x] Audit: kategori sudah Combobox; enum pendek tetap Select
-
-### E — Verifikasi
-- [x] tsc · lint · build
-- [ ] Uji Alif di browser
-- [ ] Registry F06.16 + commit (setelah OK)
+| Tahap | Isi | Status |
+|-------|-----|--------|
+| 0 | Fondasi token + Fraunces + data-surface | SELESAI (uji OK) |
+| 1 | Beranda + nav/footer/WA | KODE — tunggu uji ulang (4 fix) |
+| 2 | Pelatihan listing + detail | BELUM |
+| 3 | Katalog + detail + F04.3 | BELUM |
+| 4 | Halaman statis | BELUM |
 
 ---
 
@@ -43,5 +31,7 @@
 
 | Tanggal | Section | Status | Catatan |
 |---------|---------|--------|---------|
-| 2026-09-15 | Rencana | DISETUJUI | 1A · 2A · catatan §12.6.9 |
-| 2026-09-15 | A–E kode | SELESAI | Toast-only + ekspor Neutral; tunggu uji Alif |
+| 2026-09-16 | Rencana | DISETUJUI | 1A · 2A · Fraunces · pill publik-only |
+| 2026-09-16 | Tahap 0 | SELESAI | Cobalt scoped; Fraunces; ForceLight surface |
+| 2026-09-16 | Tahap 1 | KODE | Hero/cards/CTA pill/nav scroll shadow/WA monokrom/FAQ; tsc/lint/build OK |
+| 2026-09-16 | Tahap 1 fix | KODE | Hero mist+blob; CTA in-card; limit 6; instruktur/testimoni card polish |

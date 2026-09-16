@@ -23,11 +23,11 @@ export default function Home() {
       <PopupPembuka />
       <HeroSection />
       <SaleBanner />
-      <JadwalBatchSection />
-      <ProdukSection />
+      <JadwalBatchSection limit={6} />
+      <ProdukSection limit={6} />
       <VerifyCtaSection />
       <CompanyProfileSection />
-      <InstrukturSection />
+      <InstrukturSection limit={6} />
       <TestimoniSection />
       <FaqSection />
     </>

@@ -5,6 +5,9 @@ import { createClient } from "@/lib/supabase/server";
 import { getWhatsappAdmin } from "@/lib/site-settings";
 import { pick } from "@/lib/i18n/pick";
 import { HeroCarousel, type HeroSlideItem } from "@/components/hero-carousel";
+import { publicCtaPrimary, publicCtaSecondary } from "@/lib/public-ui";
+
+const cardCtaClass = `${publicCtaPrimary} mt-auto w-full px-3 text-sm sm:px-5 sm:text-base`;
 
 export async function HeroSection() {
   const supabase = await createClient();
@@ -30,53 +33,62 @@ export async function HeroSection() {
   const nomorWa = await getWhatsappAdmin();
 
   return (
-    <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
-      <div className="grid grid-cols-1 gap-6 sm:gap-10 md:grid-cols-2 md:items-center">
-        {/* Dua penawaran inti — teks tetap, tidak bergantung isi database — supaya
-            "hexatara menyelenggarakan pelatihan drone DAN jual drone" langsung
-            terlihat tanpa scroll di 375px (PRD §1.3/§6.1). */}
-        <div className="flex flex-col gap-4">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-background p-4">
-              <GraduationCap className="size-6 text-foreground" aria-hidden="true" />
-              <h2 className="text-base font-bold leading-tight text-foreground">{t("offerTrainingTitle")}</h2>
-              <p className="hidden text-sm text-muted-foreground sm:block">{t("offerTrainingDesc")}</p>
-            </div>
-            <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-background p-4">
-              <ShoppingBag className="size-6 text-foreground" aria-hidden="true" />
-              <h2 className="text-base font-bold leading-tight text-foreground">{t("offerRetailTitle")}</h2>
-              <p className="hidden text-sm text-muted-foreground sm:block">{t("offerRetailDesc")}</p>
-            </div>
-          </div>
+    <section className="relative overflow-hidden bg-background bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+      {/* Dekorasi soft — hanya hero, tanpa foto stok */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -top-28 -right-20 size-72 rounded-full bg-primary/10 blur-3xl"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -bottom-24 -left-16 size-56 rounded-full bg-secondary/15 blur-3xl"
+      />
 
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="/pelatihan"
-              className="inline-flex h-11 items-center justify-center rounded-lg bg-primary px-5 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
-            >
-              {t("offerTrainingCta")}
-            </Link>
-            <Link
-              href="/katalog"
-              className="inline-flex h-11 items-center justify-center rounded-lg bg-primary px-5 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
-            >
-              {t("offerRetailCta")}
-            </Link>
+      <div className="relative mx-auto max-w-6xl px-4 py-16 md:py-24">
+        <div className="grid grid-cols-1 gap-6 sm:gap-10 md:grid-cols-2 md:items-center">
+          <div className="flex flex-col gap-5">
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex flex-col gap-2 rounded-xl border border-border bg-card/90 p-4 shadow-none backdrop-blur-sm">
+                <GraduationCap className="size-6 text-primary" aria-hidden="true" />
+                <h2 className="font-heading text-base font-semibold leading-tight text-foreground">
+                  {t("offerTrainingTitle")}
+                </h2>
+                <p className="hidden text-sm text-muted-foreground sm:block">{t("offerTrainingDesc")}</p>
+                <Link href="/pelatihan" className={cardCtaClass}>
+                  {t("offerTrainingCta")}
+                </Link>
+              </div>
+
+              <div className="flex flex-col gap-2 rounded-xl border border-border bg-card/90 p-4 shadow-none backdrop-blur-sm">
+                <ShoppingBag className="size-6 text-primary" aria-hidden="true" />
+                <h2 className="font-heading text-base font-semibold leading-tight text-foreground">
+                  {t("offerRetailTitle")}
+                </h2>
+                <p className="hidden text-sm text-muted-foreground sm:block">{t("offerRetailDesc")}</p>
+                <Link href="/katalog" className={cardCtaClass}>
+                  {t("offerRetailCta")}
+                </Link>
+              </div>
+            </div>
+
             {nomorWa && (
-              <a
-                href={`https://wa.me/${nomorWa}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={tCommon("whatsappAriaLabel")}
-                className="inline-flex h-11 items-center justify-center rounded-lg border border-foreground px-5 text-base font-semibold text-foreground [transition:var(--transition-hover)] hover:bg-primary/5"
-              >
-                {t("contactCta")}
-              </a>
+              <div className="flex flex-col items-start gap-3 rounded-xl border border-border/80 bg-card/60 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm text-muted-foreground sm:text-base">{t("contactPrompt")}</p>
+                <a
+                  href={`https://wa.me/${nomorWa}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={tCommon("whatsappAriaLabel")}
+                  className={publicCtaSecondary}
+                >
+                  {t("contactCta")}
+                </a>
+              </div>
             )}
           </div>
-        </div>
 
-        <HeroCarousel slides={slides} />
+          <HeroCarousel slides={slides} />
+        </div>
       </div>
     </section>
   );

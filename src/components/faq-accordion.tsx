@@ -10,11 +10,13 @@ export async function FaqAccordion() {
   const items = t.raw("items") as FaqItem[];
 
   return (
-    <Accordion>
+    <Accordion className="rounded-xl border border-border bg-card px-4 shadow-none">
       {items.map((item, i) => (
-        <AccordionItem key={i} value={String(i)}>
-          <AccordionTrigger className="text-base text-foreground">{item.question}</AccordionTrigger>
-          <AccordionContent className="text-muted-foreground">{item.answer}</AccordionContent>
+        <AccordionItem key={i} value={String(i)} className="border-border last:border-b-0">
+          <AccordionTrigger className="py-4 text-base font-medium text-foreground hover:no-underline">
+            {item.question}
+          </AccordionTrigger>
+          <AccordionContent className="pb-4 text-base text-muted-foreground">{item.answer}</AccordionContent>
         </AccordionItem>
       ))}
     </Accordion>

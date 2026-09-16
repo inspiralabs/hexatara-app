@@ -8,6 +8,8 @@ import { FloatingWhatsapp } from "@/components/floating-whatsapp";
 import { PublicNavMobile } from "@/components/public-nav-mobile";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ForceLightDocument } from "@/components/shell/force-light-document";
+import { PublicStickyHeader } from "@/components/public-sticky-header";
+import { publicCtaSecondary } from "@/lib/public-ui";
 import { DEFAULT_JAM_OPERASIONAL, type KontakSettings } from "@/lib/site-settings";
 
 function WhatsAppIcon({ className }: { className?: string }) {
@@ -47,11 +49,11 @@ export default async function PublicLayout({ children }: { children: React.React
   const jamOperasional = kontak.jam_operasional?.trim() || tFooter("serviceHours") || DEFAULT_JAM_OPERASIONAL;
 
   return (
-    <div className="flex min-h-full flex-1 flex-col">
-      <ForceLightDocument />
-      <header className="sticky top-0 z-30 border-b border-border bg-background">
+    <div data-surface="public" className="flex min-h-full flex-1 flex-col bg-background text-foreground">
+      <ForceLightDocument surface="public" />
+      <PublicStickyHeader>
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-          <Link href="/" className="flex items-center gap-2 text-lg font-bold text-foreground">
+          <Link href="/" className="flex items-center gap-2 font-heading text-lg font-semibold text-foreground">
             <Image src="/hexatara-logo.png" alt="Hexatara" width={32} height={32} className="h-8 w-8" priority />
             Hexatara
           </Link>
@@ -67,17 +69,14 @@ export default async function PublicLayout({ children }: { children: React.React
               </Link>
             ))}
             <LanguageSwitcher />
-            <Link
-              href={hrefMasuk}
-              className="flex min-h-11 items-center justify-center rounded-lg border border-foreground px-4 text-base font-semibold text-foreground"
-            >
+            <Link href={hrefMasuk} className={publicCtaSecondary}>
               {tNav("masuk")}
             </Link>
           </nav>
 
           <PublicNavMobile items={NAV_PUBLIK} hrefMasuk={hrefMasuk} labelMasuk={tNav("masuk")} />
         </div>
-      </header>
+      </PublicStickyHeader>
 
       {/* HANYA `flex-1` (bukan `flex flex-col` juga) — kalau main jadi flex
           container, anak langsungnya yang punya `mx-auto` (section-section
@@ -99,7 +98,7 @@ export default async function PublicLayout({ children }: { children: React.React
           </div>
 
           <div>
-            <p className="font-semibold text-foreground">{tFooter("linksHeading")}</p>
+            <p className="font-heading font-semibold text-foreground">{tFooter("linksHeading")}</p>
             <nav className="mt-3 flex flex-col gap-2">
               <Link href="/pelatihan" className="hover:text-foreground">
                 {tNav("pelatihan")}
@@ -126,7 +125,7 @@ export default async function PublicLayout({ children }: { children: React.React
           </div>
 
           <div>
-            <p className="font-semibold text-foreground">{tFooter("contactHeading")}</p>
+            <p className="font-heading font-semibold text-foreground">{tFooter("contactHeading")}</p>
             <div className="mt-3 flex flex-col gap-2.5">
               {kontak.wa && (
                 <a

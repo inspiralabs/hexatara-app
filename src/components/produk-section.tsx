@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { pick } from "@/lib/i18n/pick";
 import { ContentCard } from "@/components/content-card";
+import { publicBadgeKategori, publicCtaPrimary, publicCtaSecondary, publicSectionHeading } from "@/lib/public-ui";
 
 function formatRupiah(nilai: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -12,7 +13,7 @@ function formatRupiah(nilai: number) {
   }).format(nilai);
 }
 
-export async function ProdukSection() {
+export async function ProdukSection({ limit = 6 }: { limit?: number } = {}) {
   const supabase = await createClient();
   const locale = await getLocale();
   const t = await getTranslations("landing");
@@ -21,7 +22,8 @@ export async function ProdukSection() {
   const { data: produk, error } = await supabase
     .from("products_public")
     .select("id, slug, nama_id, nama_en, kategori, harga")
-    .order("urutan");
+    .order("urutan")
+    .limit(limit);
 
   if (error) console.error("[produk-section] gagal memuat produk:", error);
   if (!produk || produk.length === 0) return null;
@@ -41,7 +43,7 @@ export async function ProdukSection() {
 
   return (
     <section className="mx-auto max-w-6xl px-4 py-16 md:py-24">
-      <h2 className="text-xl font-bold text-foreground sm:text-2xl">{t("produkHeading")}</h2>
+      <h2 className={publicSectionHeading}>{t("produkHeading")}</h2>
       <p className="mt-2 text-base text-muted-foreground">{t("produkSubheading")}</p>
 
       <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -52,21 +54,13 @@ export async function ProdukSection() {
           return (
             <ContentCard
               key={p.id}
+              variant="public"
               image={cover ? { src: cover, alt: nama } : undefined}
-              badges={
-                p.kategori && (
-                  <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary-foreground">
-                    {p.kategori}
-                  </span>
-                )
-              }
+              badges={p.kategori && <span className={publicBadgeKategori}>{p.kategori}</span>}
               title={nama}
               price={p.harga != null ? formatRupiah(p.harga) : tCatalog("hargaHubungiKami")}
               cta={
-                <Link
-                  href={`/katalog/${p.slug}`}
-                  className="inline-flex h-11 items-center justify-center rounded-lg border border-foreground px-5 text-base font-semibold text-foreground"
-                >
+                <Link href={`/katalog/${p.slug}`} className={publicCtaSecondary}>
                   {tCatalog("lihatDetail")}
                 </Link>
               }
@@ -76,10 +70,7 @@ export async function ProdukSection() {
       </div>
 
       <div className="mt-8 flex justify-center">
-        <Link
-          href="/katalog"
-          className="inline-flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-base font-semibold text-primary-foreground shadow-float hover:shadow-float-hover [transition:var(--transition-hover)]"
-        >
+        <Link href="/katalog" className={publicCtaPrimary}>
           {t("lihatSemuaProduk")}
         </Link>
       </div>

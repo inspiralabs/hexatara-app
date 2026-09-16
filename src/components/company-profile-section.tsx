@@ -2,6 +2,7 @@ import Image from "next/image";
 import { getLocale } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { pick } from "@/lib/i18n/pick";
+import { publicSectionHeading } from "@/lib/public-ui";
 
 export async function CompanyProfileSection() {
   const supabase = await createClient();
@@ -33,7 +34,7 @@ export async function CompanyProfileSection() {
           </div>
         )}
         <div className={data.gambar_url ? "sm:w-1/2" : ""}>
-          {judul && <h2 className="text-xl font-bold text-foreground sm:text-2xl">{judul}</h2>}
+          {judul && <h2 className={publicSectionHeading}>{judul}</h2>}
           {konten && (
             // konten diisi lewat Tiptap di Admin Panel (ENGINEERING §5.8) — HTML dari
             // Admin, bukan input publik, jadi dangerouslySetInnerHTML aman di sini.
