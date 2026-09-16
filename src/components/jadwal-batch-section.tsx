@@ -19,6 +19,8 @@ export type Batch = Pick<
   | "lokasi_en"
   | "harga"
   | "status"
+  | "rating"
+  | "hero_gambar_url"
   | "tanggal_mulai"
   | "tanggal_selesai"
 >;
@@ -37,18 +39,21 @@ export function BatchCard({
   const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai);
   const kategori = pick(batch.kategori_id, batch.kategori_en, locale);
   const lokasi = pick(batch.lokasi_id, batch.lokasi_en, locale);
+  const judul = pick(batch.judul_id, batch.judul_en, locale) ?? batch.judul_id;
 
   return (
     <ContentCard
       variant="public"
+      image={batch.hero_gambar_url ? { src: batch.hero_gambar_url, alt: judul } : null}
       badges={
         <>
           {kategori && <span className={publicBadgeKategori}>{kategori}</span>}
           <span className={publicStatusBatchClass[batch.status]}>{statusLabel}</span>
         </>
       }
-      title={pick(batch.judul_id, batch.judul_en, locale)}
+      title={judul}
       meta={[tanggal, lokasi].filter((line): line is string => Boolean(line))}
+      rating={batch.rating}
       price={batch.harga != null ? formatRupiah(batch.harga) : undefined}
       cta={
         batch.status !== "closed" && (
@@ -61,28 +66,42 @@ export function BatchCard({
   );
 }
 
+/** Beranda: hanya open/upcoming yang belum lewat tanggal selesai. */
+function batchMasihTayang(batch: Batch, hariIni: string) {
+  if (batch.status === "closed") return false;
+  const akhir = batch.tanggal_selesai ?? batch.tanggal_mulai;
+  return !akhir || akhir >= hariIni;
+}
+
 export async function JadwalBatchSection({ limit = 6 }: { limit?: number } = {}) {
   const supabase = await createClient();
   const locale = await getLocale();
   const t = await getTranslations("landing");
   const tBatch = await getTranslations("batch");
+  const hariIni = new Date().toISOString().slice(0, 10);
+
+  // Ambil lebih banyak lalu filter di server component — tanggal_selesai null
+  // + status closed tidak aman hanya dengan satu .limit() di query.
   const { data, error } = await supabase
     .from("batches")
     .select(
-      "id, slug, judul_id, judul_en, kategori_id, kategori_en, lokasi_id, lokasi_en, harga, status, tanggal_mulai, tanggal_selesai"
+      "id, slug, judul_id, judul_en, kategori_id, kategori_en, lokasi_id, lokasi_en, harga, status, rating, hero_gambar_url, tanggal_mulai, tanggal_selesai"
     )
     .eq("is_active", true)
+    .in("status", ["open", "upcoming"])
     .order("tanggal_mulai", { ascending: true })
-    .limit(limit);
+    .limit(Math.max(limit * 4, 24));
 
   if (error) console.error("[jadwal-batch] gagal memuat:", error);
-  if (!data || data.length === 0) return null;
+
+  const dataTayang = (data ?? []).filter((b) => batchMasihTayang(b, hariIni)).slice(0, limit);
+  if (dataTayang.length === 0) return null;
 
   return (
     <section id="jadwal" className="mx-auto max-w-6xl scroll-mt-20 px-4 py-16 md:py-24">
       <h2 className={publicSectionHeading}>{t("scheduleHeading")}</h2>
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {data.map((batch) => (
+        {dataTayang.map((batch) => (
           <BatchCard
             key={batch.id}
             batch={batch}

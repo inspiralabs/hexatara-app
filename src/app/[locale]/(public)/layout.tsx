@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { ClockIcon, MailIcon } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -9,6 +8,7 @@ import { PublicNavMobile } from "@/components/public-nav-mobile";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { ForceLightDocument } from "@/components/shell/force-light-document";
 import { PublicStickyHeader } from "@/components/public-sticky-header";
+import { BrandLogo } from "@/components/brand-logo";
 import { publicCtaSecondary } from "@/lib/public-ui";
 import { DEFAULT_JAM_OPERASIONAL, type KontakSettings } from "@/lib/site-settings";
 
@@ -54,7 +54,7 @@ export default async function PublicLayout({ children }: { children: React.React
       <PublicStickyHeader>
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2 font-heading text-lg font-semibold text-foreground">
-            <Image src="/hexatara-logo.png" alt="Hexatara" width={32} height={32} className="h-8 w-8" priority />
+            <BrandLogo variant="default" size={32} priority />
             Hexatara
           </Link>
 
@@ -91,7 +91,7 @@ export default async function PublicLayout({ children }: { children: React.React
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 py-16 text-sm text-muted-foreground sm:grid-cols-3 md:py-24">
           <div>
             <div className="flex items-center gap-2 text-base font-bold text-foreground">
-              <Image src="/hexatara-logo.png" alt="Hexatara" width={28} height={28} className="h-7 w-7" />
+              <BrandLogo variant="default" size={28} />
               Hexatara
             </div>
             <p className="mt-3">{tCommon("footerTagline")}</p>

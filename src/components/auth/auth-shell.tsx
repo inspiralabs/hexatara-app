@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { BadgeCheckIcon, MessageCircleIcon } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { BrandLogo } from "@/components/brand-logo";
 
 type KontakSettings = { wa?: string; email?: string; instagram?: string };
 
@@ -43,14 +44,7 @@ export async function AuthShell({
       <div className="flex flex-col justify-center px-4 py-10 sm:px-8">
         <div className="mx-auto w-full max-w-md">
           <Link href="/" className="mb-8 inline-flex items-center gap-2">
-            <Image
-              src="/hexatara-logo.png"
-              alt="Hexatara"
-              width={36}
-              height={36}
-              className="size-9"
-              priority
-            />
+            <BrandLogo variant="default" size={36} priority />
             <span className="text-base font-semibold tracking-tight">Hexatara</span>
           </Link>
 
@@ -68,13 +62,7 @@ export async function AuthShell({
       <aside className="relative hidden flex-col justify-between overflow-hidden bg-zinc-950 p-10 text-zinc-50 md:flex">
         <div>
           <Link href="/" className="inline-flex items-center gap-2">
-            <Image
-              src="/hexatara-logo.png"
-              alt=""
-              width={40}
-              height={40}
-              className="size-10 brightness-0 invert"
-            />
+            <BrandLogo variant="mono" size={40} />
             <span className="text-lg font-semibold">Hexatara</span>
           </Link>
           <p className="mt-6 max-w-sm text-2xl font-medium tracking-tight text-balance">

@@ -44,7 +44,7 @@ function footerKontak(kontak?: KontakSettings): string {
 }
 
 function baseLayout(judul: string, isiHtml: string, kontak?: KontakSettings): string {
-  const logo = `${siteUrl()}/hexatara-logo.png`;
+  const logo = `${siteUrl()}/hexatara-logo-default.png`;
   return `<!DOCTYPE html>
 <html lang="id">
 <head>

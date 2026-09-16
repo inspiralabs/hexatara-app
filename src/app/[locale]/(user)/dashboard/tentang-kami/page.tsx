@@ -1,5 +1,5 @@
-import Image from 'next/image';
 import { requireUser } from '@/lib/auth/guard';
+import { BrandLogo } from '@/components/brand-logo';
 
 export default async function UserTentangKamiPage() {
   await requireUser();
@@ -11,13 +11,7 @@ export default async function UserTentangKamiPage() {
       </div>
 
       <div className="mx-auto flex w-full max-w-2xl flex-col items-center gap-6 rounded-xl border border-border bg-card p-8 text-center">
-        <Image
-          src="/hexatara-logo.png"
-          alt="Hexatara"
-          width={72}
-          height={72}
-          className="size-18"
-        />
+        <BrandLogo variant="auto" size={72} className="size-18" />
         <div className="flex flex-col gap-3">
           <h2 className="text-2xl font-semibold tracking-tight">Hexatara</h2>
           <p className="text-sm leading-relaxed text-balance text-muted-foreground">

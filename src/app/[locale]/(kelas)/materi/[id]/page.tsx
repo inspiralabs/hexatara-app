@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getOptionalUser } from "@/lib/auth/guard";
 import { pick } from "@/lib/i18n/pick";
+import { BrandLogo } from "@/components/brand-logo";
 import { CourseReader } from "./course-reader";
 
 export default async function MateriCoursePage({
@@ -125,7 +125,7 @@ export default async function MateriCoursePage({
     <div className="flex min-h-full flex-1 flex-col bg-background">
       <div className="flex items-center gap-3 border-b border-border bg-primary px-4 py-3 text-primary-foreground">
         <Link href="/" className="flex shrink-0 items-center gap-2 text-base font-bold">
-          <Image src="/hexatara-logo.png" alt="Hexatara" width={28} height={28} className="h-7 w-7" priority />
+          <BrandLogo variant="mono" size={28} priority />
           <span className="hidden sm:inline">Hexatara</span>
         </Link>
         <span className="flex-1 text-center text-sm font-semibold sm:text-base">{t("headerBadge")}</span>

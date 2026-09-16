@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -22,6 +21,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { logoutAdminAction } from "@/app/admin/(protected)/actions";
+import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
@@ -388,13 +388,7 @@ export function AdminShell({
             collapsed ? "justify-center" : "px-4"
           )}
         >
-          <Image
-            src="/hexatara-logo.png"
-            alt=""
-            width={28}
-            height={28}
-            className="size-7 shrink-0"
-          />
+          <BrandLogo variant="auto" size={28} className="size-7 shrink-0" />
           {!collapsed && <p className="truncate text-sm font-semibold">Hexatara Admin</p>}
         </div>
         <div className="flex-1 overflow-y-auto py-3">{collapsed ? <IconRail /> : <NavList />}</div>
