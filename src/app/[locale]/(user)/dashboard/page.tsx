@@ -1,7 +1,8 @@
-import { CheckCircle2Icon, ClockIcon, LockIcon, PackageIcon, XCircleIcon } from 'lucide-react';
+import { CheckCircle2Icon, ClockIcon, LockIcon, PackageIcon, UserRoundIcon, XCircleIcon } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { requireUser } from '@/lib/auth/guard';
+import { isProfilIdentitasLengkap } from '@/lib/identitas';
 import { createClient } from '@/lib/supabase/server';
 import type { Database } from '@/types/database';
 
@@ -71,11 +72,14 @@ export default async function DashboardPage() {
   const t = await getTranslations('dashboard');
 
   const supabase = await createClient();
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('nama_lengkap, free_track_selesai_at')
-    .eq('id', claims.sub)
-    .single();
+  const [{ data: profile }, identitasLengkap] = await Promise.all([
+    supabase
+      .from('profiles')
+      .select('nama_lengkap, free_track_selesai_at')
+      .eq('id', claims.sub)
+      .single(),
+    isProfilIdentitasLengkap(claims.sub),
+  ]);
 
   const { data: sertifikatAktif } = await supabase
     .from('certificates')
@@ -128,6 +132,29 @@ export default async function DashboardPage() {
         </h1>
         <p className="mt-1 text-base text-warna-teks-2">{t('pageTitle')}</p>
       </div>
+
+      {!identitasLengkap && (
+        <div className="flex flex-col gap-4 rounded-xl border border-warna-aksen/30 bg-warna-aksen/5 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex gap-3">
+            <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-warna-aksen/10 text-warna-aksen">
+              <UserRoundIcon className="size-5" aria-hidden />
+            </span>
+            <div>
+              <p className="text-base font-semibold text-warna-teks">Lengkapi data identitas</p>
+              <p className="mt-0.5 text-sm text-warna-teks-2">
+                Isi KTP, alamat, dan foto di Profil supaya pendaftaran pelatihan RPC berikutnya bisa
+                terisi otomatis. Pendaftaran sekarang tetap bisa dilakukan tanpa ini.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/dashboard/profil"
+            className="inline-flex h-11 shrink-0 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
+          >
+            Lengkapi di Profil
+          </Link>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatTile
