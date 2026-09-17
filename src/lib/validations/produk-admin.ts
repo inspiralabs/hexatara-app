@@ -31,6 +31,7 @@ export const ProductFormSchema = z.object({
   deskripsi_en: teksOpsional,
   spesifikasi_id: teksOpsional,
   spesifikasi_en: teksOpsional,
+  thumbnail_url: teksOpsional,
   images: z.array(ProductImageSchema),
 });
 

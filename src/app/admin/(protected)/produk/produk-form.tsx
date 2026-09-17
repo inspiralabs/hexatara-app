@@ -287,14 +287,44 @@ export function ProdukForm({
         </section>
 
         <section className="flex flex-col gap-4">
+          <FormField
+            control={control}
+            name="thumbnail_url"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <ImageUploadField
+                    label="Thumbnail (kartu katalog)"
+                    aspectRatio={16 / 9}
+                    suggestedPx="1200×675px"
+                    value={field.value ?? null}
+                    onChange={field.onChange}
+                    onUpload={async (file) => {
+                      const fd = new FormData();
+                      fd.append('file', file);
+                      return uploadGambarProdukAction(fd);
+                    }}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Ditampilkan di kartu katalog dan hasil pencarian. Foto di bagian &quot;Foto Produk&quot;
+                  di bawah ini khusus untuk galeri halaman detail, tidak dipakai sebagai thumbnail.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </section>
+
+        <section className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-lg font-semibold text-foreground">Foto Produk</h2>
+            <h2 className="text-lg font-semibold text-foreground">Foto Produk (galeri detail)</h2>
             <Button type="button" variant="outline" size="sm" onClick={() => images.append({ url: '' })}>
               <PlusIcon className="size-4" /> Tambah
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">
-            Gunakan foto dengan latar belakang putih/polos untuk hasil terbaik.
+            Galeri halaman detail — crop bebas. Gunakan foto dengan latar belakang putih/polos untuk hasil terbaik.
           </p>
           {images.fields.map((f, index) => (
             <div key={f.id} className="flex flex-col gap-3 rounded-lg border border-border p-3 sm:flex-row sm:items-start">

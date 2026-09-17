@@ -58,6 +58,7 @@ export async function simpanProdukAction(id: number | null, input: ProductFormIn
     deskripsi_en: teks(rest.deskripsi_en),
     spesifikasi_id: teks(rest.spesifikasi_id),
     spesifikasi_en: teks(rest.spesifikasi_en),
+    thumbnail_url: teks(rest.thumbnail_url),
   };
 
   const supabaseAdmin = createAdminClient();

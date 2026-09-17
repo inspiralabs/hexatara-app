@@ -36,6 +36,7 @@ export default async function AdminProdukUbahPage({ params }: { params: Promise<
     deskripsi_en: produk.deskripsi_en ?? '',
     spesifikasi_id: produk.spesifikasi_id ?? '',
     spesifikasi_en: produk.spesifikasi_en ?? '',
+    thumbnail_url: produk.thumbnail_url ?? '',
     images: (gambar ?? []).map((g) => ({ url: g.url })),
   };
 

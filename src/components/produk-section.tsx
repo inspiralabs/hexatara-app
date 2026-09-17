@@ -21,7 +21,7 @@ export async function ProdukSection({ limit = 6 }: { limit?: number } = {}) {
 
   const { data: produk, error } = await supabase
     .from("products_public")
-    .select("id, slug, nama_id, nama_en, kategori, harga, rating")
+    .select("id, slug, nama_id, nama_en, kategori, harga, rating, thumbnail_url")
     .order("urutan")
     .limit(limit);
 
@@ -51,11 +51,14 @@ export async function ProdukSection({ limit = 6 }: { limit?: number } = {}) {
           if (p.id == null || p.slug == null) return null;
           const nama = pick(p.nama_id, p.nama_en, locale) ?? p.nama_id ?? "";
           const cover = coverByProductId.get(p.id);
+          const src = p.thumbnail_url || cover || null;
           return (
             <ContentCard
               key={p.id}
               variant="public"
-              image={cover ? { src: cover, alt: nama } : undefined}
+              image={src ? { src, alt: nama } : undefined}
+              imageFit={p.thumbnail_url ? "cover" : "contain"}
+              imageBg={p.thumbnail_url ? undefined : "bg-white"}
               badges={p.kategori && <span className={publicBadgeKategori}>{p.kategori}</span>}
               title={nama}
               rating={p.rating}

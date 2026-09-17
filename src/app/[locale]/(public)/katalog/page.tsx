@@ -49,7 +49,7 @@ export default async function KatalogPage({
   // sudah NULL di sisi database (ADR-004), tidak pernah menyentuh payload apa pun.
   let query = supabase
     .from("products_public")
-    .select("id, slug, nama_id, nama_en, kategori, category_id, harga, rating, created_at");
+    .select("id, slug, nama_id, nama_en, kategori, category_id, harga, rating, created_at, thumbnail_url");
 
   if (kategoriId) query = query.eq("category_id", kategoriId);
 

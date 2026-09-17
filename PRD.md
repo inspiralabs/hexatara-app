@@ -291,8 +291,9 @@ Bucket storage baru: `identity-documents` (privat, pola sama `certificates`/`pay
 | Tabel | Ditambahkan oleh | Kegunaan |
 |---|---|---|
 | `batches.gambar_detail_url` | ADR-022 | Gambar/poster pelatihan versi UTUH (tanpa crop paksa), ditampilkan di halaman detail publik. `hero_gambar_url` (sudah ada) TETAP dipertahankan sebagai thumbnail kartu (rasio 16:9 dikunci, tidak berubah) |
+| `products.thumbnail_url` | ADR-022b (revisi F09.2, setelah diuji Alif) | Thumbnail produk khusus kartu katalog (rasio 16:9 dikunci saat upload, pola identik `hero_gambar_url`) — terpisah dari `product_images` (galeri detail, rasio bebas, tidak berubah). Kartu fallback ke foto pertama galeri kalau belum diisi |
 
-**Produk (`products`/`product_images`) TIDAK butuh kolom/tabel baru** — perubahan murni di kode: dialog crop di form Admin Produk berhenti mengunci rasio 1:1 (jadi bebas, Admin yang tentukan sendiri area crop), tampilan publik (kartu katalog + galeri detail) berubah dari "potong penuh" jadi "tampil utuh" di dalam kotak yang tetap satu ukuran konsisten.
+**Produk (`product_images`, galeri) TIDAK butuh kolom/tabel baru** — perubahan murni di kode: dialog crop di form Admin Produk berhenti mengunci rasio 1:1 (jadi bebas, Admin yang tentukan sendiri area crop), galeri detail publik berubah dari "potong penuh" jadi "tampil utuh" di dalam kotak yang tetap satu ukuran konsisten. Kartu katalog SEKARANG memakai `thumbnail_url` (lihat baris tabel di atas, ADR-022b) — bukan lagi murni turunan foto pertama galeri seperti rencana awal ADR-022.
 
 **Hero beranda (`hero_slides`) TIDAK butuh kolom baru** — kotak tampilan di layar (persegi HP / 4:3 desktop) sudah dianggap pas dan tidak diubah; yang diubah cuma rasio kunci dialog crop saat upload, dari 16:9 menjadi 4:3, supaya sesuai kotak tampilan aslinya (mengurangi crop dobel).
 
@@ -1038,13 +1039,16 @@ Perbaikan pengalaman upload gambar Admin dan tampilan publik, supaya poster pela
 - Halaman detail batch publik (`pelatihan/[slug]`) menampilkan `gambar_detail_url` di posisi hero (menggantikan `hero_gambar_url` yang sebelumnya dipakai di posisi itu), dengan `object-contain` (bukan `object-cover`) — gambar tampil utuh, boleh ada ruang kosong di sisi kalau bentuknya beda dari kotak. Kalau `gambar_detail_url` kosong (batch lama sebelum fitur ini ada), fallback ke `hero_gambar_url` seperti sekarang.
 - Diberi lightbox (lihat F09.4).
 
-### 9d.4 F09.2 — Galeri foto produk (crop bebas, tampil utuh)
+### 9d.4 F09.2 — Galeri foto produk (crop bebas, tampil utuh) + thumbnail terpisah (ADR-022b)
 
-- Struktur galeri produk (`product_images`, form Admin Produk) **TIDAK berubah** — tetap satu set galeri, tidak menambah field thumbnail terpisah. Foto pertama tetap otomatis jadi cover kartu katalog, seperti sekarang.
-- Dialog crop di form Admin Produk **TETAP WAJIB muncul** (tidak dihilangkan) — tapi rasio 1:1 yang sebelumnya dikunci sistem sekarang **dilepas jadi bebas**, Admin sendiri yang menggeser area crop sesuai kebutuhan. Ini sengaja dipertahankan (bukan dihilangkan seperti F09.1) supaya Admin tetap punya kontrol kualitas/konsistensi framing per foto, mengingat foto produk dipakai berulang di banyak tempat (kartu katalog, carousel detail, thumbnail galeri).
-- Tampilan publik (kartu katalog `ProdukCard` dan carousel detail `ProductGallery`) berubah dari `object-cover` jadi `object-contain` — foto ditampilkan utuh, TIDAK dipotong lagi otomatis oleh sistem. Kotak/container TETAP satu ukuran konsisten di semua produk (grid/carousel tetap rapi), dengan warna latar kotak diganti **putih polos** (bukan abu-abu netral) supaya foto produk berlatar putih (kebiasaan standar foto katalog yang sudah dipakai) menyatu tanpa terlihat garis pembatas.
-- Ditambahkan teks keterangan singkat di sebelah tombol upload form Admin Produk: "Gunakan foto dengan latar belakang putih/polos untuk hasil terbaik."
-- Diberi lightbox (lihat F09.4).
+> **DIREVISI 2026-09-17 (ADR-022b) setelah diuji Alif** — bagian thumbnail di bawah menggantikan rencana awal "foto pertama galeri otomatis jadi cover", yang ternyata membingungkan Admin di uji nyata.
+
+- Dialog crop di form Admin Produk untuk GALERI (section "Foto Produk", `product_images`) **TETAP WAJIB muncul** (tidak dihilangkan) — rasio 1:1 yang sebelumnya dikunci sistem **dilepas jadi bebas**, Admin sendiri yang menggeser area crop sesuai kebutuhan. Galeri ini KHUSUS untuk carousel halaman detail produk (`ProductGallery`), TIDAK lagi dipakai otomatis sebagai sumber thumbnail kartu (lihat poin thumbnail di bawah).
+- Tampilan carousel detail (`ProductGallery`) memakai `object-contain` — foto galeri ditampilkan utuh, TIDAK dipotong otomatis. Kotak/container TETAP satu ukuran konsisten (carousel tetap rapi), latar kotak **putih polos** supaya foto produk berlatar putih (kebiasaan standar foto katalog) menyatu tanpa terlihat garis pembatas.
+- Ditambahkan teks keterangan singkat di sebelah tombol upload galeri: "Gunakan foto dengan latar belakang putih/polos untuk hasil terbaik."
+- **Field baru "Thumbnail" (`products.thumbnail_url`)** — TERPISAH dari galeri, ditempatkan di ATAS section galeri di form Admin Produk. Rasio **terkunci 16:9** saat upload (pola identik `batches.hero_gambar_url` di F09.1) — bukan crop bebas seperti galeri, karena field ini KHUSUS untuk kartu katalog (`ProdukCard`) yang kotaknya sudah tetap 16:9, jadi Admin butuh kepastian rasio sejak upload, bukan menerka-nerka seperti yang terjadi saat galeri dipakai sebagai sumber cover.
+- Kartu katalog (`ProdukCard`) memakai `thumbnail_url` (`object-cover`, aman di-crop karena rasio sudah terkunci) kalau sudah diisi Admin. Kalau BELUM diisi (produk lama sebelum ADR-022b, atau Admin belum sempat isi), fallback ke foto pertama galeri dengan `object-contain` + latar putih (perilaku F09.2 sebelum revisi ini) — supaya produk lama tidak mendadak tampil rusak.
+- Diberi lightbox pada galeri detail (lihat F09.4) — thumbnail kartu katalog TIDAK perlu lightbox (bukan halaman detail).
 
 ### 9d.5 F09.3 — Rasio Hero Beranda diselaraskan
 

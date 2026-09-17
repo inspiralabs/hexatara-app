@@ -995,6 +995,7 @@ export type Database = {
           spesifikasi_en: string | null
           spesifikasi_id: string | null
           tampilkan_harga: boolean
+          thumbnail_url: string | null
           updated_at: string
           urutan: number
         }
@@ -1014,6 +1015,7 @@ export type Database = {
           spesifikasi_en?: string | null
           spesifikasi_id?: string | null
           tampilkan_harga?: boolean
+          thumbnail_url?: string | null
           updated_at?: string
           urutan?: number
         }
@@ -1033,6 +1035,7 @@ export type Database = {
           spesifikasi_en?: string | null
           spesifikasi_id?: string | null
           tampilkan_harga?: boolean
+          thumbnail_url?: string | null
           updated_at?: string
           urutan?: number
         }
@@ -1372,6 +1375,7 @@ export type Database = {
           spesifikasi_en: string | null
           spesifikasi_id: string | null
           tampilkan_harga: boolean | null
+          thumbnail_url: string | null
           urutan: number | null
         }
         Insert: {
@@ -1389,6 +1393,7 @@ export type Database = {
           spesifikasi_en?: string | null
           spesifikasi_id?: string | null
           tampilkan_harga?: boolean | null
+          thumbnail_url?: string | null
           urutan?: number | null
         }
         Update: {
@@ -1406,6 +1411,7 @@ export type Database = {
           spesifikasi_en?: string | null
           spesifikasi_id?: string | null
           tampilkan_harga?: boolean | null
+          thumbnail_url?: string | null
           urutan?: number | null
         }
         Relationships: [

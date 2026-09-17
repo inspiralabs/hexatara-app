@@ -18,6 +18,7 @@ const DEFAULT_VALUES: ProductFormInput = {
   deskripsi_en: '',
   spesifikasi_id: '',
   spesifikasi_en: '',
+  thumbnail_url: '',
   images: [],
 };
 

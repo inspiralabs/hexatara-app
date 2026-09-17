@@ -58,8 +58,8 @@ export function ProductGallery({ images, alt }: { images: { id: number; url: str
         </CarouselContent>
         {images.length > 1 && (
           <>
-            <CarouselPrevious className="hidden sm:flex" />
-            <CarouselNext className="hidden sm:flex" />
+            <CarouselPrevious className="left-3 hidden sm:flex" />
+            <CarouselNext className="right-3 hidden sm:flex" />
           </>
         )}
       </Carousel>

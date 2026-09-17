@@ -61,7 +61,7 @@ export default async function KatalogDetailPage({
   const { data: suggestions } = produk.category_id
     ? await supabase
         .from("products_public")
-        .select("id, slug, nama_id, nama_en, kategori, harga, rating")
+        .select("id, slug, nama_id, nama_en, kategori, harga, rating, thumbnail_url")
         .eq("category_id", produk.category_id)
         .neq("id", produk.id)
         .order("created_at", { ascending: false })
