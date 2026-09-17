@@ -16,6 +16,16 @@ export const KontakPublikSchema = z.object({
   jam_operasional: z.string().optional().default(''),
 });
 
+const waOpsional = z
+  .string()
+  .regex(/^62\d{8,13}$/, { error: 'Format WA: 62… tanpa + atau spasi (contoh 62812…)' })
+  .or(z.literal(''));
+
+export const KontakPelatihanSchema = z.object({
+  wa_reguler: waOpsional,
+  wa_private: waOpsional,
+});
+
 export const AdminNotifyEmailSchema = z.object({
   email: z.email({ error: 'Email notifikasi Admin tidak valid' }),
 });

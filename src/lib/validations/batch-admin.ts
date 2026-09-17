@@ -18,6 +18,12 @@ export const BenefitSchema = z.object({
   ikon: teksOpsional,
 });
 
+export const RequirementSchema = z.object({
+  teks_id: teksWajib,
+  teks_en: teksOpsional,
+  ikon: teksOpsional,
+});
+
 export const EquipmentSchema = z.object({
   teks_id: teksWajib,
   teks_en: teksOpsional,
@@ -61,6 +67,7 @@ export const BatchFormSchema = z.object({
   tanggal_mulai: tanggalOpsional,
   tanggal_selesai: tanggalOpsional,
   benefits: z.array(BenefitSchema),
+  requirements: z.array(RequirementSchema),
   equipment: z.array(EquipmentSchema),
   faqs: z.array(FaqSchema),
   gallery: z.array(GallerySchema),

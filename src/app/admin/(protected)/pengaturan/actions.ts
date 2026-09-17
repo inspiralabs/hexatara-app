@@ -9,6 +9,7 @@ import {
   AdminProfilSchema,
   HargaUpgradeSchema,
   KontakPublikSchema,
+  KontakPelatihanSchema,
   RekeningSchema,
 } from '@/lib/validations/pengaturan-admin';
 import { ResetSandiSchema } from '@/lib/validations/auth';
@@ -42,6 +43,23 @@ export async function simpanKontakAction(input: unknown) {
   }
   revalidatePath('/admin/pengaturan');
   revalidatePath('/');
+  return { ok: true as const };
+}
+
+export async function simpanKontakPelatihanAction(input: unknown) {
+  await requireAdmin();
+  const parsed = KontakPelatihanSchema.safeParse(input);
+  if (!parsed.success) return { ok: false as const, pesan: 'Data kontak pelatihan belum valid.' };
+  const error = await upsertSiteSetting('kontak_pelatihan', {
+    wa_reguler: parsed.data.wa_reguler || undefined,
+    wa_private: parsed.data.wa_private || undefined,
+  });
+  if (error) {
+    console.error('[pengaturan] kontak_pelatihan:', error);
+    return { ok: false as const, pesan: 'Gagal menyimpan kontak pelatihan.' };
+  }
+  revalidatePath('/admin/pengaturan');
+  revalidatePath('/pelatihan');
   return { ok: true as const };
 }
 

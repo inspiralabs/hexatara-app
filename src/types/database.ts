@@ -332,6 +332,41 @@ export type Database = {
           },
         ]
       }
+      batch_requirements: {
+        Row: {
+          batch_id: number
+          id: number
+          ikon: string | null
+          teks_en: string | null
+          teks_id: string
+          urutan: number
+        }
+        Insert: {
+          batch_id: number
+          id?: number
+          ikon?: string | null
+          teks_en?: string | null
+          teks_id: string
+          urutan?: number
+        }
+        Update: {
+          batch_id?: number
+          id?: number
+          ikon?: string | null
+          teks_en?: string | null
+          teks_id?: string
+          urutan?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "batch_requirements_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       batches: {
         Row: {
           alamat: string | null

@@ -8,14 +8,21 @@ import { z } from 'zod';
 import {
   AdminNotifyEmailSchema,
   HargaUpgradeSchema,
+  KontakPelatihanSchema,
   KontakPublikSchema,
   RekeningSchema,
 } from '@/lib/validations/pengaturan-admin';
-import type { HargaUpgrade, KontakSettings, RekeningSettings } from '@/lib/site-settings';
+import type {
+  HargaUpgrade,
+  KontakPelatihanSettings,
+  KontakSettings,
+  RekeningSettings,
+} from '@/lib/site-settings';
 import {
   simpanAdminNotifyEmailAction,
   simpanHargaUpgradeAction,
   simpanKontakAction,
+  simpanKontakPelatihanAction,
   simpanRekeningAction,
 } from './actions';
 import { Input } from '@/components/ui/input';
@@ -25,16 +32,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 type RekeningInput = z.infer<typeof RekeningSchema>;
 type KontakInput = z.input<typeof KontakPublikSchema>;
+type KontakPelatihanInput = z.input<typeof KontakPelatihanSchema>;
 type NotifyInput = z.infer<typeof AdminNotifyEmailSchema>;
 
 export function PengaturanForms({
   rekening,
   kontak,
+  kontakPelatihan,
   notifyEmail,
   harga,
 }: {
   rekening: RekeningSettings;
   kontak: KontakSettings;
+  kontakPelatihan: KontakPelatihanSettings;
   notifyEmail: string;
   harga: HargaUpgrade;
 }) {
@@ -42,6 +52,7 @@ export function PengaturanForms({
     <div className="flex flex-col gap-6">
       <RekeningForm defaults={rekening} />
       <KontakForm defaults={kontak} />
+      <KontakPelatihanForm defaults={kontakPelatihan} />
       <NotifyForm defaults={notifyEmail} />
       <HargaForm defaults={harga} />
     </div>
@@ -172,6 +183,66 @@ function KontakForm({ defaults }: { defaults: KontakSettings }) {
           <div className="sm:col-span-2">
             <Button type="submit" disabled={pending}>
               {pending ? 'Menyimpan…' : 'Simpan kontak'}
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
+
+function KontakPelatihanForm({ defaults }: { defaults: KontakPelatihanSettings }) {
+  const [pending, setPending] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<KontakPelatihanInput>({
+    resolver: zodResolver(KontakPelatihanSchema),
+    defaultValues: {
+      wa_reguler: defaults.wa_reguler ?? '',
+      wa_private: defaults.wa_private ?? '',
+    },
+  });
+
+  async function onSubmit(data: KontakPelatihanInput) {
+    setPending(true);
+    const hasil = await simpanKontakPelatihanAction(data);
+    setPending(false);
+    if (!hasil.ok) {
+      toast.error(hasil.pesan);
+      return;
+    }
+    toast.success('Kontak pelatihan disimpan');
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Kontak Pelatihan</CardTitle>
+        <CardDescription>
+          Nomor WhatsApp di card syarat/fasilitas halaman detail batch. Format: 62… tanpa +.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 sm:grid-cols-2" noValidate>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="wa_reguler">WA Batch Reguler (Admin)</Label>
+            <Input id="wa_reguler" placeholder="62812…" {...register('wa_reguler')} />
+            {errors.wa_reguler && (
+              <p className="text-sm text-destructive">{errors.wa_reguler.message}</p>
+            )}
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="wa_private">WA Private &amp; Inhouse (Abiyyi)</Label>
+            <Input id="wa_private" placeholder="62812…" {...register('wa_private')} />
+            {errors.wa_private && (
+              <p className="text-sm text-destructive">{errors.wa_private.message}</p>
+            )}
+          </div>
+          <div className="sm:col-span-2">
+            <Button type="submit" disabled={pending}>
+              {pending ? 'Menyimpan…' : 'Simpan kontak pelatihan'}
             </Button>
           </div>
         </form>

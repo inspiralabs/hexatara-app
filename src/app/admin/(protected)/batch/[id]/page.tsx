@@ -15,14 +15,25 @@ export default async function AdminBatchUbahPage({ params }: { params: Promise<{
   const { data: batch } = await supabase.from('batches').select('*').eq('id', batchId).maybeSingle();
   if (!batch) notFound();
 
-  const [{ data: benefits }, { data: equipment }, { data: faqs }, { data: gallery }, { data: kategoriList }] =
-    await Promise.all([
-      supabase.from('batch_benefits').select('teks_id, teks_en, ikon').eq('batch_id', batchId).order('urutan'),
-      supabase.from('batch_equipment').select('teks_id, teks_en').eq('batch_id', batchId).order('urutan'),
-      supabase.from('batch_faqs').select('tanya_id, tanya_en, jawab_id, jawab_en').eq('batch_id', batchId).order('urutan'),
-      supabase.from('batch_gallery').select('gambar_url, caption_id, caption_en').eq('batch_id', batchId).order('urutan'),
-      supabase.from('batch_categories').select('id, nama_id').order('urutan', { ascending: true }),
-    ]);
+  const [
+    { data: benefits },
+    { data: requirements },
+    { data: equipment },
+    { data: faqs },
+    { data: gallery },
+    { data: kategoriList },
+  ] = await Promise.all([
+    supabase.from('batch_benefits').select('teks_id, teks_en, ikon').eq('batch_id', batchId).order('urutan'),
+    supabase
+      .from('batch_requirements')
+      .select('teks_id, teks_en, ikon')
+      .eq('batch_id', batchId)
+      .order('urutan'),
+    supabase.from('batch_equipment').select('teks_id, teks_en').eq('batch_id', batchId).order('urutan'),
+    supabase.from('batch_faqs').select('tanya_id, tanya_en, jawab_id, jawab_en').eq('batch_id', batchId).order('urutan'),
+    supabase.from('batch_gallery').select('gambar_url, caption_id, caption_en').eq('batch_id', batchId).order('urutan'),
+    supabase.from('batch_categories').select('id, nama_id').order('urutan', { ascending: true }),
+  ]);
 
   // Admin Panel Bahasa Indonesia saja (ENGINEERING.md §6.3) — label combobox
   // pakai nama_id langsung, tidak perlu pick() dwibahasa di sini.
@@ -50,6 +61,11 @@ export default async function AdminBatchUbahPage({ params }: { params: Promise<{
     tanggal_mulai: batch.tanggal_mulai,
     tanggal_selesai: batch.tanggal_selesai,
     benefits: (benefits ?? []).map((b) => ({ teks_id: b.teks_id, teks_en: b.teks_en ?? '', ikon: b.ikon ?? '' })),
+    requirements: (requirements ?? []).map((r) => ({
+      teks_id: r.teks_id,
+      teks_en: r.teks_en ?? '',
+      ikon: r.ikon ?? '',
+    })),
     equipment: (equipment ?? []).map((e) => ({ teks_id: e.teks_id, teks_en: e.teks_en ?? '' })),
     faqs: (faqs ?? []).map((f) => ({
       tanya_id: f.tanya_id,

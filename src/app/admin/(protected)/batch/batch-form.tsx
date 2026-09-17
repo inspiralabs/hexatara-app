@@ -1,18 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, XIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { BatchFormSchema, type BatchFormInput } from '@/lib/validations/batch-admin';
-import { simpanBatchAction } from './actions';
+import { salinDariBatchAction, simpanBatchAction } from './actions';
 import { uploadGambarAdminAction } from '../actions';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { DatePickerField } from '@/components/admin/date-picker-field';
@@ -25,6 +26,11 @@ const STATUS_OPTIONS: { value: BatchFormInput['status']; label: string }[] = [
   { value: 'open', label: 'Pendaftaran Dibuka' },
   { value: 'closed', label: 'Ditutup' },
 ];
+
+export type SumberBatchOption = {
+  value: string;
+  label: string;
+};
 
 function slugify(text: string) {
   return text
@@ -39,14 +45,18 @@ export function BatchForm({
   batchId,
   defaultValues,
   kategoriOptions,
+  sumberBatchOptions = [],
 }: {
   mode: 'create' | 'edit';
   batchId?: number;
   defaultValues: BatchFormInput;
   kategoriOptions: KategoriOption[];
+  sumberBatchOptions?: SumberBatchOption[];
 }) {
   const router = useRouter();
   const [slugDisentuh, setSlugDisentuh] = useState(mode === 'edit');
+  const [sumberId, setSumberId] = useState<string | null>(null);
+  const [salinPending, startSalin] = useTransition();
   const form = useForm<BatchFormInput>({
     resolver: zodResolver(BatchFormSchema),
     defaultValues,
@@ -54,11 +64,13 @@ export function BatchForm({
   const {
     control,
     handleSubmit,
+    reset,
     setValue,
     formState: { isSubmitting },
   } = form;
 
   const benefits = useFieldArray({ control, name: 'benefits' });
+  const requirements = useFieldArray({ control, name: 'requirements' });
   const equipment = useFieldArray({ control, name: 'equipment' });
   const faqs = useFieldArray({ control, name: 'faqs' });
   const gallery = useFieldArray({ control, name: 'gallery' });
@@ -74,9 +86,64 @@ export function BatchForm({
     router.refresh();
   }
 
+  function salinDari(batchIdSumber: string | null) {
+    setSumberId(batchIdSumber);
+    if (!batchIdSumber) return;
+    const id = Number.parseInt(batchIdSumber, 10);
+    if (!Number.isInteger(id)) return;
+
+    startSalin(async () => {
+      const hasil = await salinDariBatchAction(id);
+      if (!hasil.ok) {
+        toast.error(hasil.pesan);
+        return;
+      }
+      reset(hasil.data);
+      setSlugDisentuh(false);
+      toast.success('Konten batch sumber diisi ke form. Lengkapi judul, slug, tanggal, lalu simpan.');
+    });
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8" noValidate>
+        {mode === 'create' && sumberBatchOptions.length > 0 && (
+          <section className="flex flex-col gap-2 rounded-lg border border-border bg-card p-4">
+            <Label htmlFor="salin-batch">Salin dari Batch Lain</Label>
+            <p className="text-sm text-muted-foreground">
+              Mengisi form dari batch sumber (bukan menyimpan). Judul, slug, tanggal, status, dan
+              poster tetap kosong — lengkapi lalu simpan seperti biasa.
+            </p>
+            <Select
+              items={[
+                { value: 'none', label: 'Pilih batch sumber…' },
+                ...sumberBatchOptions,
+              ]}
+              value={sumberId ?? 'none'}
+              onValueChange={(v) => salinDari(!v || v === 'none' ? null : v)}
+              disabled={salinPending}
+            >
+              <SelectTrigger
+                id="salin-batch"
+                className="h-11 w-full sm:w-fit sm:max-w-[min(100%,40rem)] *:data-[slot=select-value]:line-clamp-none"
+              >
+                <SelectValue placeholder="Pilih batch sumber…" />
+              </SelectTrigger>
+              <SelectContent className="w-max min-w-(--anchor-width) max-w-[min(100vw-2rem,40rem)]">
+                <SelectItem value="none">Pilih batch sumber…</SelectItem>
+                {sumberBatchOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {salinPending && (
+              <p className="text-sm text-muted-foreground">Menyalin konten…</p>
+            )}
+          </section>
+        )}
+
         <section className="flex flex-col gap-4">
           <h2 className="text-lg font-semibold text-foreground">Informasi Utama</h2>
 
@@ -447,6 +514,60 @@ export function BatchForm({
                 size="icon"
                 onClick={() => benefits.remove(index)}
                 aria-label="Hapus benefit"
+              >
+                <XIcon className="size-4" />
+              </Button>
+            </div>
+          ))}
+        </section>
+
+        <section className="flex flex-col gap-4">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-semibold text-foreground">Syarat Peserta</h2>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => requirements.append({ teks_id: '', teks_en: '' })}
+            >
+              <PlusIcon className="size-4" /> Tambah
+            </Button>
+          </div>
+          {requirements.fields.map((f, index) => (
+            <div
+              key={f.id}
+              className="grid grid-cols-1 gap-3 rounded-lg border border-border p-3 sm:grid-cols-[1fr_1fr_auto]"
+            >
+              <FormField
+                control={control}
+                name={`requirements.${index}.teks_id`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Teks (Indonesia)" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={control}
+                name={`requirements.${index}.teks_en`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input placeholder="Teks (Inggris)" {...field} value={field.value ?? ''} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => requirements.remove(index)}
+                aria-label="Hapus syarat"
               >
                 <XIcon className="size-4" />
               </Button>

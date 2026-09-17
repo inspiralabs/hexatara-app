@@ -3,6 +3,7 @@ import {
   getAdminNotifyEmail,
   getHargaUpgrade,
   getKontak,
+  getKontakPelatihan,
   getRekening,
 } from '@/lib/site-settings';
 import { PengaturanForms } from './pengaturan-forms';
@@ -10,9 +11,10 @@ import { PengaturanForms } from './pengaturan-forms';
 export default async function AdminPengaturanPage() {
   await requireAdmin();
 
-  const [rekening, kontak, notifyEmail, harga] = await Promise.all([
+  const [rekening, kontak, kontakPelatihan, notifyEmail, harga] = await Promise.all([
     getRekening(),
     getKontak(),
+    getKontakPelatihan(),
     getAdminNotifyEmail(),
     getHargaUpgrade(),
   ]);
@@ -25,6 +27,7 @@ export default async function AdminPengaturanPage() {
       <PengaturanForms
         rekening={rekening}
         kontak={kontak}
+        kontakPelatihan={kontakPelatihan}
         notifyEmail={notifyEmail ?? ''}
         harga={harga}
       />

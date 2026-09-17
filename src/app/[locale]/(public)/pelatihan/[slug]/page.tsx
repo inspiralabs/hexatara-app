@@ -1,9 +1,11 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { CheckCircle2Icon } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { formatRupiah, formatTanggalBatch, splitHtmlByHeadings } from "@/lib/batch";
 import { pick } from "@/lib/i18n/pick";
+import { getKontakPelatihan, getWhatsappAdmin } from "@/lib/site-settings";
 import {
   Accordion,
   AccordionContent,
@@ -45,6 +47,12 @@ function buildWaTanyaLink(nomor: string | undefined, judul: string) {
   return `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
 }
 
+function buildWaPelatihanLink(nomor: string | undefined, judul: string, konteks: string) {
+  if (!nomor) return null;
+  const pesan = `Halo ${konteks}, saya ingin bertanya tentang batch "${judul}".`;
+  return `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
+}
+
 export default async function BatchDetailPage({
   params,
 }: {
@@ -68,8 +76,19 @@ export default async function BatchDetailPage({
   if (batchError) console.error("[batch-detail] gagal memuat batch:", batchError);
   if (!batch) notFound();
 
-  const [{ data: benefits }, { data: equipment }, { data: faqs }, { data: gallery }] = await Promise.all([
+  const [
+    { data: benefits },
+    { data: requirements },
+    { data: equipment },
+    { data: faqs },
+    { data: gallery },
+  ] = await Promise.all([
     supabase.from("batch_benefits").select("id, ikon, teks_id, teks_en").eq("batch_id", batch.id).order("urutan"),
+    supabase
+      .from("batch_requirements")
+      .select("id, ikon, teks_id, teks_en")
+      .eq("batch_id", batch.id)
+      .order("urutan"),
     supabase.from("batch_equipment").select("id, teks_id, teks_en").eq("batch_id", batch.id).order("urutan"),
     supabase.from("batch_faqs").select("id, tanya_id, tanya_en, jawab_id, jawab_en").eq("batch_id", batch.id).order("urutan"),
     supabase.from("batch_gallery").select("id, gambar_url, caption_id, caption_en").eq("batch_id", batch.id).order("urutan"),
@@ -103,6 +122,8 @@ export default async function BatchDetailPage({
   }
 
   const nomorWa = process.env.NEXT_PUBLIC_WA_ADMIN;
+  const kontakPelatihan = await getKontakPelatihan();
+  const waUmum = await getWhatsappAdmin();
   const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai);
   const judul = pick(batch.judul_id, batch.judul_en, locale) ?? batch.judul_id;
   const kategori = pick(batch.kategori_id, batch.kategori_en, locale);
@@ -110,8 +131,20 @@ export default async function BatchDetailPage({
   const deskripsi = pick(batch.deskripsi_id, batch.deskripsi_en, locale);
   const silabus = pick(batch.silabus_id, batch.silabus_en, locale);
   const waTanyaLink = buildWaTanyaLink(nomorWa, batch.judul_id);
+  const waRegulerLink = buildWaPelatihanLink(
+    kontakPelatihan.wa_reguler?.trim() || waUmum || undefined,
+    batch.judul_id,
+    "Admin"
+  );
+  const waPrivateLink = buildWaPelatihanLink(
+    kontakPelatihan.wa_private?.trim() || undefined,
+    batch.judul_id,
+    "Abiyyi"
+  );
   const silabusItems = silabus?.trim() ? splitHtmlByHeadings(silabus) : [];
   const pendaftaran = await getPrefillPendaftaranBatch();
+  const tampilSyaratFasilitas =
+    (requirements && requirements.length > 0) || (benefits && benefits.length > 0);
 
   return (
     <div className="bg-background pb-10">
@@ -226,6 +259,75 @@ export default async function BatchDetailPage({
               />
             )}
           </div>
+
+          {tampilSyaratFasilitas && (
+            <div className="rounded-xl border border-border bg-card p-5 shadow-none sm:col-span-2 sm:p-6">
+              <div className="grid gap-6 sm:grid-cols-2">
+                {requirements && requirements.length > 0 && (
+                  <div>
+                    <h2 className={cardHeading}>{t("requirementsHeading")}</h2>
+                    <ul className="mt-3 space-y-2">
+                      {requirements.map((item) => (
+                        <li key={item.id} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          {item.ikon ? (
+                            <span aria-hidden="true" className="mt-0.5 shrink-0">
+                              {item.ikon}
+                            </span>
+                          ) : (
+                            <CheckCircle2Icon className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+                          )}
+                          <span>{pick(item.teks_id, item.teks_en, locale)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {benefits && benefits.length > 0 && (
+                  <div>
+                    <h2 className={cardHeading}>{t("facilitiesHeading")}</h2>
+                    <ul className="mt-3 space-y-2">
+                      {benefits.map((item) => (
+                        <li key={item.id} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          {item.ikon ? (
+                            <span aria-hidden="true" className="mt-0.5 shrink-0">
+                              {item.ikon}
+                            </span>
+                          ) : (
+                            <CheckCircle2Icon className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+                          )}
+                          <span>{pick(item.teks_id, item.teks_en, locale)}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+              {(waRegulerLink || waPrivateLink) && (
+                <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+                  {waRegulerLink && (
+                    <a
+                      href={waRegulerLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`w-full sm:w-auto ${publicCtaSecondary}`}
+                    >
+                      {t("waRegulerLabel")}
+                    </a>
+                  )}
+                  {waPrivateLink && (
+                    <a
+                      href={waPrivateLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`w-full sm:w-auto ${publicCtaSecondary}`}
+                    >
+                      {t("waPrivateLabel")}
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
           {equipment && equipment.length > 0 && (
             <div className="rounded-xl border border-border bg-card p-5 shadow-none">

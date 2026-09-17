@@ -2,8 +2,10 @@ import { Suspense } from 'react';
 import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { AdminBatchFilter } from '@/components/admin/admin-batch-filter';
-import { PendaftaranBatchTable, type PendaftaranBatchRow } from './pendaftaran-batch-table';
+import {
+  PesertaPendaftaranTable,
+  type PesertaPendaftaranRow,
+} from './peserta-pendaftaran-table';
 
 const LABEL_STATUS_BATCH: Record<string, string> = {
   upcoming: 'Akan datang',
@@ -11,7 +13,7 @@ const LABEL_STATUS_BATCH: Record<string, string> = {
   closed: 'Ditutup',
 };
 
-export default async function AdminPendaftaranBatchPage({
+export default async function AdminPesertaPendaftaranPage({
   searchParams,
 }: {
   searchParams: Promise<{ batch?: string }>;
@@ -25,6 +27,7 @@ export default async function AdminPendaftaranBatchPage({
   const supabase = await createClient();
   const admin = createAdminClient();
 
+  // Semua batch (open/closed/upcoming, aktif/nonaktif) — sama daftar admin/batch.
   const { data: batchList } = await supabase
     .from('batches')
     .select('id, judul_id, status')
@@ -48,23 +51,21 @@ export default async function AdminPendaftaranBatchPage({
       foto_ktp_url,
       pas_foto_url,
       user_id,
-      created_at,
+      verified_at,
       batches ( judul_id )
     `
     )
-    .eq('status', 'menunggu_verifikasi')
-    .order('created_at', { ascending: true });
+    .eq('status', 'disetujui')
+    .order('verified_at', { ascending: false, nullsFirst: false });
 
   if (batchId !== undefined) {
     query = query.eq('batch_id', batchId);
   }
 
   const { data, error } = await query;
-  if (error) {
-    console.error('[pendaftaran-batch] gagal memuat antrean:', error);
-  }
+  if (error) console.error('[peserta-pendaftaran] gagal memuat:', error);
 
-  const rows: PendaftaranBatchRow[] = await Promise.all(
+  const rows: PesertaPendaftaranRow[] = await Promise.all(
     (data ?? []).map(async (row) => {
       let fotoKtpUrl: string | null = null;
       let pasFotoUrl: string | null = null;
@@ -83,7 +84,6 @@ export default async function AdminPendaftaranBatchPage({
       }
 
       const batchRel = row.batches as { judul_id: string } | null;
-
       return {
         id: row.id,
         nama_lengkap: row.nama_lengkap,
@@ -97,7 +97,7 @@ export default async function AdminPendaftaranBatchPage({
         sumber_info: row.sumber_info,
         kode_referral: row.kode_referral,
         user_id: row.user_id,
-        created_at: row.created_at,
+        verified_at: row.verified_at,
         batchJudul: batchRel?.judul_id ?? '—',
         fotoKtpUrl,
         pasFotoUrl,
@@ -113,20 +113,19 @@ export default async function AdminPendaftaranBatchPage({
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <h1 className="text-xl font-bold text-foreground">Verifikasi Pendaftaran Batch</h1>
+        <h1 className="text-xl font-bold text-foreground">Peserta Pendaftaran</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Antrean status menunggu verifikasi. Foto KTP dan pas foto lewat signed URL 5 menit.
+          Peserta dengan status disetujui. Export Excel mengikuti filter batch aktif.
         </p>
       </div>
 
       <Suspense fallback={null}>
-        <AdminBatchFilter
-          options={filterOptions}
-          value={batchId !== undefined ? String(batchId) : undefined}
+        <PesertaPendaftaranTable
+          rows={rows}
+          batchOptions={filterOptions}
+          batchValue={batchId !== undefined ? String(batchId) : undefined}
         />
       </Suspense>
-
-      <PendaftaranBatchTable rows={rows} />
     </div>
   );
 }

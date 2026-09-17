@@ -65,6 +65,7 @@ const MENU_ADMIN: MenuSection[] = [
     items: [
       { href: "/admin/batch", label: "Daftar Batch" },
       { href: "/admin/pendaftaran-batch", label: "Pendaftaran Batch" },
+      { href: "/admin/peserta-pendaftaran", label: "Peserta Pendaftaran" },
       { href: "/admin/batch/kategori", label: "Kategori Pelatihan" },
     ],
   },

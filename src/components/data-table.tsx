@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import {
   columnFilteringFeature,
   createColumnHelper,
@@ -110,6 +110,8 @@ export function DataTable<TData extends RowData>({
   columnFilters,
   enableRowSelection = true,
   getRowId,
+  toolbarStart,
+  toolbarEnd,
 }: {
   columns: DataTableColumnDef<TData>[];
   data: TData[];
@@ -119,6 +121,8 @@ export function DataTable<TData extends RowData>({
   columnFilters?: DataTableColumnFilter[];
   enableRowSelection?: boolean;
   getRowId?: (originalRow: TData, index: number) => string;
+  toolbarStart?: ReactNode;
+  toolbarEnd?: ReactNode;
 }) {
   const columnsWithSelect = useMemo(() => {
     if (!enableRowSelection) return columns;
@@ -162,12 +166,13 @@ export function DataTable<TData extends RowData>({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+        {toolbarStart}
         {searchColumn && (
           <Input
             value={(searchColumn.getFilterValue() as string) ?? ''}
             onChange={(e) => searchColumn.setFilterValue(e.target.value)}
             placeholder={searchPlaceholder}
-            className="h-11 max-w-sm"
+            className="h-11 w-full max-w-sm sm:w-56"
           />
         )}
         {(columnFilters ?? []).map((filter) => {
@@ -203,6 +208,7 @@ export function DataTable<TData extends RowData>({
             </Select>
           );
         })}
+        {toolbarEnd ? <div className="flex w-full sm:ml-auto sm:w-auto">{toolbarEnd}</div> : null}
       </div>
 
       {/* Scroll horizontal terbatas di kontainer — halaman shell tidak ikut geser (375px). */}

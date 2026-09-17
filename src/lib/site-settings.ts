@@ -22,6 +22,11 @@ export type KontakSettings = {
   jam_operasional?: string;
 };
 
+export type KontakPelatihanSettings = {
+  wa_reguler?: string;
+  wa_private?: string;
+};
+
 /** Fallback footer — mirror messages/id.json footer.serviceHours */
 export const DEFAULT_JAM_OPERASIONAL = 'Senin - Jumat, 09.00 - 16.00 WIB';
 
@@ -53,6 +58,12 @@ export async function getKontak(): Promise<KontakSettings> {
   const value = await bacaSetting('kontak');
   if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
   return value as KontakSettings;
+}
+
+export async function getKontakPelatihan(): Promise<KontakPelatihanSettings> {
+  const value = await bacaSetting('kontak_pelatihan');
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
+  return value as KontakPelatihanSettings;
 }
 
 export async function getAdminNotifyEmail(): Promise<string | null> {

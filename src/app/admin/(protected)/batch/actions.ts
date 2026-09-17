@@ -19,7 +19,7 @@ export async function simpanBatchAction(batchId: number | null, input: BatchForm
     return { ok: false as const, pesan: 'Data yang diisi belum valid. Periksa kembali formnya.' };
   }
 
-  const { benefits, equipment, faqs, gallery, ...rest } = parsed.data;
+  const { benefits, requirements, equipment, faqs, gallery, ...rest } = parsed.data;
   const batch = {
     judul_id: rest.judul_id,
     judul_en: teks(rest.judul_en),
@@ -63,12 +63,17 @@ export async function simpanBatchAction(batchId: number | null, input: BatchForm
   // Replace-all per batch — lebih sederhana daripada diff per baris, dan wajar
   // untuk daftar sekecil ini (Admin jarang mengedit, beberapa baris saja).
   const { error: hapusBenefits } = await supabaseAdmin.from('batch_benefits').delete().eq('batch_id', id);
+  const { error: hapusRequirements } = await supabaseAdmin
+    .from('batch_requirements')
+    .delete()
+    .eq('batch_id', id);
   const { error: hapusEquipment } = await supabaseAdmin.from('batch_equipment').delete().eq('batch_id', id);
   const { error: hapusFaqs } = await supabaseAdmin.from('batch_faqs').delete().eq('batch_id', id);
   const { error: hapusGallery } = await supabaseAdmin.from('batch_gallery').delete().eq('batch_id', id);
-  if (hapusBenefits || hapusEquipment || hapusFaqs || hapusGallery) {
+  if (hapusBenefits || hapusRequirements || hapusEquipment || hapusFaqs || hapusGallery) {
     console.error('[admin-batch] gagal hapus detail lama:', {
       hapusBenefits,
+      hapusRequirements,
       hapusEquipment,
       hapusFaqs,
       hapusGallery,
@@ -88,6 +93,22 @@ export async function simpanBatchAction(batchId: number | null, input: BatchForm
     );
     if (error) {
       console.error('[admin-batch] gagal simpan benefit:', error);
+      return { ok: false as const, pesan: 'Gagal menyimpan detail batch. Coba lagi.' };
+    }
+  }
+
+  if (requirements.length > 0) {
+    const { error } = await supabaseAdmin.from('batch_requirements').insert(
+      requirements.map((item, index) => ({
+        teks_id: item.teks_id,
+        teks_en: teks(item.teks_en),
+        ikon: teks(item.ikon),
+        batch_id: id,
+        urutan: index,
+      }))
+    );
+    if (error) {
+      console.error('[admin-batch] gagal simpan syarat:', error);
       return { ok: false as const, pesan: 'Gagal menyimpan detail batch. Coba lagi.' };
     }
   }
@@ -163,4 +184,115 @@ export async function toggleAktifBatchAction(batchId: number, aktif: boolean) {
     return { ok: false as const, pesan: 'Gagal mengubah status. Coba lagi.' };
   }
   return { ok: true as const };
+}
+
+/** F08.4 — PRE-FILL form Tambah saja. Tidak insert DB. Tidak sentuh leads/registrations. */
+export async function salinDariBatchAction(batchIdSumber: number) {
+  await requireAdmin();
+
+  if (!Number.isInteger(batchIdSumber) || batchIdSumber <= 0) {
+    return { ok: false as const, pesan: 'Batch sumber tidak valid.' };
+  }
+
+  const supabaseAdmin = createAdminClient();
+  const { data: sumber, error } = await supabaseAdmin
+    .from('batches')
+    .select(
+      `
+      kategori_id, kategori_en, category_id, rating,
+      lokasi_id, lokasi_en, alamat, harga,
+      deskripsi_id, deskripsi_en, silabus_id, silabus_en
+    `
+    )
+    .eq('id', batchIdSumber)
+    .maybeSingle();
+
+  if (error || !sumber) {
+    console.error('[admin-batch] gagal baca batch sumber:', error);
+    return { ok: false as const, pesan: 'Batch sumber tidak ditemukan.' };
+  }
+
+  const [
+    { data: benefits },
+    { data: requirements },
+    { data: equipment },
+    { data: faqs },
+    { data: gallery },
+  ] = await Promise.all([
+    supabaseAdmin
+      .from('batch_benefits')
+      .select('teks_id, teks_en, ikon')
+      .eq('batch_id', batchIdSumber)
+      .order('urutan'),
+    supabaseAdmin
+      .from('batch_requirements')
+      .select('teks_id, teks_en, ikon')
+      .eq('batch_id', batchIdSumber)
+      .order('urutan'),
+    supabaseAdmin
+      .from('batch_equipment')
+      .select('teks_id, teks_en')
+      .eq('batch_id', batchIdSumber)
+      .order('urutan'),
+    supabaseAdmin
+      .from('batch_faqs')
+      .select('tanya_id, tanya_en, jawab_id, jawab_en')
+      .eq('batch_id', batchIdSumber)
+      .order('urutan'),
+    supabaseAdmin
+      .from('batch_gallery')
+      .select('gambar_url, caption_id, caption_en')
+      .eq('batch_id', batchIdSumber)
+      .order('urutan'),
+  ]);
+
+  const draft: BatchFormInput = {
+    judul_id: '',
+    judul_en: '',
+    slug: '',
+    kategori_id: sumber.kategori_id ?? '',
+    kategori_en: sumber.kategori_en ?? '',
+    category_id: sumber.category_id,
+    rating: sumber.rating ?? '',
+    lokasi_id: sumber.lokasi_id ?? '',
+    lokasi_en: sumber.lokasi_en ?? '',
+    alamat: sumber.alamat ?? '',
+    harga: sumber.harga ?? '',
+    status: 'upcoming',
+    is_active: false,
+    hero_gambar_url: '',
+    deskripsi_id: sumber.deskripsi_id ?? '',
+    deskripsi_en: sumber.deskripsi_en ?? '',
+    silabus_id: sumber.silabus_id ?? '',
+    silabus_en: sumber.silabus_en ?? '',
+    tanggal_mulai: null,
+    tanggal_selesai: null,
+    benefits: (benefits ?? []).map((b) => ({
+      teks_id: b.teks_id,
+      teks_en: b.teks_en ?? '',
+      ikon: b.ikon ?? '',
+    })),
+    requirements: (requirements ?? []).map((r) => ({
+      teks_id: r.teks_id,
+      teks_en: r.teks_en ?? '',
+      ikon: r.ikon ?? '',
+    })),
+    equipment: (equipment ?? []).map((e) => ({
+      teks_id: e.teks_id,
+      teks_en: e.teks_en ?? '',
+    })),
+    faqs: (faqs ?? []).map((f) => ({
+      tanya_id: f.tanya_id,
+      tanya_en: f.tanya_en ?? '',
+      jawab_id: f.jawab_id,
+      jawab_en: f.jawab_en ?? '',
+    })),
+    gallery: (gallery ?? []).map((g) => ({
+      gambar_url: g.gambar_url,
+      caption_id: g.caption_id ?? '',
+      caption_en: g.caption_en ?? '',
+    })),
+  };
+
+  return { ok: true as const, data: draft };
 }
