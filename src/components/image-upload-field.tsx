@@ -36,6 +36,8 @@ export function ImageUploadField({
   onUpload,
   aspectRatio,
   suggestedPx,
+  skipCrop = false,
+  previewFit = 'cover',
 }: {
   label: string;
   value: string | null;
@@ -45,6 +47,10 @@ export function ImageUploadField({
   aspectRatio?: number;
   /** Contoh: "1920×1080px" — ditampilkan sebagai saran, bukan validasi keras. */
   suggestedPx?: string;
+  /** Lewati dialog crop — kompres file asli lalu upload (poster/infografis). */
+  skipCrop?: boolean;
+  /** Preview di form: cover (default, aspect-video) atau contain (tinggi menyesuaikan). */
+  previewFit?: 'cover' | 'contain';
 }) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -54,6 +60,24 @@ export function ImageUploadField({
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
 
+  async function uploadTanpaCrop(file: File) {
+    setUploading(true);
+    try {
+      const compressed = await imageCompression(file, { maxSizeMB: 0.5, maxWidthOrHeight: 1920 });
+      const hasil = await onUpload(new File([compressed], file.name, { type: compressed.type }));
+      if (!hasil.ok) {
+        toast.error(hasil.pesan);
+        return;
+      }
+      onChange(hasil.url);
+    } catch {
+      toast.error('Gagal memproses gambar. Coba berkas lain.');
+    } finally {
+      setUploading(false);
+      if (inputRef.current) inputRef.current.value = '';
+    }
+  }
+
   function handleFile(file: File | undefined) {
     if (!file) return;
     if (!FORMAT_DIIZINKAN.includes(file.type)) {
@@ -62,6 +86,10 @@ export function ImageUploadField({
     }
     if (file.size > UKURAN_MAKS) {
       toast.error(`Ukuran berkas ${formatMB(file.size)} melebihi batas maksimal ${formatMB(UKURAN_MAKS)}.`);
+      return;
+    }
+    if (skipCrop) {
+      void uploadTanpaCrop(file);
       return;
     }
     setPending({ file, objectUrl: URL.createObjectURL(file) });
@@ -112,19 +140,42 @@ export function ImageUploadField({
     <div className="flex flex-col gap-1.5">
       <span className="text-sm font-medium text-foreground">{label}</span>
       {value ? (
-        <div className="relative aspect-video w-full max-w-xs overflow-hidden rounded-lg border border-border">
-          <Image src={value} alt="" fill className="object-cover" sizes="320px" />
-          <Button
-            type="button"
-            variant="secondary"
-            size="icon-sm"
-            onClick={() => onChange(null)}
-            aria-label="Hapus gambar"
-            className="absolute top-1.5 right-1.5 size-8 rounded-full"
-          >
-            <XIcon className="size-4" />
-          </Button>
-        </div>
+        previewFit === 'contain' ? (
+          <div className="relative max-h-64 w-full max-w-xs overflow-hidden rounded-lg border border-border">
+            <Image
+              src={value}
+              alt=""
+              width={640}
+              height={480}
+              className="h-auto max-h-64 w-full object-contain"
+              sizes="320px"
+            />
+            <Button
+              type="button"
+              variant="secondary"
+              size="icon-sm"
+              onClick={() => onChange(null)}
+              aria-label="Hapus gambar"
+              className="absolute top-1.5 right-1.5 size-8 rounded-full"
+            >
+              <XIcon className="size-4" />
+            </Button>
+          </div>
+        ) : (
+          <div className="relative aspect-video w-full max-w-xs overflow-hidden rounded-lg border border-border">
+            <Image src={value} alt="" fill className="object-cover" sizes="320px" />
+            <Button
+              type="button"
+              variant="secondary"
+              size="icon-sm"
+              onClick={() => onChange(null)}
+              aria-label="Hapus gambar"
+              className="absolute top-1.5 right-1.5 size-8 rounded-full"
+            >
+              <XIcon className="size-4" />
+            </Button>
+          </div>
+        )
       ) : (
         <div className="flex flex-col gap-1.5">
           <input

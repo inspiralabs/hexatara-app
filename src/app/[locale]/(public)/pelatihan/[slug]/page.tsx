@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/carousel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InstrukturSection } from "@/components/instruktur-section";
+import { BatchDetailHero } from "@/components/batch-detail-hero";
 import { PublicHeroMist } from "@/components/public-hero-mist";
 import {
   publicBadgeKategori,
@@ -67,7 +68,7 @@ export default async function BatchDetailPage({
   const { data: batch, error: batchError } = await supabase
     .from("batches")
     .select(
-      "id, slug, judul_id, judul_en, kategori_id, kategori_en, category_id, lokasi_id, lokasi_en, alamat, harga, status, tanggal_mulai, tanggal_selesai, deskripsi_id, deskripsi_en, silabus_id, silabus_en, hero_gambar_url, rating"
+      "id, slug, judul_id, judul_en, kategori_id, kategori_en, category_id, lokasi_id, lokasi_en, alamat, harga, status, tanggal_mulai, tanggal_selesai, deskripsi_id, deskripsi_en, silabus_id, silabus_en, hero_gambar_url, gambar_detail_url, rating"
     )
     .eq("slug", slug)
     .eq("is_active", true)
@@ -155,18 +156,10 @@ export default async function BatchDetailPage({
             <span className={publicStatusBatchClass[batch.status]}>{t(`status.${batch.status}`)}</span>
           </div>
           <h1 className={`mt-3 ${publicSectionHeading}`}>{judul}</h1>
-          {batch.hero_gambar_url && (
-            <div className="relative mt-6 aspect-video w-full overflow-hidden rounded-xl">
-              <Image
-                src={batch.hero_gambar_url}
-                alt=""
-                fill
-                priority
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 768px"
-              />
-            </div>
-          )}
+          <BatchDetailHero
+            gambarDetailUrl={batch.gambar_detail_url}
+            heroGambarUrl={batch.hero_gambar_url}
+          />
         </div>
       </PublicHeroMist>
 

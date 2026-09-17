@@ -60,6 +60,7 @@ export const BatchFormSchema = z.object({
   status: z.enum(['upcoming', 'open', 'closed']),
   is_active: z.boolean(),
   hero_gambar_url: teksOpsional,
+  gambar_detail_url: teksOpsional,
   deskripsi_id: teksOpsional,
   deskripsi_en: teksOpsional,
   silabus_id: teksOpsional,

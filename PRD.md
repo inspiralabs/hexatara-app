@@ -286,6 +286,18 @@ Bucket storage baru: `identity-documents` (privat, pola sama `certificates`/`pay
 
 **Fitur "Salin dari Batch Lain" (F08.4) TIDAK butuh tabel/kolom baru** — murni UI + server action yang membaca `batches` dan 5 tabel terkait (`batch_benefits`, `batch_equipment`, `batch_faqs`, `batch_gallery`, `batch_requirements`) dari batch sumber, lalu insert baris baru untuk batch tujuan.
 
+### 5.1e Tabel/kolom tambahan — Modul 9 (lihat Bagian 9d)
+
+| Tabel | Ditambahkan oleh | Kegunaan |
+|---|---|---|
+| `batches.gambar_detail_url` | ADR-022 | Gambar/poster pelatihan versi UTUH (tanpa crop paksa), ditampilkan di halaman detail publik. `hero_gambar_url` (sudah ada) TETAP dipertahankan sebagai thumbnail kartu (rasio 16:9 dikunci, tidak berubah) |
+
+**Produk (`products`/`product_images`) TIDAK butuh kolom/tabel baru** — perubahan murni di kode: dialog crop di form Admin Produk berhenti mengunci rasio 1:1 (jadi bebas, Admin yang tentukan sendiri area crop), tampilan publik (kartu katalog + galeri detail) berubah dari "potong penuh" jadi "tampil utuh" di dalam kotak yang tetap satu ukuran konsisten.
+
+**Hero beranda (`hero_slides`) TIDAK butuh kolom baru** — kotak tampilan di layar (persegi HP / 4:3 desktop) sudah dianggap pas dan tidak diubah; yang diubah cuma rasio kunci dialog crop saat upload, dari 16:9 menjadi 4:3, supaya sesuai kotak tampilan aslinya (mengurangi crop dobel).
+
+**Lightbox klik-untuk-perbesar TIDAK butuh tabel/kolom baru** — murni komponen UI baru di sisi publik, dipasang di hero pelatihan dan galeri produk.
+
 ### 5.2 View publik — WAJIB untuk akses anonim
 
 | View | Kenapa ada |
@@ -999,6 +1011,71 @@ Tambahan murni UI/query di halaman `admin/pendaftaran-batch` yang sudah ada — 
 - [ ] Admin bisa mengubah dua nomor WA lewat `/admin/pengaturan`
 - [ ] Fitur Salin dari Batch Lain diuji: batch baru hasil salinan berisi konten identik batch sumber (deskripsi, silabus, benefit, syarat, peralatan, FAQ, galeri) KECUALI field yang sengaja dikosongkan (slug, judul, tanggal, status, poster) — dan mengedit batch baru TIDAK mengubah batch sumber
 - [ ] Diuji di viewport 375px untuk card baru dan halaman Peserta Pendaftaran
+
+---
+
+## 9d. MODUL 9 — GAMBAR DETAIL TANPA CROP PAKSA, HERO BERANDA DISELARASKAN, LIGHTBOX PUBLIK
+
+> Bukan bagian dari scope asli BRD-HXT-002. Diminta Alif setelah meninjau tangkapan layar tampilan publik yang sudah live dan menemukan beberapa gambar terpotong tidak sesuai maksud upload, disetujui 2026-09-17 lewat rangkaian diskusi bertahap (termasuk mockup visual pembanding sebelum-sesudah). Dicatat sebagai ADR-022 di `ENGINEERING.md` Bagian 10.
+
+### 9d.1 Tujuan
+
+Perbaikan pengalaman upload gambar Admin dan tampilan publik, supaya poster pelatihan dan foto produk tidak pernah kehilangan bagian penting akibat dipaksa crop ke rasio yang tidak sesuai bentuk asli gambar, sekaligus menghindari tampilan berantakan yang tidak konsisten.
+
+### 9d.2 Daftar fitur
+
+| Kode | Fitur | Prio | Tabel |
+|---|---|---|---|
+| F09.1 | Field baru "Gambar Detail" pelatihan — upload tanpa dialog crop, tampil utuh di halaman detail publik + lightbox | MUST | `batches` |
+| F09.2 | Galeri foto produk — dialog crop tetap wajib tapi rasio bebas (Admin atur sendiri), tampilan publik jadi utuh (tanpa potong) dalam kotak konsisten + lightbox | MUST | `product_images` (tanpa perubahan skema) |
+| F09.3 | Rasio crop upload Hero Beranda diselaraskan dari 16:9 ke 4:3, sesuai kotak tampilan asli di layar (tidak diubah) | MUST | `hero_slides` (tanpa perubahan skema) |
+| F09.4 | Lightbox klik-untuk-perbesar (backdrop blur) untuk gambar hero pelatihan dan galeri produk publik | MUST | — (komponen UI) |
+
+### 9d.3 F09.1 — Gambar Detail pelatihan (tanpa crop)
+
+- Field upload baru "Gambar Detail" di form Admin Batch, terpisah dari field "Gambar Hero" (thumbnail, sudah ada, TIDAK berubah — tetap rasio 16:9 dikunci, tetap dipakai di kartu daftar pelatihan `PelatihanCard`).
+- Field baru ini **TIDAK melalui dialog crop sama sekali** — file yang dipilih Admin langsung dikompresi (pola kompresi yang sudah ada di `ImageUploadField`) lalu diunggah apa adanya. Ini disengaja: `ReactCrop` tanpa rasio terkunci secara default memilih area 90% (bukan 100%), sehingga tetap ada risiko Admin lupa menggeser ke area penuh — dihindari sepenuhnya dengan meniadakan langkah crop untuk field ini.
+- Halaman detail batch publik (`pelatihan/[slug]`) menampilkan `gambar_detail_url` di posisi hero (menggantikan `hero_gambar_url` yang sebelumnya dipakai di posisi itu), dengan `object-contain` (bukan `object-cover`) — gambar tampil utuh, boleh ada ruang kosong di sisi kalau bentuknya beda dari kotak. Kalau `gambar_detail_url` kosong (batch lama sebelum fitur ini ada), fallback ke `hero_gambar_url` seperti sekarang.
+- Diberi lightbox (lihat F09.4).
+
+### 9d.4 F09.2 — Galeri foto produk (crop bebas, tampil utuh)
+
+- Struktur galeri produk (`product_images`, form Admin Produk) **TIDAK berubah** — tetap satu set galeri, tidak menambah field thumbnail terpisah. Foto pertama tetap otomatis jadi cover kartu katalog, seperti sekarang.
+- Dialog crop di form Admin Produk **TETAP WAJIB muncul** (tidak dihilangkan) — tapi rasio 1:1 yang sebelumnya dikunci sistem sekarang **dilepas jadi bebas**, Admin sendiri yang menggeser area crop sesuai kebutuhan. Ini sengaja dipertahankan (bukan dihilangkan seperti F09.1) supaya Admin tetap punya kontrol kualitas/konsistensi framing per foto, mengingat foto produk dipakai berulang di banyak tempat (kartu katalog, carousel detail, thumbnail galeri).
+- Tampilan publik (kartu katalog `ProdukCard` dan carousel detail `ProductGallery`) berubah dari `object-cover` jadi `object-contain` — foto ditampilkan utuh, TIDAK dipotong lagi otomatis oleh sistem. Kotak/container TETAP satu ukuran konsisten di semua produk (grid/carousel tetap rapi), dengan warna latar kotak diganti **putih polos** (bukan abu-abu netral) supaya foto produk berlatar putih (kebiasaan standar foto katalog yang sudah dipakai) menyatu tanpa terlihat garis pembatas.
+- Ditambahkan teks keterangan singkat di sebelah tombol upload form Admin Produk: "Gunakan foto dengan latar belakang putih/polos untuk hasil terbaik."
+- Diberi lightbox (lihat F09.4).
+
+### 9d.5 F09.3 — Rasio Hero Beranda diselaraskan
+
+- Kotak tampilan Hero Beranda di layar publik (persegi di mobile, 4:3 di desktop/tablet, komponen `HeroCarousel`) **TIDAK diubah** — sudah dikonfirmasi Alif pas/enak dipandang.
+- Yang diubah HANYA rasio kunci dialog crop saat Admin upload slide baru: dari `16/9` menjadi `4/3`, supaya paling mendekati kotak tampilan asli. Masih ada kemungkinan sedikit crop tipis di sisi kiri-kanan pada viewport mobile (kotak persegi, sumber 4:3) — disadari dan diterima sebagai kompromi, tetap jauh lebih baik dari kondisi sebelumnya (16:9 dobel-crop).
+- Panel gambar di halaman Masuk/Daftar/Lupa Sandi (`AuthShell`) dikonfirmasi BUKAN pengaturan terpisah — otomatis meminjam slide Hero Beranda aktif pertama. **TIDAK dibuatkan field/pengaturan baru** — cukup ditambahkan teks keterangan di form Admin Hero Beranda bahwa gambar ini juga tampil di halaman Masuk/Daftar/Lupa Sandi, supaya Admin tahu di mana mengubahnya.
+
+### 9d.6 F09.4 — Lightbox klik-untuk-perbesar
+
+- Komponen publik baru: klik gambar hero pelatihan (F09.1) atau foto di galeri produk (F09.2) memunculkan overlay gambar ukuran besar dengan latar belakang gelap + blur, bisa ditutup lewat tombol X, klik area luar gambar, atau tombol Escape.
+- Pola implementasi mengikuti perbaikan aksesibilitas yang sudah diterapkan di `pendaftaran-batch-detail.tsx` (Admin) — backdrop sebagai elemen `<button>` (bukan `div` dengan `onClick`), Escape lewat `useEffect` + `window.addEventListener`, BUKAN `onKeyDown` di elemen non-interaktif — supaya lolos aturan ESLint `jsx-a11y` yang sama.
+- **TIDAK dipasang di Hero Beranda** — slide beranda bersifat dekoratif/navigasi (mengarah ke halaman lain), bukan halaman detail yang perlu dilihat lebih besar.
+- Memakai gambar resolusi yang sama dengan yang sudah dimuat (tidak ada gambar terpisah khusus lightbox, tidak menambah kompleksitas storage).
+
+### 9d.7 Batasan yang tetap berlaku penuh
+
+- Larangan #1 (jangan tambah tabel/kolom di luar Bagian 5) — satu-satunya kolom baru (`batches.gambar_detail_url`) dicatat di Bagian 5.1e sebelum SQL apa pun diajukan. Produk, hero beranda, dan lightbox TIDAK butuh migrasi skema apa pun.
+- F09.1/F09.2 TIDAK mengubah alur simpan/publish batch atau produk yang sudah ada — murni penambahan field dan perubahan cara render, bukan perubahan alur kerja Admin.
+- Data gambar LAMA (batch/produk yang sudah ada sebelum fitur ini) TIDAK otomatis membaik — `gambar_detail_url` batch lama kosong (fallback ke `hero_gambar_url` lama), foto produk lama tetap tersimpan dalam bentuk hasil crop 1:1 sebelumnya. Perbaikan tampilan penuh hanya berlaku untuk gambar yang diunggah ULANG setelah fitur ini aktif — Admin perlu diberi tahu dan disarankan mengunggah ulang bertahap, bukan sekaligus wajib.
+- Prinsip MOBILE FIRST dan RESPONSIF (mobile, tablet, desktop) berlaku penuh di semua perubahan tampilan F09.1–F09.4, sesuai prinsip yang sudah ditegaskan berulang di proyek ini (ADR-019 dan seterusnya).
+
+### 9d.8 Selesai bila
+
+- [ ] Seluruh F09.1 s/d F09.4 berstatus DONE di `feature-registry.md` dengan bukti uji manual di browser (Definition of Done Bagian 14, butir 5 tetap wajib Alif)
+- [ ] Form Admin Batch punya dua field gambar terpisah (Gambar Hero/thumbnail dan Gambar Detail) — field Gambar Detail tidak memunculkan dialog crop sama sekali
+- [ ] Halaman detail batch publik menampilkan `gambar_detail_url` secara utuh (`object-contain`), fallback ke `hero_gambar_url` kalau kosong, diuji dengan poster berbagai rasio (memanjang dan melebar)
+- [ ] Form Admin Produk: dialog crop tetap muncul tapi tidak lagi terkunci rasio 1:1, ada teks keterangan soal latar putih
+- [ ] Kartu katalog dan carousel detail produk menampilkan foto utuh (`object-contain`) dalam kotak konsisten berlatar putih, diuji dengan foto landscape dan portrait
+- [ ] Form Admin Hero Beranda: rasio crop upload sudah 4:3, ada teks keterangan soal pemakaian gambar ini di halaman Masuk/Daftar/Lupa Sandi
+- [ ] Klik gambar hero pelatihan dan galeri produk memunculkan lightbox (backdrop blur), bisa ditutup lewat X/klik luar/Escape, lolos `pnpm lint` tanpa error `jsx-a11y`
+- [ ] Diuji di viewport 375px untuk field upload baru, tampilan detail, dan lightbox
 
 ---
 

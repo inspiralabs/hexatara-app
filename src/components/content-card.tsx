@@ -12,6 +12,8 @@ export function ContentCard({
   price,
   cta,
   variant = "default",
+  imageFit = "cover",
+  imageBg,
   className,
 }: {
   image?: { src: string; alt: string } | null;
@@ -23,6 +25,10 @@ export function ContentCard({
   cta?: ReactNode;
   /** `public` = border saja, shadow hanya hover (§12.6.9). Default tetap untuk dashboard. */
   variant?: "default" | "public";
+  /** Cover (default) untuk thumbnail terkunci rasio; contain untuk foto produk utuh. */
+  imageFit?: "cover" | "contain";
+  /** Kelas latar area gambar, mis. bg-white untuk foto produk. */
+  imageBg?: string;
   className?: string;
 }) {
   const isPublic = variant === "public";
@@ -38,12 +44,12 @@ export function ContentCard({
       )}
     >
       {image && (
-        <div className="relative aspect-video w-full">
+        <div className={cn("relative aspect-video w-full", imageBg)}>
           <Image
             src={image.src}
             alt={image.alt}
             fill
-            className="object-cover"
+            className={imageFit === "contain" ? "object-contain" : "object-cover"}
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
           />
         </div>

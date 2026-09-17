@@ -1140,6 +1140,121 @@ tapi sebagian data terkait gagal ikut, misalnya).
 
 ---
 
+### ADR-022 — Modul 9: Gambar detail tanpa crop paksa (pelatihan, produk), rasio hero beranda diselaraskan, lightbox publik
+**2026-09-17 · Berlaku**
+
+**Konteks.** Alif mengirim tangkapan layar tampilan publik yang sudah live
+dan melaporkan beberapa gambar tampak terpotong tidak sesuai maksud upload
+Abi — terutama poster pelatihan (infografis memanjang ke bawah) dan foto
+produk (drone melebar dengan baling-baling terbentang). Ditelusuri ke kode:
+`ImageUploadField` (komponen upload bersama, dipakai di banyak form Admin)
+memaksa dialog crop dengan rasio terkunci di setiap titik upload gambar
+publik — 16:9 untuk `batches.hero_gambar_url` dan slide `hero_slides`, 1:1
+untuk `product_images`. Poster/foto yang bentuk aslinya beda dari rasio
+terkunci itu otomatis kehilangan sebagian isi saat Abi meng-crop. Ditemukan
+juga: kotak tampilan hero beranda di layar (persegi di HP, 4:3 di
+desktop/tablet) TIDAK sama dengan rasio kunci upload-nya (16:9) — gambar
+jadi terpotong DUA KALI (sekali saat upload, sekali lagi otomatis saat
+ditampilkan). Panel gambar di halaman Masuk/Daftar/Lupa Sandi (`AuthShell`)
+dicek juga — ternyata bukan pengaturan terpisah, otomatis mengambil slide
+`hero_slides` aktif pertama.
+
+Didiskusikan dengan Alif lewat rangkaian pertanyaan bertahap (mockup visual
+dulu dipakai untuk menyamakan pemahaman sebelum keputusan diambil, karena
+konsep "gambar tanpa crop" awalnya belum jelas bagi Alif/Abi):
+1. Untuk pelatihan — disepakati DUA gambar terpisah: thumbnail (tetap
+   dikunci rasio, khusus kartu daftar pelatihan) dan gambar detail (baru,
+   tampil utuh di halaman detail).
+2. Untuk produk — sempat dipertimbangkan pola sama (thumbnail terpisah),
+   tapi Alif memilih tetap SATU galeri (tidak menambah langkah upload).
+   Muncul juga kekhawatiran valid: kalau crop dihapus total, Abi bisa
+   upload foto dengan latar warna tidak seragam atau rasio yang sangat
+   berbeda antar produk, membuat tampilan katalog terlihat berantakan.
+   Resolusi: dialog crop TETAP WAJIB muncul (bukan dihapus), tapi rasio
+   dilepas jadi bebas (Abi sendiri yang menentukan area crop, bukan sistem
+   yang memaksa 1:1) — tetap ada kontrol kualitas dari Abi, tanpa
+   pemotongan otomatis yang tidak disengaja.
+3. Untuk gambar detail pelatihan (poster), pola "crop bebas tapi tetap
+   wajib" milik produk SENGAJA TIDAK dipakai — karena `ReactCrop` secara
+   default memilih area 90% (bukan 100%) saat tanpa rasio terkunci,
+   Abi bisa lupa menggeser ke area penuh dan poster tetap kehilangan
+   sedikit bagian tepi. Untuk field ini dipilih: langsung upload tanpa
+   dialog crop sama sekali (hanya kompresi ukuran), supaya tidak ada
+   satupun jalur yang bisa memotong poster secara tidak sengaja.
+4. Hero beranda — kotak tampilan di layar (persegi HP / 4:3 desktop)
+   dikonfirmasi Alif SUDAH pas, tidak diubah. Yang diubah cuma rasio kunci
+   saat upload, dari 16:9 menjadi 4:3, supaya paling dekat dengan kotak
+   asli di kedua ukuran layar (masih ada sedikit crop tipis di sisi kanan
+   -kiri pada HP, disadari dan diterima Alif sebagai kompromi, jauh lebih
+   baik dari kondisi sekarang).
+5. Gambar panel Masuk/Daftar — TIDAK dijadikan pengaturan terpisah (supaya
+   tidak menambah field yang perlu dijaga Abi tanpa alasan kuat); cukup
+   catatan di form Hero Beranda bahwa gambar itu juga dipakai di halaman
+   tersebut.
+6. Lightbox klik-untuk-perbesar (backdrop blur, pola sama seperti perbaikan
+   aksesibilitas foto KTP/pas foto Admin di `pendaftaran-batch-detail.tsx`
+   sebelumnya) diminta Alif untuk gambar hero pelatihan dan galeri produk
+   di halaman publik — BUKAN untuk hero beranda (dekoratif, bukan halaman
+   detail).
+
+**Keputusan.**
+- `batches` — kolom baru `gambar_detail_url` (nullable, lihat SQL). Field
+  upload BARU di form Admin Batch: "Gambar Detail" — langsung upload +
+  kompresi, TANPA dialog crop. `hero_gambar_url` (sudah ada) TETAP menjadi
+  thumbnail — rasio 16:9 tetap dikunci, tetap dipakai di `PelatihanCard`
+  (kartu daftar pelatihan). Halaman detail publik
+  (`pelatihan/[slug]/page.tsx`) diganti render-nya: posisi hero yang
+  sebelumnya memakai `hero_gambar_url` + `object-cover` sekarang memakai
+  `gambar_detail_url` + `object-contain` (kalau kosong, fallback ke
+  `hero_gambar_url` supaya batch lama yang belum diisi ulang tetap
+  menampilkan sesuatu). Diberi lightbox klik-untuk-perbesar.
+- `products`/`product_images` — TIDAK ADA kolom/tabel baru. `ImageUploadField`
+  di form Admin Produk dipanggil TANPA prop `aspectRatio` (crop tetap
+  wajib, rasio bebas — Admin yang menentukan area). Tampilan publik
+  (`ProductGallery` dan kartu katalog) diganti dari `object-cover` jadi
+  `object-contain` di dalam kotak yang TETAP satu ukuran konsisten (supaya
+  grid/carousel tetap rapi), dengan latar kotak diganti putih polos
+  (bukan abu-abu netral) supaya foto produk berlatar putih (kebiasaan
+  standar katalog, sudah dipakai Abi) menyatu tanpa terlihat pembatas.
+  Ditambah catatan kecil di form Admin: "Gunakan foto dengan latar
+  belakang putih/polos untuk hasil terbaik." Diberi lightbox
+  klik-untuk-perbesar juga, memakai gambar resolusi yang sama (tidak ada
+  gambar terpisah khusus lightbox).
+- `hero_slides` — TIDAK ADA kolom baru. `aspectRatio` di form Admin Hero
+  Beranda diubah dari `16/9` menjadi `4/3`. Kotak tampilan di
+  `HeroCarousel` (beranda) dan `AuthShell` (panel Masuk/Daftar/Lupa Sandi,
+  yang meminjam gambar sama) TIDAK diubah. Form Admin Hero Beranda diberi
+  teks keterangan bahwa gambar ini juga tampil di halaman Masuk/Daftar/
+  Lupa Sandi.
+- `ImageUploadField` (komponen bersama) mendapat dua penyesuaian yang
+  BACKWARD-COMPATIBLE (default tetap perilaku lama untuk semua pemanggil
+  lain yang tidak diubah): (1) prop baru `skipCrop` (boolean, default
+  `false`) — kalau `true`, lewati dialog `ReactCrop` sepenuhnya, langsung
+  kompresi + upload; dipakai HANYA di field "Gambar Detail" batch. (2) prop
+  baru `previewFit` (`'cover' | 'contain'`, default `'cover'`) — mengatur
+  cara pratinjau gambar yang sudah diunggah ditampilkan DI DALAM form
+  Admin itu sendiri (sebelumnya hardcode `aspect-video` + `object-cover`,
+  bisa menyesatkan Abi kalau dipakai untuk field yang justru dirancang
+  tanpa crop). Field "Gambar Detail" batch dan galeri produk memakai
+  `previewFit="contain"`.
+
+**Konsekuensi.** Batch dan produk yang sudah ada sebelum ADR-022 punya
+`gambar_detail_url` kosong (`null`) — halaman detail otomatis fallback ke
+`hero_gambar_url` lama (masih akan terlihat terpotong seperti sekarang)
+sampai Abi mengisi ulang gambar detail satu per satu; tidak ada migrasi
+otomatis karena tidak ada cara memulihkan bagian poster yang sudah
+terlanjur hilang dari crop lama. Foto produk yang sudah ada JUGA masih
+tersimpan dalam bentuk 1:1 ter-crop dari sebelumnya (SQL ini tidak
+mengubah data lama) — kualitas foto lama tidak otomatis membaik, hanya
+foto yang diunggah ULANG setelah perubahan ini yang akan tampil utuh; Abi
+perlu diberi tahu lewat prompt Cursor bahwa unggah ulang foto produk lama
+disarankan bertahap. `ImageUploadField` menjadi sedikit lebih kompleks
+(dua prop opsional baru) — perlu dicek semua pemanggil lain (popup,
+material chapter, dll — ADR-015/ADR-018) tetap berjalan tanpa perubahan
+karena kedua prop baru defaultnya menjaga perilaku lama.
+
+---
+
 ### Template ADR baru
 
 ```
@@ -1170,3 +1285,4 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-09-16 | **ADR-020r — revisi pendaftaran RPC: login tidak lagi wajib.** Sebelum F07.3 mulai dikerjakan, Abi meninjau ulang keputusan #2 ADR-020 (wajib login dulu) dan menilai ini hambatan nyata untuk peserta yang tidak mau bikin akun. Direvisi lewat sesi tanya-jawab terstruktur dengan Alif: pendaftaran sekarang bisa tanpa akun (form lengkap langsung, isi ulang tiap kali), `batch_registrations` jadi mandiri (identitas diduplikasi ke tabel ini sendiri, `user_id` nullable, kolom `email` baru), `profiles` tetap simpan identitas untuk reuse pendaftar yang login, F07.4 berubah dari gate wajib jadi pengingat non-blokir. SQL Bagian 1-5 ADR-020 asli sudah terlanjur dijalankan live sebelum revisi ini — migrasi tambahan ditulis sebagai file SQL baru (`usulan-sql-pendaftaran-tanpa-akun-adr020r.sql`, berisi `ALTER TABLE`), bukan menulis ulang `CREATE TABLE`. Detail lengkap di ADR-020r |
 | 2026-09-13 | **Menu Pengaturan Admin dilengkapi (koreksi keterlambatan Sprint 1) + PRD.md §8.7 direvisi (disetujui Alif).** `/admin/pengaturan` sejak awal cuma stub placeholder ("belum dibangun, menyusul Sprint 1") — terlewat waktu eksekusi Sprint 1/Fase 8. Dilengkapi jadi hub pengaturan sistem via `site_settings`: (1) rekening bank — key `rekening` sudah dipakai duluan di dashboard User, dipertahankan; (2) kontak publik — nomor WhatsApp (menggantikan env var `NEXT_PUBLIC_WA_ADMIN` yang sebelumnya jadi satu-satunya sumber di `floating-whatsapp.tsx`), Instagram, email kontak (dua terakhir belum dipakai di kode manapun, disediakan untuk pemakaian masa depan); (3) `admin_notify_email` — menggantikan env var `ADMIN_NOTIFY_EMAIL` yang sebelumnya dipakai dengan non-null assertion (`!`) di `lib/email/send.ts`, berisiko crash kalau env var kosong, sekarang fallback ke env var lama kalau setting belum diisi; (4) **harga upgrade sertifikat** (`HARGA_CERT_ONLY`/`HARGA_CERT_MERCH`/`HARGA_MERCH_ADDON`) — **perubahan keputusan produk**, sebelumnya PRD.md §8.7 menyatakan harga adalah konstanta tetap yang tidak bisa diubah mekanisme apapun (acceptance criteria khusus menguji ini). Direvisi: harga sekarang bisa diubah Admin lewat `site_settings`, `constants.ts` jadi nilai default/fallback, larangan "Banner tidak boleh impor `constants.ts`" tetap berlaku (sale banner tetap tidak boleh pengaruhi harga). Detail revisi ada di PRD.md §8.7 langsung. Menu "Pengaturan" yang sebelumnya section terpisah di `AdminShell` sidebar (§12.6.0) dipindahkan jadi item dropdown avatar topbar, sekalian dengan menu Profil (edit profil + ganti password Admin) dan Tentang Kami (halaman deskripsi produk) yang baru ditambahkan |
 | 2026-09-17 | **ADR-021 — Modul 8: Sprint 6 (F07.1-F07.5) selesai dan diuji Alif seluruhnya.** Abi menyampaikan 4 kebutuhan operasional tambahan lewat Alif setelah pengujian: (1) halaman Admin baru "Peserta Pendaftaran" (F08.1) — daftar murni peserta `disetujui` dari `batch_registrations`, filter per batch, export XLSX mengikuti filter aktif, TIDAK terhubung `certificate_orders` (dicek dulu ke kode, approve F07.5 memang tidak menyentuh tabel itu — bukan bug, murni kebutuhan halaman baru); (2) filter batch ditambahkan ke panel verifikasi `admin/pendaftaran-batch` (F07.5) yang sudah ada (F08.2); (3) konten dari Google Form asli (syarat peserta, fasilitas, dua kontak WA berbeda untuk reguler vs Private & Inhouse) dimasukkan sebagai card baru di halaman detail batch publik, ditempatkan setelah "Jadwal & Investasi" sebelum "Peralatan Belajar" (F08.3); (4) fitur "Salin dari Batch Lain" di form Tambah Batch supaya Abi tidak mengetik ulang konten tiap batch baru (F08.4). **Riset kode sebelum menulis keputusan mengubah rancangan awal:** ditemukan tabel `batch_benefits` SUDAH ADA dan sudah dipakai di halaman publik — fasilitas REUSE tabel itu, BUKAN kolom baru di `batches` seperti rancangan awal. Syarat peserta jadi tabel BARU `batch_requirements` (pola identik `batch_benefits`). `site_settings` dicek sudah key-value — dua nomor WA jadi KEY BARU `kontak_pelatihan`, BUKAN kolom baru. F08.4 (salin batch) muncul dari diskusi lanjutan Alif soal cara paling efisien mengisi `batch_benefits`/`batch_requirements` untuk batch baru — solusinya diperluas jadi salin SELURUH konten batch (deskripsi, silabus, 5 tabel terkait) kecuali field yang jelas unik per-batch (slug, judul, tanggal, status, poster). Dicatat sebagai Sprint 7 (bukan lanjutan F07.x) di `feature-registry.md` supaya riwayat Sprint 6 tetap bersih sebagai unit kerja yang sudah selesai. Detail lengkap di ADR-021, PRD.md §5.1d/§9c |
+| 2026-09-17 | **ADR-022 — Modul 9: gambar detail tanpa crop paksa, rasio hero beranda diselaraskan, lightbox publik.** Alif melaporkan tangkapan layar tampilan publik live menunjukkan poster pelatihan dan foto produk terpotong tidak sesuai maksud upload — ditelusuri ke `ImageUploadField` yang memaksa rasio crop terkunci di semua titik upload gambar publik (16:9 untuk hero pelatihan & hero beranda, 1:1 untuk foto produk), ditambah kotak tampilan hero beranda di layar (persegi HP/4:3 desktop) ternyata TIDAK sama dengan rasio kunci upload (16:9) — menyebabkan crop dobel. Dibahas bertahap dengan Alif (mockup visual dipakai dulu untuk menyamakan pemahaman): pelatihan dapat field baru `gambar_detail_url` (langsung upload TANPA dialog crop sama sekali, paling aman dari potongan tidak sengaja), sedang thumbnail (`hero_gambar_url`, 16:9) dipertahankan untuk kartu. Produk TETAP satu galeri (tidak menambah field), tapi dialog crop dilepas rasio-nya jadi bebas (Admin yang atur sendiri, bukan sistem) setelah Alif mengingatkan risiko tampilan berantakan kalau crop dihapus total — kotak tampilan publik tetap satu ukuran konsisten, latar diganti putih polos supaya foto produk (yang umumnya sudah berlatar putih) menyatu tanpa terlihat pembatas. Hero beranda: kotak tampilan TIDAK diubah (sudah pas menurut Alif), hanya rasio kunci upload yang diselaraskan dari 16:9 ke 4:3. Panel gambar halaman Masuk/Daftar/Lupa Sandi (`AuthShell`) dikonfirmasi bukan pengaturan terpisah — meminjam slide `hero_slides` aktif pertama — cukup diberi catatan di form Hero Beranda, tidak dibuatkan field baru. Ditambahkan juga lightbox klik-untuk-perbesar (pola sama dengan perbaikan aksesibilitas `pendaftaran-batch-detail.tsx`) untuk hero pelatihan dan galeri produk publik. `ImageUploadField` (komponen bersama) mendapat dua prop opsional baru yang backward-compatible: `skipCrop` dan `previewFit`. SQL hanya satu kolom baru (`batches.gambar_detail_url`) — tidak ada tabel/kolom baru untuk produk, hero beranda, atau lightbox (murni perubahan kode). Dicatat sebagai Sprint 8/Modul 9 (F09.x) di `feature-registry.md`, terpisah dari Modul 8 (operasional pendaftaran) karena topiknya beda (media/tampilan lintas pelatihan+produk+beranda). Detail lengkap di ADR-022, PRD.md §5.1e/§9d |

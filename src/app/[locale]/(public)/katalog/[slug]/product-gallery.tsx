@@ -11,10 +11,12 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from '@/components/ui/carousel';
+import { PublicImageLightbox } from '@/components/public-image-lightbox';
 
 export function ProductGallery({ images, alt }: { images: { id: number; url: string }[]; alt: string }) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
+  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
 
   useEffect(() => {
     if (!api) return;
@@ -27,7 +29,7 @@ export function ProductGallery({ images, alt }: { images: { id: number; url: str
   }, [api]);
 
   if (images.length === 0) {
-    return <div className="aspect-square w-full rounded-xl bg-muted" />;
+    return <div className="aspect-square w-full rounded-xl bg-white" />;
   }
 
   return (
@@ -36,9 +38,21 @@ export function ProductGallery({ images, alt }: { images: { id: number; url: str
         <CarouselContent>
           {images.map((img) => (
             <CarouselItem key={img.id}>
-              <div className="relative aspect-square overflow-hidden rounded-xl bg-muted">
-                <Image src={img.url} alt={alt} fill priority className="object-cover" sizes="(max-width: 768px) 100vw, 768px" />
-              </div>
+              <button
+                type="button"
+                onClick={() => setLightboxSrc(img.url)}
+                className="relative aspect-square w-full overflow-hidden rounded-xl bg-white"
+                aria-label="Perbesar gambar produk"
+              >
+                <Image
+                  src={img.url}
+                  alt={alt}
+                  fill
+                  priority
+                  className="object-contain"
+                  sizes="(max-width: 768px) 100vw, 768px"
+                />
+              </button>
             </CarouselItem>
           ))}
         </CarouselContent>
@@ -58,18 +72,20 @@ export function ProductGallery({ images, alt }: { images: { id: number; url: str
               type="button"
               onClick={() => api?.scrollTo(index)}
               className={cn(
-                'relative aspect-square overflow-hidden rounded-lg bg-muted ring-2 ring-offset-2',
+                'relative aspect-square overflow-hidden rounded-lg bg-white ring-2 ring-offset-2',
                 '[transition:var(--transition-hover)] hover:opacity-80',
                 current === index ? 'ring-foreground' : 'ring-transparent'
               )}
               aria-label={`Gambar ${index + 1}`}
               aria-current={current === index}
             >
-              <Image src={img.url} alt="" fill className="object-cover" sizes="25vw" />
+              <Image src={img.url} alt="" fill className="object-contain" sizes="25vw" />
             </button>
           ))}
         </div>
       )}
+
+      <PublicImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
     </div>
   );
 }

@@ -399,7 +399,7 @@ export function BatchForm({
               <FormItem>
                 <FormControl>
                   <ImageUploadField
-                    label="Gambar Hero"
+                    label="Thumbnail (kartu daftar pelatihan)"
                     aspectRatio={16 / 9}
                     suggestedPx="1920×1080px"
                     value={field.value ?? null}
@@ -411,6 +411,37 @@ export function BatchForm({
                     }}
                   />
                 </FormControl>
+                <FormDescription>
+                  Dipotong 16:9 — dipakai di kartu daftar pelatihan dan sebagai cadangan halaman detail.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="gambar_detail_url"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <ImageUploadField
+                    label="Gambar Detail (ditampilkan utuh di halaman pelatihan)"
+                    skipCrop
+                    previewFit="contain"
+                    value={field.value ?? null}
+                    onChange={field.onChange}
+                    onUpload={async (file) => {
+                      const fd = new FormData();
+                      fd.append('file', file);
+                      return uploadGambarAdminAction(fd);
+                    }}
+                  />
+                </FormControl>
+                <FormDescription>
+                  Gambar ini TIDAK dipotong otomatis — cocok untuk poster/infografis yang bentuknya
+                  memanjang. Thumbnail di atas tetap dipakai untuk kartu daftar pelatihan.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}

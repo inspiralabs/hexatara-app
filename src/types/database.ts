@@ -374,6 +374,7 @@ export type Database = {
           created_at: string
           deskripsi_en: string | null
           deskripsi_id: string | null
+          gambar_detail_url: string | null
           harga: number | null
           hero_gambar_url: string | null
           id: number
@@ -400,6 +401,7 @@ export type Database = {
           created_at?: string
           deskripsi_en?: string | null
           deskripsi_id?: string | null
+          gambar_detail_url?: string | null
           harga?: number | null
           hero_gambar_url?: string | null
           id?: number
@@ -426,6 +428,7 @@ export type Database = {
           created_at?: string
           deskripsi_en?: string | null
           deskripsi_id?: string | null
+          gambar_detail_url?: string | null
           harga?: number | null
           hero_gambar_url?: string | null
           id?: number

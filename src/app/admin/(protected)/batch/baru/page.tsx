@@ -20,6 +20,7 @@ const DEFAULT_VALUES: BatchFormInput = {
   status: 'upcoming',
   is_active: false,
   hero_gambar_url: '',
+  gambar_detail_url: '',
   deskripsi_id: '',
   deskripsi_en: '',
   silabus_id: '',

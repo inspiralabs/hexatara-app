@@ -27,6 +27,8 @@ export function ProdukCard({
     <ContentCard
       variant="public"
       image={produk.cover ? { src: produk.cover, alt: nama } : null}
+      imageFit="contain"
+      imageBg="bg-white"
       badges={
         produk.kategori ? <span className={publicBadgeKategori}>{produk.kategori}</span> : undefined
       }

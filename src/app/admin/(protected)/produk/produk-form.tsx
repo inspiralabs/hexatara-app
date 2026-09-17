@@ -293,6 +293,9 @@ export function ProdukForm({
               <PlusIcon className="size-4" /> Tambah
             </Button>
           </div>
+          <p className="text-sm text-muted-foreground">
+            Gunakan foto dengan latar belakang putih/polos untuk hasil terbaik.
+          </p>
           {images.fields.map((f, index) => (
             <div key={f.id} className="flex flex-col gap-3 rounded-lg border border-border p-3 sm:flex-row sm:items-start">
               <FormField
@@ -303,7 +306,6 @@ export function ProdukForm({
                     <FormControl>
                       <ImageUploadField
                         label="Foto"
-                        aspectRatio={1}
                         suggestedPx="1200×1200px"
                         value={field.value || null}
                         onChange={(url) => field.onChange(url ?? '')}

@@ -54,6 +54,7 @@ export default async function AdminBatchUbahPage({ params }: { params: Promise<{
     status: batch.status,
     is_active: batch.is_active,
     hero_gambar_url: batch.hero_gambar_url ?? '',
+    gambar_detail_url: batch.gambar_detail_url ?? '',
     deskripsi_id: batch.deskripsi_id ?? '',
     deskripsi_en: batch.deskripsi_en ?? '',
     silabus_id: batch.silabus_id ?? '',
