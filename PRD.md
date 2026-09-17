@@ -274,6 +274,18 @@ Kolom baru pada `batch_registrations` (ADR-020r): snapshot identitas lengkap per
 
 Bucket storage baru: `identity-documents` (privat, pola sama `certificates`/`payment-proofs` — Bagian 10 Modul Pendukung, akses lewat `createSignedUrl()`). Path upload dua skema: `${userId}/...` untuk pendaftar login, `registrasi/<id batch_registrations>/...` untuk pendaftar tanpa akun (ADR-020r poin 4).
 
+### 5.1d Tabel/kolom tambahan — Modul 8 (lihat Bagian 9c)
+
+| Tabel | Ditambahkan oleh | Kegunaan |
+|---|---|---|
+| `batch_requirements` | ADR-021 | Syarat peserta per batch (checklist, mis. "Minimal berumur 17 tahun") — pola identik `batch_benefits` yang sudah ada (bigserial, `batch_id` FK, teks dwibahasa, `ikon` opsional, `urutan` reorder). Ditampilkan di card F08.3 |
+
+**Fasilitas TIDAK butuh tabel/kolom baru** — REUSE `batch_benefits` yang sudah ada (dicek langsung ke kode, sudah dipakai untuk badge pills di halaman detail batch, dengan CRUD Admin yang sudah ada).
+
+**`site_settings` TIDAK butuh kolom baru** — sudah berbentuk key-value (`key text`, `value jsonb`), jadi dua nomor WhatsApp baru untuk pelatihan (kontak pertanyaan batch reguler "Admin" dan Private & Inhouse Training "Abiyyi") disimpan sebagai KEY BARU `kontak_pelatihan` (value JSON `{wa_reguler, wa_private}`), pola sama persis `rekening`/`kontak`/`admin_notify_email` yang sudah ada (`src/lib/site-settings.ts`). TERPISAH dari key `kontak` yang sudah ada (WA umum, catatan 2026-09-13) — dua-duanya sama untuk semua batch pelatihan, diatur lewat `/admin/pengaturan`.
+
+**Fitur "Salin dari Batch Lain" (F08.4) TIDAK butuh tabel/kolom baru** — murni UI + server action yang membaca `batches` dan 5 tabel terkait (`batch_benefits`, `batch_equipment`, `batch_faqs`, `batch_gallery`, `batch_requirements`) dari batch sumber, lalu insert baris baru untuk batch tujuan.
+
 ### 5.2 View publik — WAJIB untuk akses anonim
 
 | View | Kenapa ada |
@@ -917,6 +929,76 @@ Seluruh 25 larangan di Bagian 13 berlaku tanpa pengecualian untuk Modul 7, denga
 - [ ] Admin bisa melihat data peserta (baik yang login maupun tanpa akun) dan kedua foto lewat panel verifikasi, menyetujui/menolak pendaftaran
 - [ ] `batch_leads` (F01.6) tidak terhapus/rusak — tetap ada sebagai riwayat data lama
 - [ ] Diuji di viewport 375px untuk form pendaftaran (tanpa akun & login) dan section identitas di halaman Profil
+
+---
+
+## 9c. MODUL 8 — OPERASIONAL PENDAFTARAN: DAFTAR PESERTA, FILTER, SYARAT PELATIHAN, SALIN BATCH
+
+> Bukan bagian dari scope asli BRD-HXT-002. Perluasan yang diminta langsung oleh Abi (klien), disampaikan lewat Alif setelah Sprint 6/Modul 7 (F07.1–F07.5) selesai dan diuji sepenuhnya, disetujui 2026-09-17. Dicatat sebagai ADR-021 di `ENGINEERING.md` Bagian 10.
+
+### 9c.1 Tujuan
+
+Empat kebutuhan operasional yang muncul setelah Modul 7 dipakai:
+
+1. Admin butuh satu halaman khusus yang menampilkan **peserta yang sudah disetujui** (`batch_registrations.status = 'disetujui'`) sebagai daftar/rekap operasional — untuk keperluan seperti cetak daftar hadir, broadcast WhatsApp grup, dsb. Sebelumnya tidak ada halaman ini; Admin cuma punya panel verifikasi (F07.5) yang fokusnya menyetujui/menolak, bukan merekap yang sudah disetujui. Ini **BUKAN** perbaikan bug — panel verifikasi F07.5 sejak awal memang tidak dirancang untuk menyimpan `certificate_orders` (dicek langsung di kode, `pendaftaran-batch/actions.ts` murni update `batch_registrations`), keduanya memang dua sistem terpisah sesuai ADR-020 konsekuensi. Kebutuhannya murni jendela baru untuk operasional, bukan koreksi arsitektur.
+2. Panel verifikasi F07.5 (`admin/pendaftaran-batch`) butuh filter per batch — sekarang menampilkan semua batch tercampur.
+3. Abi minta konten deskripsi yang selama ini ada di Google Form (syarat peserta, daftar fasilitas, dua kontak WhatsApp berbeda untuk batch reguler vs Private & Inhouse) dimasukkan ke halaman detail batch pelatihan publik.
+4. Supaya Abi tidak mengetik ulang seluruh konten batch (deskripsi, silabus, fasilitas, syarat, peralatan, FAQ, galeri) setiap membuat batch pelatihan baru, dibutuhkan fitur "Salin dari Batch Lain" di form Tambah Batch Admin.
+
+### 9c.2 Daftar fitur
+
+| Kode | Fitur | Prio | Tabel |
+|---|---|---|---|
+| F08.1 | Halaman Admin baru "Peserta Pendaftaran" — daftar peserta disetujui, filter per batch, export XLSX mengikuti filter aktif | MUST | `batch_registrations` |
+| F08.2 | Filter batch di panel verifikasi `admin/pendaftaran-batch` (F07.5) yang sudah ada | MUST | `batch_registrations` |
+| F08.3 | Card baru di halaman detail batch publik: syarat peserta (tabel baru), fasilitas (REUSE `batch_benefits` yang sudah ada), dua kontak WhatsApp | MUST | `batch_requirements` (baru), `batch_benefits` (sudah ada), `site_settings` |
+| F08.4 | Tombol "Salin dari Batch Lain" di form Tambah Batch Admin — menyalin konten teks + 5 tabel terkait dari batch sumber | MUST | `batches` dan tabel terkait |
+
+### 9c.3 F08.1 — Halaman Peserta Pendaftaran
+
+- Route baru di Admin (misal `/admin/peserta-pendaftaran`), terpisah dari `admin/pendaftaran-batch` (F07.5) — F07.5 tetap fokus alur verifikasi (menunggu/setujui/tolak), halaman baru ini murni tampilan/export peserta yang SUDAH `disetujui`.
+- Kolom yang ditampilkan: nama lengkap, email, WhatsApp, kategori peserta, batch, tanggal disetujui — semua diambil langsung dari `batch_registrations` (sudah mandiri sejak ADR-020r, tidak perlu join ke `profiles`).
+- Filter dropdown per batch (bisa "Semua Batch" atau satu batch spesifik).
+- Tombol export XLSX yang mengikuti filter AKTIF di tabel saat tombol diklik — kalau filter "Semua Batch", export semua peserta disetujui; kalau filter batch tertentu, export hanya peserta batch itu.
+- **Sengaja TIDAK terhubung ke `certificate_orders`** — Admin yang mau tahu status upgrade sertifikat peserta tertentu tetap cek terpisah di panel Upgrade (Modul 3) seperti sebelumnya. Dua sistem tetap terpisah sesuai konsekuensi ADR-020 yang sudah dicatat.
+
+### 9c.4 F08.2 — Filter batch di panel verifikasi
+
+Tambahan murni UI/query di halaman `admin/pendaftaran-batch` yang sudah ada — dropdown filter per batch di atas tabel, sama pola dengan filter yang sudah ada di halaman publik `pelatihan` (`FilterBar`).
+
+### 9c.5 F08.3 — Card syarat peserta, fasilitas, kontak
+
+- Card baru di halaman detail batch publik (`pelatihan/[slug]`), ditempatkan **setelah card "Jadwal & Investasi", sebelum card "Peralatan Belajar"** — posisi ini dipilih supaya info krusial untuk keputusan mendaftar (syarat, fasilitas, kontak alternatif) terlihat segera setelah info jadwal/harga.
+- **Fasilitas (7 checklist Google Form: "Narasumber DKPPU & Airnav", "Instruktur Profesional Hexatara", dst) REUSE tabel `batch_benefits` yang SUDAH ADA** — dicek langsung ke kode, tabel ini sudah dipakai untuk badge pills di atas hero halaman detail batch (`pelatihan/[slug]/page.tsx` baris ~141), dengan CRUD Admin yang sudah ada di `admin/batch/[id]`. **TIDAK ADA perubahan skema untuk fasilitas** — Abi tinggal isi 7 item lewat form Admin Batch yang sudah ada (dipermudah lagi lewat F08.4, lihat 9c.7). Card F08.3 baru menampilkan ULANG data `batch_benefits` yang sama di posisi card ini (selain badge pills yang sudah ada di atas hero, tidak menggantikannya) — *(keputusan tampilan detail badge vs card diserahkan ke implementasi, boleh salah satu saja kalau dianggap redundan tampil dua kali, didiskusikan lagi saat Cursor melapor kalau ragu)*.
+- **Syarat peserta (3 poin Google Form: "Minimal berumur 17 tahun", "Memiliki KTP", "Tidak buta warna") adalah tabel BARU `batch_requirements`** — pola identik persis `batch_benefits` (bigserial, `batch_id` FK, teks dwibahasa `teks_id`/`teks_en`, `ikon` opsional, `urutan` untuk reorder), karena `batch_benefits` levelnya "kenapa ikut pelatihan ini" sedangkan syarat levelnya "apakah kamu boleh ikut" — dua makna berbeda yang keduanya layak dikelola per-batch dengan reorder, bukan digabung ke satu tabel yang sama.
+- Dua tombol/link kontak WhatsApp: satu untuk pertanyaan batch reguler ("Admin"), satu untuk Private & Inhouse Training ("Abiyyi").
+- **Bukan kolom baru di `batches`** — dua nomor WhatsApp disimpan sebagai KEY BARU `kontak_pelatihan` di `site_settings` yang sudah berbentuk key-value (`{wa_reguler, wa_private}`), pola persis key `kontak`/`rekening` yang sudah ada. Disepakati SAMA untuk semua batch pelatihan (bukan per-batch), diatur lewat `/admin/pengaturan` yang sudah ada.
+
+### 9c.6 F08.4 — Salin dari Batch Lain
+
+- Tombol/aksi baru di form **Tambah** Batch Admin (HANYA di form tambah, TIDAK di form edit batch yang sudah ada — supaya tidak berisiko menimpa data batch yang sedang berjalan) — dropdown pilih batch sumber (batch mana pun yang sudah ada, biasanya batch RPC terakhir).
+- Field yang IKUT disalin apa adanya dari batch sumber: `kategori_en`/`kategori_id` (kolom lama, kalau masih dipakai), `category_id`, `deskripsi_id`/`deskripsi_en`, `silabus_id`/`silabus_en`, `lokasi_id`/`lokasi_en`, `alamat`, `harga`, `rating`. PLUS seluruh baris di 5 tabel terkait: `batch_benefits`, `batch_equipment`, `batch_faqs`, `batch_gallery` (yang sudah ada), dan `batch_requirements` (baru, F08.3) — disalin sebagai baris BARU (bukan referensi/link ke baris lama), supaya batch baru independen sepenuhnya dan bisa diedit tanpa memengaruhi batch sumber.
+- Field yang DIKOSONGKAN (harus diisi manual oleh Abi untuk batch baru): `slug` (harus unik), `judul_id`/`judul_en` (biasanya memuat angka batch/bulan), `tanggal_mulai`/`tanggal_selesai`, `status`, `hero_gambar_url` (poster beda tiap batch).
+- `batch_leads` dan `batch_registrations` (data pendaftaran, bukan konten) **TIDAK PERNAH ikut disalin** — jelas di luar cakupan fitur ini.
+- Ini fitur UI + server action murni, **TIDAK butuh tabel/kolom baru** — hanya butuh tabel `batch_requirements` yang sudah didefinisikan di F08.3.
+
+### 9c.7 Batasan yang tetap berlaku penuh
+
+- Larangan #1 (jangan tambah tabel/kolom di luar Bagian 5) — tabel baru `batch_requirements` dicatat di Bagian 5.1d sebelum SQL apa pun diajukan. `site_settings` TIDAK butuh migrasi (key-value, key baru bukan kolom baru).
+- F08.1 TIDAK membuat jalur baru yang menyentuh `certificate_orders` — tetap dua sistem terpisah sesuai ADR-020.
+- F08.3 TIDAK mengubah harga/CTA pendaftaran yang sudah ada — murni tambahan informasi, tombol WA di card ini adalah kontak informasi TAMBAHAN, bukan pengganti tombol "Daftar Sekarang" (F07.3) yang sudah ada.
+- F08.4 TIDAK tersedia di form Edit batch yang sudah ada — sengaja dibatasi ke form Tambah saja untuk menghindari risiko menimpa data batch aktif.
+
+### 9c.8 Selesai bila
+
+- [ ] Seluruh F08.1 s/d F08.4 berstatus DONE di `feature-registry.md` dengan bukti uji manual di browser (Definition of Done Bagian 14, butir 5 tetap wajib Alif)
+- [ ] Halaman Peserta Pendaftaran menampilkan HANYA peserta status disetujui, filter batch berfungsi, export XLSX menghasilkan file yang isinya sesuai filter aktif saat diklik (diuji: filter "Semua" vs filter satu batch spesifik, dibandingkan isinya)
+- [ ] Filter batch di panel verifikasi F07.5 berfungsi tanpa mengubah alur setujui/tolak yang sudah ada
+- [ ] Card syarat/fasilitas/kontak tampil di posisi yang benar (setelah Jadwal & Investasi, sebelum Peralatan Belajar), kedua nomor WA bisa diklik dan mengarah ke `wa.me` dengan nomor yang benar
+- [ ] Admin bisa mengelola syarat peserta (`batch_requirements`) dan fasilitas (`batch_benefits`) lewat form Admin Batch yang sudah ada, tanpa perlu edit kode
+- [ ] Admin bisa mengubah dua nomor WA lewat `/admin/pengaturan`
+- [ ] Fitur Salin dari Batch Lain diuji: batch baru hasil salinan berisi konten identik batch sumber (deskripsi, silabus, benefit, syarat, peralatan, FAQ, galeri) KECUALI field yang sengaja dikosongkan (slug, judul, tanggal, status, poster) — dan mengedit batch baru TIDAK mengubah batch sumber
+- [ ] Diuji di viewport 375px untuk card baru dan halaman Peserta Pendaftaran
 
 ---
 

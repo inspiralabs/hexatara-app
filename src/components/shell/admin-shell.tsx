@@ -64,6 +64,7 @@ const MENU_ADMIN: MenuSection[] = [
     icon: CalendarDaysIcon,
     items: [
       { href: "/admin/batch", label: "Daftar Batch" },
+      { href: "/admin/pendaftaran-batch", label: "Pendaftaran Batch" },
       { href: "/admin/batch/kategori", label: "Kategori Pelatihan" },
     ],
   },

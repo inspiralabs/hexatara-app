@@ -1,6 +1,6 @@
 # Plan Sprint 6 — Modul 7: Pendaftaran Pelatihan Lengkap (RPC)
 
-> **Status sesi:** F07.4 kode selesai — tunggu uji Alif.  
+> **Status sesi:** F07.5 kode selesai — tunggu uji Alif.  
 > **Blok:** F07.1 → F07.2 → F07.3 → F07.4 → F07.5 (satu bagian per giliran).
 
 ---
@@ -12,30 +12,30 @@
 | F07.1 | Regenerasi `database.ts` + Zod + `lib/identitas.ts` | SELESAI |
 | F07.2 | Section identitas di `/dashboard/profil` | SELESAI |
 | F07.3 | Form daftar batch + `daftarBatchAction` | SELESAI (uji Alif OK) |
-| F07.4 | Card pengingat non-blokir di `/dashboard` | KODE SELESAI — tunggu uji |
-| F07.5 | Admin `pendaftaran-batch` setujui/tolak | BELUM |
+| F07.4 | Card pengingat non-blokir di `/dashboard` | SELESAI (uji Alif OK) |
+| F07.5 | Admin `pendaftaran-batch` setujui/tolak | KODE SELESAI — tunggu uji |
 
 ---
 
-## F07.4 — Card pengingat
+## F07.5 — Admin verifikasi
 
-- [x] Tampil **hanya** jika `profil_identitas_lengkap` = false (tidak di-render sama sekali kalau true)
-- [x] CTA → `/dashboard/profil`
-- [x] Bukan gate — copy menekankan pendaftaran tetap bisa tanpa ini
+- [x] Route `/admin/pendaftaran-batch` + menu sidebar Batch
+- [x] Select `batch_registrations` status `menunggu_verifikasi` + join `batches`
+- [x] Signed URL 300s untuk foto KTP & pas foto (`identity-documents`)
+- [x] Detail sheet (identitas lengkap) + Setujui / Tolak (guard status)
+- [x] `verified_by` / `verified_at` diisi; Tolak wajib alasan
 - [x] `tsc` hijau
 
 ### File
 | Aksi | Path |
 |------|------|
-| diubah | `dashboard/page.tsx` |
+| baru | `admin/(protected)/pendaftaran-batch/page.tsx` |
+| baru | `admin/(protected)/pendaftaran-batch/actions.ts` |
+| baru | `admin/(protected)/pendaftaran-batch/pendaftaran-batch-table.tsx` |
+| baru | `admin/(protected)/pendaftaran-batch/pendaftaran-batch-row-actions.tsx` |
+| baru | `admin/(protected)/pendaftaran-batch/pendaftaran-batch-detail.tsx` |
+| diubah | `components/shell/admin-shell.tsx` |
 | diubah | `plan.md` |
-
----
-
-## F07.5 — Admin verifikasi (setelah Alif OK F07.4)
-
-- Route `admin/(protected)/pendaftaran-batch/` + menu
-- Select dari `batch_registrations` (+ join `batches`); signed URL 300s; Setujui/Tolak
 
 ---
 
@@ -45,4 +45,5 @@
 |---------|--------|--------|---------|
 | 2026-09-17 | F07.1–F07.3 | SELESAI | |
 | 2026-09-17 | F07.3 | DIUJI ALIF | OK — lanjut F07.4 |
-| 2026-09-17 | F07.4 | KODE SELESAI | banner non-blokir di dashboard |
+| 2026-09-17 | F07.4 | DIUJI ALIF | OK — lanjut F07.5 |
+| 2026-09-17 | F07.5 | KODE SELESAI | antrean verifikasi + signed URL |

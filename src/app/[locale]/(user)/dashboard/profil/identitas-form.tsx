@@ -45,57 +45,59 @@ export function IdentitasForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="nomor_ktp">Nomor KTP</Label>
-        <Input
-          id="nomor_ktp"
-          inputMode="numeric"
-          autoComplete="off"
-          maxLength={16}
-          placeholder="16 digit"
-          {...register('nomor_ktp')}
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="flex flex-col gap-1.5 md:col-span-2">
+          <Label htmlFor="nomor_ktp">Nomor KTP</Label>
+          <Input
+            id="nomor_ktp"
+            inputMode="numeric"
+            autoComplete="off"
+            maxLength={16}
+            placeholder="16 digit"
+            {...register('nomor_ktp')}
+          />
+          {errors.nomor_ktp && (
+            <p className="text-sm text-destructive">{errors.nomor_ktp.message}</p>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <Label htmlFor="tempat_lahir">Tempat Lahir</Label>
+          <Input id="tempat_lahir" {...register('tempat_lahir')} />
+          {errors.tempat_lahir && (
+            <p className="text-sm text-destructive">{errors.tempat_lahir.message}</p>
+          )}
+        </div>
+
+        <Controller
+          name="tanggal_lahir"
+          control={control}
+          render={({ field }) => (
+            <div className="flex flex-col gap-1.5">
+              <DatePickerField
+                label="Tanggal Lahir"
+                value={field.value || null}
+                onChange={(v) => field.onChange(v ?? '')}
+                captionLayout="dropdown"
+                reverseYears
+                disableFuture
+                startMonth={new Date(1940, 0)}
+                endMonth={new Date()}
+              />
+              {errors.tanggal_lahir && (
+                <p className="text-sm text-destructive">{errors.tanggal_lahir.message}</p>
+              )}
+            </div>
+          )}
         />
-        {errors.nomor_ktp && (
-          <p className="text-sm text-destructive">{errors.nomor_ktp.message}</p>
-        )}
-      </div>
 
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="tempat_lahir">Tempat Lahir</Label>
-        <Input id="tempat_lahir" {...register('tempat_lahir')} />
-        {errors.tempat_lahir && (
-          <p className="text-sm text-destructive">{errors.tempat_lahir.message}</p>
-        )}
-      </div>
-
-      <Controller
-        name="tanggal_lahir"
-        control={control}
-        render={({ field }) => (
-          <div className="flex flex-col gap-1.5">
-            <DatePickerField
-              label="Tanggal Lahir"
-              value={field.value || null}
-              onChange={(v) => field.onChange(v ?? '')}
-              captionLayout="dropdown"
-              reverseYears
-              disableFuture
-              startMonth={new Date(1940, 0)}
-              endMonth={new Date()}
-            />
-            {errors.tanggal_lahir && (
-              <p className="text-sm text-destructive">{errors.tanggal_lahir.message}</p>
-            )}
-          </div>
-        )}
-      />
-
-      <div className="flex flex-col gap-1.5">
-        <Label htmlFor="alamat_lengkap">Alamat Lengkap</Label>
-        <Textarea id="alamat_lengkap" rows={3} {...register('alamat_lengkap')} />
-        {errors.alamat_lengkap && (
-          <p className="text-sm text-destructive">{errors.alamat_lengkap.message}</p>
-        )}
+        <div className="flex flex-col gap-1.5 md:col-span-2">
+          <Label htmlFor="alamat_lengkap">Alamat Lengkap</Label>
+          <Textarea id="alamat_lengkap" rows={3} {...register('alamat_lengkap')} />
+          {errors.alamat_lengkap && (
+            <p className="text-sm text-destructive">{errors.alamat_lengkap.message}</p>
+          )}
+        </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">

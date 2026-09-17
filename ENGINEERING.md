@@ -1044,6 +1044,102 @@ ada dan mungkin sudah berisi data uji.
 
 ---
 
+### ADR-021 — Modul 8: halaman Peserta Pendaftaran, filter batch, syarat/fasilitas (reuse batch_benefits + tabel baru batch_requirements), dua nomor WA, salin batch
+**2026-09-17 · Berlaku**
+
+**Konteks.** Setelah Sprint 6/Modul 7 (F07.1–F07.5) selesai dikerjakan Cursor
+dan diuji Alif sepenuhnya, Abi menyampaikan empat kebutuhan operasional
+tambahan lewat Alif:
+
+1. Admin belum punya halaman yang menampilkan murni "siapa saja peserta yang
+   sudah disetujui" per batch — panel verifikasi F07.5 fokusnya alur
+   setujui/tolak, bukan rekap/export. Diklarifikasi dulu ke Alif: dicek
+   `pendaftaran-batch/actions.ts` langsung, approve TIDAK menyentuh
+   `certificate_orders` sama sekali — jadi ini murni kebutuhan halaman baru,
+   BUKAN bug percampuran data antara pendaftaran batch dan upgrade
+   sertifikat (dua sistem memang sengaja terpisah, ADR-020 konsekuensi).
+2. Panel verifikasi F07.5 butuh filter per batch.
+3. Konten dari Google Form asli (syarat peserta, daftar fasilitas, dua
+   kontak WhatsApp berbeda untuk batch reguler vs Private & Inhouse
+   Training) belum ada di halaman detail batch publik — Abi minta
+   dimasukkan.
+4. Supaya Abi tidak mengetik ulang seluruh konten batch setiap membuat batch
+   baru, dibutuhkan cara menyalin konten dari batch lama.
+
+**Riset kode sebelum menulis keputusan (penting, mengubah rancangan awal):**
+dicek `src/types/database.ts` dan kode terkait, ditemukan tabel
+`batch_benefits` SUDAH ADA (bigserial, `batch_id` FK, `teks_id`/`teks_en`
+dwibahasa, `ikon`, `urutan` reorder) dan SUDAH dipakai untuk badge pills di
+halaman detail batch publik (`pelatihan/[slug]/page.tsx`), dengan CRUD Admin
+yang sudah ada di `admin/batch/[id]`. Rancangan awal (kolom
+`syarat_peserta`/`fasilitas` baru di `batches`) DIBATALKAN setelah temuan
+ini — fasilitas REUSE `batch_benefits` yang sudah ada, tidak ada skema baru
+untuk itu. `site_settings` juga dicek langsung
+(`src/lib/site-settings.ts`) — sudah key-value (`key`/`value jsonb`), jadi
+dua nomor WA baru TIDAK butuh `ALTER TABLE`, cukup key baru.
+
+**Keputusan.**
+- Halaman Admin baru `/admin/peserta-pendaftaran` (F08.1) — TERPISAH dari
+  `admin/pendaftaran-batch` (F07.5), bukan menggantikan. Menampilkan hanya
+  baris `batch_registrations` dengan `status = 'disetujui'`, kolom langsung
+  dari tabel itu sendiri (sudah mandiri sejak ADR-020r, tidak perlu join
+  `profiles`). Filter dropdown per batch, tombol export **XLSX** (konsisten
+  ADR-016) yang mengikuti filter aktif di tabel saat diklik. Sengaja TIDAK
+  terhubung ke `certificate_orders` — status upgrade sertifikat tetap dicek
+  terpisah di panel Upgrade (Modul 3) seperti sebelumnya.
+- Filter batch (F08.2) ditambahkan sebagai dropdown murni di atas tabel
+  `admin/pendaftaran-batch` yang sudah ada — tidak mengubah alur
+  setujui/tolak.
+- Card baru di halaman detail batch publik (F08.3), ditempatkan setelah
+  card "Jadwal & Investasi", sebelum "Peralatan Belajar".
+  **Fasilitas REUSE `batch_benefits` yang sudah ada** — tidak ada tabel/
+  kolom baru untuk ini, Admin tinggal isi 7 item lewat form yang sudah ada
+  (dipermudah lagi lewat F08.4 di bawah).
+  **Syarat peserta adalah tabel BARU `batch_requirements`** — pola identik
+  `batch_benefits` (bigserial, `batch_id` FK, teks dwibahasa, `ikon`
+  opsional, `urutan`), karena maknanya beda ("boleh ikut" vs "kenapa ikut")
+  meski strukturnya sama — dipisah tabelnya supaya kedua daftar bisa
+  dikelola independen dengan reorder masing-masing.
+  Dua kontak WA: **bukan kolom baru di `batches`**, disimpan sebagai KEY
+  BARU `kontak_pelatihan` di `site_settings` (`{wa_reguler, wa_private}`),
+  pola persis `upsertSiteSetting('kontak', …)` yang sudah ada — cukup
+  fungsi baru `getKontakPelatihan()`/`simpanKontakPelatihanAction()` di
+  kode, TIDAK butuh migrasi `ALTER TABLE`. TERPISAH dari key `kontak` yang
+  sudah ada (WA umum, catatan 2026-09-13, dipakai `floating-whatsapp.tsx`).
+  Disepakati SAMA untuk semua batch pelatihan, diatur lewat
+  `/admin/pengaturan` yang sudah ada.
+- **Fitur "Salin dari Batch Lain" (F08.4)** — tombol baru HANYA di form
+  Tambah Batch Admin (sengaja TIDAK di form Edit, supaya tidak berisiko
+  menimpa data batch aktif). Dropdown pilih batch sumber → server action
+  menyalin kolom teks `batches` (deskripsi, silabus, lokasi, alamat, harga,
+  rating, kategori) APA ADANYA, PLUS seluruh baris di 5 tabel terkait
+  (`batch_benefits`, `batch_equipment`, `batch_faqs`, `batch_gallery`,
+  `batch_requirements`) sebagai baris BARU (bukan referensi) ke batch
+  tujuan. Field yang SENGAJA dikosongkan: `slug`, `judul_id`/`judul_en`,
+  `tanggal_mulai`/`tanggal_selesai`, `status`, `hero_gambar_url` — field
+  yang jelas unik/berubah tiap batch. `batch_leads`/`batch_registrations`
+  (data pendaftaran) TIDAK PERNAH ikut disalin. Ini murni UI + server
+  action, tidak butuh tabel/kolom baru di luar `batch_requirements` yang
+  sudah didefinisikan untuk F08.3.
+
+**Konsekuensi.** `admin/pendaftaran-batch` (F07.5) dan
+`admin/peserta-pendaftaran` (F08.1) sekarang dua halaman Admin yang mirip
+tapi berbeda tujuan (verifikasi vs rekap/export) — disengaja tidak digabung
+supaya alur setujui/tolak F07.5 tetap sederhana dan tidak bercampur dengan
+kebutuhan export. Form Admin Batch (CRUD `batches` yang sudah ada dari Fase
+12.6) bertambah section pengelolaan `batch_requirements` (mirip
+`batch_benefits` yang sudah ada) dan tombol "Salin dari Batch Lain" — perlu
+dicek UI form itu tidak jadi terlalu panjang, pertimbangkan
+accordion/section collapse kalau perlu (keputusan implementasi). Halaman
+Pengaturan Admin (`/admin/pengaturan`, sudah diperluas 2026-09-13) bertambah
+section baru untuk `kontak_pelatihan`. Fitur salin batch menambah
+kompleksitas server action (satu transaksi/urutan insert yang menyentuh 6
+tabel: `batches` + 5 tabel terkait) — perlu penanganan error yang jelas
+kalau sebagian tabel gagal disalin (baris `batches` sudah terlanjur dibuat
+tapi sebagian data terkait gagal ikut, misalnya).
+
+---
+
 ### Template ADR baru
 
 ```
@@ -1073,3 +1169,4 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-09-10 | **ADR-019 — Fase 12.6 dibuka, redesign total.** Alif memberikan referensi baru (studio-admin.arhamkhnz.com, shadcn/ui) dan minta seluruh komponen lama direplace. Dicek status Fase 12.5: hanya §12.5.1–§12.5.3 sudah jalan, §12.5.4 belum selesai, §12.5.5–§12.5.17 belum dimulai sama sekali — scope-nya diserap ke Fase 12.6 alih-alih dibangun dua kali (dengan design system lama lalu diganti lagi). §12.5.4–§12.5.17 di PANDUAN.md diarsipkan (ditandai, tidak dihapus). Dependency baru disetujui eksplisit: shadcn/ui, Radix UI, `@tanstack/react-table`, `next-themes`, Recharts, `lucide-react` (Command Palette/`cmdk` opsional). Warna mengikuti preset "Neutral" referensi untuk sementara (achromatic + merah untuk destructive), BUKAN token Hexatara — menunggu persetujuan Abi, dicatat sebagai blok paling akhir §12.6.14. Auth pakai varian v2 (form kiri, panel highlight kanan). Prinsip mobile-first ditegaskan ulang sebagai prioritas utama di setiap blok. Referensi struktural lengkap di `hexatara_ADMIN_DESIGN.md`, menggantikan `hexatara_DESIGN.md` untuk Fase 12.6 |
 | 2026-09-16 | **ADR-020r — revisi pendaftaran RPC: login tidak lagi wajib.** Sebelum F07.3 mulai dikerjakan, Abi meninjau ulang keputusan #2 ADR-020 (wajib login dulu) dan menilai ini hambatan nyata untuk peserta yang tidak mau bikin akun. Direvisi lewat sesi tanya-jawab terstruktur dengan Alif: pendaftaran sekarang bisa tanpa akun (form lengkap langsung, isi ulang tiap kali), `batch_registrations` jadi mandiri (identitas diduplikasi ke tabel ini sendiri, `user_id` nullable, kolom `email` baru), `profiles` tetap simpan identitas untuk reuse pendaftar yang login, F07.4 berubah dari gate wajib jadi pengingat non-blokir. SQL Bagian 1-5 ADR-020 asli sudah terlanjur dijalankan live sebelum revisi ini — migrasi tambahan ditulis sebagai file SQL baru (`usulan-sql-pendaftaran-tanpa-akun-adr020r.sql`, berisi `ALTER TABLE`), bukan menulis ulang `CREATE TABLE`. Detail lengkap di ADR-020r |
 | 2026-09-13 | **Menu Pengaturan Admin dilengkapi (koreksi keterlambatan Sprint 1) + PRD.md §8.7 direvisi (disetujui Alif).** `/admin/pengaturan` sejak awal cuma stub placeholder ("belum dibangun, menyusul Sprint 1") — terlewat waktu eksekusi Sprint 1/Fase 8. Dilengkapi jadi hub pengaturan sistem via `site_settings`: (1) rekening bank — key `rekening` sudah dipakai duluan di dashboard User, dipertahankan; (2) kontak publik — nomor WhatsApp (menggantikan env var `NEXT_PUBLIC_WA_ADMIN` yang sebelumnya jadi satu-satunya sumber di `floating-whatsapp.tsx`), Instagram, email kontak (dua terakhir belum dipakai di kode manapun, disediakan untuk pemakaian masa depan); (3) `admin_notify_email` — menggantikan env var `ADMIN_NOTIFY_EMAIL` yang sebelumnya dipakai dengan non-null assertion (`!`) di `lib/email/send.ts`, berisiko crash kalau env var kosong, sekarang fallback ke env var lama kalau setting belum diisi; (4) **harga upgrade sertifikat** (`HARGA_CERT_ONLY`/`HARGA_CERT_MERCH`/`HARGA_MERCH_ADDON`) — **perubahan keputusan produk**, sebelumnya PRD.md §8.7 menyatakan harga adalah konstanta tetap yang tidak bisa diubah mekanisme apapun (acceptance criteria khusus menguji ini). Direvisi: harga sekarang bisa diubah Admin lewat `site_settings`, `constants.ts` jadi nilai default/fallback, larangan "Banner tidak boleh impor `constants.ts`" tetap berlaku (sale banner tetap tidak boleh pengaruhi harga). Detail revisi ada di PRD.md §8.7 langsung. Menu "Pengaturan" yang sebelumnya section terpisah di `AdminShell` sidebar (§12.6.0) dipindahkan jadi item dropdown avatar topbar, sekalian dengan menu Profil (edit profil + ganti password Admin) dan Tentang Kami (halaman deskripsi produk) yang baru ditambahkan |
+| 2026-09-17 | **ADR-021 — Modul 8: Sprint 6 (F07.1-F07.5) selesai dan diuji Alif seluruhnya.** Abi menyampaikan 4 kebutuhan operasional tambahan lewat Alif setelah pengujian: (1) halaman Admin baru "Peserta Pendaftaran" (F08.1) — daftar murni peserta `disetujui` dari `batch_registrations`, filter per batch, export XLSX mengikuti filter aktif, TIDAK terhubung `certificate_orders` (dicek dulu ke kode, approve F07.5 memang tidak menyentuh tabel itu — bukan bug, murni kebutuhan halaman baru); (2) filter batch ditambahkan ke panel verifikasi `admin/pendaftaran-batch` (F07.5) yang sudah ada (F08.2); (3) konten dari Google Form asli (syarat peserta, fasilitas, dua kontak WA berbeda untuk reguler vs Private & Inhouse) dimasukkan sebagai card baru di halaman detail batch publik, ditempatkan setelah "Jadwal & Investasi" sebelum "Peralatan Belajar" (F08.3); (4) fitur "Salin dari Batch Lain" di form Tambah Batch supaya Abi tidak mengetik ulang konten tiap batch baru (F08.4). **Riset kode sebelum menulis keputusan mengubah rancangan awal:** ditemukan tabel `batch_benefits` SUDAH ADA dan sudah dipakai di halaman publik — fasilitas REUSE tabel itu, BUKAN kolom baru di `batches` seperti rancangan awal. Syarat peserta jadi tabel BARU `batch_requirements` (pola identik `batch_benefits`). `site_settings` dicek sudah key-value — dua nomor WA jadi KEY BARU `kontak_pelatihan`, BUKAN kolom baru. F08.4 (salin batch) muncul dari diskusi lanjutan Alif soal cara paling efisien mengisi `batch_benefits`/`batch_requirements` untuk batch baru — solusinya diperluas jadi salin SELURUH konten batch (deskripsi, silabus, 5 tabel terkait) kecuali field yang jelas unik per-batch (slug, judul, tanggal, status, poster). Dicatat sebagai Sprint 7 (bukan lanjutan F07.x) di `feature-registry.md` supaya riwayat Sprint 6 tetap bersih sebagai unit kerja yang sudah selesai. Detail lengkap di ADR-021, PRD.md §5.1d/§9c |

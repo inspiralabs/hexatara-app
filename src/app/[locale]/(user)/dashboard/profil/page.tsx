@@ -58,7 +58,7 @@ export default async function ProfilPage() {
         />
       </section>
 
-      <section className="max-w-md rounded-xl border border-border bg-card p-5">
+      <section className="w-full max-w-3xl rounded-xl border border-border bg-card p-5 md:p-6">
         <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h2 className="text-base font-semibold text-foreground">
