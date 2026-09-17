@@ -260,6 +260,20 @@ Jangan pernah menulis `locale === 'en' ? x.judul_en : x.judul_id` langsung di ko
 
 Kolom baru pada tabel inti yang sudah ada: `batches.rating`, `products.rating` (ADR-011), `products.category_id`, `batches.category_id` (ADR-012), `popups.gambar_mobile_url`, `popups.gambar_desktop_url` (ADR-015). Tidak ada kolom `urutan` baru di `batches` — batch tetap urut berdasarkan tanggal (ADR-014).
 
+### 5.1c Tabel tambahan — Fase 12.7 (Modul 7, lihat Bagian 9b)
+
+> **DIREVISI 2026-09-16 (ADR-020r di `ENGINEERING.md` Bagian 10)** — pendaftaran tidak lagi wajib akun, `batch_registrations` jadi mandiri (bukan hanya metadata yang bergantung join ke `profiles`).
+
+| Tabel | Ditambahkan oleh | Kegunaan |
+|---|---|---|
+| `batch_registrations` | ADR-020, diperluas ADR-020r | Pendaftaran resmi batch pelatihan RPC — kategori peserta + status verifikasi per batch, DENGAN snapshot identitas lengkap sendiri (nama, email, KTP, dst) + `user_id` nullable (F07.x) |
+
+Kolom baru pada `profiles` (ADR-020, tidak berubah oleh revisi): `nomor_ktp`, `tempat_lahir`, `tanggal_lahir`, `alamat_lengkap`, `foto_ktp_url`, `pas_foto_url`. Disimpan permanen di akun untuk pendaftar yang LOGIN — dipakai ulang untuk pendaftaran/renewal RPC berikutnya (kategori "Perpanjangan/Renewal" berarti orang yang sama daftar lagi tiap 2 tahun), form pendaftaran pra-terisi otomatis kalau lengkap.
+
+Kolom baru pada `batch_registrations` (ADR-020r): snapshot identitas lengkap per-pendaftaran — `nama_lengkap`, `email`, `whatsapp`, `nomor_ktp`, `tempat_lahir`, `tanggal_lahir`, `alamat_lengkap`, `foto_ktp_url`, `pas_foto_url` — diisi dari input form saat itu (baik pendaftar login maupun tanpa akun), TIDAK berubah walau `profiles` diedit belakangan. `user_id` jadi **nullable** — terisi kalau pendaftar login saat submit, `null` kalau tidak. `batch_leads` (Bagian 5.1, Modul 1) TIDAK dihapus — dipertahankan sebagai riwayat data lama, terpisah dari alur baru ini.
+
+Bucket storage baru: `identity-documents` (privat, pola sama `certificates`/`payment-proofs` — Bagian 10 Modul Pendukung, akses lewat `createSignedUrl()`). Path upload dua skema: `${userId}/...` untuk pendaftar login, `registrasi/<id batch_registrations>/...` untuk pendaftar tanpa akun (ADR-020r poin 4).
+
 ### 5.2 View publik — WAJIB untuk akses anonim
 
 | View | Kenapa ada |
@@ -841,6 +855,68 @@ Seluruh 25 larangan di Bagian 13 berlaku tanpa pengecualian untuk Modul 6, denga
 - [ ] `pnpm knip` bersih, termasuk `papaparse` yang dihapus setelah migrasi XLSX kalau memang sudah tidak dipakai
 - [ ] `pnpm build` lolos tanpa error
 - [ ] Diuji ulang di 375px untuk seluruh halaman yang tersentuh redesign, termasuk F01–F04 yang sudah DONE sebelumnya (regresi dari komponen bersama seperti ContentCard/DataTable/ImageUploadField)
+
+---
+
+## 9b. MODUL 7 — PENDAFTARAN PELATIHAN LENGKAP (RPC)
+
+> Bukan bagian dari scope asli BRD-HXT-002. Perluasan yang diminta langsung oleh Abi (klien) dan disetujui Alif (pelaksana proyek, InspiraLabs) tanggal 2026-09-16, dikerjakan SETELAH Fase 12.6 (redesign publik) selesai. Dicatat sebagai ADR-020 di `ENGINEERING.md` Bagian 10. Penomoran "Modul 7" mengikuti pola Modul 6 (Bagian 9a) — bukan berarti ada 7 modul resmi di BRD, yang tetap 4 modul utama + 2 modul pendukung sesuai BRD §4.1.
+>
+> **DIREVISI 2026-09-16 (ADR-020r, sebelum F07.3 dimulai).** Alur "wajib login dulu baru bisa daftar" (versi awal 9b.2/9b.4 di bawah) DIBATALKAN — Abi menilai ini hambatan nyata untuk peserta yang tidak mau bikin akun. Bagian 9b.2, 9b.4, dan 9b.6 di bawah sudah mencerminkan alur BARU (login opsional). Lihat ADR-020r di `ENGINEERING.md` Bagian 10 untuk detail teknis lengkap.
+
+### 9b.1 Tujuan
+
+Abi memberikan Google Form yang selama ini dipakai manual untuk pendaftaran pelatihan RPC (Remote Pilot Certificate) tatap muka: nama lengkap sesuai KTP, nomor KTP, tempat/tanggal lahir, alamat lengkap, nomor HP, kategori peserta (Penerbitan RPC Baru / Perpanjangan-Renewal RPC), pilihan batch, upload foto KTP, upload pas foto formal, dan sumber informasi. Form ini **menggantikan** alur "daftar minat" ringan (F01.6, nama + WhatsApp) yang sekarang ada di halaman detail batch pelatihan — bukan tambahan di sampingnya, tapi pengganti untuk jalur pendaftaran resmi.
+
+F01.6 sendiri (Bagian 6.4) TIDAK diedit sebagai fitur — statusnya tetap DONE apa adanya sebagai catatan sejarah. Modul ini menambahkan alur BARU yang menggantikan perilaku F01.6 di halaman publik, dicatat sebagai fitur F07.x terpisah supaya riwayat pengujian F01.6 tidak hilang.
+
+### 9b.2 Cerita pengguna
+
+> Sebagai calon peserta pelatihan RPC yang belum punya akun, saya membuka halaman detail batch dan klik "Daftar Sekarang". Form pendaftaran lengkap langsung terbuka — saya isi nama sesuai KTP, nomor KTP, tempat/tanggal lahir, alamat, kategori peserta, upload foto KTP dan pas foto, lalu submit. Tidak ada yang memaksa saya bikin akun dulu. Dua tahun kemudian saat saya perlu perpanjang RPC, saya mendaftar lagi dengan cara yang sama — isi ulang datanya, tidak masalah.
+>
+> Sebagai peserta yang SUDAH punya akun dan login, saya klik "Daftar Sekarang" di batch lain. Karena saya sudah pernah mengisi data identitas di halaman Profil sebelumnya, form pendaftaran langsung terisi otomatis — saya tinggal pilih kategori peserta dan konfirmasi. Kalau saya belum pernah mengisi data identitas, form tetap terbuka kosong untuk saya isi manual saat itu juga — tidak ada yang memblokir saya, hanya saja di dashboard saya ada pengingat kecil yang mengarahkan ke halaman Profil supaya pendaftaran berikutnya lebih cepat.
+
+### 9b.3 Daftar fitur
+
+| Kode | Fitur | Prio | Tabel |
+|---|---|---|---|
+| F07.1 | Perluasan `profiles` (field identitas RPC, untuk reuse pendaftar login) DAN `batch_registrations` (field identitas mandiri + `email`, `user_id` nullable) | MUST | `profiles`, `batch_registrations` |
+| F07.2 | Halaman Profil User — section lengkapi data identitas + upload dokumen (tersimpan ke `profiles`) | MUST | `profiles` |
+| F07.3 | Form pendaftaran batch lengkap menggantikan dialog "daftar minat" (F01.6) di halaman publik — TANPA wajib login, prefill otomatis kalau login & profil lengkap | MUST | `batch_registrations` |
+| F07.4 | Card pengingat non-blokir di dashboard — muncul kalau login & profil identitas belum lengkap, hilang otomatis kalau sudah lengkap. BUKAN gate yang memblokir pendaftaran | MUST | `profiles` |
+| F07.5 | Admin: panel verifikasi pendaftaran batch — lihat data peserta (login maupun tanpa akun), lihat KTP/pas foto via signed URL, setujui/tolak | MUST | `batch_registrations` |
+
+### 9b.4 Alur — tanpa akun vs login lengkap vs login belum lengkap vs punya akun belum login
+
+Empat cabang yang disepakati (revisi ADR-020r, menggantikan versi 3-cabang wajib-login sebelumnya), berlaku di halaman publik (`/pelatihan/[slug]`):
+
+1. **Tanpa akun** → klik "Daftar Sekarang" → form pendaftaran lengkap (identitas + kategori peserta + sumber info + kode referral) terbuka langsung, isi dari nol, submit. Baris tersimpan ke `batch_registrations` dengan `user_id = null`, `email` terisi dari form. Mendaftar batch lain nanti → isi ulang dari nol lagi, tidak ada pencarian data lama.
+2. **Sudah login, profil identitas (`profiles`) lengkap** → form pendaftaran pra-terisi dari data profil, tinggal pilih kategori peserta + batch, konfirmasi, submit. Baris tersimpan dengan `user_id` terisi DAN snapshot identitas disalin ke `batch_registrations` juga.
+3. **Sudah login, profil identitas belum lengkap** → form pendaftaran TETAP terbuka langsung untuk diisi manual (SAMA seperti cabang 1, tidak diblokir) — bedanya baris tersimpan dengan `user_id` terisi. Terpisah dari alur pendaftaran, di dashboard user muncul card pengingat (F07.4) yang mengarahkan ke halaman Profil untuk melengkapi, supaya pendaftaran BERIKUTNYA bisa pra-terisi.
+4. **Punya akun tapi belum login di device ini** → saat klik "Daftar Sekarang", tampilkan dua pilihan eksplisit: "Login dulu" (lanjut ke cabang 2/3 setelah berhasil) atau "Daftar tanpa akun sekarang" (lanjut ke cabang 1) — sistem tidak menebak, user yang memilih.
+
+### 9b.5 Batasan yang tetap berlaku penuh
+
+Seluruh 25 larangan di Bagian 13 berlaku tanpa pengecualian untuk Modul 7, dengan catatan eksplisit berikut:
+
+- Larangan #1 (jangan tambah tabel/kolom di luar Bagian 5) — modul ini justru ADA karena Bagian 5 sudah diperbarui lebih dulu (5.1c) sebelum SQL apa pun diajukan, sesuai urutan kewenangan di Bagian 0. Revisi ADR-020r juga sudah dicatat di 5.1c sebelum migrasi ALTER ditulis.
+- Larangan #2 (agent tidak pernah eksekusi DDL) — SQL untuk ADR-020 dan ADR-020r diajukan sebagai usulan, dijalankan manual oleh Alif di Supabase, sama seperti seluruh migrasi sebelumnya.
+- Larangan #9-an soal kupon/reward otomatis — kode referral (F07.3) SENGAJA tetap teks bebas tanpa validasi/reward otomatis, supaya tidak menabrak larangan ini. Sistem referral formal (kalau suatu saat diinginkan) adalah diskusi terpisah di masa depan, BUKAN bagian Sprint 6.
+- Larangan #21 (jangan bangun keranjang belanja/checkout) — F07.3 BUKAN transaksi pembayaran, murni pendaftaran data peserta. Tidak ada nominal, tidak ada pembayaran di modul ini (pelatihan RPC tetap dibayar manual di luar sistem, sama seperti F01.6 sebelumnya).
+- Larangan #25 (jangan tambah LMS/manajemen kelas/absensi) — modul ini murni pendaftaran identitas peserta sebelum kelas dimulai, bukan pengelolaan kelas yang sedang berjalan. Delivery pelatihan tetap manual WhatsApp Group + Zoom seperti sebelumnya (Bagian 5.5).
+- Foto KTP dan pas foto adalah data pribadi sensitif — bucket privat `identity-documents`, akses HANYA lewat `createSignedUrl()` berumur pendek dipanggil dari server, pola identik `payment-proofs`/`certificates` (Bagian 10, ADR-020/ADR-020r). Berlaku sama untuk pendaftar login maupun tanpa akun (path upload beda skema, lihat ADR-020r poin 4).
+
+### 9b.6 Selesai bila
+
+- [ ] Seluruh F07.1 s/d F07.5 berstatus DONE di `feature-registry.md` dengan bukti uji manual di browser (Definition of Done Bagian 14 berlaku penuh — butir 5 tetap wajib Alif)
+- [ ] Pendaftar TANPA akun bisa submit form pendaftaran lengkap sampai selesai tanpa diarahkan login sama sekali
+- [ ] Pendaftar login dengan profil identitas lengkap mendapat form pra-terisi otomatis
+- [ ] Pendaftar login dengan profil identitas BELUM lengkap tetap bisa submit form (isi manual), TIDAK diblokir — dan melihat card pengingat di dashboard yang bisa diklik ke halaman Profil
+- [ ] User yang punya akun tapi belum login di device itu melihat dua pilihan eksplisit (login / daftar tanpa akun) saat klik Daftar
+- [ ] Foto KTP/pas foto tidak bisa diakses lewat URL publik langsung — diuji untuk pendaftar login maupun tanpa akun (dua skema path berbeda)
+- [ ] Admin bisa melihat data peserta (baik yang login maupun tanpa akun) dan kedua foto lewat panel verifikasi, menyetujui/menolak pendaftaran
+- [ ] `batch_leads` (F01.6) tidak terhapus/rusak — tetap ada sebagai riwayat data lama
+- [ ] Diuji di viewport 375px untuk form pendaftaran (tanpa akun & login) dan section identitas di halaman Profil
 
 ---
 

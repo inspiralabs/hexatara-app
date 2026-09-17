@@ -863,6 +863,187 @@ ini diterima sadar oleh Alif, bukan kelalaian.
 
 ---
 
+### ADR-020 — Pendaftaran pelatihan lengkap (RPC): identitas di `profiles`, tabel `batch_registrations` baru, bucket privat `identity-documents`
+**2026-09-16 · Direvisi (lihat ADR-020r di bawah) — bagian ini dipertahankan sebagai riwayat keputusan awal, JANGAN dijadikan acuan implementasi**
+
+**Konteks.** Abi (klien) meminta pendaftaran pelatihan RPC mengikuti syarat
+data yang selama ini dikumpulkan lewat Google Form manual: nama sesuai KTP,
+nomor KTP, tempat/tanggal lahir, alamat lengkap, kategori peserta (Penerbitan
+Baru / Perpanjangan-Renewal), pilihan batch, foto KTP, pas foto, dan sumber
+informasi. Alur "daftar minat" yang ada sekarang (F01.6 — nama + WhatsApp,
+tersimpan ke `batch_leads`) eksplisit BUKAN pendaftaran resmi (PRD.md §6.4);
+form baru ini justru dimaksudkan jadi pendaftaran resmi, jadi menggantikan
+F01.6 di halaman publik, bukan tambahan di sampingnya.
+
+Tiga keputusan didiskusikan dan dikonfirmasi Alif sebelum SQL ditulis:
+
+1. **Field identitas disimpan di `profiles` (akun), bukan di tabel
+   pendaftaran per-batch.** Kategori "Perpanjangan/Renewal RPC" berarti
+   peserta yang sama akan mendaftar lagi tiap ~2 tahun — data identitas
+   sekali isi dipakai ulang, tidak diminta isi ulang tiap pendaftaran.
+2. **Wajib login dulu, baru isi form pendaftaran batch** — bukan form
+   gabungan identitas+akun sekali jalan seperti Google Form aslinya. Ini
+   konsisten dengan alur auth F00.6 yang sudah ada (`/daftar` terpisah),
+   tidak membuat jalur pendaftaran akun kedua yang paralel.
+3. **Foto KTP dan pas foto masuk bucket privat + `createSignedUrl()`**,
+   pola identik `certificates`/`payment-proofs` (Bagian 5.3 tabel bucket) —
+   tidak ada alasan menyimpang untuk data identitas yang levelnya sama
+   sensitifnya dengan bukti transfer.
+
+Urutan kerja disepakati: Fase 12.6 (redesign publik) selesai dulu, modul ini
+menyusul — supaya form baru dibangun di atas komponen/desain final, bukan
+komponen lama yang akan diganti lagi (dikonfirmasi ulang 2026-09-16 setelah
+Fase 12.6 selesai, form pendaftaran lengkap ini resmi dimulai sebagai
+Fase 12.7 / Modul 7).
+
+**Keputusan.**
+- Tambah 6 kolom ke `profiles`: `nomor_ktp`, `tempat_lahir`, `tanggal_lahir`,
+  `alamat_lengkap`, `foto_ktp_url`, `pas_foto_url`. Fungsi helper
+  `profil_identitas_lengkap(user_id)` (`SECURITY DEFINER`, pola sama
+  `is_admin()`) mengembalikan boolean, dipakai server action pendaftaran
+  untuk validasi cepat tanpa mengulang enam pengecekan null di banyak tempat.
+- Tabel baru `batch_registrations` — **bigserial**, BUKAN uuid (ADR-013
+  sudah mengoreksi asumsi keliru sebelumnya bahwa semua tabel proyek ini
+  uuid; hanya `profiles` dan `certificates` yang sengaja uuid). Kolom inti:
+  `batch_id` (FK `batches`), `user_id` (FK `auth.users` langsung, uuid —
+  pola sama `certificate_orders.user_id`, TIDAK di-embed lewat relasi
+  Supabase otomatis karena `auth.users` bukan schema `public`, digabung
+  manual di kode seperti pola `admin/upgrade/page.tsx`), `kategori_peserta`
+  (enum baru `kategori_peserta_rpc`), `sumber_info`, `kode_referral`,
+  `status` (enum baru `status_registrasi_batch`), `alasan_tolak`,
+  `verified_by`/`verified_at`. Constraint unik `(batch_id, user_id)` — satu
+  user tidak bisa daftar batch yang sama dua kali selagi masih menunggu
+  atau sudah disetujui (boleh daftar ulang kalau ditolak).
+- `batch_leads` (F01.6, Bagian 5.1) **TIDAK dihapus atau diarsipkan** —
+  dipertahankan sebagai riwayat data lama. Menu Admin "Leads" yang sudah ada
+  tidak langsung dibongkar; kalau ke depannya Alif ingin `batch_leads`
+  dinonaktifkan total, itu keputusan terpisah yang diajukan lagi setelah
+  alur baru stabil.
+- Bucket storage privat baru `identity-documents` (`public = false`).
+  Policy: user upload/baca hanya dokumen miliknya sendiri (path diawali
+  `user_id`, konvensi `${userId}/ktp.jpg` dst — harus diikuti kode upload di
+  F07.2), Admin baca semua lewat `is_admin()` untuk keperluan verifikasi
+  F07.5.
+- RLS penuh di `batch_registrations`: user baca & buat pendaftaran miliknya
+  sendiri, Admin baca & update semua (verifikasi/tolak) — pola sama seluruh
+  tabel lain di proyek ini, memutus rekursi lewat `is_admin()`.
+
+**Konsekuensi.** Halaman detail batch (`pelatihan/[slug]`) kehilangan dialog
+"daftar minat" ringan yang selama ini instan tanpa login — pendaftaran jadi
+lebih panjang (wajib akun + data identitas lengkap), yang secara sadar
+mengurangi kecepatan tapi menaikkan kelengkapan data sesuai kebutuhan
+sertifikasi DKPPU. Pengaturan User (F07.2) bertambah kompleks dengan form
+identitas + dua upload dokumen. Admin panel bertambah satu jalur verifikasi
+baru (F07.5) di luar verifikasi pembayaran upgrade sertifikat yang sudah ada
+— dua alur verifikasi berbeda (`certificate_orders` untuk upgrade freemium,
+`batch_registrations` untuk pendaftaran RPC) sengaja TIDAK digabung karena
+keduanya bagian sistem yang berbeda (Modul 3 vs Modul 7).
+
+---
+
+### ADR-020r — Revisi: pendaftaran TANPA wajib akun, `batch_registrations` jadi mandiri (bukan bergantung `profiles`)
+**2026-09-16 · Berlaku — menggantikan keputusan #1 dan #2 ADR-020 di atas**
+
+**Konteks.** Sebelum implementasi F07.3 dimulai, Abi meninjau ulang keputusan
+"wajib login dulu baru bisa isi form pendaftaran" (ADR-020 keputusan #2) dan
+menilai ini akan jadi hambatan nyata: akan selalu ada peserta (termasuk yang
+sudah senior/berpengalaman) yang tidak mau repot bikin akun cuma untuk
+mendaftar satu batch pelatihan. Didiskusikan dan dikonfirmasi Alif (via sesi
+tanya-jawab terstruktur, 2026-09-16) — SQL Bagian 1-5 ADR-020 asli SUDAH
+terlanjur dijalankan live di Supabase sebelum revisi ini muncul, jadi
+perubahan ini berbentuk **migrasi ALTER tambahan**, bukan tulis ulang dari
+nol.
+
+**Keputusan.**
+
+1. **Login tidak lagi wajib untuk mendaftar batch.** Siapa pun (dengan atau
+   tanpa akun) bisa langsung mengisi form pendaftaran lengkap (identitas +
+   kategori peserta + sumber info + kode referral) di halaman publik
+   `pelatihan/[slug]`. Alur per kondisi:
+   - **Tanpa akun** → form lengkap terbuka langsung, isi dari nol. Kalau
+     mendaftar batch lain di kemudian hari, isi ulang lagi dari nol (tidak
+     ada mekanisme cari/pakai-ulang data lama berdasar email — disepakati
+     sengaja sederhana, Admin membedakan riwayat peserta lewat data per
+     baris pendaftaran, bukan lewat akun).
+   - **Sudah login, profil `profiles` lengkap** → form ter-prefill dari
+     `profiles`, tinggal pilih kategori/batch/isi referral.
+   - **Sudah login, profil belum lengkap** → form lengkap tetap langsung
+     terbuka untuk diisi manual saat itu juga (TIDAK diblokir/gate) — di
+     dashboard user muncul card pengingat terpisah (hilang otomatis begitu
+     profil lengkap) yang mengarahkan ke halaman lengkapi profil, murni
+     kemudahan untuk pendaftaran berikutnya, bukan syarat pendaftaran
+     sekarang.
+   - **Punya akun tapi belum login di device ini** → saat klik Daftar,
+     tawarkan dua pilihan eksplisit ("Login dulu" / "Daftar tanpa akun
+     sekarang"), user yang memilih.
+2. **`batch_registrations` jadi mandiri — tidak lagi bergantung join ke
+   `profiles` untuk data identitas.** Field identitas (nama lengkap, email,
+   WhatsApp, nomor KTP, tempat/tanggal lahir, alamat, path foto KTP, path
+   pas foto) diduplikasi langsung sebagai kolom di `batch_registrations`
+   sendiri — snapshot per-pendaftaran, bukan referensi live ke `profiles`.
+   Alasan: pendaftar tanpa akun tidak punya baris `profiles` sama sekali,
+   dan Admin butuh satu bentuk data yang konsisten di panel verifikasi
+   (F07.5) terlepas dari status akun pendaftarnya.
+   - `user_id` di `batch_registrations` jadi **nullable** — diisi kalau
+     pendaftar login saat submit, `null` kalau tidak. Dipakai untuk
+     menautkan riwayat pendaftaran ke akun kalau ada, TIDAK untuk syarat
+     insert.
+   - Kolom `email` ditambahkan langsung di `batch_registrations` — sengaja
+     tidak bergantung ke `auth.users.email` (yang notabene tidak bisa
+     di-query lewat client biasa), sesuai arahan Abi: "email tidak berada di
+     tabel akun".
+   - **`profiles` TETAP menyimpan 6 kolom identitas** (keputusan #1 ADR-020
+     asli tidak dibatalkan) — untuk pendaftar yang login, identitas yang
+     mereka isi di form pendaftaran (atau di halaman Profil) tetap disalin
+     ke `profiles` juga, supaya pendaftaran/renewal berikutnya bisa
+     ter-prefill. Jadi ada duplikasi data yang disengaja: `profiles` = data
+     "saat ini" yang dipakai ulang; `batch_registrations` = snapshot data
+     persis saat pendaftaran itu dibuat (tidak berubah walau user edit
+     profilnya belakangan).
+3. **RLS `batch_registrations` bertambah policy INSERT untuk peran `anon`**
+   (sebelumnya cuma `user_id = auth.uid()`), dengan `WITH CHECK` yang
+   memastikan baris anon punya `user_id IS NULL` dan `email IS NOT NULL`
+   (tidak boleh kosong dua-duanya). SELECT tetap TIDAK dibuka untuk `anon`
+   — konfirmasi sukses ke pendaftar tanpa akun ditampilkan langsung dari
+   hasil `insert().select()` di server action pada request yang sama, bukan
+   query balik terpisah yang butuh baca ulang lewat RLS.
+4. **Path upload KTP/pas foto untuk pendaftar tanpa akun** memakai id baris
+   pendaftaran, bukan `user_id` (yang tidak ada) — alur dua langkah: server
+   action insert baris `batch_registrations` dulu (tanpa path foto) untuk
+   dapat `id`, baru upload ke path `registrasi/<id>/ktp.<ext>` dan
+   `registrasi/<id>/pas-foto.<ext>`, baru update baris dengan path
+   fotonya. Untuk pendaftar login, path tetap pola lama `${userId}/...`.
+   Policy storage `identity-documents` diperluas: insert diperbolehkan untuk
+   `anon` sepanjang path diawali `registrasi/` (tanpa syarat `auth.uid()`),
+   dan untuk user login sepanjang path diawali `${auth.uid()}/` seperti
+   sebelumnya. Admin tetap baca semua lewat `is_admin()`.
+5. **Kode referral tetap teks bebas, dicatat apa adanya** — tidak ada
+   validasi ke daftar kode resmi atau reward otomatis (berisiko menabrak
+   larangan PRD §13.1 soal kupon/reward otomatis). Dicatat sebagai catatan
+   potensi fitur add-on masa depan kalau Abi suatu saat ingin sistem
+   referral yang lebih formal — BUKAN dikerjakan di Sprint 6 ini.
+6. **Duplikat pendaftaran dari pendaftar tanpa akun** (email sama, batch
+   sama) sengaja TIDAK dicegah otomatis oleh sistem — dibiarkan, Admin
+   menilai manual saat verifikasi (F07.5) karena volume pendaftaran per
+   batch kecil dan semua data lengkap sudah terlihat Admin saat itu.
+   Constraint unik `(batch_id, user_id)` yang sudah ada TETAP berlaku untuk
+   pendaftar yang login (`user_id` terisi) — tidak berubah.
+
+**Konsekuensi.** `batch_registrations` sekarang tabel yang jauh lebih besar
+(punya sendiri kolom identitas lengkap, bukan cuma metadata pendaftaran) —
+disengaja demi kesederhanaan panel Admin dan supaya tidak bergantung status
+akun. F07.4 ("gate data belum lengkap") yang sebelumnya didesain sebagai
+penghalang wajib di PRD.md §9b sekarang **berubah jadi pengingat non-blokir**
+(card dashboard) — bukan gate sungguhan, karena pendaftaran sekarang boleh
+jalan dengan data yang diisi manual langsung di form, login atau tidak.
+Migrasi SQL untuk revisi ini ditulis sebagai file BARU
+(`usulan-sql-pendaftaran-tanpa-akun-adr020r.sql`) yang berisi `ALTER TABLE`
+di atas skema `usulan-sql-pendaftaran-lengkap.sql` yang sudah berhasil
+dijalankan — bukan menulis ulang `CREATE TABLE` dari nol, karena tabel sudah
+ada dan mungkin sudah berisi data uji.
+
+---
+
 ### Template ADR baru
 
 ```
@@ -890,4 +1071,5 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-09-10 | **Koreksi SQL 15 (ADR-013).** Draf pertama salah asumsi seluruh primary key proyek bertipe `uuid`. Dikonfirmasi lewat query `information_schema.columns` terhadap database live: hampir semua tabel inti (`materials`, `products`, `batches`, `popups`, `quiz_questions`, dst) memakai `bigint identity`, hanya `certificates` dan `profiles` yang sengaja `uuid`. `material_chapters.id`/`material_id` dan `material_progress.id`/`chapter_id` diperbaiki jadi `bigint`; `material_progress.user_id` tetap `uuid` (mengacu `auth.users`). ADR-011 (rating) dan ADR-012 (kategori, `product_categories`/`batch_categories` — sengaja `uuid` karena tabel baru) sudah berhasil dijalankan sebelum koreksi ini dan tidak terpengaruh. **Pelajaran untuk sesi berikutnya: selalu verifikasi tipe kolom lewat query ke database live sebelum menulis DDL baru, jangan berasumsi dari pola sebagian tabel** |
 | 2026-09-10 | **ADR-018 ditambahkan setelah uji coba pertama §12.5.3.** Alif menjalankan §12.5.3 (LMS materi) dan menemukan hasilnya belum sesuai ekspektasi: sidebar masih flat, tidak ada video/gambar, tidak ada lampiran file. Ditambahkan `material_chapters.video_url`/`gambar_url` (nullable, independen) dan tabel baru `material_chapter_files` (lampiran file per bab, one-to-many, dwibahasa `judul_id`/`judul_en`/`deskripsi_id`/`deskripsi_en`, tunduk pola reorder ADR-014). SQL baru di `docs/sql/16_lms_video_gambar_file_bab.sql`, termasuk data dummy materi baru "Dasar Keselamatan Penerbangan Drone" untuk uji coba UI sebelum Admin panel-nya (§12.5.4) selesai dibuat. PANDUAN.md §12.5.3 ditulis ulang untuk mencakup layout LMS lengkap (sidebar Materi/File/Kuis, progress bar dan checklist status yang jelas) |
 | 2026-09-10 | **ADR-019 — Fase 12.6 dibuka, redesign total.** Alif memberikan referensi baru (studio-admin.arhamkhnz.com, shadcn/ui) dan minta seluruh komponen lama direplace. Dicek status Fase 12.5: hanya §12.5.1–§12.5.3 sudah jalan, §12.5.4 belum selesai, §12.5.5–§12.5.17 belum dimulai sama sekali — scope-nya diserap ke Fase 12.6 alih-alih dibangun dua kali (dengan design system lama lalu diganti lagi). §12.5.4–§12.5.17 di PANDUAN.md diarsipkan (ditandai, tidak dihapus). Dependency baru disetujui eksplisit: shadcn/ui, Radix UI, `@tanstack/react-table`, `next-themes`, Recharts, `lucide-react` (Command Palette/`cmdk` opsional). Warna mengikuti preset "Neutral" referensi untuk sementara (achromatic + merah untuk destructive), BUKAN token Hexatara — menunggu persetujuan Abi, dicatat sebagai blok paling akhir §12.6.14. Auth pakai varian v2 (form kiri, panel highlight kanan). Prinsip mobile-first ditegaskan ulang sebagai prioritas utama di setiap blok. Referensi struktural lengkap di `hexatara_ADMIN_DESIGN.md`, menggantikan `hexatara_DESIGN.md` untuk Fase 12.6 |
+| 2026-09-16 | **ADR-020r — revisi pendaftaran RPC: login tidak lagi wajib.** Sebelum F07.3 mulai dikerjakan, Abi meninjau ulang keputusan #2 ADR-020 (wajib login dulu) dan menilai ini hambatan nyata untuk peserta yang tidak mau bikin akun. Direvisi lewat sesi tanya-jawab terstruktur dengan Alif: pendaftaran sekarang bisa tanpa akun (form lengkap langsung, isi ulang tiap kali), `batch_registrations` jadi mandiri (identitas diduplikasi ke tabel ini sendiri, `user_id` nullable, kolom `email` baru), `profiles` tetap simpan identitas untuk reuse pendaftar yang login, F07.4 berubah dari gate wajib jadi pengingat non-blokir. SQL Bagian 1-5 ADR-020 asli sudah terlanjur dijalankan live sebelum revisi ini — migrasi tambahan ditulis sebagai file SQL baru (`usulan-sql-pendaftaran-tanpa-akun-adr020r.sql`, berisi `ALTER TABLE`), bukan menulis ulang `CREATE TABLE`. Detail lengkap di ADR-020r |
 | 2026-09-13 | **Menu Pengaturan Admin dilengkapi (koreksi keterlambatan Sprint 1) + PRD.md §8.7 direvisi (disetujui Alif).** `/admin/pengaturan` sejak awal cuma stub placeholder ("belum dibangun, menyusul Sprint 1") — terlewat waktu eksekusi Sprint 1/Fase 8. Dilengkapi jadi hub pengaturan sistem via `site_settings`: (1) rekening bank — key `rekening` sudah dipakai duluan di dashboard User, dipertahankan; (2) kontak publik — nomor WhatsApp (menggantikan env var `NEXT_PUBLIC_WA_ADMIN` yang sebelumnya jadi satu-satunya sumber di `floating-whatsapp.tsx`), Instagram, email kontak (dua terakhir belum dipakai di kode manapun, disediakan untuk pemakaian masa depan); (3) `admin_notify_email` — menggantikan env var `ADMIN_NOTIFY_EMAIL` yang sebelumnya dipakai dengan non-null assertion (`!`) di `lib/email/send.ts`, berisiko crash kalau env var kosong, sekarang fallback ke env var lama kalau setting belum diisi; (4) **harga upgrade sertifikat** (`HARGA_CERT_ONLY`/`HARGA_CERT_MERCH`/`HARGA_MERCH_ADDON`) — **perubahan keputusan produk**, sebelumnya PRD.md §8.7 menyatakan harga adalah konstanta tetap yang tidak bisa diubah mekanisme apapun (acceptance criteria khusus menguji ini). Direvisi: harga sekarang bisa diubah Admin lewat `site_settings`, `constants.ts` jadi nilai default/fallback, larangan "Banner tidak boleh impor `constants.ts`" tetap berlaku (sale banner tetap tidak boleh pengaruhi harga). Detail revisi ada di PRD.md §8.7 langsung. Menu "Pengaturan" yang sebelumnya section terpisah di `AdminShell` sidebar (§12.6.0) dipindahkan jadi item dropdown avatar topbar, sekalian dengan menu Profil (edit profil + ganti password Admin) dan Tentang Kami (halaman deskripsi produk) yang baru ditambahkan |

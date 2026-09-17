@@ -23,12 +23,12 @@ export async function CompanyProfileSection() {
     <section className="bg-muted">
       <div className="mx-auto max-w-6xl px-4 py-16 sm:flex sm:items-center sm:gap-8 md:py-24">
         {data.gambar_url && (
-          <div className="relative mb-6 aspect-video w-full overflow-hidden rounded-xl sm:mb-0 sm:w-1/2">
+          <div className="group relative mb-6 aspect-video w-full overflow-hidden rounded-xl sm:mb-0 sm:w-1/2">
             <Image
               src={data.gambar_url}
               alt=""
               fill
-              className="object-cover"
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
               sizes="(max-width: 640px) 100vw, 50vw"
             />
           </div>

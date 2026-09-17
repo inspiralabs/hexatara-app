@@ -346,30 +346,28 @@ function SilabusAccordion({
   fallbackHtml: string;
   fallbackTitle: string;
 }) {
-  if (items.length > 0) {
-    return (
-      <Accordion className="mt-2">
-        {items.map((item, i) => (
-          <AccordionItem key={`${item.title}-${i}`} value={`silabus-${i}`}>
-            <AccordionTrigger className="text-base text-foreground">{item.title}</AccordionTrigger>
-            <AccordionContent>
-              <div className={KONTEN_HTML_CLASS} dangerouslySetInnerHTML={{ __html: item.body }} />
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
-    );
-  }
+  const entries =
+    items.length > 0
+      ? items.map((item, i) => ({
+          value: `silabus-${i}`,
+          title: item.title,
+          body: item.body,
+        }))
+      : [{ value: "silabus-0", title: fallbackTitle, body: fallbackHtml }];
 
-  // Tanpa h2/h3 — satu item akordion (bukan split teks mentah).
+  // Pola visual sama FaqAccordion (Beranda /faq)
   return (
-    <Accordion className="mt-2">
-      <AccordionItem value="silabus-0">
-        <AccordionTrigger className="text-base text-foreground">{fallbackTitle}</AccordionTrigger>
-        <AccordionContent>
-          <div className={KONTEN_HTML_CLASS} dangerouslySetInnerHTML={{ __html: fallbackHtml }} />
-        </AccordionContent>
-      </AccordionItem>
+    <Accordion className="mt-2 rounded-xl border border-border bg-card px-4 shadow-none">
+      {entries.map((item) => (
+        <AccordionItem key={item.value} value={item.value} className="border-border last:border-b-0">
+          <AccordionTrigger className="py-4 text-base font-medium text-foreground hover:no-underline">
+            {item.title}
+          </AccordionTrigger>
+          <AccordionContent className="pb-4 text-base text-muted-foreground">
+            <div className={KONTEN_HTML_CLASS} dangerouslySetInnerHTML={{ __html: item.body }} />
+          </AccordionContent>
+        </AccordionItem>
+      ))}
     </Accordion>
   );
 }

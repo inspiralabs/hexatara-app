@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { formatRupiah } from "@/lib/batch";
 import { pick } from "@/lib/i18n/pick";
@@ -88,11 +87,7 @@ export default async function KatalogDetailPage({
   return (
     <div className="bg-background pb-16">
       <div className="mx-auto max-w-6xl px-4 py-8 md:py-12">
-        <Link href="/katalog" className="text-sm text-muted-foreground underline hover:text-foreground">
-          &larr; {t("backToCatalog")}
-        </Link>
-
-        <div className="mt-4 grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           <ProductGallery images={gambar ?? []} alt={nama} />
 
           <div className="flex flex-col gap-3">
