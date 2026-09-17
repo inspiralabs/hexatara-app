@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { AuthShell } from "@/components/auth/auth-shell";
@@ -23,7 +24,9 @@ export default async function LoginPage() {
         </div>
       }
     >
-      <LoginForm />
+      <Suspense fallback={null}>
+        <LoginForm />
+      </Suspense>
     </AuthShell>
   );
 }

@@ -28,7 +28,8 @@ import {
   publicStatusBatchClass,
 } from "@/lib/public-ui";
 import { PelatihanCard } from "../pelatihan-card";
-import { DaftarMinatDialog } from "./daftar-minat-dialog";
+import { DaftarBatchDialog } from "./daftar-batch-dialog";
+import { getPrefillPendaftaranBatch } from "./daftar-batch-actions";
 
 const KONTEN_HTML_CLASS =
   "mt-2 space-y-3 text-base text-muted-foreground [&_a]:underline [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-foreground [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-5";
@@ -110,6 +111,7 @@ export default async function BatchDetailPage({
   const silabus = pick(batch.silabus_id, batch.silabus_en, locale);
   const waTanyaLink = buildWaTanyaLink(nomorWa, batch.judul_id);
   const silabusItems = silabus?.trim() ? splitHtmlByHeadings(silabus) : [];
+  const pendaftaran = await getPrefillPendaftaranBatch();
 
   return (
     <div className="bg-background pb-10">
@@ -215,7 +217,14 @@ export default async function BatchDetailPage({
             {batch.harga != null && (
               <p className="mt-3 text-2xl font-bold text-primary sm:text-3xl">{formatRupiah(batch.harga)}</p>
             )}
-            {batch.status !== "closed" && <DaftarMinatDialog batchId={batch.id} />}
+            {batch.status !== "closed" && (
+              <DaftarBatchDialog
+                batchId={batch.id}
+                slug={slug}
+                loggedIn={pendaftaran.loggedIn}
+                prefill={pendaftaran.prefill}
+              />
+            )}
           </div>
 
           {equipment && equipment.length > 0 && (

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import { useRouter } from "@/i18n/navigation";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -20,11 +21,20 @@ type LoginInput = z.infer<typeof LoginSchema>;
 
 const REMEMBER_KEY = "hexatara-auth-email";
 
+/** Hanya path internal relatif aman (bukan //…, bukan /admin). */
+function safeNextPath(raw: string | null): string | null {
+  if (!raw || !raw.startsWith("/") || raw.startsWith("//") || raw.startsWith("/admin")) {
+    return null;
+  }
+  return raw;
+}
+
 export function LoginForm() {
   const t = useTranslations("auth.login");
   const tAuth = useTranslations("auth");
   const tCommon = useTranslations("common");
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [pesanError, setPesanError] = useState<string | null>(null);
   const [ingatSaya, setIngatSaya] = useState(false);
   const {
@@ -66,7 +76,8 @@ export function LoginForm() {
     }
 
     toast.success(t("toastSuccess"));
-    router.push("/dashboard");
+    const next = safeNextPath(searchParams.get("next"));
+    router.push(next ?? "/dashboard");
     router.refresh();
   }
 

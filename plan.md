@@ -1,6 +1,6 @@
 # Plan Sprint 6 — Modul 7: Pendaftaran Pelatihan Lengkap (RPC)
 
-> **Status sesi:** F07.2 kode selesai — tunggu uji Alif.  
+> **Status sesi:** F07.3 kode selesai — tunggu uji Alif.  
 > **Blok:** F07.1 → F07.2 → F07.3 → F07.4 → F07.5 (satu bagian per giliran).  
 > **Acuan:** PRD §5.1c + §9b (ADR-020r), ENGINEERING ADR-020r, `feature-registry.md` Sprint 6.  
 > **SQL live:** ADR-020 + ADR-020r sudah dijalankan Alif. Registry DONE hanya setelah Alif uji.
@@ -25,62 +25,41 @@
 | Fitur | Isi | Status |
 |-------|-----|--------|
 | F07.1 | Regenerasi `database.ts` + Zod identitas/pendaftaran + `lib/identitas.ts` | SELESAI (uji Alif OK) |
-| F07.2 | Section identitas di `/dashboard/profil` + upload + action | KODE SELESAI — tunggu uji |
-| F07.3 | Form daftar batch (dialog baru berdampingan minat) + `daftarBatchAction` | BELUM |
+| F07.2 | Section identitas di `/dashboard/profil` + upload + action | SELESAI (uji Alif OK) |
+| F07.3 | Form daftar batch (dialog baru) + `daftarBatchAction` | KODE SELESAI — tunggu uji |
 | F07.4 | Card pengingat di `/dashboard` | BELUM |
 | F07.5 | Admin `pendaftaran-batch` setujui/tolak + signed URL | BELUM |
 
 ---
 
-## F07.1 — Fondasi tipe + validasi
+## F07.3 — Form pendaftaran batch
 
 ### Checklist
 
-- [x] **1.** Regenerasi `src/types/database.ts` (`supabase gen types --project-id ojltfmvmbolalhtzrhva`)
-  - `profiles`: 6 kolom identitas ✓
-  - `batch_registrations.user_id: string | null` + 9 kolom identitas ✓
-  - RPC `profil_identitas_lengkap` ✓
-  - Enums `kategori_peserta_rpc` / `status_registrasi_batch` ✓
-- [x] **2.** `src/lib/validations/identitas-profil.ts`
-- [x] **3.** `src/lib/validations/pendaftaran-batch.ts`
-- [x] **4.** `src/lib/identitas.ts` → RPC
-- [x] `tsc` + eslint hijau
+- [x] `daftar-batch-dialog.tsx` — pilihan Login vs Tanpa akun (anon); form tunggal ± prefill
+- [x] `daftar-batch-actions.ts` — insert → upload → update path; sync profiles best-effort
+- [x] Rollback: hapus baris + object storage kalau upload gagal
+- [x] CTA halaman detail pakai dialog baru; `daftar-minat-dialog` **tetap ada** (belum dihapus)
+- [x] Login `?next=/pelatihan/[slug]` redirect balik aman
+- [x] `tsc` hijau
+
+### Upload gagal (pendekatan)
+
+1. Insert baris tanpa path foto → dapat `id`  
+2. Upload KTP + pas foto  
+3. Update path  
+4. **Kalau 2/3 gagal:** hapus object yang sudah terunggah + **hapus baris** `batch_registrations` → return pesan jelas (tidak ada baris menggantung tanpa foto)
 
 ### File
 
 | Aksi | Path |
 |------|------|
-| diubah | `src/types/database.ts` |
-| baru | `src/lib/validations/identitas-profil.ts` |
-| baru | `src/lib/validations/pendaftaran-batch.ts` |
-| baru | `src/lib/identitas.ts` |
+| baru | `pelatihan/[slug]/daftar-batch-dialog.tsx` |
+| baru | `pelatihan/[slug]/daftar-batch-actions.ts` |
+| diubah | `pelatihan/[slug]/page.tsx` |
+| diubah | `login/login-form.tsx`, `login/page.tsx` |
 | diubah | `plan.md` |
-
----
-
-## F07.2 — Section identitas di Profil (setelah Alif OK F07.1)
-
-**Target:** `dashboard/profil/` (bukan route baru).
-
-| Langkah | Rencana |
-|---------|---------|
-| Page | Section card “Data Identitas (untuk Sertifikasi RPC)” + indikator via util F07.1 |
-| Form | `identitas-form.tsx` — RHF + `IdentitasProfilSchema`; reuse date picker admin |
-| Upload | Bucket `identity-documents`; path `${userId}/ktp.<ext>` & `pas-foto.<ext>`; simpan path; preview signed URL 300s |
-| Action | `dashboard/profil/actions.ts` — update 6 kolom `profiles` |
-
----
-
-## F07.3 — Form pendaftaran batch (setelah Alif OK F07.2)
-
-**Jangan hapus** `daftar-minat-dialog` / `daftarMinatAction` sampai Alif bilang.
-
-| Langkah | Rencana |
-|---------|---------|
-| UI | `daftar-batch-dialog.tsx` baru; anon → pilihan Login vs Tanpa akun; login → form ± prefill |
-| Action | insert tanpa foto → upload → update path; login sync best-effort ke `profiles`; tangani `uq_batch_user_aktif` |
-| Upload gagal | Hapus baris registrasi + object parsial; error jelas (detail di laporan F07.3) |
-| Sukses | Pesan dari hasil insert (jangan SELECT ulang untuk anon) |
+| tidak dihapus | `daftar-minat-dialog.tsx` + `daftarMinatAction` |
 
 ---
 
@@ -95,7 +74,6 @@
 
 - Route `admin/(protected)/pendaftaran-batch/` + menu
 - Select dari `batch_registrations` (+ join `batches`); signed URL 300s; Setujui/Tolak
-- Riwayat filter = opsional (tanya dulu)
 
 ---
 
@@ -104,6 +82,6 @@
 | Tanggal | Bagian | Status | Catatan |
 |---------|--------|--------|---------|
 | 2026-09-17 | Rencana | DISETUJUI | ADR-020r; urutan F07.1→5 |
-| 2026-09-17 | F07.1 | KODE SELESAI | gen types + Zod + `identitas.ts`; tsc/eslint OK |
-| 2026-09-17 | F07.1 | DIUJI ALIF | OK — lanjut F07.2 |
-| 2026-09-17 | F07.2 | KODE SELESAI | section Profil + form + upload `identity-documents` + signed URL 300s |
+| 2026-09-17 | F07.1 | SELESAI | gen types + Zod + util |
+| 2026-09-17 | F07.2 | SELESAI | section Profil + upload |
+| 2026-09-17 | F07.3 | KODE SELESAI | dialog daftar batch + rollback upload |
