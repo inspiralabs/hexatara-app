@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 import { useRouter } from '@/i18n/navigation';
 import { PesananSchema, type PesananInput } from '@/lib/validations/upgrade';
 import type { HargaUpgrade } from '@/lib/site-settings';
@@ -10,7 +11,6 @@ import { buatPesananAction } from './actions';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 type Paket = PesananInput['paket'];
@@ -33,7 +33,6 @@ export function PesananUpgradeForm({
   harga: HargaUpgrade;
 }) {
   const router = useRouter();
-  const [pesanError, setPesanError] = useState<string | null>(null);
   // Dijamin tidak kosong oleh pemanggil (dashboard/transaksi & dashboard/merchandise) —
   // dipisah dari paketOptions[0] langsung supaya lolos noUncheckedIndexedAccess.
   const paketTunggal = paketOptions[0] as Paket;
@@ -51,12 +50,12 @@ export function PesananUpgradeForm({
   const perluAlamat = paketDipilih !== 'cert_only';
 
   async function onSubmit(data: PesananInput) {
-    setPesanError(null);
     const hasil = await buatPesananAction(data);
     if (!hasil.ok) {
-      setPesanError(hasil.pesan);
+      toast.error(hasil.pesan);
       return;
     }
+    toast.success('Pesanan berhasil dibuat. Silakan unggah bukti transfer.');
     // Pastikan RSC Transaksi memuat ulang order baru → UI ganti ke unggah bukti
     // tanpa butuh hard refresh (revalidatePath di action + refresh di sini).
     router.refresh();
@@ -64,12 +63,6 @@ export function PesananUpgradeForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
-      {pesanError && (
-        <Alert variant="destructive">
-          <AlertDescription>{pesanError}</AlertDescription>
-        </Alert>
-      )}
-
       {paketOptions.length > 1 ? (
         <Controller
           control={control}

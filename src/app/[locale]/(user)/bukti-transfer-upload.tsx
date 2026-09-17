@@ -3,6 +3,7 @@
 import { useId, useState } from 'react';
 import imageCompression from 'browser-image-compression';
 import { ImagePlusIcon, Loader2Icon } from 'lucide-react';
+import { toast } from 'sonner';
 import { useRouter } from '@/i18n/navigation';
 import { unggahBuktiTransferAction } from './actions';
 
@@ -13,11 +14,9 @@ export function BuktiTransferUpload({ orderId }: { orderId: number }) {
   const inputId = useId();
   const [uploading, setUploading] = useState(false);
   const [namaFile, setNamaFile] = useState<string | null>(null);
-  const [pesanError, setPesanError] = useState<string | null>(null);
 
   async function handleFile(file: File | undefined) {
     if (!file) return;
-    setPesanError(null);
     setNamaFile(file.name);
     setUploading(true);
     try {
@@ -26,12 +25,13 @@ export function BuktiTransferUpload({ orderId }: { orderId: number }) {
       formData.set('file', new File([compressed], file.name, { type: compressed.type }));
       const hasil = await unggahBuktiTransferAction(orderId, formData);
       if (!hasil.ok) {
-        setPesanError(hasil.pesan);
+        toast.error(hasil.pesan);
         return;
       }
+      toast.success('Bukti transfer berhasil diunggah.');
       router.refresh();
     } catch {
-      setPesanError('Gagal memproses gambar. Coba berkas lain.');
+      toast.error('Gagal memproses gambar. Coba berkas lain.');
     } finally {
       setUploading(false);
     }
@@ -66,10 +66,9 @@ export function BuktiTransferUpload({ orderId }: { orderId: number }) {
         </span>
         <span className="text-xs text-muted-foreground">JPG, PNG, atau WebP</span>
       </label>
-      {namaFile && !uploading && !pesanError && (
+      {namaFile && !uploading && (
         <p className="text-xs text-muted-foreground">Terpilih: {namaFile}</p>
       )}
-      {pesanError && <p className="text-sm text-destructive">{pesanError}</p>}
     </div>
   );
 }

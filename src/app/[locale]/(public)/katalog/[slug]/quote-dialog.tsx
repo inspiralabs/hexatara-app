@@ -18,9 +18,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { publicCtaPrimary, publicCtaSecondary } from '@/lib/public-ui';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 type QuoteInput = z.infer<typeof QuoteRequestFormSchema>;
 
@@ -28,7 +28,6 @@ export function QuoteDialog({ productId }: { productId: number }) {
   const t = useTranslations('catalog');
   const tCommon = useTranslations('common');
   const [open, setOpen] = useState(false);
-  const [pesanError, setPesanError] = useState<string | null>(null);
   const [terkirim, setTerkirim] = useState(false);
   const {
     register,
@@ -49,12 +48,12 @@ export function QuoteDialog({ productId }: { productId: number }) {
   });
 
   async function onSubmit(data: QuoteInput) {
-    setPesanError(null);
     const hasil = await kirimPenawaranAction(productId, data);
     if (!hasil.ok) {
-      setPesanError(hasil.pesan);
+      toast.error(hasil.pesan);
       return;
     }
+    toast.success(t('dialog.successTitle'));
     setTerkirim(true);
   }
 
@@ -62,7 +61,6 @@ export function QuoteDialog({ productId }: { productId: number }) {
     setOpen(next);
     if (!next) {
       reset();
-      setPesanError(null);
       setTerkirim(false);
     }
   }
@@ -93,12 +91,6 @@ export function QuoteDialog({ productId }: { productId: number }) {
               <DialogTitle>{t('dialog.title')}</DialogTitle>
             </DialogHeader>
             <p className="text-sm text-muted-foreground">{t('dialog.subtitle')}</p>
-
-            {pesanError && (
-              <Alert variant="destructive">
-                <AlertDescription>{pesanError}</AlertDescription>
-              </Alert>
-            )}
 
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="nama">{t('dialog.nameLabel')}</Label>

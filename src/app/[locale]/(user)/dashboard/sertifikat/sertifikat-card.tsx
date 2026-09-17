@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { CheckCircle2, Lock } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { unduhSertifikatPreviewAction, lihatSertifikatAction } from '../actions';
 
@@ -12,24 +13,18 @@ type Props =
 
 // Klik kartu = preview LANGSUNG di modal (iframe PDF native browser, tanpa
 // library viewer baru) — bukan navigasi unduh penuh seperti sebelumnya.
-// Label reuse dari namespace `dashboard` yang sudah ada (readyToFly,
-// previewDescription, qrLocked, qrAktif) — kartu ini adalah SertifikatCard
-// F03.9 yang sudah dwibahasa, bukan konten baru, jadi tidak ikut simplifikasi
-// ID-only halaman-halaman baru lainnya.
 export function SertifikatCard(props: Props) {
   const t = useTranslations('dashboard');
   const [pending, setPending] = useState(false);
-  const [pesanError, setPesanError] = useState<string | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const aktif = props.status === 'aktif';
 
   async function lihat() {
     setPending(true);
-    setPesanError(null);
     const hasil = aktif ? await lihatSertifikatAction(props.certificateId) : await unduhSertifikatPreviewAction();
     setPending(false);
     if (!hasil.ok) {
-      setPesanError(hasil.pesan);
+      toast.error(hasil.pesan);
       return;
     }
     setPreviewUrl(hasil.url);
@@ -67,8 +62,6 @@ export function SertifikatCard(props: Props) {
             )}
           </div>
         </div>
-
-        {pesanError && <p className="px-6 pb-2 text-sm text-destructive">{pesanError}</p>}
 
         <div className="flex flex-wrap gap-3 border-t border-warna-latar-2 p-4">
           <button

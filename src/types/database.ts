@@ -252,6 +252,86 @@ export type Database = {
           },
         ]
       }
+      batch_registrations: {
+        Row: {
+          alamat_lengkap: string | null
+          alasan_tolak: string | null
+          batch_id: number
+          created_at: string
+          email: string | null
+          foto_ktp_url: string | null
+          id: number
+          kategori_peserta: Database["public"]["Enums"]["kategori_peserta_rpc"]
+          kode_referral: string | null
+          nama_lengkap: string | null
+          nomor_ktp: string | null
+          pas_foto_url: string | null
+          status: Database["public"]["Enums"]["status_registrasi_batch"]
+          sumber_info: string | null
+          tanggal_lahir: string | null
+          tempat_lahir: string | null
+          updated_at: string
+          user_id: string | null
+          verified_at: string | null
+          verified_by: string | null
+          whatsapp: string | null
+        }
+        Insert: {
+          alamat_lengkap?: string | null
+          alasan_tolak?: string | null
+          batch_id: number
+          created_at?: string
+          email?: string | null
+          foto_ktp_url?: string | null
+          id?: number
+          kategori_peserta: Database["public"]["Enums"]["kategori_peserta_rpc"]
+          kode_referral?: string | null
+          nama_lengkap?: string | null
+          nomor_ktp?: string | null
+          pas_foto_url?: string | null
+          status?: Database["public"]["Enums"]["status_registrasi_batch"]
+          sumber_info?: string | null
+          tanggal_lahir?: string | null
+          tempat_lahir?: string | null
+          updated_at?: string
+          user_id?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+          whatsapp?: string | null
+        }
+        Update: {
+          alamat_lengkap?: string | null
+          alasan_tolak?: string | null
+          batch_id?: number
+          created_at?: string
+          email?: string | null
+          foto_ktp_url?: string | null
+          id?: number
+          kategori_peserta?: Database["public"]["Enums"]["kategori_peserta_rpc"]
+          kode_referral?: string | null
+          nama_lengkap?: string | null
+          nomor_ktp?: string | null
+          pas_foto_url?: string | null
+          status?: Database["public"]["Enums"]["status_registrasi_batch"]
+          sumber_info?: string | null
+          tanggal_lahir?: string | null
+          tempat_lahir?: string | null
+          updated_at?: string
+          user_id?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+          whatsapp?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "batch_registrations_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       batches: {
         Row: {
           alamat: string | null
@@ -930,27 +1010,45 @@ export type Database = {
       }
       profiles: {
         Row: {
+          alamat_lengkap: string | null
           created_at: string
+          foto_ktp_url: string | null
           free_track_selesai_at: string | null
           id: string
           nama_lengkap: string
+          nomor_ktp: string | null
+          pas_foto_url: string | null
           role: string
+          tanggal_lahir: string | null
+          tempat_lahir: string | null
           whatsapp: string | null
         }
         Insert: {
+          alamat_lengkap?: string | null
           created_at?: string
+          foto_ktp_url?: string | null
           free_track_selesai_at?: string | null
           id: string
           nama_lengkap?: string
+          nomor_ktp?: string | null
+          pas_foto_url?: string | null
           role?: string
+          tanggal_lahir?: string | null
+          tempat_lahir?: string | null
           whatsapp?: string | null
         }
         Update: {
+          alamat_lengkap?: string | null
           created_at?: string
+          foto_ktp_url?: string | null
           free_track_selesai_at?: string | null
           id?: string
           nama_lengkap?: string
+          nomor_ktp?: string | null
+          pas_foto_url?: string | null
           role?: string
+          tanggal_lahir?: string | null
+          tempat_lahir?: string | null
           whatsapp?: string | null
         }
         Relationships: []
@@ -1297,6 +1395,10 @@ export type Database = {
         Args: { p_jenis: Database["public"]["Enums"]["jenis_sertifikat"] }
         Returns: string
       }
+      profil_identitas_lengkap: {
+        Args: { p_user_id: string }
+        Returns: boolean
+      }
       reorder_batch_categories: {
         Args: { p_category_ids: string[] }
         Returns: undefined
@@ -1321,6 +1423,7 @@ export type Database = {
     }
     Enums: {
       jenis_sertifikat: "free_track" | "existing_manual" | "rpc_certified"
+      kategori_peserta_rpc: "penerbitan_baru" | "perpanjangan_renewal"
       paket_upgrade: "cert_only" | "cert_merch" | "merch_addon"
       status_batch: "upcoming" | "open" | "closed"
       status_kirim:
@@ -1335,6 +1438,7 @@ export type Database = {
         | "menunggu_verifikasi"
         | "disetujui"
         | "ditolak"
+      status_registrasi_batch: "menunggu_verifikasi" | "disetujui" | "ditolak"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1463,6 +1567,7 @@ export const Constants = {
   public: {
     Enums: {
       jenis_sertifikat: ["free_track", "existing_manual", "rpc_certified"],
+      kategori_peserta_rpc: ["penerbitan_baru", "perpanjangan_renewal"],
       paket_upgrade: ["cert_only", "cert_merch", "merch_addon"],
       status_batch: ["upcoming", "open", "closed"],
       status_kirim: [
@@ -1479,6 +1584,7 @@ export const Constants = {
         "disetujui",
         "ditolak",
       ],
+      status_registrasi_batch: ["menunggu_verifikasi", "disetujui", "ditolak"],
     },
   },
 } as const

@@ -15,14 +15,26 @@ export function DatePickerField({
   value,
   onChange,
   disabled,
+  captionLayout = 'label',
+  startMonth,
+  endMonth,
+  reverseYears,
+  disableFuture,
 }: {
   label: string;
   value: string | null;
   onChange: (value: string | null) => void;
   disabled?: boolean;
+  /** `dropdown` = pilih bulan & tahun langsung (cocok untuk tanggal lahir). */
+  captionLayout?: 'label' | 'dropdown' | 'dropdown-months' | 'dropdown-years';
+  startMonth?: Date;
+  endMonth?: Date;
+  reverseYears?: boolean;
+  disableFuture?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const selected = value ? parse(value, 'yyyy-MM-dd', new Date()) : undefined;
+  const today = new Date();
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -44,7 +56,13 @@ export function DatePickerField({
           <Calendar
             mode="single"
             locale={localeId}
+            captionLayout={captionLayout}
+            reverseYears={reverseYears}
+            startMonth={startMonth}
+            endMonth={endMonth}
+            defaultMonth={selected ?? endMonth ?? startMonth}
             selected={selected}
+            disabled={disableFuture ? { after: today } : undefined}
             onSelect={(date) => {
               onChange(date ? format(date, 'yyyy-MM-dd') : null);
               setOpen(false);

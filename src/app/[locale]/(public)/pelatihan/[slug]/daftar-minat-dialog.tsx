@@ -17,9 +17,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { publicCtaPrimary } from '@/lib/public-ui';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 type BatchLeadInput = z.infer<typeof BatchLeadFormSchema>;
 
@@ -27,7 +27,6 @@ export function DaftarMinatDialog({ batchId }: { batchId: number }) {
   const t = useTranslations('batch');
   const tCommon = useTranslations('common');
   const [open, setOpen] = useState(false);
-  const [pesanError, setPesanError] = useState<string | null>(null);
   const [waLink, setWaLink] = useState<string | null | undefined>(undefined);
   const {
     register,
@@ -41,12 +40,12 @@ export function DaftarMinatDialog({ batchId }: { batchId: number }) {
   });
 
   async function onSubmit(data: BatchLeadInput) {
-    setPesanError(null);
     const hasil = await daftarMinatAction(batchId, data);
     if (!hasil.ok) {
-      setPesanError(hasil.pesan);
+      toast.error(hasil.pesan);
       return;
     }
+    toast.success(t('dialog.successTitle'));
     setWaLink(hasil.waLink);
   }
 
@@ -54,7 +53,6 @@ export function DaftarMinatDialog({ batchId }: { batchId: number }) {
     setOpen(next);
     if (!next) {
       reset();
-      setPesanError(null);
       setWaLink(undefined);
     }
   }
@@ -87,12 +85,6 @@ export function DaftarMinatDialog({ batchId }: { batchId: number }) {
             <DialogHeader>
               <DialogTitle>{t('dialog.title')}</DialogTitle>
             </DialogHeader>
-
-            {pesanError && (
-              <Alert variant="destructive">
-                <AlertDescription>{pesanError}</AlertDescription>
-              </Alert>
-            )}
 
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="nama">{t('dialog.nameLabel')}</Label>
