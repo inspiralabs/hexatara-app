@@ -131,7 +131,10 @@
     "dapatkanSertifikat": "Dapatkan Sertifikat",
     "lanjutKuis": "Lanjut ke Kuis",
     "lanjutSoal": "Lanjut ke Soal Berikutnya",
-    "submitJawaban": "Submit Jawaban"
+    "submitJawaban": "Submit Jawaban",
+    "belumSemuaBenar": "Kamu menjawab benar {benar} dari {total} soal. Coba lagi untuk menjawab semua dengan benar.",
+    "belumSemuaBenarInfo": "Progres materimu tetap tersimpan — hanya jawaban kuis yang diulang.",
+    "ulangiUjian": "Ulangi Ujian"
   },
   "verify": {
     "pageTitle": "Cek Keabsahan Sertifikat",

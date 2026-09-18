@@ -131,7 +131,10 @@
     "dapatkanSertifikat": "Get Certificate",
     "lanjutKuis": "Continue to Quiz",
     "lanjutSoal": "Continue to Next Question",
-    "submitJawaban": "Submit Answers"
+    "submitJawaban": "Submit Answers",
+    "belumSemuaBenar": "You got {benar} of {total} questions right. Try again to answer all of them correctly.",
+    "belumSemuaBenarInfo": "Your material progress is still saved — only quiz answers are reset.",
+    "ulangiUjian": "Retake Quiz"
   },
   "verify": {
     "pageTitle": "Verify Certificate Authenticity",

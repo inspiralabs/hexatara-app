@@ -97,6 +97,7 @@ export function CourseReader({
   const [jawabanKuis, setJawabanKuis] = useState<JawabanKuis>({});
   const [activeQuestionId, setActiveQuestionId] = useState(questions[0]?.id ?? 0);
   const [kuisDisubmitLokal, setKuisDisubmitLokal] = useState(false);
+  const [belumSemuaBenar, setBelumSemuaBenar] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const kuisSudahSelesai = kuisDisubmitLokal || kuisSelesai;
@@ -140,7 +141,12 @@ export function CourseReader({
   const active = chapters[activeIndex]!;
   const isLast = activeIndex === chapters.length - 1;
   const semuaBabSelesai = chapters.every((b) => selesai.has(b.id));
-  const semuaSoalTerjawab = questions.length > 0 && questions.every((q) => jawabanKuis[q.id] !== undefined);
+  // Gate kelulusan = semua BENAR (ADR-023 / F10.3). Progress bar tetap hitung "sudah dicoba".
+  const semuaSoalTerjawabBenar =
+    questions.length > 0 && questions.every((q) => jawabanKuis[q.id]?.benar === true);
+  const semuaSoalSudahDicoba =
+    questions.length > 0 && questions.every((q) => jawabanKuis[q.id] !== undefined);
+  const jumlahJawabanBenar = Object.values(jawabanKuis).filter((j) => j.benar).length;
 
   // Progress bar gabungan bab + soal (§12.5.3 revisi poin 7) — total selalu
   // (bab + soal) sejak awal, bukan cuma bertambah begitu tab Kuis dibuka,
@@ -179,13 +185,25 @@ export function CourseReader({
   }
 
   function handleLanjutSoal() {
-    if (semuaSoalTerjawab) {
+    if (semuaSoalTerjawabBenar) {
+      setBelumSemuaBenar(false);
       setKuisDisubmitLokal(true);
+      return;
+    }
+    if (semuaSoalSudahDicoba) {
+      setBelumSemuaBenar(true);
       return;
     }
     const idx = questions.findIndex((q) => q.id === activeQuestionId);
     const idxBerikutnya = (idx + 1) % questions.length;
     setActiveQuestionId(questions[idxBerikutnya]!.id);
+  }
+
+  function handleUlangiUjian() {
+    // Hanya reset jawaban kuis — progres bab (selesai) tidak disentuh (ADR-023).
+    setJawabanKuis({});
+    setBelumSemuaBenar(false);
+    setActiveQuestionId(questions[0]!.id);
   }
 
   function daftarBab(tutupSetelahPilih: boolean) {
@@ -334,6 +352,16 @@ export function CourseReader({
                   <div className="mx-auto max-w-2xl">
                     <QuizFinishScreen sudahLogin={sudahLogin} />
                   </div>
+                ) : belumSemuaBenar ? (
+                  <div className="mx-auto max-w-2xl rounded-xl border border-amber-600/30 bg-amber-600/10 p-6 text-center dark:border-amber-500/30 dark:bg-amber-500/10">
+                    <p className="text-base text-amber-900 dark:text-amber-100">
+                      {t('belumSemuaBenar', { benar: jumlahJawabanBenar, total: questions.length })}
+                    </p>
+                    <p className="mt-2 text-sm text-muted-foreground">{t('belumSemuaBenarInfo')}</p>
+                    <Button type="button" variant="outline" onClick={handleUlangiUjian} className="mt-4 h-11 px-6">
+                      {t('ulangiUjian')}
+                    </Button>
+                  </div>
                 ) : (
                   <EmbeddedQuiz
                     questions={questions}
@@ -345,11 +373,11 @@ export function CourseReader({
                 )}
               </div>
 
-              {!kuisSudahSelesai && (
+              {!kuisSudahSelesai && !belumSemuaBenar && (
                 <div className="border-t border-border bg-background px-4 py-4 sm:px-8">
                   <div className="flex md:justify-end">
                     <Button type="button" onClick={handleLanjutSoal} className="h-11 px-6">
-                      {semuaSoalTerjawab ? t('submitJawaban') : t('lanjutSoal')}
+                      {semuaSoalSudahDicoba ? t('submitJawaban') : t('lanjutSoal')}
                     </Button>
                   </div>
                 </div>

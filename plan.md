@@ -1,19 +1,18 @@
-# Plan — Hapus Pendaftaran Minat (alur lama)
+# Plan Sprint 9 — F10.4 Bukti pembayaran Admin (ADR-023)
 
-> **Status sesi:** SELESAI — minat tidak lagi menerima data baru; menu + page + kode mati dihapus.
+> **Status sesi:** F10.3 registry DONE. F10.4 IN PROGRESS. SQL `bukti_url` sudah dijalankan Alif. Tidak ada DDL dari agent.
 
-## Temuan
-- Publik sekarang: `DaftarBatchDialog` → `batch_registrations` (bukan `batch_leads`)
-- `DaftarMinatDialog` + `daftarMinatAction` sudah orphan (tidak di-import page)
-- Masih baca `batch_leads`: Admin overview, Kursus Saya, `/admin/leads/minat`
-- Tabel DB `batch_leads` **tidak** di-drop (PRD: riwayat lama)
+| Langkah | Status |
+|---------|--------|
+| F10.3 registry DONE (+ catatan lanjutan skor) | DONE |
+| Regen `database.ts` (`bukti_url`) | PENDING |
+| `setujuiPendaftaranBatchAction` + FormData upload | PENDING |
+| UI popup Setuju + file wajib | PENDING |
+| Signed URL + tampil di peserta detail | PENDING |
+| tsc / lint / build | PENDING |
+| Laporan Alif (registry F10.4 TODO sampai OK) | PENDING |
 
-## Yang dihapus
-- Menu navbar "Pendaftaran Minat"
-- `/admin/leads/minat` + `leads-table` / export / actions minat
-- `daftar-minat-dialog.tsx`, `pelatihan/.../actions.ts`, `batch-lead.ts`
-- Redirect `/admin/leads` → penawaran
-
-## Yang dialihkan
-- Overview Admin: hitung/chart/recent dari `batch_registrations` (+ penawaran)
-- Dashboard Kursus Saya: section "Pendaftaran Pelatihan" dari `batch_registrations`
+## Pola reuse
+- Bucket `payment-proofs`, path `batch-${registrasiId}.${ext}`
+- Signed URL 300s seperti `upgrade/page.tsx`
+- Actor = Admin (bukan user)
