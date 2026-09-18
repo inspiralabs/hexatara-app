@@ -1,18 +1,31 @@
-# Plan Sprint 9 — F10.4 Bukti pembayaran Admin (ADR-023)
+# Plan Sprint 9 — F10.5 Email branded via Resend (ADR-023)
 
-> **Status sesi:** F10.3 registry DONE. F10.4 kode selesai, menunggu uji Alif. SQL `bukti_url` sudah dijalankan Alif. Tidak ada DDL dari agent.
+> **Status sesi:** F10.4 DONE. F10.5 kode selesai, menunggu uji email nyata Alif. Tidak ada SQL/DDL. Tidak ada dep baru.
 
-| Langkah | Status |
-|---------|--------|
-| F10.3 registry DONE (+ catatan lanjutan skor) | DONE |
-| Regen `database.ts` (`bukti_url`) | DONE |
-| `setujuiPendaftaranBatchAction` + FormData upload | DONE |
-| UI popup Setuju + file wajib | DONE |
-| Signed URL + tampil di peserta detail | DONE |
-| tsc / lint / build | DONE |
-| Laporan Alif (registry F10.4 TODO sampai OK) | PENDING |
+## Tujuan
+Ganti email bawaan Supabase (signup + lupa sandi) dengan `generateLink()` + Resend. Template/send/client **tidak diubah**.
 
-## Pola reuse
-- Bucket `payment-proofs`, path `batch-${registrasiId}.${ext}`
-- Signed URL 300s seperti `upgrade/page.tsx`
-- Actor = Admin (bukan user)
+## Keputusan teknis (deviasi kecil dari prompt)
+Prompt menyebut `action_link`. Di SSR Next.js, `action_link` GoTrue (`/auth/v1/verify`) tidak set cookie sesi App Router dengan andal. Dipakai `hashed_token` → `/auth/confirm?token_hash=&type=signup|recovery&next=` (pola resmi Supabase SSR). `signOut()` tetap ada (bersihkan sesi lama sebelum daftar).
+
+## Urutan kerja
+| # | Langkah | Status |
+|---|---------|--------|
+| 0 | F10.4 registry DONE + log | DONE |
+| 1 | Baca send.ts, daftar/lupa-sandi, confirm | DONE |
+| 2 | `daftar/actions.ts` → generateLink signup + Resend | DONE |
+| 3 | `lupa-sandi/actions.ts` → generateLink recovery + Resend | DONE |
+| 4 | `auth/confirm` — terima type `signup` | DONE |
+| 5 | tsc / lint / build | DONE |
+| 6 | Laporan Alif (F10.5 tetap TODO sampai OK) | PENDING |
+
+## File disentuh
+- `daftar/actions.ts`, `lupa-sandi/actions.ts`, `auth/confirm/route.ts`
+- `feature-registry.md`, `plan.md`
+
+## Uji Alif (wajib sebelum DONE)
+- Daftar email asli → inbox Resend, branded Cobalt Mist
+- Klik verifikasi → akun aktif / login
+- Lupa sandi → Resend branded → ganti sandi OK
+- Email sudah terdaftar → "sudah terdaftar"
+- Lupa sandi email tidak ada → pesan generik sama

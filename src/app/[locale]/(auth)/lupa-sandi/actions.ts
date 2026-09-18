@@ -1,7 +1,8 @@
 'use server';
 
 import { LupaSandiSchema } from '@/lib/validations/auth';
-import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
+import { kirimEmailResetSandi } from '@/lib/email/send';
 
 export async function lupaSandiAction(input: unknown) {
   const parsed = LupaSandiSchema.safeParse(input);
@@ -10,13 +11,35 @@ export async function lupaSandiAction(input: unknown) {
     return { ok: false as const, pesan: 'Email tidak valid.' };
   }
 
-  const supabase = await createClient();
+  const supabaseAdmin = createAdminClient();
+  const nextPath = '/reset-sandi';
 
-  // Hasil panggilan ini SENGAJA tidak menentukan pesan ke pengguna — supaya
-  // tidak ada yang bisa menebak email mana yang terdaftar dari respons form.
-  await supabase.auth.resetPasswordForEmail(parsed.data.email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/reset-sandi`,
+  // generateLink error (email tidak terdaftar) SENGAJA tidak mengubah pesan —
+  // supaya tidak bisa menebak email mana yang terdaftar.
+  const { data: linkData, error } = await supabaseAdmin.auth.admin.generateLink({
+    type: 'recovery',
+    email: parsed.data.email,
+    options: {
+      redirectTo: new URL(nextPath, process.env.NEXT_PUBLIC_SITE_URL).toString(),
+    },
   });
+
+  if (!error && linkData.properties?.hashed_token) {
+    // ponytail: hashed_token → /auth/confirm (sama pola daftar), bukan action_link
+    const tautan = new URL('/auth/confirm', process.env.NEXT_PUBLIC_SITE_URL);
+    tautan.searchParams.set('token_hash', linkData.properties.hashed_token);
+    tautan.searchParams.set('type', 'recovery');
+    tautan.searchParams.set('next', nextPath);
+
+    const hasilKirim = await kirimEmailResetSandi(parsed.data.email, {
+      tautan: tautan.toString(),
+    });
+    if (!hasilKirim.ok) {
+      console.error('[lupa-sandi] gagal kirim email reset:', hasilKirim);
+    }
+  } else if (error) {
+    console.error('[lupa-sandi] generateLink:', error.code, error.message);
+  }
 
   return {
     ok: true as const,
