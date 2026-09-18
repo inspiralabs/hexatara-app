@@ -65,17 +65,17 @@ export default async function AdminHomePage() {
     certBulanIni,
     certBulanLalu,
     batchAktif,
-    batchLeadsChart,
+    batchRegChart,
     quoteChart,
-    batchLeadsRecent,
+    batchRegRecent,
     quoteRecent,
   ] = await Promise.all([
     supabase
-      .from('batch_leads')
+      .from('batch_registrations')
       .select('id', { count: 'exact', head: true })
       .gte('created_at', tujuhHari),
     supabase
-      .from('batch_leads')
+      .from('batch_registrations')
       .select('id', { count: 'exact', head: true })
       .gte('created_at', empatBelasHari)
       .lt('created_at', tujuhHari),
@@ -103,11 +103,11 @@ export default async function AdminHomePage() {
       .gte('tanggal_terbit', awalBulanLalu)
       .lt('tanggal_terbit', awalBulanIni),
     supabase.from('batches').select('id', { count: 'exact', head: true }).eq('is_active', true),
-    supabase.from('batch_leads').select('created_at').gte('created_at', chartSince),
+    supabase.from('batch_registrations').select('created_at').gte('created_at', chartSince),
     supabase.from('quote_requests').select('created_at').gte('created_at', chartSince),
     supabase
-      .from('batch_leads')
-      .select('id, nama, whatsapp, email, status, created_at')
+      .from('batch_registrations')
+      .select('id, nama_lengkap, whatsapp, email, status, created_at')
       .order('created_at', { ascending: false })
       .limit(10),
     supabase
@@ -123,7 +123,7 @@ export default async function AdminHomePage() {
     ['pending', pending.error],
     ['cert', certBulanIni.error],
     ['batch', batchAktif.error],
-    ['chart-batch', batchLeadsChart.error],
+    ['chart-reg', batchRegChart.error],
     ['chart-quote', quoteChart.error],
   ] as const) {
     if (err) console.error(`[admin-overview] ${label}:`, err);
@@ -173,19 +173,30 @@ export default async function AdminHomePage() {
 
   const buckets = buildEmptyBuckets(12);
   const indexByKey = new Map(buckets.map((b, i) => [b.key, i]));
-  for (const row of [...(batchLeadsChart.data ?? []), ...(quoteChart.data ?? [])]) {
+  for (const row of [...(batchRegChart.data ?? []), ...(quoteChart.data ?? [])]) {
     const key = monthKey(new Date(row.created_at));
     const idx = indexByKey.get(key);
     if (idx != null) buckets[idx]!.total += 1;
   }
 
+  const LABEL_STATUS_REG = {
+    menunggu_verifikasi: 'Menunggu',
+    disetujui: 'Disetujui',
+    ditolak: 'Ditolak',
+  } as const;
+  const LABEL_STATUS_QUOTE = {
+    baru: 'Baru',
+    dihubungi: 'Dihubungi',
+    selesai: 'Selesai',
+  } as const;
+
   const recent: RecentLeadRow[] = [
-    ...(batchLeadsRecent.data ?? []).map((r) => ({
-      id: `minat-${r.id}`,
-      jenis: 'minat' as const,
-      nama: r.nama,
+    ...(batchRegRecent.data ?? []).map((r) => ({
+      id: `pendaftaran-${r.id}`,
+      jenis: 'pendaftaran' as const,
+      nama: r.nama_lengkap ?? '—',
       kontak: r.whatsapp || r.email || '',
-      status: r.status,
+      statusLabel: LABEL_STATUS_REG[r.status],
       created_at: r.created_at,
     })),
     ...(quoteRecent.data ?? []).map((r) => ({
@@ -193,7 +204,7 @@ export default async function AdminHomePage() {
       jenis: 'penawaran' as const,
       nama: r.nama,
       kontak: r.whatsapp || r.email || '',
-      status: r.status,
+      statusLabel: LABEL_STATUS_QUOTE[r.status],
       created_at: r.created_at,
     })),
   ]

@@ -1,6 +1,19 @@
 # Prompt Cursor — F10.6: Verifikasi Email Lintas-Device (ADR-023)
 
+> Acuan: `ENGINEERING.md` ADR-023 (Bagian 10, khusus poin 6 Konteks), `PRD.md` §5.1f dan §9e (khusus 9e.8), `feature-registry.md` Sprint 9.
 > Sprint 9 / Modul 10. **PALING KOMPLEKS, BERGANTUNG F10.5.** Jangan mulai bagian ini sebelum F10.5 selesai DAN teruji end-to-end (link email sudah lewat `generateLink()`, bukan lagi `signUp()`/`resetPasswordForEmail()` langsung) — bagian ini mengasumsikan arsitektur baru F10.5 sudah berjalan.
+>
+> Governance yang tetap berlaku penuh (CLAUDE.md/PRD.md §13.1): JANGAN menambah tabel/kolom baru — status verifikasi cukup dibaca dari `auth.users.email_confirmed_at` (skema bawaan Supabase). JANGAN menambah dependency baru tanpa izin eksplisit (animasi cukup CSS/Tailwind, cek dulu `package.json` sebelum menambah library animasi).
+
+## 0. Konteks yang WAJIB dipahami dulu sebelum mengubah kode
+
+Baca dulu file-file ini secara utuh:
+
+- `src/app/auth/confirm/route.ts` — hasil perubahan F10.5, akan diubah lagi di sini khusus untuk cabang `type === 'signup'`.
+- `src/app/[locale]/(auth)/verifikasi-email/page.tsx` dan `verifikasi-poller.tsx` — mekanisme polling lama (`router.refresh()` pasif) yang akan diganti jadi polling aktif ke server action.
+- `src/app/[locale]/(auth)/daftar/daftar-form.tsx` dan `daftar/actions.ts` (hasil F10.5) — untuk memastikan email pendaftar bisa diteruskan ke `VerifikasiPoller`.
+- `src/lib/supabase/admin.ts` dan `src/lib/supabase/server.ts` — `createAdminClient()`/`createClient()`, dipakai di server action polling baru.
+- `src/components/auth/auth-shell.tsx` — komponen shell auth, dipakai untuk halaman `verifikasi-berhasil` baru supaya konsisten visual.
 
 ---
 
@@ -144,3 +157,4 @@ Alif secara eksplisit minta layar "menunggu verifikasi" (halaman `verifikasi-ema
 4. Uji kegagalan: device A ditutup/refresh sebelum verifikasi selesai — pastikan tidak ada error, cukup layar menunggu yang tetap ada kalau dibuka ulang (asalkan email masih sama).
 5. Diuji di viewport 375px untuk kedua halaman (`verifikasi-email`, `verifikasi-berhasil`).
 6. Laporkan ke Alif — WAJIB sertakan konfirmasi bahwa uji dilakukan dengan dua perangkat fisik berbeda, bukan simulasi satu browser (Definisi Selesai §14 tidak terpenuhi kalau hanya diuji di satu device).
+7. Sesuai `CLAUDE.md` (Urutan kerja wajib, butir 6): **JANGAN tandai F10.6 DONE di `feature-registry.md` sampai Alif eksplisit mengonfirmasi sudah menguji sendiri dengan dua perangkat fisik.** Begitu dikonfirmasi, update baris F10.6 — status DONE, kolom Berkas diisi file yang benar-benar diubah, kolom Diuji/Bukti diisi ringkasan hasil uji dua-device Alif.

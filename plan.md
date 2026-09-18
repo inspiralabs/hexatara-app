@@ -1,14 +1,19 @@
-# Plan — Admin UX patch (menu Leads + warna tombol + hint silabus)
+# Plan — Hapus Pendaftaran Minat (alur lama)
 
-> **Status sesi:** SELESAI — `tsc` / `lint` / `build` bersih. Menunggu uji Alif.
+> **Status sesi:** SELESAI — minat tidak lagi menerima data baru; menu + page + kode mati dihapus.
 
-| Bagian | Status | Isi |
-|--------|--------|-----|
-| 1. Menu sidebar | DONE | Pendaftaran Batch + Peserta → Leads; Batch tinggal Daftar + Kategori |
-| 2. Warna tombol | DONE | `edit` (biru) + `success` (hijau); Hapus/Tolak=`destructive`; Setuju=`success` |
-| 3. Hint silabus | DONE | FormDescription H2/H3 → akordion di `silabus_id` / `silabus_en` |
+## Temuan
+- Publik sekarang: `DaftarBatchDialog` → `batch_registrations` (bukan `batch_leads`)
+- `DaftarMinatDialog` + `daftarMinatAction` sudah orphan (tidak di-import page)
+- Masih baca `batch_leads`: Admin overview, Kursus Saya, `/admin/leads/minat`
+- Tabel DB `batch_leads` **tidak** di-drop (PRD: riwayat lama)
 
-## Keputusan
-- **Tolak** = `destructive` (aksi negatif, sejajar Hapus) — bukan outline.
-- `childAktif` murni pathname — highlight tetap benar setelah pindah section.
-- Dropdown "Ubah" pakai `variant="edit"` (hampir semua edit di Admin lewat dropdown, bukan Button terpisah).
+## Yang dihapus
+- Menu navbar "Pendaftaran Minat"
+- `/admin/leads/minat` + `leads-table` / export / actions minat
+- `daftar-minat-dialog.tsx`, `pelatihan/.../actions.ts`, `batch-lead.ts`
+- Redirect `/admin/leads` → penawaran
+
+## Yang dialihkan
+- Overview Admin: hitung/chart/recent dari `batch_registrations` (+ penawaran)
+- Dashboard Kursus Saya: section "Pendaftaran Pelatihan" dari `batch_registrations`

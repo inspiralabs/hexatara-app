@@ -1,6 +1,18 @@
 # Prompt Cursor — F10.3: Perbaikan Bug Kuis LMS (jawaban salah lolos submit) + Ulangi Ujian
 
+> Acuan: `ENGINEERING.md` ADR-023 (Bagian 10), `PRD.md` §5.1f dan §9e (khusus 9e.5), `feature-registry.md` Sprint 9.
 > Sprint 9 / Modul 10 (ADR-023). Tidak butuh SQL, satu file utama. Root cause sudah ditemukan lewat riset kode — perbaikan ini presisi, jangan menulis ulang komponen kuis yang sudah benar.
+>
+> Governance yang tetap berlaku penuh (CLAUDE.md/PRD.md §13.1): larangan #4 ("jangan tambah ambang kelulusan kuis") TIDAK relevan di sini — perbaikan ini MENGEMBALIKAN ambang yang sudah dimaksud sejak awal (100% benar), bukan menambah ambang baru. JANGAN menambah dependency baru tanpa izin eksplisit.
+
+## 0. Konteks yang WAJIB dipahami dulu sebelum mengubah kode
+
+Baca dulu file-file ini secara utuh:
+
+- `src/app/[locale]/(kelas)/materi/[id]/course-reader.tsx` — file utama yang diubah, terutama baris ~143 (`semuaSoalTerjawab`), fungsi `handlePilihOpsiKuis` (~176) dan `handleLanjutSoal` (~184).
+- `src/app/[locale]/(public)/kuis/quiz-engine.tsx` — `QuizQuestionCard`/`QuizEngine`/`QuizFinishScreen`, dipakai bersama oleh `/kuis` (linear, SUDAH BENAR) dan LMS (`EmbeddedQuiz`, tempat bug-nya). JANGAN diubah kecuali benar-benar perlu — kartu soalnya sudah benar.
+- `src/app/[locale]/(kelas)/materi/[id]/embedded-quiz.tsx` — komponen kuis di dalam LMS, murni render + teruskan event, TIDAK perlu diubah (lihat penjelasan di Bagian 3 prompt ini).
+- `messages/id.json` (dan `messages/en.json` kalau ada) — cek namespace terjemahan yang dipakai `course-reader.tsx` sebelum menambah string baru.
 
 ---
 
@@ -105,3 +117,4 @@ Tambahkan string terjemahan baru yang dibutuhkan ke `messages/id.json` (dan pada
 6. Uji juga `/kuis` (linear, standalone) tetap berjalan seperti sebelumnya — TIDAK boleh ada regresi di sana karena `QuizQuestionCard` dipakai bersama.
 7. Diuji di viewport 375px.
 8. Laporkan ke Alif dengan langkah reproduksi yang dipakai untuk verifikasi (jawab 1 soal salah tanpa retry → cek tombol yang muncul).
+9. Sesuai `CLAUDE.md` (Urutan kerja wajib, butir 6): **JANGAN tandai F10.3 DONE di `feature-registry.md` sampai Alif eksplisit mengonfirmasi sudah menguji sendiri di browser.** Begitu dikonfirmasi, update baris F10.3 — status DONE, kolom Berkas diisi file yang benar-benar diubah, kolom Diuji/Bukti diisi ringkasan hasil uji Alif.

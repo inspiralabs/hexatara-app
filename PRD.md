@@ -1112,9 +1112,10 @@ Memperbaiki bug nyata yang ditemukan Alif di lingkungan production (bukan lagi l
 
 ### 9e.3 F10.1 — Polish Admin
 
-- Menu Admin: `Pendaftaran Batch` dan `Peserta Pendaftaran` (`admin-shell.tsx`) dipindahkan dari section "Batch" ke section "Leads" — TIDAK ada route yang dihapus, murni pengelompokan ulang menu supaya tidak ambigu dengan "Pendaftaran Minat"/"Permintaan Penawaran" yang sama-sama mengandung kata "pendaftaran".
+- Menu Admin: `Pendaftaran Batch` dan `Peserta Pendaftaran` (`admin-shell.tsx`) dipindahkan dari section "Batch" ke section "Leads" — TIDAK ada route yang dihapus, murni pengelompokan ulang menu supaya tidak ambigu dengan "Permintaan Penawaran" (lihat poin berikutnya soal "Pendaftaran Minat").
 - Tombol aksi di seluruh Admin: varian baru ditambahkan ke `buttonVariants` (`src/components/ui/button.tsx`) — biru untuk edit, hijau untuk setujui — TANPA mengubah varian lama yang sudah dipakai luas (`destructive`/merah tetap dipakai untuk hapus). Semua varian baru wajib terlihat jelas di dark mode.
 - Form Admin Batch: ditambahkan teks keterangan singkat di field Silabus bahwa heading (Heading 2/3, dsb) di editor menentukan pembagian item akordion di halaman publik.
+- **Temuan tambahan saat eksekusi (2026-09-18), dikonfirmasi Alif sebelum dieksekusi:** menu "Pendaftaran Minat" (F01.6 lama, `/admin/leads/minat`) ternyata sudah orphan sepenuhnya — jalur publiknya (`DaftarMinatDialog`) tidak lagi dirender di halaman mana pun sejak digantikan alur `batch_registrations` (ADR-020r, lihat §9b). Ini murni EKSEKUSI dari niat yang sudah dinyatakan sejak §9b ditulis ("F01.6 digantikan"), bukan keputusan produk baru. Dihapus: item menu, halaman Admin Minat beserta table/export/actions-nya, komponen dialog publik, server action, validasi terkait; `/admin/leads` diarahkan redirect ke Penawaran; Overview dan Kursus Saya (yang sebelumnya ikut membaca `batch_leads`) dialihkan membaca `batch_registrations`. Tabel `batch_leads` di Supabase **TIDAK dihapus** — tetap sebagai riwayat data lama, sesuai §9b dan checklist Sprint 6/§9b yang sudah menyatakan ini sejak awal.
 
 ### 9e.4 F10.2 — Cek operasional (tanpa kode)
 

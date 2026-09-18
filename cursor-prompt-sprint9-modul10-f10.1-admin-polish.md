@@ -1,6 +1,19 @@
 # Prompt Cursor — F10.1: Polish Admin (menu Leads, warna tombol, hint silabus)
 
+> Acuan: `ENGINEERING.md` ADR-023 (Bagian 10), `PRD.md` §5.1f dan §9e, `feature-registry.md` Sprint 9.
 > Sprint 9 / Modul 10 (ADR-023). Kelompok TERMUDAH — tidak butuh SQL, tidak menyentuh skema, murni perubahan tampilan/organisasi di Admin. Tiga bagian independen, bisa dikerjakan berurutan dan dilaporkan sekaligus.
+>
+> Governance yang tetap berlaku penuh (CLAUDE.md/PRD.md §13.1): JANGAN menambah tabel/kolom (bagian ini memang tidak butuh, tapi tegaskan lagi). JANGAN menjalankan DDL apa pun sendiri. JANGAN menambah dependency baru tanpa izin eksplisit.
+
+## 0. Konteks yang WAJIB dipahami dulu sebelum mengubah kode
+
+Baca dulu file-file ini secara utuh:
+
+- `src/components/shell/admin-shell.tsx` — struktur menu Admin (`MENU_ADMIN`), fungsi `childAktif`.
+- `src/components/ui/button.tsx` — komponen tombol bersama, dipakai di seluruh Admin+publik. Perubahan HARUS backward-compatible (tambah varian baru, jangan ubah varian lama).
+- `src/app/admin/(protected)/pendaftaran-batch/pendaftaran-batch-row-actions.tsx` — contoh konkret tombol Setuju/Tolak yang perlu diberi varian warna baru.
+- `src/app/admin/(protected)/batch/batch-form.tsx` — field Silabus (`silabus_id`/`silabus_en`, sekitar baris 483–507) yang perlu ditambah `FormDescription`.
+- `src/app/[locale]/(public)/pelatihan/[slug]/page.tsx` — fungsi `splitHtmlByHeadings()`, untuk memahami kenapa hint heading itu relevan.
 
 ---
 
@@ -127,4 +140,5 @@ Terapkan pola yang sama untuk `silabus_en`. Cek dulu apakah `FormDescription` su
 
 1. `pnpm tsc --noEmit`, `pnpm lint`, `pnpm build` bersih.
 2. Uji ketiga bagian di viewport 375px (sidebar Admin mobile, tombol aksi di tabel/card mobile, form Batch mobile).
-3. Laporkan ke Alif sebagai satu laporan (tiga bagian ini ringan, tidak perlu dipisah per bagian seperti F09.2).
+3. Laporkan ke Alif sebagai satu laporan (tiga bagian ini ringan, tidak perlu dipisah per bagian seperti F09.2) — sebutkan berkas apa saja yang benar-benar diubah dan kalau ada penyimpangan dari prompt ini (misalnya keputusan warna tombol "Tolak" di Bagian 2), jelaskan alasannya.
+4. Sesuai `CLAUDE.md` (Urutan kerja wajib, butir 6): **JANGAN tandai F10.1 DONE di `feature-registry.md` sampai Alif eksplisit mengonfirmasi sudah menguji sendiri di browser.** Begitu Alif konfirmasi, update baris F10.1 di tabel Sprint 9 — status jadi DONE, kolom Berkas diisi daftar file yang benar-benar diubah (bukan cuma nama prompt ini), kolom Diuji/Bukti diisi ringkasan singkat apa yang diuji Alif dan hasilnya.

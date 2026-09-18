@@ -1,6 +1,22 @@
 # Prompt Cursor — F10.5: Infrastruktur Email Penuh Resend (verifikasi + reset password)
 
+> Acuan: `ENGINEERING.md` ADR-023 (Bagian 10, khusus poin 5 Konteks), `PRD.md` §5.1f dan §9e (khusus 9e.7), `feature-registry.md` Sprint 9.
 > Sprint 9 / Modul 10 (ADR-023). Tidak butuh SQL. Mengubah alur inti autentikasi — kerjakan hati-hati, uji menyeluruh sebelum lapor selesai. F10.6 (verifikasi lintas-device) BERGANTUNG pada perubahan ini, kerjakan F10.5 dulu sampai tuntas dan teruji sebelum mulai F10.6.
+>
+> Governance yang tetap berlaku penuh (CLAUDE.md/PRD.md §13.1): JANGAN menambah tabel/kolom baru. JANGAN menambah dependency baru tanpa izin eksplisit — `@supabase/supabase-js` (admin API) dan `resend` sudah terpasang, cukup dipakai dengan cara baru. `SUPABASE_SERVICE_ROLE_KEY`/`RESEND_API_KEY` sudah ada di env, tidak perlu env var baru — kalau ternyata butuh, tanyakan Alif dulu, jangan menambah sendiri.
+
+## 0. Konteks yang WAJIB dipahami dulu sebelum mengubah kode
+
+Baca dulu file-file ini secara utuh:
+
+- `src/lib/email/templates.ts` — `templateVerifikasiEmail`/`templateResetSandi`/`baseLayout()`, SUDAH BENAR dan branded, JANGAN ditulis ulang.
+- `src/lib/email/send.ts` — `kirimEmailVerifikasi`/`kirimEmailResetSandi`, SUDAH ADA, cek signature parameternya persis sebelum memanggilnya dari kode baru.
+- `src/lib/email/client.ts` — instance `resend` dan `EMAIL_FROM`.
+- `src/lib/supabase/admin.ts` — `createAdminClient()`, dipakai untuk `auth.admin.generateLink()`.
+- `src/app/[locale]/(auth)/daftar/actions.ts` — alur signup yang diubah.
+- `src/app/[locale]/(auth)/lupa-sandi/actions.ts` — alur reset password yang diubah.
+- `src/app/auth/confirm/route.ts` — route penerima link, cek ulang formatnya masih kompatibel dengan link hasil `generateLink()` (lihat Bagian 3 prompt ini).
+- `src/app/[locale]/(auth)/daftar/daftar-form.tsx` — cek bagaimana form daftar memanggil `daftarAction`, untuk memastikan tidak ada asumsi yang patah.
 
 ---
 
@@ -158,3 +174,4 @@ File-file ini SUDAH BENAR, jangan disentuh kecuali menemukan bug nyata saat uji 
 6. Cek `console.error` log tidak ada error tersembunyi yang lolos padahal harusnya gagal (terutama kalau `kirimEmailVerifikasi`/`kirimEmailResetSandi` gagal tapi user sudah terlanjur dibuat — pastikan pesan ke user tetap masuk akal).
 7. Diuji di viewport 375px untuk halaman daftar/lupa-sandi (tidak ada perubahan visual signifikan di sini, tapi pastikan tidak ada regresi).
 8. Laporkan ke Alif — sertakan screenshot email yang masuk sebagai bukti visual (bagian dari Definisi Selesai §14, "diuji manual oleh Alif" tetap wajib, tapi lampirkan bukti awal ini mempercepat verifikasi).
+9. Sesuai `CLAUDE.md` (Urutan kerja wajib, butir 6): **JANGAN tandai F10.5 DONE di `feature-registry.md` sampai Alif eksplisit mengonfirmasi sudah menguji sendiri di browser/email nyata.** Begitu dikonfirmasi, update baris F10.5 — status DONE, kolom Berkas diisi file yang benar-benar diubah, kolom Diuji/Bukti diisi ringkasan hasil uji Alif (termasuk konfirmasi pengirim email sudah Resend, bukan Supabase).

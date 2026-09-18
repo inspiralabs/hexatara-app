@@ -83,7 +83,6 @@ const MENU_ADMIN: MenuSection[] = [
     section: "Leads",
     icon: InboxIcon,
     items: [
-      { href: "/admin/leads/minat", label: "Pendaftaran Minat" },
       { href: "/admin/leads/penawaran", label: "Permintaan Penawaran" },
       { href: "/admin/pendaftaran-batch", label: "Pendaftaran Batch" },
       { href: "/admin/peserta-pendaftaran", label: "Peserta Pendaftaran" },

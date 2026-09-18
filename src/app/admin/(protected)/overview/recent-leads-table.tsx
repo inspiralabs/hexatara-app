@@ -12,22 +12,16 @@ import {
 
 export type RecentLeadRow = {
   id: string;
-  jenis: 'minat' | 'penawaran';
+  jenis: 'pendaftaran' | 'penawaran';
   nama: string;
   kontak: string;
-  status: 'baru' | 'dihubungi' | 'selesai';
+  statusLabel: string;
   created_at: string;
 };
 
 const LABEL_JENIS: Record<RecentLeadRow['jenis'], string> = {
-  minat: 'Minat',
+  pendaftaran: 'Pendaftaran',
   penawaran: 'Penawaran',
-};
-
-const LABEL_STATUS: Record<RecentLeadRow['status'], string> = {
-  baru: 'Baru',
-  dihubungi: 'Dihubungi',
-  selesai: 'Selesai',
 };
 
 function formatTanggal(iso: string) {
@@ -46,10 +40,10 @@ export function RecentLeadsTable({ rows }: { rows: RecentLeadRow[] }) {
       <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-2">
         <div>
           <CardTitle>Aktivitas terbaru</CardTitle>
-          <CardDescription>10 lead terakhir (minat & penawaran)</CardDescription>
+          <CardDescription>10 lead terakhir (pendaftaran batch & penawaran)</CardDescription>
         </div>
         <Link
-          href="/admin/leads"
+          href="/admin/leads/penawaran"
           className="text-sm font-medium text-foreground underline-offset-4 hover:underline"
         >
           Lihat semua
@@ -87,7 +81,7 @@ export function RecentLeadsTable({ rows }: { rows: RecentLeadRow[] }) {
                     <TableCell>
                       <Badge variant="secondary">{LABEL_JENIS[row.jenis]}</Badge>
                     </TableCell>
-                    <TableCell>{LABEL_STATUS[row.status]}</TableCell>
+                    <TableCell>{row.statusLabel}</TableCell>
                   </TableRow>
                 ))
               )}

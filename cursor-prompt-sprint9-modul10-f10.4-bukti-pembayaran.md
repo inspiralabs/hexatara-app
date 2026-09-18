@@ -1,6 +1,21 @@
 # Prompt Cursor — F10.4: Bukti Pembayaran saat Menyetujui Pendaftaran Batch (ADR-023)
 
-> Sprint 9 / Modul 10. **SQL WAJIB dijalankan lebih dulu oleh Alif** (`usulan-sql-modul10-adr023.sql`, satu kolom baru `batch_registrations.bukti_url`) sebelum bagian ini dikerjakan.
+> Acuan: `ENGINEERING.md` ADR-023 (Bagian 10), `PRD.md` §5.1f dan §9e (khusus 9e.6), `feature-registry.md` Sprint 9.
+> Sprint 9 / Modul 10. **SQL SUDAH dijalankan Alif dan dikonfirmasi berhasil** (`usulan-sql-modul10-adr023.sql`, satu kolom baru `batch_registrations.bukti_url`) — aman untuk mulai.
+>
+> Governance yang tetap berlaku penuh (CLAUDE.md/PRD.md §13.1): JANGAN menambah tabel/kolom di luar `batch_registrations.bukti_url` yang sudah didefinisikan di PRD.md §5.1f. JANGAN menjalankan DDL apa pun sendiri — SQL sudah dijalankan manual oleh Alif. JANGAN menambah dependency baru tanpa izin eksplisit — bucket storage dan pola signed URL yang dibutuhkan sudah tersedia lewat `@supabase/supabase-js` yang terpasang.
+
+## 0. Konteks yang WAJIB dipahami dulu sebelum mengubah kode
+
+Baca dulu file-file ini secara utuh:
+
+- `src/app/[locale]/(user)/actions.ts` — CONTOH POLA upload bukti pembayaran yang sudah jalan (`certificate_orders.bukti_url`, bucket `payment-proofs`, path `${orderId}.${ext}`). Tiru pola storage-nya, TAPI actor-nya beda (di sana USER upload, di F10.4 ADMIN yang upload).
+- `src/app/admin/(protected)/upgrade/page.tsx` — CONTOH POLA menampilkan bukti lewat signed URL (`createSignedUrl(path, 300)`) ke Admin. Tiru persis untuk menampilkan bukti di `peserta-pendaftaran-detail.tsx`.
+- `src/app/admin/(protected)/pendaftaran-batch/actions.ts` — `setujuiPendaftaranBatchAction`/`tolakPendaftaranBatchAction` yang akan diubah.
+- `src/app/admin/(protected)/pendaftaran-batch/pendaftaran-batch-row-actions.tsx` — popup konfirmasi Setujui yang akan diberi input upload.
+- `src/app/admin/(protected)/peserta-pendaftaran/peserta-pendaftaran-detail.tsx` dan `src/app/admin/(protected)/peserta-pendaftaran/actions.ts` — tempat bukti pembayaran ditampilkan, cek dulu bagaimana foto KTP/pas foto sudah ditampilkan di dialog yang sama untuk mengikuti pola visualnya.
+- `src/lib/supabase/admin.ts` — `createAdminClient()`, dipakai untuk operasi storage bucket privat.
+- `src/types/database.ts` — cek ulang `batch_registrations.bukti_url` sudah muncul di tipe `Row`/`Insert`/`Update` setelah regenerate.
 
 ---
 
@@ -156,3 +171,4 @@ Teruskan `buktiUrl` ke `peserta-pendaftaran-detail.tsx` (dialog Detail) dan tamp
 4. Cek peserta LAMA (disetujui sebelum fitur ini ada, `bukti_url` NULL) — detail tetap terbuka normal tanpa error, section bukti pembayaran ditampilkan kosong/tidak ada (bukan crash).
 5. Diuji di viewport 375px (popup Setujui dan dialog Detail di layar kecil).
 6. Laporkan ke Alif.
+7. Sesuai `CLAUDE.md` (Urutan kerja wajib, butir 6): **JANGAN tandai F10.4 DONE di `feature-registry.md` sampai Alif eksplisit mengonfirmasi sudah menguji sendiri di browser.** Begitu dikonfirmasi, update baris F10.4 — status DONE, kolom Berkas diisi file yang benar-benar diubah, kolom Diuji/Bukti diisi ringkasan hasil uji Alif.
