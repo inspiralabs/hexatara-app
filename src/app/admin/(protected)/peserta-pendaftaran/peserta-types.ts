@@ -17,4 +17,5 @@ export type PesertaPendaftaranRow = {
   batchJudul: string;
   fotoKtpUrl: string | null;
   pasFotoUrl: string | null;
+  buktiUrl: string | null;
 };

@@ -257,6 +257,7 @@ export type Database = {
           alamat_lengkap: string | null
           alasan_tolak: string | null
           batch_id: number
+          bukti_url: string | null
           created_at: string
           email: string | null
           foto_ktp_url: string | null
@@ -280,6 +281,7 @@ export type Database = {
           alamat_lengkap?: string | null
           alasan_tolak?: string | null
           batch_id: number
+          bukti_url?: string | null
           created_at?: string
           email?: string | null
           foto_ktp_url?: string | null
@@ -303,6 +305,7 @@ export type Database = {
           alamat_lengkap?: string | null
           alasan_tolak?: string | null
           batch_id?: number
+          bukti_url?: string | null
           created_at?: string
           email?: string | null
           foto_ktp_url?: string | null

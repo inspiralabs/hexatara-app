@@ -146,6 +146,9 @@ export function PesertaPendaftaranDetail({ row }: { row: PesertaPendaftaranRow }
             <FotoInline label="Foto KTP" src={row.fotoKtpUrl} onZoom={setZoomSrc} />
             <FotoInline label="Pas foto" src={row.pasFotoUrl} onZoom={setZoomSrc} />
           </div>
+          <div className="mt-4">
+            <FotoInline label="Bukti pembayaran" src={row.buktiUrl} onZoom={setZoomSrc} />
+          </div>
           <div className="mt-4 flex justify-end border-t border-border pt-4">
             <Button
               type="button"

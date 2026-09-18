@@ -22,16 +22,21 @@ export function PendaftaranBatchRowActions({ registrasiId }: { registrasiId: num
   const [setujuiOpen, setSetujuiOpen] = useState(false);
   const [tolakOpen, setTolakOpen] = useState(false);
   const [alasan, setAlasan] = useState('');
+  const [buktiFile, setBuktiFile] = useState<File | null>(null);
   const [pending, startTransition] = useTransition();
 
   function konfirmasiSetujui() {
+    if (!buktiFile) return;
     startTransition(async () => {
-      const hasil = await setujuiPendaftaranBatchAction(registrasiId);
+      const fd = new FormData();
+      fd.append('bukti', buktiFile);
+      const hasil = await setujuiPendaftaranBatchAction(registrasiId, fd);
       if (!hasil.ok) {
         toast.error(hasil.pesan);
         return;
       }
       setSetujuiOpen(false);
+      setBuktiFile(null);
       toast.success('Pendaftaran disetujui.');
       router.refresh();
     });
@@ -60,17 +65,45 @@ export function PendaftaranBatchRowActions({ registrasiId }: { registrasiId: num
         Tolak
       </Button>
 
-      <AlertDialog open={setujuiOpen} onOpenChange={setSetujuiOpen}>
+      <AlertDialog
+        open={setujuiOpen}
+        onOpenChange={(open) => {
+          setSetujuiOpen(open);
+          if (!open) setBuktiFile(null);
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Setujui pendaftaran ini?</AlertDialogTitle>
             <AlertDialogDescription>
-              Status berubah menjadi disetujui. Tindakan ini tidak bisa dibatalkan dari sini.
+              Unggah bukti pembayaran dulu. Status berubah menjadi disetujui. Tindakan ini tidak
+              bisa dibatalkan dari sini.
             </AlertDialogDescription>
           </AlertDialogHeader>
+          <div className="flex flex-col gap-2 px-4 sm:px-0">
+            <label className="text-sm font-medium text-foreground" htmlFor={`bukti-${registrasiId}`}>
+              Bukti pembayaran
+            </label>
+            <input
+              id={`bukti-${registrasiId}`}
+              type="file"
+              accept="image/*"
+              className="block w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-muted file:px-3 file:py-2 file:text-sm file:font-medium file:text-foreground"
+              onChange={(e) => setBuktiFile(e.target.files?.[0] ?? null)}
+            />
+            {buktiFile ? (
+              <p className="text-xs text-muted-foreground">Dipilih: {buktiFile.name}</p>
+            ) : (
+              <p className="text-xs text-muted-foreground">Wajib gambar (JPG/PNG/WebP).</p>
+            )}
+          </div>
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction variant="success" onClick={konfirmasiSetujui} disabled={pending}>
+            <AlertDialogAction
+              variant="success"
+              onClick={konfirmasiSetujui}
+              disabled={pending || !buktiFile}
+            >
               {pending ? 'Memproses…' : 'Setuju'}
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -93,7 +126,11 @@ export function PendaftaranBatchRowActions({ registrasiId }: { registrasiId: num
           />
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction variant="destructive" onClick={konfirmasiTolak} disabled={pending || alasan.trim() === ''}>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={konfirmasiTolak}
+              disabled={pending || alasan.trim() === ''}
+            >
               {pending ? 'Memproses…' : 'Tolak'}
             </AlertDialogAction>
           </AlertDialogFooter>

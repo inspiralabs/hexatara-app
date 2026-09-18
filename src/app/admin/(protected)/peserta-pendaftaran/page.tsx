@@ -50,6 +50,7 @@ export default async function AdminPesertaPendaftaranPage({
       kode_referral,
       foto_ktp_url,
       pas_foto_url,
+      bukti_url,
       user_id,
       verified_at,
       batches ( judul_id )
@@ -69,6 +70,7 @@ export default async function AdminPesertaPendaftaranPage({
     (data ?? []).map(async (row) => {
       let fotoKtpUrl: string | null = null;
       let pasFotoUrl: string | null = null;
+      let buktiUrl: string | null = null;
 
       if (row.foto_ktp_url) {
         const { data: signed } = await admin.storage
@@ -81,6 +83,12 @@ export default async function AdminPesertaPendaftaranPage({
           .from('identity-documents')
           .createSignedUrl(row.pas_foto_url, 300);
         pasFotoUrl = signed?.signedUrl ?? null;
+      }
+      if (row.bukti_url) {
+        const { data: signed } = await admin.storage
+          .from('payment-proofs')
+          .createSignedUrl(row.bukti_url, 300);
+        buktiUrl = signed?.signedUrl ?? null;
       }
 
       const batchRel = row.batches as { judul_id: string } | null;
@@ -101,6 +109,7 @@ export default async function AdminPesertaPendaftaranPage({
         batchJudul: batchRel?.judul_id ?? '—',
         fotoKtpUrl,
         pasFotoUrl,
+        buktiUrl,
       };
     })
   );
