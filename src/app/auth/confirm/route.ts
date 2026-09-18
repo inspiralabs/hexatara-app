@@ -17,17 +17,36 @@ export async function GET(request: NextRequest) {
   const next = searchParams.get('next') ?? '/login';
   const supabase = await createClient();
 
-  // Flow PKCE — sisa link lama dari signUp() sebelum F10.5.
+  // Flow PKCE — sisa link lama signup sebelum F10.5.
+  // F10.6: setelah tukar code, signOut supaya device yang klik TIDAK tinggal login;
+  // device asal yang auto-login lewat polling.
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) redirect(next);
+    if (!error) {
+      await supabase.auth.signOut();
+      redirect('/verifikasi-berhasil');
+    }
   }
 
-  // Flow OTP klasik — generateLink() + Resend (F10.5): token_hash + type.
-  if (token_hash && type) {
+  // Recovery — device yang klik = device yang sedang reset sandi; sesi tetap.
+  if (token_hash && type === 'recovery') {
     const { error } = await supabase.auth.verifyOtp({ type, token_hash });
     if (!error) redirect(next);
+    redirect('/lupa-sandi?status=gagal');
   }
 
-  redirect(type === 'recovery' ? '/lupa-sandi?status=gagal' : '/verifikasi-email?status=gagal');
+  // Signup / email confirm (F10.6):
+  // Admin API tidak punya verify-OTP-tanpa-sesi. verifyOtp() tetap dipakai
+  // (satu-satunya cara validasi token_hash + isi email_confirmed_at), lalu
+  // signOut() segera supaya cookie sesi di device pengklik dibersihkan.
+  // Redirect ke layar statis — bukan dashboard.
+  if (token_hash && (type === 'signup' || type === 'email')) {
+    const { error } = await supabase.auth.verifyOtp({ type, token_hash });
+    if (!error) {
+      await supabase.auth.signOut();
+      redirect('/verifikasi-berhasil');
+    }
+  }
+
+  redirect('/verifikasi-email?status=gagal');
 }

@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { kirimEmailVerifikasi } from '@/lib/email/send';
 import type { MateriSessionProgress } from '@/lib/materi/session-progress';
+import { setPendingVerifyEmailCookie } from '../verifikasi-email/actions';
 
 export async function daftarAction(
   input: unknown,
@@ -26,13 +27,9 @@ export async function daftarAction(
   // dijamin berakhir 100% di kuis, tidak ada yang bisa dicurangi.
   //
   // generateLink(type: 'signup') membuat user + hashed_token TANPA mengirim
-  // email. Link dibangun ke /auth/confirm (OTP klasik) supaya SSR bisa
-  // verifyOtp — action_link bawaan GoTrue ke /auth/v1/verify tidak set cookie
-  // sesi App Router dengan andal.
-  const nextPath = kuisSelesai ? '/dashboard' : '/verifikasi-email';
-
-  // Sesi lama HARUS dibersihkan sebelum daftar akun baru — kalau tidak,
-  // cookie akun lama tetap valid dan /verifikasi-email salah membacanya.
+  // email. Link → /auth/confirm (OTP); F10.6 confirm mengarah ke
+  // /verifikasi-berhasil (tanpa sesi di device pengklik).
+  // Sesi lama HARUS dibersihkan sebelum daftar akun baru.
   await supabase.auth.signOut();
 
   const supabaseAdmin = createAdminClient();
@@ -50,7 +47,7 @@ export async function daftarAction(
             ? JSON.stringify(chapterProgress.chapterIds)
             : undefined,
       },
-      redirectTo: new URL(nextPath, process.env.NEXT_PUBLIC_SITE_URL).toString(),
+      redirectTo: new URL('/verifikasi-berhasil', process.env.NEXT_PUBLIC_SITE_URL).toString(),
     },
   });
 
@@ -76,7 +73,6 @@ export async function daftarAction(
   const tautan = new URL('/auth/confirm', process.env.NEXT_PUBLIC_SITE_URL);
   tautan.searchParams.set('token_hash', tokenHash);
   tautan.searchParams.set('type', 'signup');
-  tautan.searchParams.set('next', nextPath);
 
   const hasilKirim = await kirimEmailVerifikasi(email, {
     nama: nama_lengkap,
@@ -85,6 +81,9 @@ export async function daftarAction(
   if (!hasilKirim.ok) {
     console.error('[daftar] gagal kirim email verifikasi — user sudah dibuat:', email);
   }
+
+  // Cookie httpOnly untuk polling F10.6 — jangan percaya email dari query klien saja.
+  await setPendingVerifyEmailCookie(email);
 
   return { ok: true as const };
 }

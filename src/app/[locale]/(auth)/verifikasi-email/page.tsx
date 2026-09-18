@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { MailIcon } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -9,29 +10,50 @@ import { VerifikasiPoller } from './verifikasi-poller';
 export default async function VerifikasiEmailPage({
   searchParams,
 }: {
-  searchParams: Promise<{ status?: string }>;
+  searchParams: Promise<{ status?: string; email?: string }>;
 }) {
-  const { status } = await searchParams;
+  const { status, email } = await searchParams;
   const t = await getTranslations('auth.verifikasiEmail');
   const tAuth = await getTranslations('auth');
 
-  // Halaman ini punya dua konteks berbeda yang kebetulan sama URL-nya:
-  // (1) baru submit form daftar, BELUM verifikasi — via router.push() client-side,
-  //     tidak lewat /auth/confirm sama sekali, tidak ada sesi.
-  // (2) baru klik link email, /auth/confirm BARU SAJA menukar code jadi sesi,
-  //     redirect ke sini SUDAH login. getClaims() (bukan requireUser()) supaya
-  //     kondisi (1) tidak pernah kena redirect paksa — cuma beda konten yang tampil.
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const sudahLogin = !!data?.claims;
 
+  const menunggu = status !== 'gagal' && !sudahLogin;
+
   return (
-    <AuthShell title={t('title')} description={status === 'gagal' ? undefined : sudahLogin ? t('verifiedMessage') : t('sentMessage')}>
+    <AuthShell
+      title={t('title')}
+      description={
+        status === 'gagal' ? undefined : sudahLogin ? t('verifiedMessage') : t('sentMessage')
+      }
+    >
       <div className="flex flex-col gap-4">
         {status === 'gagal' ? (
           <Alert variant="destructive">
             <AlertDescription>{t('invalidAlert')}</AlertDescription>
           </Alert>
+        ) : null}
+
+        {menunggu ? (
+          <div className="flex flex-col items-center gap-3 py-2" aria-hidden="true">
+            <span className="relative flex size-16 items-center justify-center">
+              <span className="absolute inset-0 animate-ping rounded-full bg-primary/20" />
+              <span className="relative flex size-14 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <MailIcon className="size-7 animate-bounce" />
+              </span>
+            </span>
+            <p className="text-center text-sm text-muted-foreground">
+              {t('waitingHint')}
+              <span className="inline-flex w-6 justify-start">
+                <span className="animate-pulse">…</span>
+              </span>
+            </p>
+            {email ? (
+              <p className="text-center text-xs text-muted-foreground break-all">{email}</p>
+            ) : null}
+          </div>
         ) : null}
 
         {status !== 'gagal' && sudahLogin ? (

@@ -1,15 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
+import { cekStatusVerifikasiAction } from './actions';
 
-// Tidak ada panggilan Supabase JS di browser saat verifikasi terjadi (semuanya
-// lewat redirect server /auth/confirm), jadi onAuthStateChange tidak pernah
-// terpicu di tab ini. router.refresh() menghitung ulang Server Component
-// dengan cookie terbaru — begitu tab lain menyelesaikan verifikasi, cookie
-// sesi baru langsung terbaca karena satu browser berbagi cookie yang sama.
 export function VerifikasiPoller({ sudahLogin }: { sudahLogin: boolean }) {
   const router = useRouter();
+  const busy = useRef(false);
+  const [mengecek, setMengecek] = useState(false);
 
   useEffect(() => {
     if (sudahLogin) {
@@ -17,9 +15,31 @@ export function VerifikasiPoller({ sudahLogin }: { sudahLogin: boolean }) {
       return;
     }
 
-    const interval = setInterval(() => router.refresh(), 3000);
+    const interval = setInterval(async () => {
+      if (busy.current) return;
+      busy.current = true;
+      setMengecek(true);
+      try {
+        const hasil = await cekStatusVerifikasiAction();
+        if (hasil.terverifikasi && !('gagalLogin' in hasil && hasil.gagalLogin)) {
+          router.push('/dashboard');
+        } else if (hasil.terverifikasi && 'gagalLogin' in hasil && hasil.gagalLogin) {
+          router.push('/login?verified=1');
+        }
+      } finally {
+        busy.current = false;
+        setMengecek(false);
+      }
+    }, 3000);
+
     return () => clearInterval(interval);
   }, [sudahLogin, router]);
 
-  return null;
+  // Indikator visual kecil — page juga punya animasi envelope.
+  if (!mengecek) return null;
+  return (
+    <p className="sr-only" aria-live="polite">
+      Mengecek status verifikasi…
+    </p>
+  );
 }

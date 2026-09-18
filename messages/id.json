@@ -301,9 +301,15 @@
     "verifikasiEmail": {
       "title": "Verifikasi email",
       "invalidAlert": "Tautan verifikasi tidak valid atau sudah kadaluwarsa. Daftar ulang untuk mendapatkan tautan baru.",
-      "sentMessage": "Kami sudah mengirim tautan verifikasi ke email kamu. Klik tautan itu untuk mengaktifkan akun sebelum bisa masuk.",
+      "sentMessage": "Kami sudah mengirim tautan verifikasi ke email kamu. Klik tautan itu di perangkat mana pun — halaman ini akan masuk otomatis setelah berhasil.",
       "verifiedMessage": "Email kamu berhasil diverifikasi. Akun kamu sekarang aktif.",
-      "goToDashboard": "Ke Dashboard"
+      "goToDashboard": "Ke Dashboard",
+      "waitingHint": "Menunggu verifikasi"
+    },
+    "verifikasiBerhasil": {
+      "title": "Email berhasil diverifikasi",
+      "description": "Kamu bisa menutup halaman ini.",
+      "hint": "Perangkat tempat kamu mendaftar akan otomatis masuk ke dashboard."
     }
   },
   "dashboard": {

@@ -301,9 +301,15 @@
     "verifikasiEmail": {
       "title": "Verify email",
       "invalidAlert": "The verification link is invalid or expired. Sign up again to get a new link.",
-      "sentMessage": "We sent a verification link to your email. Click it to activate your account before signing in.",
+      "sentMessage": "We sent a verification link to your email. Open it on any device — this page will sign you in automatically once verified.",
       "verifiedMessage": "Your email has been verified. Your account is now active.",
-      "goToDashboard": "Go to Dashboard"
+      "goToDashboard": "Go to Dashboard",
+      "waitingHint": "Waiting for verification"
+    },
+    "verifikasiBerhasil": {
+      "title": "Email verified",
+      "description": "You can close this page.",
+      "hint": "The device where you signed up will open the dashboard automatically."
     }
   },
   "dashboard": {

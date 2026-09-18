@@ -52,7 +52,7 @@ export function DaftarForm({ kuisSelesai = false }: { kuisSelesai?: boolean }) {
     }
     hapusProgresSesi();
     toast.success(t("toastSuccess"));
-    router.push("/verifikasi-email");
+    router.push(`/verifikasi-email?email=${encodeURIComponent(data.email)}`);
   }
 
   return (
