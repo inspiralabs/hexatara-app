@@ -296,6 +296,7 @@ export function ProdukForm({
                   <ImageUploadField
                     label="Thumbnail (kartu katalog)"
                     aspectRatio={16 / 9}
+                    lockSize
                     suggestedPx="1200×675px"
                     value={field.value ?? null}
                     onChange={field.onChange}

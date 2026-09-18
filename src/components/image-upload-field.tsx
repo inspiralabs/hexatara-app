@@ -38,6 +38,7 @@ export function ImageUploadField({
   suggestedPx,
   skipCrop = false,
   previewFit = 'cover',
+  lockSize = false,
 }: {
   label: string;
   value: string | null;
@@ -51,6 +52,8 @@ export function ImageUploadField({
   skipCrop?: boolean;
   /** Preview di form: cover (default, aspect-video) atau contain (tinggi menyesuaikan). */
   previewFit?: 'cover' | 'contain';
+  /** Ukuran kotak crop tetap — hanya boleh digeser (thumbnail kartu / hero slide). */
+  lockSize?: boolean;
 }) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -105,8 +108,9 @@ export function ImageUploadField({
 
   function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
     const { width, height } = e.currentTarget;
+    // lockSize: isi maksimal frame rasio (100%) supaya user tinggal geser, tidak "mengecilkan" area.
     const initial: PercentCrop = aspectRatio
-      ? makeAspectCrop({ unit: '%', width: 90 }, aspectRatio, width, height)
+      ? makeAspectCrop({ unit: '%', width: lockSize ? 100 : 90 }, aspectRatio, width, height)
       : { unit: '%', width: 90, height: 90, x: 5, y: 5 };
     setCrop(centerCrop(initial, width, height));
   }
@@ -222,6 +226,7 @@ export function ImageUploadField({
                   onChange={(_, percentCrop) => setCrop(percentCrop)}
                   onComplete={(c) => setCompletedCrop(c)}
                   aspect={aspectRatio}
+                  locked={lockSize}
                   className="mx-auto max-h-[55vh]"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element -- object URL sementara, next/image tidak perlu di sini */}
@@ -235,7 +240,11 @@ export function ImageUploadField({
                 </ReactCrop>
               </div>
               <p className="text-xs text-muted-foreground">
-                Geser dan sesuaikan area yang akan tampil{aspectRatio ? '' : ' — bebas, tidak terkunci rasio tertentu'}.
+                {lockSize
+                  ? 'Geser gambar ke posisi yang diinginkan — ukuran kotak tetap sesuai rasio tampilan publik.'
+                  : aspectRatio
+                    ? 'Geser dan sesuaikan area yang akan tampil.'
+                    : 'Geser dan sesuaikan area yang akan tampil — bebas, tidak terkunci rasio tertentu.'}
               </p>
               <DialogFooter className="flex-col-reverse gap-2 sm:flex-row sm:justify-end">
                 <Button type="button" variant="outline" className="h-11 w-full sm:w-auto" onClick={tutupDialogCrop} disabled={uploading}>

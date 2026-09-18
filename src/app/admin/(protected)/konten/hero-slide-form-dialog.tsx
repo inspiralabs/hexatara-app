@@ -219,8 +219,9 @@ export function HeroSlideFormDialog({
                   <FormControl>
                     <ImageUploadField
                       label="Gambar"
-                      aspectRatio={16 / 9}
-                      suggestedPx="1920×1080px"
+                      aspectRatio={4 / 3}
+                      lockSize
+                      suggestedPx="1600×1200px"
                       value={field.value ?? null}
                       onChange={field.onChange}
                       onUpload={async (file) => {
@@ -230,6 +231,9 @@ export function HeroSlideFormDialog({
                       }}
                     />
                   </FormControl>
+                  <FormDescription>
+                    Gambar ini juga tampil di halaman Masuk, Daftar, dan Lupa Sandi.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

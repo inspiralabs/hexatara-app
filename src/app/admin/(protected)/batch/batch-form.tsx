@@ -401,6 +401,7 @@ export function BatchForm({
                   <ImageUploadField
                     label="Thumbnail (kartu daftar pelatihan)"
                     aspectRatio={16 / 9}
+                    lockSize
                     suggestedPx="1920×1080px"
                     value={field.value ?? null}
                     onChange={field.onChange}
