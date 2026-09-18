@@ -299,6 +299,14 @@ Bucket storage baru: `identity-documents` (privat, pola sama `certificates`/`pay
 
 **Lightbox klik-untuk-perbesar TIDAK butuh tabel/kolom baru** — murni komponen UI baru di sisi publik, dipasang di hero pelatihan dan galeri produk.
 
+### 5.1f Tabel/kolom tambahan — Modul 10 (lihat Bagian 9e)
+
+| Tabel | Ditambahkan oleh | Kegunaan |
+|---|---|---|
+| `batch_registrations.bukti_url` | ADR-023 (F10.4) | Bukti pembayaran yang diupload ADMIN (bukan peserta) sebelum menyetujui pendaftaran — bucket privat `payment-proofs` (reuse dari `certificate_orders`), pola signed URL sama, path berbeda (`batch-<id>.<ext>`) supaya tidak bentrok |
+
+**Bug kuis LMS (F10.3), infrastruktur email/Resend (F10.5), verifikasi lintas-device (F10.6), dan polish Admin (F10.1) TIDAK butuh tabel/kolom baru** — murni perubahan logika/kode. `profiles` dan `auth.users` (skema bawaan Supabase) sudah cukup untuk melacak status verifikasi email lewat `email_confirmed_at`, tidak perlu kolom pelacak tambahan.
+
 ### 5.2 View publik — WAJIB untuk akses anonim
 
 | View | Kenapa ada |
@@ -1080,6 +1088,79 @@ Perbaikan pengalaman upload gambar Admin dan tampilan publik, supaya poster pela
 - [ ] Form Admin Hero Beranda: rasio crop upload sudah 4:3, ada teks keterangan soal pemakaian gambar ini di halaman Masuk/Daftar/Lupa Sandi
 - [ ] Klik gambar hero pelatihan dan galeri produk memunculkan lightbox (backdrop blur), bisa ditutup lewat X/klik luar/Escape, lolos `pnpm lint` tanpa error `jsx-a11y`
 - [ ] Diuji di viewport 375px untuk field upload baru, tampilan detail, dan lightbox
+
+---
+
+## 9e. MODUL 10 — BUG KUIS LMS, BUKTI PEMBAYARAN, EMAIL RESEND PENUH, VERIFIKASI LINTAS-DEVICE, POLISH ADMIN
+
+> Bukan bagian dari scope asli BRD-HXT-002. 9 temuan Alif setelah deploy ke Vercel, dikelompokkan dan diurutkan termudah→tersulit sesuai instruksi eksplisit Alif, dikonfirmasi bertahap lewat AskUserQuestion sebelum SQL/prompt ditulis. Dicatat sebagai ADR-023 di `ENGINEERING.md` Bagian 10.
+
+### 9e.1 Tujuan
+
+Memperbaiki bug nyata yang ditemukan Alif di lingkungan production (bukan lagi lokal), melengkapi alur approve pendaftaran batch dengan bukti pembayaran, membereskan email sistem supaya benar-benar terkirim lewat Resend dengan desain branded (bukan email polos bawaan Supabase), memperbaiki UX verifikasi email lintas-device, dan merapikan beberapa hal kecil di Admin (menu, warna tombol, kejelasan input silabus).
+
+### 9e.2 Daftar fitur
+
+| Kode | Fitur | Prio | Tabel |
+|---|---|---|---|
+| F10.1 | Polish Admin: menu Pendaftaran Batch/Peserta Pendaftaran pindah ke section Leads, warna tombol edit/hapus/setujui konsisten (biru/merah/hijau, dark-mode friendly), hint heading silabus | MUST | — (tanpa perubahan skema) |
+| F10.2 | Cek operasional: `NEXT_PUBLIC_SITE_URL` di Vercel Production, konfirmasi urutan produk/pelatihan BUKAN bug | MUST | — (tanpa kode, dikerjakan Alif sendiri di Vercel Dashboard) |
+| F10.3 | Perbaikan bug kuis LMS — jawaban salah tidak lagi meloloskan submit; tombol "Ulangi Ujian" mereset kuis (bukan materi) | MUST | — (tanpa perubahan skema) |
+| F10.4 | Bukti pembayaran pendaftaran batch — Admin upload sebelum Setuju, tampil di detail Peserta Pendaftaran | MUST | `batch_registrations` |
+| F10.5 | Infrastruktur email — verifikasi & reset password pindah dari email bawaan Supabase ke Resend (template branded yang sudah ada) | MUST | — (tanpa perubahan skema) |
+| F10.6 | Verifikasi email lintas-device — device asal auto-login begitu device lain menyelesaikan verifikasi, dengan animasi menunggu | MUST | — (tanpa perubahan skema, bergantung F10.5) |
+
+### 9e.3 F10.1 — Polish Admin
+
+- Menu Admin: `Pendaftaran Batch` dan `Peserta Pendaftaran` (`admin-shell.tsx`) dipindahkan dari section "Batch" ke section "Leads" — TIDAK ada route yang dihapus, murni pengelompokan ulang menu supaya tidak ambigu dengan "Pendaftaran Minat"/"Permintaan Penawaran" yang sama-sama mengandung kata "pendaftaran".
+- Tombol aksi di seluruh Admin: varian baru ditambahkan ke `buttonVariants` (`src/components/ui/button.tsx`) — biru untuk edit, hijau untuk setujui — TANPA mengubah varian lama yang sudah dipakai luas (`destructive`/merah tetap dipakai untuk hapus). Semua varian baru wajib terlihat jelas di dark mode.
+- Form Admin Batch: ditambahkan teks keterangan singkat di field Silabus bahwa heading (Heading 2/3, dsb) di editor menentukan pembagian item akordion di halaman publik.
+
+### 9e.4 F10.2 — Cek operasional (tanpa kode)
+
+- Alif mengecek dan mengisi `NEXT_PUBLIC_SITE_URL` di Vercel Dashboard (Project Settings → Environment Variables → Production) sesuai domain live, lalu redeploy — kode sudah benar memakai variabel ini di semua titik, murni env var yang belum terisi/salah di Production.
+- Urutan produk/pelatihan dikonfirmasi BUKAN bug — query Beranda, `/pelatihan`, `/katalog` sudah konsisten memakai kolom `urutan` yang sama.
+
+### 9e.5 F10.3 — Perbaikan bug kuis LMS
+
+- `course-reader.tsx`: kondisi kelayakan submit kuis diperbaiki dari "semua soal sudah dijawab" menjadi "semua soal sudah dijawab BENAR".
+- Kalau ada jawaban salah saat mencoba submit: tampilkan deskripsi yang menjelaskan belum semua jawaban benar, tombol "Dapatkan Sertifikat" berubah jadi "Ulangi Ujian".
+- Klik "Ulangi Ujian" mereset HANYA jawaban kuis (kembali ke soal nomor 1, semua jawaban terhapus) — progres bab materi yang sudah dibaca/ditonton TETAP tersimpan, TIDAK perlu diulang.
+
+### 9e.6 F10.4 — Bukti pembayaran pendaftaran batch
+
+- `admin/pendaftaran-batch`: popup konfirmasi "Setujui" (`pendaftaran-batch-row-actions.tsx`) mendapat field upload gambar bukti pembayaran — WAJIB diisi, tombol Setuju baru aktif setelah ada bukti terunggah.
+- Bukti disimpan lewat bucket privat `payment-proofs` (reuse dari `certificate_orders`), path berbeda supaya tidak bentrok.
+- `peserta-pendaftaran`: detail peserta menampilkan bukti pembayaran yang sama lewat signed URL berumur pendek (pola sama halaman Admin Upgrade Sertifikat).
+
+### 9e.7 F10.5 — Infrastruktur email penuh Resend
+
+- `daftar/actions.ts` dan `lupa-sandi/actions.ts` berhenti memanggil `supabase.auth.signUp()`/`resetPasswordForEmail()` secara langsung (yang otomatis memicu email bawaan Supabase) — diganti `supabaseAdmin.auth.admin.generateLink()` untuk membuat link TANPA mengirim email, lalu email dikirim manual lewat fungsi Resend yang sudah ada (`kirimEmailVerifikasi`/`kirimEmailResetSandi`, `templates.ts`) — sudah punya header logo Hexatara, warna cobalt mist, footer kontak.
+- `/auth/confirm/route.ts` disesuaikan mengikuti bentuk link baru dari `generateLink()`.
+- Tidak ada email sistem lain yang masih bawaan Supabase setelah ini — seluruh 5 email terprogram (`templates.ts`) + verifikasi + reset password semuanya lewat Resend.
+
+### 9e.8 F10.6 — Verifikasi email lintas-device
+
+- Link di email verifikasi, saat diklik di device MANAPUN, HANYA menandai status email terverifikasi dan menampilkan layar konfirmasi (centang besar + animasi) — TIDAK membuat sesi login atau membuka dashboard di device itu.
+- Device ASAL (tempat form daftar diisi) tetap di halaman menunggu verifikasi, polling status secara berkala lewat server action. Begitu status terverifikasi, device asal (dan HANYA device asal) yang otomatis dibuatkan sesi dan diarahkan ke dashboard.
+- Layar menunggu di device asal diberi animasi (bukan teks statis) supaya terasa lebih hidup selama menunggu.
+
+### 9e.9 Batasan yang tetap berlaku penuh
+
+- Larangan #1 (jangan tambah tabel/kolom di luar Bagian 5) — satu-satunya kolom baru (`batch_registrations.bukti_url`) dicatat di Bagian 5.1f sebelum SQL apa pun diajukan.
+- F10.5/F10.6 mengubah alur inti autentikasi — WAJIB diuji dengan device fisik berbeda (bukan dua tab satu browser) sebelum dianggap DONE, sesuai Definisi Selesai Bagian 14.
+- F10.1/F10.3 TIDAK mengubah komponen shared (`carousel.tsx`, dst) di luar yang disebutkan — varian tombol baru ditambahkan, bukan menggantikan varian lama.
+- Prinsip MOBILE FIRST dan RESPONSIF berlaku penuh di semua perubahan tampilan F10.x.
+
+### 9e.10 Selesai bila
+
+- [ ] Seluruh F10.1 s/d F10.6 berstatus DONE di `feature-registry.md` dengan bukti uji manual (Definisi Selesai Bagian 14)
+- [ ] Menu Admin: Pendaftaran Batch/Peserta Pendaftaran ada di section Leads, tombol edit/hapus/setujui berwarna konsisten dan jelas di dark mode
+- [ ] Kuis LMS: mencoba submit dengan jawaban salah menampilkan "Ulangi Ujian", materi yang sudah dibaca tidak ikut ter-reset, submit hanya berhasil kalau semua jawaban benar
+- [ ] Approve pendaftaran batch meminta bukti pembayaran dulu, bukti tampil di detail Peserta Pendaftaran
+- [ ] Email verifikasi dan reset password dikirim lewat Resend dengan desain branded (header logo, warna cobalt mist, footer kontak) — dites nyata, bukan cuma dibaca kode
+- [ ] Verifikasi lintas-device diuji dengan DUA PERANGKAT FISIK BERBEDA (bukan dua tab satu browser): device A daftar dan menunggu, device B (HP) klik link email, device A otomatis masuk dashboard tanpa aksi tambahan
+- [ ] Diuji di viewport 375px untuk semua perubahan tampilan
 
 ---
 

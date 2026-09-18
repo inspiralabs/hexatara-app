@@ -487,6 +487,10 @@ export function BatchForm({
                   <FormControl>
                     <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />
                   </FormControl>
+                  <FormDescription>
+                    Gunakan Heading (H2/H3) di editor untuk memisahkan bagian — setiap heading akan
+                    tampil sebagai satu item akordion terpisah di halaman publik.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -500,6 +504,10 @@ export function BatchForm({
                   <FormControl>
                     <RichTextEditor value={field.value ?? ''} onChange={field.onChange} />
                   </FormControl>
+                  <FormDescription>
+                    Gunakan Heading (H2/H3) di editor untuk memisahkan bagian — setiap heading akan
+                    tampil sebagai satu item akordion terpisah di halaman publik.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

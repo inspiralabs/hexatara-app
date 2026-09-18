@@ -53,10 +53,10 @@ export function UpgradeRowActions({ orderId }: { orderId: number }) {
 
   return (
     <div className="flex justify-end gap-2">
-      <Button size="sm" onClick={() => setSetujuiOpen(true)}>
+      <Button size="sm" variant="success" onClick={() => setSetujuiOpen(true)}>
         Setujui
       </Button>
-      <Button size="sm" variant="outline" onClick={() => setTolakOpen(true)}>
+      <Button size="sm" variant="destructive" onClick={() => setTolakOpen(true)}>
         Tolak
       </Button>
 
@@ -71,7 +71,7 @@ export function UpgradeRowActions({ orderId }: { orderId: number }) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={konfirmasiSetujui} disabled={pending}>
+            <AlertDialogAction variant="success" onClick={konfirmasiSetujui} disabled={pending}>
               {pending ? 'Memproses…' : 'Setujui'}
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -95,7 +95,7 @@ export function UpgradeRowActions({ orderId }: { orderId: number }) {
           />
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={konfirmasiTolak} disabled={pending || alasan.trim() === ''}>
+            <AlertDialogAction variant="destructive" onClick={konfirmasiTolak} disabled={pending || alasan.trim() === ''}>
               {pending ? 'Memproses…' : 'Tolak'}
             </AlertDialogAction>
           </AlertDialogFooter>

@@ -49,7 +49,7 @@ export function SertifikatRowActions({ id, nomor }: { id: string; nomor: string 
           <MoreVerticalIcon />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem render={<Link href={`/admin/sertifikat/${id}`} />}>Ubah</DropdownMenuItem>
+          <DropdownMenuItem variant="edit" render={<Link href={`/admin/sertifikat/${id}`} />}>Ubah</DropdownMenuItem>
           <DropdownMenuItem variant="destructive" onClick={() => setHapusOpen(true)}>
             Hapus
           </DropdownMenuItem>
@@ -67,7 +67,7 @@ export function SertifikatRowActions({ id, nomor }: { id: string; nomor: string 
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={konfirmasiHapus} disabled={pending}>
+            <AlertDialogAction variant="destructive" onClick={konfirmasiHapus} disabled={pending}>
               {pending ? 'Menghapus…' : 'Hapus'}
             </AlertDialogAction>
           </AlertDialogFooter>

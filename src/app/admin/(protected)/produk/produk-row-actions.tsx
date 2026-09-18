@@ -49,7 +49,7 @@ export function ProdukRowActions({ id, nama }: { id: number; nama: string }) {
           <MoreVerticalIcon />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem render={<Link href={`/admin/produk/${id}`} />}>Ubah</DropdownMenuItem>
+          <DropdownMenuItem variant="edit" render={<Link href={`/admin/produk/${id}`} />}>Ubah</DropdownMenuItem>
           <DropdownMenuItem variant="destructive" onClick={() => setHapusOpen(true)}>
             Hapus
           </DropdownMenuItem>
@@ -67,7 +67,7 @@ export function ProdukRowActions({ id, nama }: { id: number; nama: string }) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={konfirmasiHapus} disabled={pending}>
+            <AlertDialogAction variant="destructive" onClick={konfirmasiHapus} disabled={pending}>
               {pending ? 'Menghapus…' : 'Hapus'}
             </AlertDialogAction>
           </AlertDialogFooter>

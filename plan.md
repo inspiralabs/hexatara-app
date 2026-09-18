@@ -1,10 +1,14 @@
-# Plan Sprint 8 — Modul 9: Gambar Utuh (ADR-022 / ADR-022b)
+# Plan — Admin UX patch (menu Leads + warna tombol + hint silabus)
 
-> **Status sesi:** Sprint 8 selesai — F09.1–F09.4 DONE di `feature-registry.md` (uji Alif OK).
+> **Status sesi:** SELESAI — `tsc` / `lint` / `build` bersih. Menunggu uji Alif.
 
-| Fitur | Status |
-|-------|--------|
-| F09.1 | DONE |
-| F09.2 | DONE (+ ADR-022b) |
-| F09.3 | DONE |
-| F09.4 | DONE |
+| Bagian | Status | Isi |
+|--------|--------|-----|
+| 1. Menu sidebar | DONE | Pendaftaran Batch + Peserta → Leads; Batch tinggal Daftar + Kategori |
+| 2. Warna tombol | DONE | `edit` (biru) + `success` (hijau); Hapus/Tolak=`destructive`; Setuju=`success` |
+| 3. Hint silabus | DONE | FormDescription H2/H3 → akordion di `silabus_id` / `silabus_en` |
+
+## Keputusan
+- **Tolak** = `destructive` (aksi negatif, sejajar Hapus) — bukan outline.
+- `childAktif` murni pathname — highlight tetap benar setelah pindah section.
+- Dropdown "Ubah" pakai `variant="edit"` (hampir semua edit di Admin lewat dropdown, bukan Button terpisah).

@@ -58,7 +58,7 @@ export function HeroSlideRowActions({
           <MoreVerticalIcon />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={onUbah}>Ubah</DropdownMenuItem>
+          <DropdownMenuItem variant="edit" onClick={onUbah}>Ubah</DropdownMenuItem>
           <DropdownMenuItem variant="destructive" onClick={() => setHapusOpen(true)}>
             Hapus
           </DropdownMenuItem>
@@ -73,7 +73,7 @@ export function HeroSlideRowActions({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={konfirmasiHapus} disabled={pending}>
+            <AlertDialogAction variant="destructive" onClick={konfirmasiHapus} disabled={pending}>
               {pending ? 'Menghapus…' : 'Hapus'}
             </AlertDialogAction>
           </AlertDialogFooter>

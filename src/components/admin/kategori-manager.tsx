@@ -185,7 +185,7 @@ export function KategoriManager({
                         <MoreVerticalIcon />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => bukaUbah(k)}>Ubah</DropdownMenuItem>
+                        <DropdownMenuItem variant="edit" onClick={() => bukaUbah(k)}>Ubah</DropdownMenuItem>
                         <DropdownMenuItem
                           variant="destructive"
                           onClick={() => {
@@ -224,7 +224,7 @@ export function KategoriManager({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={konfirmasiHapus} disabled={hapusPending}>
+            <AlertDialogAction variant="destructive" onClick={konfirmasiHapus} disabled={hapusPending}>
               {hapusPending ? 'Menghapus…' : 'Hapus'}
             </AlertDialogAction>
           </AlertDialogFooter>

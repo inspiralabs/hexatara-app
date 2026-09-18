@@ -53,10 +53,10 @@ export function PendaftaranBatchRowActions({ registrasiId }: { registrasiId: num
 
   return (
     <>
-      <Button size="sm" onClick={() => setSetujuiOpen(true)}>
+      <Button size="sm" variant="success" onClick={() => setSetujuiOpen(true)}>
         Setuju
       </Button>
-      <Button size="sm" variant="outline" onClick={() => setTolakOpen(true)}>
+      <Button size="sm" variant="destructive" onClick={() => setTolakOpen(true)}>
         Tolak
       </Button>
 
@@ -70,7 +70,7 @@ export function PendaftaranBatchRowActions({ registrasiId }: { registrasiId: num
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={konfirmasiSetujui} disabled={pending}>
+            <AlertDialogAction variant="success" onClick={konfirmasiSetujui} disabled={pending}>
               {pending ? 'Memproses…' : 'Setuju'}
             </AlertDialogAction>
           </AlertDialogFooter>
@@ -93,7 +93,7 @@ export function PendaftaranBatchRowActions({ registrasiId }: { registrasiId: num
           />
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={konfirmasiTolak} disabled={pending || alasan.trim() === ''}>
+            <AlertDialogAction variant="destructive" onClick={konfirmasiTolak} disabled={pending || alasan.trim() === ''}>
               {pending ? 'Memproses…' : 'Tolak'}
             </AlertDialogAction>
           </AlertDialogFooter>

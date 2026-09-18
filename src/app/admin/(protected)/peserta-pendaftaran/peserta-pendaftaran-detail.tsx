@@ -149,12 +149,12 @@ export function PesertaPendaftaranDetail({ row }: { row: PesertaPendaftaranRow }
           <div className="mt-4 flex justify-end border-t border-border pt-4">
             <Button
               type="button"
-              variant="ghost"
+              variant="destructive"
               size="icon"
               aria-label={`Hapus peserta ${row.nama_lengkap ?? ''}`}
               onClick={() => setHapusOpen(true)}
             >
-              <Trash2Icon className="size-4 text-destructive" />
+              <Trash2Icon className="size-4" />
             </Button>
           </div>
         </DialogContent>
@@ -173,7 +173,7 @@ export function PesertaPendaftaranDetail({ row }: { row: PesertaPendaftaranRow }
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={konfirmasiHapus} disabled={pending}>
+            <AlertDialogAction variant="destructive" onClick={konfirmasiHapus} disabled={pending}>
               {pending ? 'Menghapus…' : 'Hapus'}
             </AlertDialogAction>
           </AlertDialogFooter>

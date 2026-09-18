@@ -53,7 +53,7 @@ function BarisHapus({ leadId, nama }: { leadId: number; nama: string }) {
 
   return (
     <>
-      <Button variant="ghost" size="icon" aria-label={`Hapus lead ${nama}`} onClick={() => setHapusOpen(true)}>
+      <Button variant="destructive" size="icon" aria-label={`Hapus lead ${nama}`} onClick={() => setHapusOpen(true)}>
         <Trash2Icon className="size-4 text-destructive" />
       </Button>
 
@@ -65,7 +65,7 @@ function BarisHapus({ leadId, nama }: { leadId: number; nama: string }) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={konfirmasiHapus} disabled={pending}>
+            <AlertDialogAction variant="destructive" onClick={konfirmasiHapus} disabled={pending}>
               {pending ? 'Menghapus…' : 'Hapus'}
             </AlertDialogAction>
           </AlertDialogFooter>

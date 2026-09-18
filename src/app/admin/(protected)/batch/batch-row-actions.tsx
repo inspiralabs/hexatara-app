@@ -51,7 +51,7 @@ export function BatchRowActions({ batchId, judul }: { batchId: number; judul: st
           <MoreVerticalIcon />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem render={<Link href={`/admin/batch/${batchId}`} />}>Ubah</DropdownMenuItem>
+          <DropdownMenuItem variant="edit" render={<Link href={`/admin/batch/${batchId}`} />}>Ubah</DropdownMenuItem>
           <DropdownMenuItem variant="destructive" onClick={() => setHapusOpen(true)}>
             Hapus
           </DropdownMenuItem>
@@ -69,7 +69,7 @@ export function BatchRowActions({ batchId, judul }: { batchId: number; judul: st
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>
-            <AlertDialogAction onClick={konfirmasiHapus} disabled={pending}>
+            <AlertDialogAction variant="destructive" onClick={konfirmasiHapus} disabled={pending}>
               {pending ? 'Menghapus…' : 'Hapus'}
             </AlertDialogAction>
           </AlertDialogFooter>
