@@ -5,6 +5,7 @@ import {
   Area,
   AreaChart,
   CartesianGrid,
+  Legend,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -18,12 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { CHART_COBALT_PRIMARY, CHART_COBALT_SECONDARY } from './chart-colors';
 
 export type MonthBucket = {
   /** YYYY-MM */
   key: string;
   label: string;
-  total: number;
+  pendaftaran: number;
+  penawaran: number;
 };
 
 const PERIODE = [
@@ -40,12 +43,14 @@ export function LeadsTrendChart({ data }: { data: MonthBucket[] }) {
     return data.slice(-n);
   }, [data, bulan]);
 
+  const kosong = sliced.every((b) => b.pendaftaran === 0 && b.penawaran === 0);
+
   return (
     <Card>
       <CardHeader className="flex flex-row flex-wrap items-start justify-between gap-3">
         <div>
           <CardTitle>Tren lead</CardTitle>
-          <CardDescription>Pendaftaran minat + permintaan penawaran per bulan</CardDescription>
+          <CardDescription>Pendaftaran batch vs permintaan penawaran per bulan</CardDescription>
         </div>
         <Select value={bulan} onValueChange={(v) => setBulan(v as '3' | '6' | '12')}>
           <SelectTrigger className="h-9 w-[8.5rem]" aria-label="Filter periode chart">
@@ -62,7 +67,7 @@ export function LeadsTrendChart({ data }: { data: MonthBucket[] }) {
       </CardHeader>
       <CardContent>
         <div className="h-56 w-full min-w-0 sm:h-72">
-          {sliced.every((b) => b.total === 0) ? (
+          {kosong ? (
             <p className="flex h-full items-center justify-center text-sm text-muted-foreground">
               Belum ada lead pada periode ini.
             </p>
@@ -70,9 +75,13 @@ export function LeadsTrendChart({ data }: { data: MonthBucket[] }) {
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={sliced} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
                 <defs>
-                  <linearGradient id="leadFill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--foreground)" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="var(--foreground)" stopOpacity={0} />
+                  <linearGradient id="fillPendaftaran" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={CHART_COBALT_PRIMARY} stopOpacity={0.35} />
+                    <stop offset="95%" stopColor={CHART_COBALT_PRIMARY} stopOpacity={0} />
+                  </linearGradient>
+                  <linearGradient id="fillPenawaran" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={CHART_COBALT_SECONDARY} stopOpacity={0.35} />
+                    <stop offset="95%" stopColor={CHART_COBALT_SECONDARY} stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
@@ -97,14 +106,22 @@ export function LeadsTrendChart({ data }: { data: MonthBucket[] }) {
                     color: 'var(--popover-foreground)',
                     fontSize: 12,
                   }}
-                  formatter={(value) => [Number(value), 'Lead']}
+                />
+                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Area
+                  type="monotone"
+                  dataKey="pendaftaran"
+                  name="Pendaftaran"
+                  stroke={CHART_COBALT_PRIMARY}
+                  fill="url(#fillPendaftaran)"
+                  strokeWidth={2}
                 />
                 <Area
                   type="monotone"
-                  dataKey="total"
-                  name="Lead"
-                  stroke="var(--foreground)"
-                  fill="url(#leadFill)"
+                  dataKey="penawaran"
+                  name="Penawaran"
+                  stroke={CHART_COBALT_SECONDARY}
+                  fill="url(#fillPenawaran)"
                   strokeWidth={2}
                 />
               </AreaChart>

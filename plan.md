@@ -1,27 +1,24 @@
-# Plan Sprint 10 — F11.1 Kategori produk (ADR-024)
+# Plan Sprint 10 — F11.2b fix
 
-> **Status sesi:** Gate types OK (`category_nama_id`/`en` ada). Kode F11.1 selesai, menunggu uji Alif. Tidak ada DDL dari agent.
+> **Root cause tren "kosong":** data LIVE OK (3 reg + 1 quote → key `2026-09`). Bukan query/RLS/bucket. Chart terlihat kosong karena `--chart-*` di Admin = abu-abu monokrom + recharts SVG sering gagal resolve `var(--chart-*)`. Fix: hex cobalt eksplisit (`#1E40AF` = `--warna-utama`).
 
-## Keputusan
-- Field teks `kategori` dihapus dari form/Zod/actions (kolom DB `products.kategori` dibiarkan).
-- Badge publik → `pick(category_nama_id, category_nama_en)`.
-- Filter `category_id` tidak disentuh.
-- Admin table masih tampilkan kolom teks lama (out of scope).
+| Sumber angka | Tabel |
+|---|---|
+| Lead baru 7 hari | `batch_registrations` + `quote_requests` (count, 7 hari) |
+| Menunggu verifikasi | `certificate_orders` status `menunggu_verifikasi` |
+| Sertifikat bulan ini | `certificates.tanggal_terbit` bulan berjalan |
+| Batch aktif | `batches` `is_active` |
+| Ringkasan Pendaftaran | `batch_registrations` count per status |
+| Ringkasan Penawaran | `quote_requests` count per status |
+| Tren 2 garis | `created_at` 12 bln → buckets |
+| Pie status | sama count status Ringkasan |
+| Bar sertifikat | `certificates.tanggal_terbit` 12 bln |
+| Aktivitas terbaru | 10 baris terbaru masing-masing tabel |
 
-## Urutan kerja
-| # | Langkah | Status |
-|---|---------|--------|
-| 0 | Gate types + baca file | DONE |
-| 1 | Hapus field teks form + Zod/actions/defaults | DONE |
-| 2 | Badge publik (card, detail, beranda) | DONE |
-| 3 | Update `.select` products_public | DONE |
-| 4 | Filter category_id — tidak disentuh | DONE |
-| 5 | tsc / lint / build | DONE |
-| 6 | Laporan Alif (F11.1 TODO sampai OK) | PENDING |
+Tidak ada `batch_leads` / mock / hardcode.
 
-## Uji Alif
-- Form: satu field Kategori (combobox)
-- `/katalog` + detail: badge = nama dari `product_categories`
-- Tanpa `category_id`: badge kosong, tidak crash
-- SQL: `select harga from products_public where tampilkan_harga = false;` → semua NULL
-- 375px: badge tidak overflow
+| # | Status |
+|---|--------|
+| Diagnosis + fix warna + angka lebih besar | DONE |
+| tsc/lint/build | PENDING |
+| Registry F11.2 — jangan DONE sampai Alif OK | — |

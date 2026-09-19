@@ -1,7 +1,10 @@
 import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { StatCards, type StatCardItem } from './overview/stat-cards';
+import { LeadsSummary } from './overview/leads-summary';
 import { LeadsTrendChart, type MonthBucket } from './overview/leads-trend-chart';
+import { LeadsStatusPie, type PieSlice } from './overview/leads-status-pie';
+import { CertificatesBarChart, type CertMonthBucket } from './overview/certificates-bar-chart';
 import { RecentLeadsTable, type RecentLeadRow } from './overview/recent-leads-table';
 
 function isoDaysAgo(days: number) {
@@ -28,9 +31,20 @@ function monthLabel(key: string) {
   return d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit', timeZone: 'UTC' });
 }
 
-function buildEmptyBuckets(months: number): MonthBucket[] {
+function buildEmptyLeadBuckets(months: number): MonthBucket[] {
   const now = new Date();
   const buckets: MonthBucket[] = [];
+  for (let i = months - 1; i >= 0; i--) {
+    const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1));
+    const key = monthKey(d);
+    buckets.push({ key, label: monthLabel(key), pendaftaran: 0, penawaran: 0 });
+  }
+  return buckets;
+}
+
+function buildEmptyCertBuckets(months: number): CertMonthBucket[] {
+  const now = new Date();
+  const buckets: CertMonthBucket[] = [];
   for (let i = months - 1; i >= 0; i--) {
     const d = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1));
     const key = monthKey(d);
@@ -44,6 +58,18 @@ function deltaPct(current: number, previous: number): number | null {
   return ((current - previous) / previous) * 100;
 }
 
+const LABEL_STATUS_REG = {
+  menunggu_verifikasi: 'Menunggu',
+  disetujui: 'Disetujui',
+  ditolak: 'Ditolak',
+} as const;
+
+const LABEL_STATUS_QUOTE = {
+  baru: 'Baru',
+  dihubungi: 'Dihubungi',
+  selesai: 'Selesai',
+} as const;
+
 export default async function AdminHomePage() {
   await requireAdmin();
   const supabase = await createClient();
@@ -55,6 +81,7 @@ export default async function AdminHomePage() {
   const awalBulanDepan = startOfMonth(1).toISOString().slice(0, 10);
   const awalBulanLalu = startOfMonth(-1).toISOString().slice(0, 10);
   const chartSince = startOfMonth(-11).toISOString();
+  const chartSinceDate = startOfMonth(-11).toISOString().slice(0, 10);
 
   const [
     lead7,
@@ -67,8 +94,15 @@ export default async function AdminHomePage() {
     batchAktif,
     batchRegChart,
     quoteChart,
+    certChart,
     batchRegRecent,
     quoteRecent,
+    regMenunggu,
+    regDisetujui,
+    regDitolak,
+    quoteBaru,
+    quoteDihubungi,
+    quoteSelesai,
   ] = await Promise.all([
     supabase
       .from('batch_registrations')
@@ -105,6 +139,7 @@ export default async function AdminHomePage() {
     supabase.from('batches').select('id', { count: 'exact', head: true }).eq('is_active', true),
     supabase.from('batch_registrations').select('created_at').gte('created_at', chartSince),
     supabase.from('quote_requests').select('created_at').gte('created_at', chartSince),
+    supabase.from('certificates').select('tanggal_terbit').gte('tanggal_terbit', chartSinceDate),
     supabase
       .from('batch_registrations')
       .select('id, nama_lengkap, whatsapp, email, status, created_at')
@@ -115,6 +150,30 @@ export default async function AdminHomePage() {
       .select('id, nama, whatsapp, email, status, created_at')
       .order('created_at', { ascending: false })
       .limit(10),
+    supabase
+      .from('batch_registrations')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'menunggu_verifikasi'),
+    supabase
+      .from('batch_registrations')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'disetujui'),
+    supabase
+      .from('batch_registrations')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'ditolak'),
+    supabase
+      .from('quote_requests')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'baru'),
+    supabase
+      .from('quote_requests')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'dihubungi'),
+    supabase
+      .from('quote_requests')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'selesai'),
   ]);
 
   for (const [label, err] of [
@@ -125,6 +184,9 @@ export default async function AdminHomePage() {
     ['batch', batchAktif.error],
     ['chart-reg', batchRegChart.error],
     ['chart-quote', quoteChart.error],
+    ['chart-cert', certChart.error],
+    ['reg-status', regMenunggu.error ?? regDisetujui.error ?? regDitolak.error],
+    ['quote-status', quoteBaru.error ?? quoteDihubungi.error ?? quoteSelesai.error],
   ] as const) {
     if (err) console.error(`[admin-overview] ${label}:`, err);
   }
@@ -171,24 +233,47 @@ export default async function AdminHomePage() {
     },
   ];
 
-  const buckets = buildEmptyBuckets(12);
+  const regItems = [
+    { key: 'menunggu_verifikasi', label: LABEL_STATUS_REG.menunggu_verifikasi, count: regMenunggu.count ?? 0 },
+    { key: 'disetujui', label: LABEL_STATUS_REG.disetujui, count: regDisetujui.count ?? 0 },
+    { key: 'ditolak', label: LABEL_STATUS_REG.ditolak, count: regDitolak.count ?? 0 },
+  ];
+  const quoteItems = [
+    { key: 'baru', label: LABEL_STATUS_QUOTE.baru, count: quoteBaru.count ?? 0 },
+    { key: 'dihubungi', label: LABEL_STATUS_QUOTE.dihubungi, count: quoteDihubungi.count ?? 0 },
+    { key: 'selesai', label: LABEL_STATUS_QUOTE.selesai, count: quoteSelesai.count ?? 0 },
+  ];
+  const pendaftaranTotal = regItems.reduce((s, i) => s + i.count, 0);
+  const penawaranTotal = quoteItems.reduce((s, i) => s + i.count, 0);
+
+  const buckets = buildEmptyLeadBuckets(12);
   const indexByKey = new Map(buckets.map((b, i) => [b.key, i]));
-  for (const row of [...(batchRegChart.data ?? []), ...(quoteChart.data ?? [])]) {
-    const key = monthKey(new Date(row.created_at));
-    const idx = indexByKey.get(key);
-    if (idx != null) buckets[idx]!.total += 1;
+  for (const row of batchRegChart.data ?? []) {
+    const idx = indexByKey.get(monthKey(new Date(row.created_at)));
+    if (idx != null) buckets[idx]!.pendaftaran += 1;
+  }
+  for (const row of quoteChart.data ?? []) {
+    const idx = indexByKey.get(monthKey(new Date(row.created_at)));
+    if (idx != null) buckets[idx]!.penawaran += 1;
   }
 
-  const LABEL_STATUS_REG = {
-    menunggu_verifikasi: 'Menunggu',
-    disetujui: 'Disetujui',
-    ditolak: 'Ditolak',
-  } as const;
-  const LABEL_STATUS_QUOTE = {
-    baru: 'Baru',
-    dihubungi: 'Dihubungi',
-    selesai: 'Selesai',
-  } as const;
+  const certBuckets = buildEmptyCertBuckets(12);
+  const certIndex = new Map(certBuckets.map((b, i) => [b.key, i]));
+  for (const row of certChart.data ?? []) {
+    if (!row.tanggal_terbit) continue;
+    const idx = certIndex.get(monthKey(new Date(row.tanggal_terbit)));
+    if (idx != null) certBuckets[idx]!.total += 1;
+  }
+
+  // Warna cobalt hex di komponen chart (colorIndex → CHART_COBALT)
+  const pieData: PieSlice[] = [
+    { key: 'reg-menunggu', name: 'Pendaftaran · Menunggu', value: regItems[0]!.count, colorIndex: 0 },
+    { key: 'reg-disetujui', name: 'Pendaftaran · Disetujui', value: regItems[1]!.count, colorIndex: 2 },
+    { key: 'reg-ditolak', name: 'Pendaftaran · Ditolak', value: regItems[2]!.count, colorIndex: 4 },
+    { key: 'quote-baru', name: 'Penawaran · Baru', value: quoteItems[0]!.count, colorIndex: 1 },
+    { key: 'quote-dihubungi', name: 'Penawaran · Dihubungi', value: quoteItems[1]!.count, colorIndex: 3 },
+    { key: 'quote-selesai', name: 'Penawaran · Selesai', value: quoteItems[2]!.count, colorIndex: 5 },
+  ];
 
   const recent: RecentLeadRow[] = [
     ...(batchRegRecent.data ?? []).map((r) => ({
@@ -222,14 +307,19 @@ export default async function AdminHomePage() {
 
       <StatCards items={stats} />
 
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-5">
-        <div className="xl:col-span-3">
-          <LeadsTrendChart data={buckets} />
-        </div>
-        <div className="xl:col-span-2">
-          <RecentLeadsTable rows={recent} />
-        </div>
+      <LeadsSummary
+        pendaftaran={{ total: pendaftaranTotal, items: regItems }}
+        penawaran={{ total: penawaranTotal, items: quoteItems }}
+      />
+
+      <LeadsTrendChart data={buckets} />
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <LeadsStatusPie data={pieData} />
+        <CertificatesBarChart data={certBuckets} />
       </div>
+
+      <RecentLeadsTable rows={recent} />
     </div>
   );
 }

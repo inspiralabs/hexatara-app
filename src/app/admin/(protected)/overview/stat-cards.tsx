@@ -61,12 +61,12 @@ export function StatCards({ items }: { items: StatCardItem[] }) {
             <CardHeader className="flex flex-row items-start justify-between gap-2 space-y-0">
               <div className="min-w-0">
                 <CardDescription className="truncate">{item.label}</CardDescription>
-                <CardTitle className="mt-1 text-2xl font-semibold tracking-tight tabular-nums">
+                <CardTitle className="mt-1 text-4xl font-semibold tracking-tight tabular-nums sm:text-5xl">
                   {formatAngka(item.value)}
                 </CardTitle>
               </div>
-              <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-                <Icon className="size-4" aria-hidden />
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                <Icon className="size-5" aria-hidden />
               </span>
             </CardHeader>
             <CardContent className="flex items-center gap-2 pt-0">
