@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 
 export type StatusCount = { key: string; label: string; count: number };
 
@@ -26,9 +26,9 @@ function SummaryCard({
     <Card size="sm">
       <CardHeader className="space-y-1">
         <CardDescription>{title}</CardDescription>
-        <CardTitle className="text-4xl font-semibold tracking-tight tabular-nums sm:text-5xl">
+        <div className="mt-1 text-3xl font-semibold tracking-tight tabular-nums text-foreground">
           {formatAngka(total)}
-        </CardTitle>
+        </div>
         <p className="text-xs text-muted-foreground">{description}</p>
       </CardHeader>
       <CardContent className="flex flex-wrap gap-2 pt-0">

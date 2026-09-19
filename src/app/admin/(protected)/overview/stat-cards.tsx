@@ -8,7 +8,7 @@ import {
   MinusIcon,
   type LucideIcon,
 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 
 export type StatCardItem = {
@@ -61,16 +61,23 @@ export function StatCards({ items }: { items: StatCardItem[] }) {
             <CardHeader className="flex flex-row items-start justify-between gap-2 space-y-0">
               <div className="min-w-0">
                 <CardDescription className="truncate">{item.label}</CardDescription>
-                <CardTitle className="mt-1 text-4xl font-semibold tracking-tight tabular-nums sm:text-5xl">
-                  {formatAngka(item.value)}
-                </CardTitle>
+                
+                {/* Bagian ini dibungkus flex agar angka dan badge sejajar */}
+                <div className="mt-1 flex items-center gap-3">
+                  <div className="text-3xl font-semibold tracking-tight tabular-nums text-foreground">
+                    {formatAngka(item.value)}
+                  </div>
+                  {/* Pindahkan DeltaBadge ke sini */}
+                  {item.deltaPct != null ? <DeltaBadge deltaPct={item.deltaPct} /> : null}
+                </div>
+                
               </div>
               <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
                 <Icon className="size-5" aria-hidden />
               </span>
             </CardHeader>
             <CardContent className="flex items-center gap-2 pt-0">
-              {item.deltaPct != null ? <DeltaBadge deltaPct={item.deltaPct} /> : null}
+              {/* DeltaBadge dihapus dari sini, sisa caption saja */}
               <p className="text-xs text-muted-foreground">{item.caption}</p>
             </CardContent>
           </Card>
