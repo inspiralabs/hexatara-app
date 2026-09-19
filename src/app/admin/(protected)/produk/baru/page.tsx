@@ -7,7 +7,6 @@ const DEFAULT_VALUES: ProductFormInput = {
   nama_id: '',
   nama_en: '',
   slug: '',
-  kategori: '',
   category_id: null,
   rating: '',
   harga: '',

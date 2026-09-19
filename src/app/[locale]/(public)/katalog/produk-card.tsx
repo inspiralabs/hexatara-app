@@ -7,7 +7,14 @@ import type { Database } from "@/types/database";
 
 export type ProdukCardProduk = Pick<
   Database["public"]["Views"]["products_public"]["Row"],
-  "id" | "slug" | "nama_id" | "nama_en" | "kategori" | "harga" | "rating"
+  | "id"
+  | "slug"
+  | "nama_id"
+  | "nama_en"
+  | "category_nama_id"
+  | "category_nama_en"
+  | "harga"
+  | "rating"
 > & {
   cover?: string | null;
   thumbnail_url?: string | null;
@@ -25,6 +32,7 @@ export function ProdukCard({
   detailLabel: string;
 }) {
   const nama = pick(produk.nama_id, produk.nama_en, locale) ?? produk.nama_id ?? "";
+  const namaKategori = pick(produk.category_nama_id, produk.category_nama_en, locale);
   const src = produk.thumbnail_url || produk.cover || null;
 
   return (
@@ -34,7 +42,7 @@ export function ProdukCard({
       imageFit={produk.thumbnail_url ? "cover" : "contain"}
       imageBg={produk.thumbnail_url ? undefined : "bg-white"}
       badges={
-        produk.kategori ? <span className={publicBadgeKategori}>{produk.kategori}</span> : undefined
+        namaKategori ? <span className={publicBadgeKategori}>{namaKategori}</span> : undefined
       }
       title={nama}
       rating={produk.rating}

@@ -20,7 +20,6 @@ export const ProductFormSchema = z.object({
     .string()
     .min(1, { error: 'Slug wajib diisi' })
     .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, { error: 'Slug hanya huruf kecil, angka, dan tanda hubung' }),
-  kategori: teksOpsional,
   category_id: teksOpsional,
   rating: ratingOpsional,
   harga: angkaOpsional,

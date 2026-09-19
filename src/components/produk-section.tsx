@@ -21,7 +21,7 @@ export async function ProdukSection({ limit = 6 }: { limit?: number } = {}) {
 
   const { data: produk, error } = await supabase
     .from("products_public")
-    .select("id, slug, nama_id, nama_en, kategori, harga, rating, thumbnail_url")
+    .select("id, slug, nama_id, nama_en, category_nama_id, category_nama_en, harga, rating, thumbnail_url")
     .order("urutan")
     .limit(limit);
 
@@ -50,6 +50,7 @@ export async function ProdukSection({ limit = 6 }: { limit?: number } = {}) {
         {produk.map((p) => {
           if (p.id == null || p.slug == null) return null;
           const nama = pick(p.nama_id, p.nama_en, locale) ?? p.nama_id ?? "";
+          const namaKategori = pick(p.category_nama_id, p.category_nama_en, locale);
           const cover = coverByProductId.get(p.id);
           const src = p.thumbnail_url || cover || null;
           return (
@@ -59,7 +60,7 @@ export async function ProdukSection({ limit = 6 }: { limit?: number } = {}) {
               image={src ? { src, alt: nama } : undefined}
               imageFit={p.thumbnail_url ? "cover" : "contain"}
               imageBg={p.thumbnail_url ? undefined : "bg-white"}
-              badges={p.kategori && <span className={publicBadgeKategori}>{p.kategori}</span>}
+              badges={namaKategori ? <span className={publicBadgeKategori}>{namaKategori}</span> : undefined}
               title={nama}
               rating={p.rating}
               price={p.harga != null ? formatRupiah(p.harga) : tCatalog("hargaHubungiKami")}

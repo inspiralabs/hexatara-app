@@ -307,6 +307,12 @@ Bucket storage baru: `identity-documents` (privat, pola sama `certificates`/`pay
 
 **Bug kuis LMS (F10.3), infrastruktur email/Resend (F10.5), verifikasi lintas-device (F10.6), dan polish Admin (F10.1) TIDAK butuh tabel/kolom baru** — murni perubahan logika/kode. `profiles` dan `auth.users` (skema bawaan Supabase) sudah cukup untuk melacak status verifikasi email lewat `email_confirmed_at`, tidak perlu kolom pelacak tambahan.
 
+### 5.1g View diubah — Modul 11 (lihat Bagian 9f)
+
+**Tidak ada tabel/kolom baru di Modul 11.** Satu-satunya perubahan skema adalah view `products_public` (F11.1) — ditambah kolom turunan `category_nama_id`/`category_nama_en` (JOIN ke `product_categories` lewat `category_id` yang sudah ada), BUKAN kolom fisik baru di tabel `products`. Kolom teks bebas `products.kategori` (lama) TIDAK dihapus dari database, hanya tidak dipakai lagi form Admin maupun tampilan publik. Perubahan view ini WAJIB menjaga properti `security_invoker = off` (lihat Bagian 5.2/ADR-004) — lihat `usulan-sql-modul11-adr024.sql` untuk detail dan langkah verifikasi.
+
+Dashboard Admin (F11.2) dan halaman Login Admin (F11.3) **TIDAK butuh tabel/kolom/view baru** — murni query baca dari tabel yang sudah ada (`batch_registrations`, `quote_requests`, `certificates`) dan komponen tampilan yang sudah ada (`BrandLogo`).
+
 ### 5.2 View publik — WAJIB untuk akses anonim
 
 | View | Kenapa ada |
@@ -1162,6 +1168,61 @@ Memperbaiki bug nyata yang ditemukan Alif di lingkungan production (bukan lagi l
 - [ ] Email verifikasi dan reset password dikirim lewat Resend dengan desain branded (header logo, warna cobalt mist, footer kontak) — dites nyata, bukan cuma dibaca kode
 - [ ] Verifikasi lintas-device diuji dengan DUA PERANGKAT FISIK BERBEDA (bukan dua tab satu browser): device A daftar dan menunggu, device B (HP) klik link email, device A otomatis masuk dashboard tanpa aksi tambahan
 - [ ] Diuji di viewport 375px untuk semua perubahan tampilan
+
+---
+
+## 9f. MODUL 11 — KATEGORI PRODUK, RINGKASAN LEADS DASHBOARD ADMIN, REDESIGN LOGIN ADMIN
+
+> Bukan bagian dari scope asli BRD-HXT-002. 3 temuan Alif setelah push F10.x, ditelusuri ke kode dulu sebelum dikelompokkan. Dicatat sebagai ADR-024 di `ENGINEERING.md`.
+
+### 9f.1 Tujuan
+
+Menghilangkan ambiguitas dua field kategori di form Produk, melengkapi dashboard Admin dengan ringkasan Leads yang lebih rinci dan grafik yang lebih informatif (garis + pie/bar) sesuai permintaan Abi, dan memberi identitas brand pada halaman Login Admin yang sebelumnya polos.
+
+### 9f.2 Daftar fitur
+
+| Kode | Fitur | Prio | Tabel |
+|---|---|---|---|
+| F11.1 | Hapus field teks "Kategori" dari form Produk, badge kategori publik pindah baca dari relasi `category_id` | MUST | view `products_public` (kolom turunan baru, bukan kolom tabel) |
+| F11.2 | Dashboard Admin: ringkasan Leads per sumber + breakdown status, grafik tren 2 garis, pie chart status Leads, bar chart Sertifikat, angka stat card diperbesar | MUST | — (tanpa perubahan skema) |
+| F11.3 | Redesign halaman Login Admin — tambahkan `BrandLogo` (komponen sudah ada) | MUST | — (tanpa perubahan skema) |
+
+### 9f.3 F11.1 — Kategori produk
+
+- Form Tambah/Ubah Produk (`produk-form.tsx`): field teks bebas "Kategori" DIHAPUS dari form. Field "Kategori (dari daftar kategori)" (`category_id`, combobox) TETAP, jadi satu-satunya cara Admin menentukan kategori produk.
+- Badge kategori di halaman publik (`produk-card.tsx`, `katalog/[slug]/page.tsx`) berhenti membaca `produk.kategori` (teks bebas), diganti membaca nama kategori hasil relasi `category_id` — lewat kolom turunan baru di view `products_public` (`category_nama_id`/`category_nama_en`, JOIN ke `product_categories`), dipilih sesuai locale aktif sama seperti nama produk (`pick()`).
+- Kolom `products.kategori` (lama) TIDAK dihapus dari database — data lama dipertahankan, hanya sudah tidak dipakai form/tampilan manapun setelah perubahan ini (lihat Bagian 5.1g).
+- Perubahan view `products_public` WAJIB menjaga properti `security_invoker = off` (Bagian 5.2/ADR-004) — lihat `usulan-sql-modul11-adr024.sql` untuk detail dan langkah verifikasi ulang.
+
+### 9f.4 F11.2 — Dashboard Admin (Overview)
+
+- Section baru "Ringkasan Leads", terpisah dari 4 stat card yang sudah ada: memecah angka Pendaftaran Batch (`batch_registrations`) dan Permintaan Penawaran (`quote_requests`) yang sebelumnya digabung jadi satu angka "Lead baru (7 hari)" — masing-masing dengan breakdown status (Pendaftaran: menunggu/disetujui/ditolak; Penawaran: baru/dihubungi/selesai).
+- Grafik tren Leads (`LeadsTrendChart`) diubah dari satu garis gabungan menjadi dua garis terpisah (Pendaftaran Batch vs Permintaan Penawaran), memakai `recharts` yang sudah jadi dependency proyek (ADR-019).
+- Ditambahkan pie/donut chart baru: distribusi status gabungan Leads (menunggu/disetujui/ditolak + baru/dihubungi/selesai, atau dikelompokkan jadi kategori yang masuk akal).
+- Ditambahkan bar chart baru: distribusi Sertifikat (mis. per bulan beberapa bulan terakhir, konsisten dengan data yang sudah ditarik untuk card "Sertifikat bulan ini").
+- 4 stat card yang sudah ada (Lead baru, Menunggu verifikasi, Sertifikat bulan ini, Batch aktif) TETAP ada, angka utamanya diperbesar/dipertegas (ukuran teks dinaikkan dari `text-2xl`) supaya lebih mudah dibaca sekilas.
+- Tidak ada tabel/kolom/view baru — seluruhnya query baca dari tabel yang sudah dipakai `AdminHomePage` (`batch_registrations`, `quote_requests`, `certificates`, `batches`).
+
+### 9f.5 F11.3 — Redesign Login Admin
+
+- Halaman Login Admin (`admin/login/page.tsx`) mendapat komponen `BrandLogo` (sudah ada, `src/components/brand-logo.tsx`, `variant="auto"` otomatis menyesuaikan tema terang/gelap) di bagian atas kartu login, disusun ulang supaya terasa branded (logo + judul + deskripsi).
+- Field, validasi, dan alur submit form (`admin-login-form.tsx`) TIDAK berubah — murni penambahan elemen visual di sekitar form yang sudah berfungsi.
+
+### 9f.6 Batasan yang tetap berlaku penuh
+
+- Larangan #1 (jangan tambah tabel/kolom di luar Bagian 5) — F11.1 hanya mengubah VIEW (kolom turunan), bukan tabel/kolom fisik baru; dicatat di Bagian 5.1g sebelum SQL apa pun diajukan.
+- F11.1 WAJIB menjaga properti keamanan `security_invoker = off` pada `products_public` (Bagian 5.2/ADR-004) — lihat Konsekuensi ADR-024.
+- F11.2 TIDAK menambah dependency chart baru — memakai `recharts` yang sudah disetujui sejak ADR-019.
+- Prinsip MOBILE FIRST dan RESPONSIF berlaku penuh, termasuk untuk chart baru (tidak overflow di 375px).
+
+### 9f.7 Selesai bila
+
+- [ ] Seluruh F11.1 s/d F11.3 berstatus DONE di `feature-registry.md` dengan bukti uji manual (Definisi Selesai Bagian 14)
+- [ ] Form Produk hanya punya satu field kategori (combobox), badge kategori publik tetap tampil benar untuk produk yang sudah punya `category_id` terisi
+- [ ] `select harga from products_public where tampilkan_harga = false;` masih mengembalikan semua NULL setelah view diubah (regresi keamanan harga TIDAK terjadi)
+- [ ] Dashboard Admin menampilkan ringkasan Leads per sumber, grafik tren 2 garis, pie chart status Leads, bar chart Sertifikat, dan angka stat card yang lebih besar — semua data cocok dengan angka di halaman Leads/Sertifikat masing-masing
+- [ ] Halaman Login Admin menampilkan logo Hexatara, form tetap berfungsi seperti sebelumnya (login berhasil/gagal dengan pesan yang sama)
+- [ ] Diuji di viewport 375px untuk semua perubahan tampilan, termasuk chart baru
 
 ---
 

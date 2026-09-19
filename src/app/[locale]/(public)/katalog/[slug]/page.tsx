@@ -39,7 +39,7 @@ export default async function KatalogDetailPage({
   const { data: produk, error: errProduk } = await supabase
     .from("products_public")
     .select(
-      "id, slug, nama_id, nama_en, deskripsi_id, deskripsi_en, spesifikasi_id, spesifikasi_en, kategori, category_id, harga, rating"
+      "id, slug, nama_id, nama_en, deskripsi_id, deskripsi_en, spesifikasi_id, spesifikasi_en, category_nama_id, category_nama_en, category_id, harga, rating"
     )
     .eq("slug", slug)
     .maybeSingle();
@@ -61,7 +61,7 @@ export default async function KatalogDetailPage({
   const { data: suggestions } = produk.category_id
     ? await supabase
         .from("products_public")
-        .select("id, slug, nama_id, nama_en, kategori, harga, rating, thumbnail_url")
+        .select("id, slug, nama_id, nama_en, category_nama_id, category_nama_en, harga, rating, thumbnail_url")
         .eq("category_id", produk.category_id)
         .neq("id", produk.id)
         .order("created_at", { ascending: false })
@@ -80,6 +80,7 @@ export default async function KatalogDetailPage({
   }
 
   const nama = pick(produk.nama_id, produk.nama_en, locale) ?? produk.nama_id ?? "";
+  const namaKategori = pick(produk.category_nama_id, produk.category_nama_en, locale);
   const deskripsi = pick(produk.deskripsi_id, produk.deskripsi_en, locale);
   const spesifikasi = pick(produk.spesifikasi_id, produk.spesifikasi_en, locale);
   const waLink = buildWaProdukLink(process.env.NEXT_PUBLIC_WA_ADMIN, nama);
@@ -91,7 +92,7 @@ export default async function KatalogDetailPage({
           <ProductGallery images={gambar ?? []} alt={nama} />
 
           <div className="flex flex-col gap-3">
-            {produk.kategori && <span className={publicBadgeKategori}>{produk.kategori}</span>}
+            {namaKategori && <span className={publicBadgeKategori}>{namaKategori}</span>}
             <h1 className={publicSectionHeading}>{nama}</h1>
             <StarRating rating={produk.rating} />
 

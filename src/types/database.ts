@@ -1,4 +1,4 @@
-export type Json =
+﻿export type Json =
   | string
   | number
   | boolean
@@ -1365,6 +1365,8 @@ export type Database = {
       products_public: {
         Row: {
           category_id: string | null
+          category_nama_en: string | null
+          category_nama_id: string | null
           created_at: string | null
           deskripsi_en: string | null
           deskripsi_id: string | null
@@ -1380,42 +1382,6 @@ export type Database = {
           tampilkan_harga: boolean | null
           thumbnail_url: string | null
           urutan: number | null
-        }
-        Insert: {
-          category_id?: string | null
-          created_at?: string | null
-          deskripsi_en?: string | null
-          deskripsi_id?: string | null
-          harga?: never
-          id?: number | null
-          kategori?: string | null
-          nama_en?: string | null
-          nama_id?: string | null
-          rating?: number | null
-          slug?: string | null
-          spesifikasi_en?: string | null
-          spesifikasi_id?: string | null
-          tampilkan_harga?: boolean | null
-          thumbnail_url?: string | null
-          urutan?: number | null
-        }
-        Update: {
-          category_id?: string | null
-          created_at?: string | null
-          deskripsi_en?: string | null
-          deskripsi_id?: string | null
-          harga?: never
-          id?: number | null
-          kategori?: string | null
-          nama_en?: string | null
-          nama_id?: string | null
-          rating?: number | null
-          slug?: string | null
-          spesifikasi_en?: string | null
-          spesifikasi_id?: string | null
-          tampilkan_harga?: boolean | null
-          thumbnail_url?: string | null
-          urutan?: number | null
         }
         Relationships: [
           {

@@ -122,23 +122,10 @@ export function ProdukForm({
             />
             <FormField
               control={control}
-              name="kategori"
+              name="category_id"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Kategori</FormLabel>
-                  <FormControl>
-                    <Input {...field} value={field.value ?? ''} placeholder="Contoh: Drone Survei" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="category_id"
-              render={({ field }) => (
-                <FormItem className="lg:col-span-2">
-                  <FormLabel>Kategori (dari daftar kategori)</FormLabel>
                   <FormControl>
                     <KategoriCombobox
                       items={kategoriOptions}
@@ -148,8 +135,7 @@ export function ProdukForm({
                     />
                   </FormControl>
                   <FormDescription>
-                    Dipakai untuk filter kategori di halaman publik. Kelola daftar kategori di menu Produk → Kategori
-                    Produk.
+                    Filter & badge publik. Kelola di Produk → Kategori Produk.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
