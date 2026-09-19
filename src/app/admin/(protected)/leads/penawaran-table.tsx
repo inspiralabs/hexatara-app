@@ -7,9 +7,9 @@ import { id as localeId } from 'date-fns/locale';
 import { DownloadIcon, Trash2Icon } from 'lucide-react';
 import { toast } from 'sonner';
 import { hapusPenawaranAction } from './penawaran-actions';
+import { PenawaranStatusSelect } from './penawaran-status-select';
 import { eksporPenawaranXlsx } from './penawaran-export';
 import { DataTable, SortableHeader, createDataTableColumnHelper } from '@/components/data-table';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -25,12 +25,6 @@ import type { Database } from '@/types/database';
 
 export type Penawaran = Database['public']['Tables']['quote_requests']['Row'] & {
   products: { nama_id: string; nama_en: string | null } | null;
-};
-
-const LABEL_STATUS: Record<Penawaran['status'], string> = {
-  baru: 'Baru',
-  dihubungi: 'Dihubungi',
-  selesai: 'Selesai',
 };
 
 function BarisHapus({ id, nama }: { id: number; nama: string }) {
@@ -98,7 +92,9 @@ const columns = [
   columnHelper.accessor('status', {
     header: (ctx) => <SortableHeader column={ctx.column} label="Status" />,
     filterFn: 'equalsString',
-    cell: (info) => <Badge variant="secondary">{LABEL_STATUS[info.getValue()]}</Badge>,
+    cell: ({ row }) => (
+      <PenawaranStatusSelect id={row.original.id} statusSaatIni={row.original.status} />
+    ),
   }),
   columnHelper.accessor('created_at', {
     header: (ctx) => <SortableHeader column={ctx.column} label="Tanggal" />,

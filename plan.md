@@ -1,10 +1,5 @@
-# Plan Sprint 10 — F11.3 Login Admin + BrandLogo
+# Plan Sprint 10 — selesai
 
-> **Status:** Kode selesai, menunggu uji Alif. Form tidak disentuh.
+> **Status sesi:** F11.1–F11.4 DONE (ADR-024 / Modul 11). Registry + log + catatan ADR-024 F11.4 sudah diisi setelah konfirmasi uji Alif.
 
-| # | Langkah | Status |
-|---|---------|--------|
-| 1 | Baca login page, BrandLogo | DONE |
-| 2 | BrandLogo `variant="auto"` size 48, header centered | DONE |
-| 3 | tsc / lint / build | DONE |
-| 4 | Laporan Alif (F11.3 TODO sampai OK) | PENDING |
+Tidak ada pekerjaan Sprint 10 tersisa di sesi ini.
