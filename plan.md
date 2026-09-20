@@ -1,5 +1,17 @@
-# Plan Sprint 10 — selesai
+# Plan Sprint 10 — F11.5 Kategori Batch (teks → relasi)
 
-> **Status sesi:** F11.1–F11.4 DONE (ADR-024 / Modul 11). Registry + log + catatan ADR-024 F11.4 sudah diisi setelah konfirmasi uji Alif.
+> **Status:** TAHAP 1 DIAGNOSIS. Jangan ubah kode sampai Alif konfirmasi aman / pilih alternatif.
+> Tidak ada DDL. Kolom `kategori_id`/`kategori_en` di DB tidak dihapus.
 
-Tidak ada pekerjaan Sprint 10 tersisa di sesi ini.
+| # | Langkah | Status |
+|---|---------|--------|
+| 1 | Query: count batch aktif tanpa `category_id` | PENDING |
+| 2 | Query: daftar batch aktif `category_id` null (+ teks) | PENDING |
+| 3 | Laporkan Alif — STOP jika count > 0 | PENDING |
+| 4 | Tahap 2 (hapus field teks + badge + suggestions) | BLOCKED sampai aman |
+| 5 | tsc/lint/build + uji | — |
+| 6 | Registry F11.5 DONE setelah Alif OK | — |
+
+## Gate
+- count = 0 → lanjut Tahap 2
+- count > 0 → STOP, sarankan label "cadangan", tunggu Alif

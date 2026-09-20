@@ -24,8 +24,6 @@ export async function simpanBatchAction(batchId: number | null, input: BatchForm
     judul_id: rest.judul_id,
     judul_en: teks(rest.judul_en),
     slug: rest.slug,
-    kategori_id: teks(rest.kategori_id),
-    kategori_en: teks(rest.kategori_en),
     category_id: teks(rest.category_id),
     rating: angka(rest.rating),
     lokasi_id: teks(rest.lokasi_id),
@@ -200,7 +198,7 @@ export async function salinDariBatchAction(batchIdSumber: number) {
     .from('batches')
     .select(
       `
-      kategori_id, kategori_en, category_id, rating,
+      category_id, rating,
       lokasi_id, lokasi_en, alamat, harga,
       deskripsi_id, deskripsi_en, silabus_id, silabus_en
     `
@@ -251,8 +249,6 @@ export async function salinDariBatchAction(batchIdSumber: number) {
     judul_id: '',
     judul_en: '',
     slug: '',
-    kategori_id: sumber.kategori_id ?? '',
-    kategori_en: sumber.kategori_en ?? '',
     category_id: sumber.category_id,
     rating: sumber.rating ?? '',
     lokasi_id: sumber.lokasi_id ?? '',

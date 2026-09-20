@@ -13,8 +13,6 @@ export type Batch = Pick<
   | "slug"
   | "judul_id"
   | "judul_en"
-  | "kategori_id"
-  | "kategori_en"
   | "lokasi_id"
   | "lokasi_en"
   | "harga"
@@ -23,7 +21,9 @@ export type Batch = Pick<
   | "hero_gambar_url"
   | "tanggal_mulai"
   | "tanggal_selesai"
->;
+> & {
+  batch_categories: { nama_id: string; nama_en: string | null } | null;
+};
 
 export function BatchCard({
   batch,
@@ -37,7 +37,11 @@ export function BatchCard({
   registerNowLabel: string;
 }) {
   const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai);
-  const kategori = pick(batch.kategori_id, batch.kategori_en, locale);
+  const kategori = pick(
+    batch.batch_categories?.nama_id ?? null,
+    batch.batch_categories?.nama_en ?? null,
+    locale,
+  );
   const lokasi = pick(batch.lokasi_id, batch.lokasi_en, locale);
   const judul = pick(batch.judul_id, batch.judul_en, locale) ?? batch.judul_id;
 
@@ -85,7 +89,7 @@ export async function JadwalBatchSection({ limit = 6 }: { limit?: number } = {})
   const { data, error } = await supabase
     .from("batches")
     .select(
-      "id, slug, judul_id, judul_en, kategori_id, kategori_en, lokasi_id, lokasi_en, harga, status, rating, hero_gambar_url, tanggal_mulai, tanggal_selesai"
+      "id, slug, judul_id, judul_en, lokasi_id, lokasi_en, harga, status, rating, hero_gambar_url, tanggal_mulai, tanggal_selesai, batch_categories(nama_id, nama_en)"
     )
     .eq("is_active", true)
     .in("status", ["open", "upcoming"])

@@ -43,8 +43,6 @@ export default async function AdminBatchUbahPage({ params }: { params: Promise<{
     judul_id: batch.judul_id,
     judul_en: batch.judul_en ?? '',
     slug: batch.slug,
-    kategori_id: batch.kategori_id ?? '',
-    kategori_en: batch.kategori_en ?? '',
     category_id: batch.category_id,
     rating: batch.rating ?? '',
     lokasi_id: batch.lokasi_id ?? '',

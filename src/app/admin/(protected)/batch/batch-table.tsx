@@ -8,8 +8,10 @@ import type { Database } from '@/types/database';
 
 type Batch = Pick<
   Database['public']['Tables']['batches']['Row'],
-  'id' | 'judul_id' | 'kategori_id' | 'status' | 'is_active' | 'tanggal_mulai' | 'tanggal_selesai'
->;
+  'id' | 'judul_id' | 'status' | 'is_active' | 'tanggal_mulai' | 'tanggal_selesai'
+> & {
+  batch_categories: { nama_id: string } | null;
+};
 
 const columnHelper = createDataTableColumnHelper<Batch>();
 
@@ -18,9 +20,10 @@ const columns = [
     header: (ctx) => <SortableHeader column={ctx.column} label="Judul" />,
     cell: (info) => <span className="font-medium text-foreground">{info.getValue()}</span>,
   }),
-  columnHelper.accessor('kategori_id', {
+  columnHelper.accessor((row) => row.batch_categories?.nama_id ?? '', {
+    id: 'kategori',
     header: (ctx) => <SortableHeader column={ctx.column} label="Kategori" />,
-    cell: (info) => info.getValue() ?? '—',
+    cell: (info) => info.getValue() || '—',
   }),
   columnHelper.display({
     id: 'tanggal',

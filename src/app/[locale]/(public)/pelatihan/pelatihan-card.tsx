@@ -15,8 +15,6 @@ export type PelatihanCardBatch = Pick<
   | "slug"
   | "judul_id"
   | "judul_en"
-  | "kategori_id"
-  | "kategori_en"
   | "lokasi_id"
   | "lokasi_en"
   | "deskripsi_id"
@@ -27,7 +25,9 @@ export type PelatihanCardBatch = Pick<
   | "hero_gambar_url"
   | "tanggal_mulai"
   | "tanggal_selesai"
->;
+> & {
+  batch_categories: { nama_id: string; nama_en: string | null } | null;
+};
 
 export function PelatihanCard({
   batch,
@@ -41,7 +41,11 @@ export function PelatihanCard({
   detailLabel: string;
 }) {
   const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai);
-  const kategori = pick(batch.kategori_id, batch.kategori_en, locale);
+  const kategori = pick(
+    batch.batch_categories?.nama_id ?? null,
+    batch.batch_categories?.nama_en ?? null,
+    locale,
+  );
   const lokasi = pick(batch.lokasi_id, batch.lokasi_en, locale);
   const deskripsi = pick(batch.deskripsi_id, batch.deskripsi_en, locale);
   const excerpt = stripHtmlExcerpt(deskripsi);

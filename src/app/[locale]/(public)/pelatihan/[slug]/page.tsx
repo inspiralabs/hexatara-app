@@ -40,7 +40,7 @@ const KONTEN_HTML_CLASS =
 const cardHeading = "font-heading text-lg font-semibold tracking-tight text-foreground";
 
 const SUGGEST_SELECT =
-  "id, slug, judul_id, judul_en, kategori_id, kategori_en, lokasi_id, lokasi_en, deskripsi_id, deskripsi_en, harga, status, rating, hero_gambar_url, tanggal_mulai, tanggal_selesai";
+  "id, slug, judul_id, judul_en, lokasi_id, lokasi_en, deskripsi_id, deskripsi_en, harga, status, rating, hero_gambar_url, tanggal_mulai, tanggal_selesai, batch_categories(nama_id, nama_en)";
 
 function buildWaTanyaLink(nomor: string | undefined, judul: string) {
   if (!nomor) return null;
@@ -68,7 +68,7 @@ export default async function BatchDetailPage({
   const { data: batch, error: batchError } = await supabase
     .from("batches")
     .select(
-      "id, slug, judul_id, judul_en, kategori_id, kategori_en, category_id, lokasi_id, lokasi_en, alamat, harga, status, tanggal_mulai, tanggal_selesai, deskripsi_id, deskripsi_en, silabus_id, silabus_en, hero_gambar_url, gambar_detail_url, rating"
+      "id, slug, judul_id, judul_en, category_id, lokasi_id, lokasi_en, alamat, harga, status, tanggal_mulai, tanggal_selesai, deskripsi_id, deskripsi_en, silabus_id, silabus_en, hero_gambar_url, gambar_detail_url, rating, batch_categories(nama_id, nama_en)"
     )
     .eq("slug", slug)
     .eq("is_active", true)
@@ -95,7 +95,7 @@ export default async function BatchDetailPage({
     supabase.from("batch_gallery").select("id, gambar_url, caption_id, caption_en").eq("batch_id", batch.id).order("urutan"),
   ]);
 
-  // Suggest: utamakan category_id; fallback kategori_id teks; sembunyikan jika kosong (bukan acak).
+  // Suggest: lewat category_id saja; sembunyikan jika kosong (bukan acak).
   let suggestions: Parameters<typeof PelatihanCard>[0]["batch"][] | null = null;
 
   if (batch.category_id) {
@@ -110,24 +110,16 @@ export default async function BatchDetailPage({
     if (data && data.length > 0) suggestions = data;
   }
 
-  if ((!suggestions || suggestions.length === 0) && batch.kategori_id?.trim()) {
-    const { data } = await supabase
-      .from("batches")
-      .select(SUGGEST_SELECT)
-      .eq("kategori_id", batch.kategori_id)
-      .eq("is_active", true)
-      .neq("id", batch.id)
-      .order("tanggal_mulai", { ascending: true })
-      .limit(3);
-    if (data && data.length > 0) suggestions = data;
-  }
-
   const nomorWa = process.env.NEXT_PUBLIC_WA_ADMIN;
   const kontakPelatihan = await getKontakPelatihan();
   const waUmum = await getWhatsappAdmin();
   const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai);
   const judul = pick(batch.judul_id, batch.judul_en, locale) ?? batch.judul_id;
-  const kategori = pick(batch.kategori_id, batch.kategori_en, locale);
+  const kategori = pick(
+    batch.batch_categories?.nama_id ?? null,
+    batch.batch_categories?.nama_en ?? null,
+    locale,
+  );
   const lokasi = pick(batch.lokasi_id, batch.lokasi_en, locale);
   const deskripsi = pick(batch.deskripsi_id, batch.deskripsi_en, locale);
   const silabus = pick(batch.silabus_id, batch.silabus_en, locale);

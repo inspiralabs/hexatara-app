@@ -49,8 +49,6 @@ export const BatchFormSchema = z.object({
     .string()
     .min(1, { error: 'Slug wajib diisi' })
     .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, { error: 'Slug hanya huruf kecil, angka, dan tanda hubung' }),
-  kategori_id: teksOpsional,
-  kategori_en: teksOpsional,
   category_id: teksOpsional,
   rating: ratingOpsional,
   lokasi_id: teksOpsional,

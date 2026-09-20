@@ -203,57 +203,30 @@ export function BatchForm({
             )}
           />
 
+          <FormField
+            control={control}
+            name="category_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Kategori</FormLabel>
+                <FormControl>
+                  <KategoriCombobox
+                    items={kategoriOptions}
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="Cari kategori pelatihan…"
+                  />
+                </FormControl>
+                <FormDescription>
+                  Dipakai untuk filter dan badge kategori di halaman publik. Kelola daftar di menu Batch → Kategori
+                  Pelatihan.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            <FormField
-              control={control}
-              name="kategori_id"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Kategori (Indonesia)</FormLabel>
-                  <FormControl>
-                    <Input {...field} value={field.value ?? ''} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="kategori_en"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Kategori (Inggris)</FormLabel>
-                  <FormControl>
-                    <Input {...field} value={field.value ?? ''} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={control}
-              name="category_id"
-              render={({ field }) => (
-                <FormItem className="lg:col-span-2">
-                  <FormLabel>Kategori (dari daftar kategori)</FormLabel>
-                  <FormControl>
-                    <KategoriCombobox
-                      items={kategoriOptions}
-                      value={field.value}
-                      onChange={field.onChange}
-                      placeholder="Cari kategori pelatihan…"
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Dipakai untuk filter kategori di halaman publik. Kelola daftar kategori di menu Batch → Kategori
-                    Pelatihan.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <FormField
               control={control}
               name="lokasi_id"

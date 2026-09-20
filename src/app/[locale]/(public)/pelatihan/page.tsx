@@ -53,7 +53,7 @@ export default async function PelatihanPage({
   let query = supabase
     .from("batches")
     .select(
-      "id, slug, judul_id, judul_en, kategori_id, kategori_en, lokasi_id, lokasi_en, deskripsi_id, deskripsi_en, harga, status, rating, hero_gambar_url, tanggal_mulai, tanggal_selesai, created_at"
+      "id, slug, judul_id, judul_en, lokasi_id, lokasi_en, deskripsi_id, deskripsi_en, harga, status, rating, hero_gambar_url, tanggal_mulai, tanggal_selesai, created_at, batch_categories(nama_id, nama_en)"
     )
     .eq("is_active", true);
 

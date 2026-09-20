@@ -9,8 +9,6 @@ const DEFAULT_VALUES: BatchFormInput = {
   judul_id: '',
   judul_en: '',
   slug: '',
-  kategori_id: '',
-  kategori_en: '',
   category_id: null,
   rating: '',
   lokasi_id: '',

@@ -13,7 +13,7 @@ export default async function AdminBatchPage() {
   const supabase = await createClient();
   const { data: batches, error } = await supabase
     .from('batches')
-    .select('id, judul_id, kategori_id, status, is_active, tanggal_mulai, tanggal_selesai')
+    .select('id, judul_id, status, is_active, tanggal_mulai, tanggal_selesai, batch_categories(nama_id)')
     .order('created_at', { ascending: false });
 
   if (error) console.error('[admin-batch] gagal memuat daftar:', error);
