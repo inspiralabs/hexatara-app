@@ -182,49 +182,50 @@ export function BatchForm({
             />
           </div>
 
-          <FormField
-            control={control}
-            name="slug"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Slug URL *</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    onChange={(e) => {
-                      setSlugDisentuh(true);
-                      field.onChange(e);
-                    }}
-                  />
-                </FormControl>
-                <FormDescription>Dipakai di alamat halaman: /batch/slug-ini</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={control}
-            name="category_id"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Kategori</FormLabel>
-                <FormControl>
-                  <KategoriCombobox
-                    items={kategoriOptions}
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder="Cari kategori pelatihan…"
-                  />
-                </FormControl>
-                <FormDescription>
-                  Dipakai untuk filter dan badge kategori di halaman publik. Kelola daftar di menu Batch → Kategori
-                  Pelatihan.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <FormField
+              control={control}
+              name="slug"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Slug URL *</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      onChange={(e) => {
+                        setSlugDisentuh(true);
+                        field.onChange(e);
+                      }}
+                    />
+                  </FormControl>
+                  <FormDescription>Dipakai di alamat halaman: /batch/slug-ini</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="category_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kategori</FormLabel>
+                  <FormControl>
+                    <KategoriCombobox
+                      items={kategoriOptions}
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Cari kategori pelatihan…"
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Dipakai untuk filter dan badge kategori di halaman publik. Kelola daftar di menu Batch → Kategori
+                    Pelatihan.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             <FormField
