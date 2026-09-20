@@ -25,8 +25,6 @@ function keDefaultValues(s: HeroSlide): HeroSlideFormInput {
     subjudul_id: s.subjudul_id ?? '',
     subjudul_en: s.subjudul_en ?? '',
     gambar_url: s.gambar_url ?? '',
-    cta_teks_id: s.cta_teks_id ?? '',
-    cta_teks_en: s.cta_teks_en ?? '',
     cta_url: s.cta_url ?? '',
     urutan: s.urutan,
     is_active: s.is_active,

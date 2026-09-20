@@ -20,8 +20,6 @@ export async function simpanHeroSlideAction(slideId: number | null, input: HeroS
     subjudul_id: teks(p.subjudul_id),
     subjudul_en: teks(p.subjudul_en),
     gambar_url: teks(p.gambar_url),
-    cta_teks_id: teks(p.cta_teks_id),
-    cta_teks_en: teks(p.cta_teks_en),
     cta_url: teks(p.cta_url),
     urutan: angka(p.urutan) ?? 0,
     is_active: p.is_active,

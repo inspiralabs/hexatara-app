@@ -13,8 +13,6 @@ export const HeroSlideFormSchema = z.object({
   subjudul_id: teksOpsional,
   subjudul_en: teksOpsional,
   gambar_url: teksOpsional,
-  cta_teks_id: teksOpsional,
-  cta_teks_en: teksOpsional,
   cta_url: teksOpsional,
   urutan: angkaOpsional,
   is_active: z.boolean(),

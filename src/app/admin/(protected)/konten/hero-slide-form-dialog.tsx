@@ -26,8 +26,6 @@ const DEFAULT_VALUES: HeroSlideFormInput = {
   subjudul_id: '',
   subjudul_en: '',
   gambar_url: '',
-  cta_teks_id: '',
-  cta_teks_en: '',
   cta_url: '',
   urutan: 0,
   is_active: true,
@@ -140,33 +138,6 @@ export function HeroSlideFormDialog({
                   </FormItem>
                 )}
               />
-
-              <FormField
-                control={control}
-                name="cta_teks_id"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Teks Tombol (Indonesia)</FormLabel>
-                    <FormControl>
-                      <Input {...field} value={field.value ?? ''} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name="cta_teks_en"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Teks Tombol (Inggris)</FormLabel>
-                    <FormControl>
-                      <Input {...field} value={field.value ?? ''} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
 
             <FormField
@@ -174,10 +145,11 @@ export function HeroSlideFormDialog({
               name="cta_url"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Tautan Tombol</FormLabel>
+                  <FormLabel>Tautan (klik gambar)</FormLabel>
                   <FormControl>
                     <Input placeholder="/katalog atau https://..." {...field} value={field.value ?? ''} />
                   </FormControl>
+                  <FormDescription>Seluruh gambar hero bisa diklik menuju tautan ini.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
