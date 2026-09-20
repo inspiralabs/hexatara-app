@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { format, parse } from 'date-fns';
-import { id as localeId } from 'date-fns/locale';
+import { id as localeId, enGB as localeEn } from 'date-fns/locale';
 import { CalendarIcon } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -20,6 +20,8 @@ export function DatePickerField({
   endMonth,
   reverseYears,
   disableFuture,
+  locale = 'id',
+  placeholder = 'Pilih tanggal',
 }: {
   label: string;
   value: string | null;
@@ -31,10 +33,13 @@ export function DatePickerField({
   endMonth?: Date;
   reverseYears?: boolean;
   disableFuture?: boolean;
+  locale?: string;
+  placeholder?: string;
 }) {
   const [open, setOpen] = useState(false);
   const selected = value ? parse(value, 'yyyy-MM-dd', new Date()) : undefined;
   const today = new Date();
+  const dfLocale = locale.startsWith('en') ? localeEn : localeId;
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -50,12 +55,12 @@ export function DatePickerField({
           )}
         >
           <CalendarIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-          {selected ? format(selected, 'd MMMM yyyy', { locale: localeId }) : 'Pilih tanggal'}
+          {selected ? format(selected, 'd MMMM yyyy', { locale: dfLocale }) : placeholder}
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0">
           <Calendar
             mode="single"
-            locale={localeId}
+            locale={dfLocale}
             captionLayout={captionLayout}
             reverseYears={reverseYears}
             startMonth={startMonth}

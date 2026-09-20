@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { cn } from 'cn';
 import {
   Carousel,
@@ -14,6 +15,7 @@ import {
 import { PublicImageLightbox } from '@/components/public-image-lightbox';
 
 export function ProductGallery({ images, alt }: { images: { id: number; url: string }[]; alt: string }) {
+  const t = useTranslations('common');
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
@@ -42,7 +44,7 @@ export function ProductGallery({ images, alt }: { images: { id: number; url: str
                 type="button"
                 onClick={() => setLightboxSrc(img.url)}
                 className="relative aspect-square w-full overflow-hidden rounded-xl bg-white"
-                aria-label="Perbesar gambar produk"
+                aria-label={t('enlargeImage')}
               >
                 <Image
                   src={img.url}

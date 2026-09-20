@@ -42,15 +42,13 @@ const cardHeading = "font-heading text-lg font-semibold tracking-tight text-fore
 const SUGGEST_SELECT =
   "id, slug, judul_id, judul_en, lokasi_id, lokasi_en, deskripsi_id, deskripsi_en, harga, status, rating, hero_gambar_url, tanggal_mulai, tanggal_selesai, batch_categories(nama_id, nama_en)";
 
-function buildWaTanyaLink(nomor: string | undefined, judul: string) {
+function buildWaTanyaLink(nomor: string | undefined, pesan: string) {
   if (!nomor) return null;
-  const pesan = `Halo Admin Hexatara, saya ingin bertanya tentang batch "${judul}".`;
   return `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
 }
 
-function buildWaPelatihanLink(nomor: string | undefined, judul: string, konteks: string) {
+function buildWaPelatihanLink(nomor: string | undefined, pesan: string) {
   if (!nomor) return null;
-  const pesan = `Halo ${konteks}, saya ingin bertanya tentang batch "${judul}".`;
   return `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
 }
 
@@ -113,7 +111,7 @@ export default async function BatchDetailPage({
   const nomorWa = process.env.NEXT_PUBLIC_WA_ADMIN;
   const kontakPelatihan = await getKontakPelatihan();
   const waUmum = await getWhatsappAdmin();
-  const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai);
+  const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai, locale);
   const judul = pick(batch.judul_id, batch.judul_en, locale) ?? batch.judul_id;
   const kategori = pick(
     batch.batch_categories?.nama_id ?? null,
@@ -123,16 +121,14 @@ export default async function BatchDetailPage({
   const lokasi = pick(batch.lokasi_id, batch.lokasi_en, locale);
   const deskripsi = pick(batch.deskripsi_id, batch.deskripsi_en, locale);
   const silabus = pick(batch.silabus_id, batch.silabus_en, locale);
-  const waTanyaLink = buildWaTanyaLink(nomorWa, batch.judul_id);
+  const waTanyaLink = buildWaTanyaLink(nomorWa, t("waAskBatch", { judul }));
   const waRegulerLink = buildWaPelatihanLink(
     kontakPelatihan.wa_reguler?.trim() || waUmum || undefined,
-    batch.judul_id,
-    "Admin"
+    t("waAskBatchNamed", { name: "Admin", judul }),
   );
   const waPrivateLink = buildWaPelatihanLink(
     kontakPelatihan.wa_private?.trim() || undefined,
-    batch.judul_id,
-    "Abiyyi"
+    t("waAskBatchNamed", { name: "Abiyyi", judul }),
   );
   const silabusItems = silabus?.trim() ? splitHtmlByHeadings(silabus) : [];
   const pendaftaran = await getPrefillPendaftaranBatch();

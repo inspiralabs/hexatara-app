@@ -19,9 +19,8 @@ const KONTEN_HTML_CLASS =
 
 const cardHeading = "font-heading text-lg font-semibold tracking-tight text-foreground";
 
-function buildWaProdukLink(nomor: string | undefined, namaProduk: string) {
+function buildWaProdukLink(nomor: string | undefined, pesan: string) {
   if (!nomor) return null;
-  const pesan = `Halo Admin Hexatara, saya ingin bertanya tentang produk "${namaProduk}".`;
   return `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
 }
 
@@ -83,7 +82,7 @@ export default async function KatalogDetailPage({
   const namaKategori = pick(produk.category_nama_id, produk.category_nama_en, locale);
   const deskripsi = pick(produk.deskripsi_id, produk.deskripsi_en, locale);
   const spesifikasi = pick(produk.spesifikasi_id, produk.spesifikasi_en, locale);
-  const waLink = buildWaProdukLink(process.env.NEXT_PUBLIC_WA_ADMIN, nama);
+  const waLink = buildWaProdukLink(process.env.NEXT_PUBLIC_WA_ADMIN, t("waAskProduct", { nama }));
 
   return (
     <div className="bg-background pb-16">

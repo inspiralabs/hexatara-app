@@ -36,7 +36,7 @@ export function BatchCard({
   statusLabel: string;
   registerNowLabel: string;
 }) {
-  const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai);
+  const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai, locale);
   const kategori = pick(
     batch.batch_categories?.nama_id ?? null,
     batch.batch_categories?.nama_en ?? null,

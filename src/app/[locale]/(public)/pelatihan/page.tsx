@@ -20,10 +20,8 @@ function isSort(value: string | undefined): value is PelatihanSort {
   return SORT_VALUES.includes(value as PelatihanSort);
 }
 
-function buildWaCustomLink(nomor: string | undefined) {
+function buildWaCustomLink(nomor: string | undefined, pesan: string) {
   if (!nomor) return null;
-  const pesan =
-    "Halo Admin Hexatara, saya ingin bertanya soal pelatihan custom/khusus untuk tim atau instansi saya.";
   return `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
 }
 
@@ -74,7 +72,7 @@ export default async function PelatihanPage({
 
   if (error) console.error("[pelatihan] gagal memuat:", error);
 
-  const waCustomLink = buildWaCustomLink(process.env.NEXT_PUBLIC_WA_ADMIN);
+  const waCustomLink = buildWaCustomLink(process.env.NEXT_PUBLIC_WA_ADMIN, t("waCustom"));
   const materiHref = await getMateriHeroHref();
   const kategoriOptions = (kategoriList ?? []).map((k) => ({
     value: k.id,

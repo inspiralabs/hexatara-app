@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export type HeroSlideItem = {
   id: number;
@@ -18,6 +19,7 @@ const JEDA_OTOMATIS_MS = 5000;
 // banner urgensi/harga). Ini transisi visual antar poster, jeda 5 detik
 // dipilih supaya tetap terasa seperti galeri, bukan timer fungsional.
 export function HeroCarousel({ slides }: { slides: HeroSlideItem[] }) {
+  const t = useTranslations("common");
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -80,7 +82,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlideItem[] }) {
           <button
             type="button"
             onClick={() => pindah("prev")}
-            aria-label="Slide sebelumnya"
+            aria-label={t("prevSlide")}
             className="absolute left-2 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 text-foreground hover:bg-background"
           >
             <ChevronLeftIcon className="size-5" aria-hidden="true" />
@@ -88,7 +90,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlideItem[] }) {
           <button
             type="button"
             onClick={() => pindah("next")}
-            aria-label="Slide berikutnya"
+            aria-label={t("nextSlide")}
             className="absolute right-2 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 text-foreground hover:bg-background"
           >
             <ChevronRightIcon className="size-5" aria-hidden="true" />

@@ -8,17 +8,18 @@ export const STATUS_BATCH_LABEL: Record<StatusBatch, { label: string; className:
   closed: { label: "Ditutup", className: "bg-muted-foreground/10 text-muted-foreground" },
 };
 
-const formatTanggalId = new Intl.DateTimeFormat("id-ID", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
+const formatOpts = { day: "numeric", month: "long", year: "numeric" } as const;
 
-export function formatTanggalBatch(mulai: string | null, selesai: string | null) {
+export function formatTanggalBatch(
+  mulai: string | null,
+  selesai: string | null,
+  locale: string = "id",
+) {
   if (!mulai) return null;
-  const awal = formatTanggalId.format(new Date(mulai));
+  const fmt = new Intl.DateTimeFormat(locale.startsWith("en") ? "en-GB" : "id-ID", formatOpts);
+  const awal = fmt.format(new Date(mulai));
   if (!selesai || selesai === mulai) return awal;
-  return `${awal} – ${formatTanggalId.format(new Date(selesai))}`;
+  return `${awal} – ${fmt.format(new Date(selesai))}`;
 }
 
 export function formatRupiah(nilai: number) {

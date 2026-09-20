@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { PublicImageLightbox } from '@/components/public-image-lightbox';
 
 export function BatchDetailHero({
@@ -11,6 +12,7 @@ export function BatchDetailHero({
   gambarDetailUrl: string | null;
   heroGambarUrl: string | null;
 }) {
+  const t = useTranslations('common');
   const src = gambarDetailUrl || heroGambarUrl;
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
 
@@ -22,7 +24,7 @@ export function BatchDetailHero({
         type="button"
         onClick={() => setLightboxSrc(src)}
         className="relative mt-6 block w-full overflow-hidden rounded-xl"
-        aria-label="Perbesar gambar pelatihan"
+        aria-label={t('enlargeImage')}
       >
         <Image
           src={src}

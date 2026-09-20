@@ -11,16 +11,13 @@ function isSort(value: string | undefined): value is ProdukSort {
   return SORT_VALUES.includes(value as ProdukSort);
 }
 
-function buildWaKonsultasiLink(nomor: string | undefined) {
+function buildWaKonsultasiLink(nomor: string | undefined, pesan: string) {
   if (!nomor) return null;
-  const pesan =
-    "Halo Admin Hexatara, saya ingin konsultasi soal produk drone Autel untuk kebutuhan bisnis/instansi saya.";
   return `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
 }
 
-function buildWaBulkLink(nomor: string | undefined) {
+function buildWaBulkLink(nomor: string | undefined, pesan: string) {
   if (!nomor) return null;
-  const pesan = "Halo Admin Hexatara, saya ingin bertanya soal pembelian partai besar drone Autel.";
   return `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
 }
 
@@ -83,8 +80,8 @@ export default async function KatalogPage({
   }
 
   const nomorWa = process.env.NEXT_PUBLIC_WA_ADMIN;
-  const waKonsultasiLink = buildWaKonsultasiLink(nomorWa);
-  const waBulkLink = buildWaBulkLink(nomorWa);
+  const waKonsultasiLink = buildWaKonsultasiLink(nomorWa, t("waConsult"));
+  const waBulkLink = buildWaBulkLink(nomorWa, t("waBulk"));
   const kategoriOptions = (kategoriList ?? []).map((k) => ({
     value: k.id,
     label: pick(k.nama_id, k.nama_en, locale) ?? k.nama_id,

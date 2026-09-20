@@ -1,17 +1,20 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useTranslations } from 'next-intl';
 
 /** Overlay perbesar gambar — pola sama pendaftaran-batch-detail (backdrop button + Escape). */
 export function PublicImageLightbox({
   src,
   onClose,
-  label = 'Pratinjau gambar',
+  label,
 }: {
   src: string | null;
   onClose: () => void;
   label?: string;
 }) {
+  const t = useTranslations('common');
+  const dialogLabel = label ?? t('enlargeImage');
   useEffect(() => {
     if (!src) return;
     function onKeyDown(e: KeyboardEvent) {
@@ -27,12 +30,12 @@ export function PublicImageLightbox({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={label}
+      aria-label={dialogLabel}
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
     >
       <button
         type="button"
-        aria-label="Tutup pratinjau"
+        aria-label={t('closePreview')}
         className="absolute inset-0 cursor-default"
         onClick={onClose}
       />
@@ -47,7 +50,7 @@ export function PublicImageLightbox({
         onClick={onClose}
         className="absolute right-4 top-4 rounded-full bg-black/60 px-3 py-1.5 text-sm text-white hover:bg-black/80"
       >
-        Tutup
+        {t('closeAriaLabel')}
       </button>
     </div>
   );

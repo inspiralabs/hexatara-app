@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import imageCompression from 'browser-image-compression';
 import { ImagePlusIcon, Loader2Icon } from 'lucide-react';
 import { toast } from 'sonner';
+import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import {
   PendaftaranBatchSchema,
@@ -35,12 +36,12 @@ import { cn } from '@/lib/utils';
 import { daftarBatchAction } from './daftar-batch-actions';
 
 const SUMBER_OPSI = [
-  'Instagram',
-  'WhatsApp',
-  'Teman / keluarga',
-  'Website Hexatara',
-  'Google',
-  'Lainnya',
+  { value: 'Instagram', labelKey: 'sumberInstagram' },
+  { value: 'WhatsApp', labelKey: 'sumberWhatsapp' },
+  { value: 'Teman / keluarga', labelKey: 'sumberTeman' },
+  { value: 'Website Hexatara', labelKey: 'sumberWebsite' },
+  { value: 'Google', labelKey: 'sumberGoogle' },
+  { value: 'Lainnya', labelKey: 'sumberLainnya' },
 ] as const;
 
 type Prefill = {
@@ -62,11 +63,15 @@ function FotoPicker({
   file,
   onFile,
   sudahAdaDiProfil,
+  hintAda,
+  hintKosong,
 }: {
   label: string;
   file: File | null;
   onFile: (f: File | null) => void;
   sudahAdaDiProfil: boolean;
+  hintAda: string;
+  hintKosong: string;
 }) {
   const inputId = useId();
   return (
@@ -85,11 +90,7 @@ function FotoPicker({
       >
         <ImagePlusIcon className="size-5 text-muted-foreground" aria-hidden />
         <span className="text-xs text-muted-foreground">
-          {file
-            ? file.name
-            : sudahAdaDiProfil
-              ? 'Sudah ada di profil — klik untuk ganti'
-              : 'JPG/PNG/WebP · maks. 5 MB'}
+          {file ? file.name : sudahAdaDiProfil ? hintAda : hintKosong}
         </span>
       </label>
     </div>
@@ -107,6 +108,8 @@ export function DaftarBatchDialog({
   loggedIn: boolean;
   prefill: Prefill | null;
 }) {
+  const t = useTranslations('batch.register');
+  const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [view, setView] = useState<View>(loggedIn ? 'form' : 'pilih');
   const [waLink, setWaLink] = useState<string | null>(null);
@@ -173,11 +176,11 @@ export function DaftarBatchDialog({
 
   async function onSubmit(data: PendaftaranBatchInput) {
     if (!fileKtp && !punyaFotoProfil) {
-      toast.error('Foto KTP wajib diunggah.');
+      toast.error(t('errFotoKtp'));
       return;
     }
     if (!filePas && !punyaFotoProfil) {
-      toast.error('Pas foto wajib diunggah.');
+      toast.error(t('errPasFoto'));
       return;
     }
 
@@ -204,7 +207,7 @@ export function DaftarBatchDialog({
         formData.set('pas_foto', new File([compressed], filePas.name, { type: compressed.type }));
       }
     } catch {
-      toast.error('Gagal memproses gambar. Coba berkas lain.');
+      toast.error(t('errGambar'));
       return;
     }
 
@@ -225,31 +228,28 @@ export function DaftarBatchDialog({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger className={cn(publicCtaPrimary, 'mt-4 w-full')}>
-        Daftar Sekarang
+        {t('trigger')}
       </DialogTrigger>
       <DialogContent className="flex max-h-[90vh] flex-col gap-0 overflow-hidden sm:max-w-lg">
         {view === 'pilih' && (
           <div className="flex flex-col gap-4 overflow-y-auto p-1">
             <DialogHeader>
-              <DialogTitle>Daftar pelatihan</DialogTitle>
+              <DialogTitle>{t('chooseTitle')}</DialogTitle>
             </DialogHeader>
-            <p className="text-sm text-muted-foreground">
-              Sudah punya akun Hexatara? Login dulu supaya data identitas bisa terisi otomatis.
-              Atau daftar tanpa akun sekarang.
-            </p>
+            <p className="text-sm text-muted-foreground">{t('chooseBody')}</p>
             <Link
               href={loginHref}
               className={cn(publicCtaPrimary, 'w-full')}
               onClick={() => setOpen(false)}
             >
-              Sudah punya akun? Login dulu
+              {t('loginFirst')}
             </Link>
             <button
               type="button"
               className={cn(publicCtaSecondary, 'w-full')}
               onClick={() => setView('form')}
             >
-              Daftar tanpa akun sekarang
+              {t('guestContinue')}
             </button>
           </div>
         )}
@@ -257,7 +257,7 @@ export function DaftarBatchDialog({
         {view === 'sukses' && (
           <div className="flex flex-col gap-4 overflow-y-auto p-1">
             <DialogHeader>
-              <DialogTitle>Pendaftaran diterima</DialogTitle>
+              <DialogTitle>{t('successTitle')}</DialogTitle>
             </DialogHeader>
             <p className="text-sm text-muted-foreground">{pesanSukses}</p>
             {waLink && (
@@ -267,7 +267,7 @@ export function DaftarBatchDialog({
                 rel="noopener noreferrer"
                 className={cn(publicCtaPrimary, 'w-full bg-emerald-600 hover:bg-emerald-600/90')}
               >
-                Hubungi Admin via WhatsApp
+                {t('continueWhatsapp')}
               </a>
             )}
             <button
@@ -275,7 +275,7 @@ export function DaftarBatchDialog({
               className={cn(publicCtaSecondary, 'w-full')}
               onClick={() => handleOpenChange(false)}
             >
-              Tutup
+              {t('close')}
             </button>
           </div>
         )}
@@ -287,16 +287,14 @@ export function DaftarBatchDialog({
             noValidate
           >
             <DialogHeader>
-              <DialogTitle>Form pendaftaran pelatihan</DialogTitle>
+              <DialogTitle>{t('formTitle')}</DialogTitle>
             </DialogHeader>
             {loggedIn && prefill && (
-              <p className="text-xs text-muted-foreground">
-                Data identitas terisi dari profilmu — bisa kamu koreksi di form ini.
-              </p>
+              <p className="text-xs text-muted-foreground">{t('prefillHint')}</p>
             )}
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="nama_lengkap">Nama lengkap</Label>
+              <Label htmlFor="nama_lengkap">{t('nameLabel')}</Label>
               <Input id="nama_lengkap" autoComplete="name" {...register('nama_lengkap')} />
               {errors.nama_lengkap && (
                 <p className="text-sm text-destructive">{errors.nama_lengkap.message}</p>
@@ -304,13 +302,13 @@ export function DaftarBatchDialog({
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t('emailLabel')}</Label>
               <Input id="email" type="email" autoComplete="email" {...register('email')} />
               {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="whatsapp">WhatsApp</Label>
+              <Label htmlFor="whatsapp">{t('whatsappLabel')}</Label>
               <Input id="whatsapp" type="tel" autoComplete="tel" {...register('whatsapp')} />
               {errors.whatsapp && (
                 <p className="text-sm text-destructive">{errors.whatsapp.message}</p>
@@ -318,7 +316,7 @@ export function DaftarBatchDialog({
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="nomor_ktp">Nomor KTP</Label>
+              <Label htmlFor="nomor_ktp">{t('ktpLabel')}</Label>
               <Input
                 id="nomor_ktp"
                 inputMode="numeric"
@@ -331,7 +329,7 @@ export function DaftarBatchDialog({
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="tempat_lahir">Tempat lahir</Label>
+              <Label htmlFor="tempat_lahir">{t('birthPlaceLabel')}</Label>
               <Input id="tempat_lahir" {...register('tempat_lahir')} />
               {errors.tempat_lahir && (
                 <p className="text-sm text-destructive">{errors.tempat_lahir.message}</p>
@@ -344,7 +342,7 @@ export function DaftarBatchDialog({
               render={({ field }) => (
                 <div className="flex flex-col gap-1.5">
                   <DatePickerField
-                    label="Tanggal lahir"
+                    label={t('birthDateLabel')}
                     value={field.value || null}
                     onChange={(v) => field.onChange(v ?? '')}
                     captionLayout="dropdown"
@@ -352,6 +350,8 @@ export function DaftarBatchDialog({
                     disableFuture
                     startMonth={new Date(1940, 0)}
                     endMonth={new Date()}
+                    locale={locale}
+                    placeholder={t('birthDateLabel')}
                   />
                   {errors.tanggal_lahir && (
                     <p className="text-sm text-destructive">{errors.tanggal_lahir.message}</p>
@@ -361,7 +361,7 @@ export function DaftarBatchDialog({
             />
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="alamat_lengkap">Alamat lengkap</Label>
+              <Label htmlFor="alamat_lengkap">{t('addressLabel')}</Label>
               <Textarea id="alamat_lengkap" rows={3} {...register('alamat_lengkap')} />
               {errors.alamat_lengkap && (
                 <p className="text-sm text-destructive">{errors.alamat_lengkap.message}</p>
@@ -370,16 +370,20 @@ export function DaftarBatchDialog({
 
             <div className="grid gap-3 sm:grid-cols-2">
               <FotoPicker
-                label="Foto KTP"
+                label={t('fotoKtpLabel')}
                 file={fileKtp}
                 onFile={setFileKtp}
                 sudahAdaDiProfil={Boolean(prefill?.foto_ktp_url)}
+                hintAda={t('fotoAdaProfil')}
+                hintKosong={t('fotoHint')}
               />
               <FotoPicker
-                label="Pas foto"
+                label={t('pasFotoLabel')}
                 file={filePas}
                 onFile={setFilePas}
                 sudahAdaDiProfil={Boolean(prefill?.pas_foto_url)}
+                hintAda={t('fotoAdaProfil')}
+                hintKosong={t('fotoHint')}
               />
             </div>
 
@@ -388,7 +392,7 @@ export function DaftarBatchDialog({
               control={control}
               render={({ field }) => (
                 <div className="flex flex-col gap-2">
-                  <span className="text-sm font-medium text-foreground">Kategori peserta</span>
+                  <span className="text-sm font-medium text-foreground">{t('kategoriLabel')}</span>
                   <RadioGroup
                     value={field.value}
                     onValueChange={field.onChange}
@@ -396,11 +400,11 @@ export function DaftarBatchDialog({
                   >
                     <Label className="flex items-center gap-2 font-normal">
                       <RadioGroupItem value="penerbitan_baru" />
-                      Penerbitan baru
+                      {t('kategoriBaru')}
                     </Label>
                     <Label className="flex items-center gap-2 font-normal">
                       <RadioGroupItem value="perpanjangan_renewal" />
-                      Perpanjangan / renewal
+                      {t('kategoriRenewal')}
                     </Label>
                   </RadioGroup>
                   {errors.kategori_peserta && (
@@ -411,25 +415,25 @@ export function DaftarBatchDialog({
             />
 
             <div className="flex flex-col gap-1.5">
-              <Label>Darimana mengetahui pelatihan ini?</Label>
+              <Label>{t('sumberLabel')}</Label>
               <Select
                 value={sumberPilihan || null}
                 onValueChange={(v) => setSumberPilihan(v ?? '')}
               >
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Pilih sumber (opsional)" />
+                  <SelectValue placeholder={t('sumberPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {SUMBER_OPSI.map((opsi) => (
-                    <SelectItem key={opsi} value={opsi}>
-                      {opsi}
+                    <SelectItem key={opsi.value} value={opsi.value}>
+                      {t(opsi.labelKey)}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
               {sumberPilihan === 'Lainnya' && (
                 <Input
-                  placeholder="Sebutkan sumbernya"
+                  placeholder={t('sumberLainnyaPlaceholder')}
                   value={sumberLainnya}
                   onChange={(e) => setSumberLainnya(e.target.value)}
                 />
@@ -437,7 +441,7 @@ export function DaftarBatchDialog({
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="kode_referral">Kode referral (opsional)</Label>
+              <Label htmlFor="kode_referral">{t('referralLabel')}</Label>
               <Input id="kode_referral" {...register('kode_referral')} />
             </div>
 
@@ -449,10 +453,10 @@ export function DaftarBatchDialog({
               {isSubmitting ? (
                 <span className="inline-flex items-center gap-2">
                   <Loader2Icon className="size-4 animate-spin" aria-hidden />
-                  Mengirim…
+                  {t('submitting')}
                 </span>
               ) : (
-                'Kirim pendaftaran'
+                t('submit')
               )}
             </button>
           </form>
