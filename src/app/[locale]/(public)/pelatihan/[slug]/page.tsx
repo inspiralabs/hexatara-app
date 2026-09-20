@@ -344,13 +344,13 @@ export default async function BatchDetailPage({
         {faqs && faqs.length > 0 && (
           <div className="pt-10">
             <h2 className={publicSectionHeading}>{t("faqHeading")}</h2>
-            <Accordion className="mt-4">
+            <Accordion className="mt-4 rounded-xl border border-border bg-card px-4 shadow-none">
               {faqs.map((faq) => (
-                <AccordionItem key={faq.id} value={String(faq.id)}>
-                  <AccordionTrigger className="text-base text-foreground">
+                <AccordionItem key={faq.id} value={String(faq.id)} className="border-border last:border-b-0">
+                  <AccordionTrigger className="py-4 text-base font-medium text-foreground hover:no-underline">
                     {pick(faq.tanya_id, faq.tanya_en, locale)}
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
+                  <AccordionContent className="pb-4 text-base text-muted-foreground">
                     {pick(faq.jawab_id, faq.jawab_en, locale)}
                   </AccordionContent>
                 </AccordionItem>
