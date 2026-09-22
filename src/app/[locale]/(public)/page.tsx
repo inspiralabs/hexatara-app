@@ -27,7 +27,7 @@ export default function Home() {
       <ProdukSection limit={6} />
       <VerifyCtaSection />
       <CompanyProfileSection />
-      <InstrukturSection limit={6} />
+      <InstrukturSection />
       <TestimoniSection />
       <FaqSection />
     </>

@@ -53,9 +53,20 @@ function buildEmptyCertBuckets(months: number): CertMonthBucket[] {
   return buckets;
 }
 
+/** Persen vs periode sebelumnya. Baseline 0 → null. |pct| ≥ 500 → null (pakai deltaRaw). */
 function deltaPct(current: number, previous: number): number | null {
-  if (previous === 0) return current === 0 ? 0 : 100;
-  return ((current - previous) / previous) * 100;
+  if (previous === 0) return current === 0 ? 0 : null;
+  const pct = ((current - previous) / previous) * 100;
+  if (Math.abs(pct) >= 500) return null;
+  return pct;
+}
+
+/** Teks netral saat delta ekstrem (|pct| ≥ 500). Baseline 0 → null. */
+function deltaRaw(current: number, previous: number, periode: string): string | null {
+  if (previous === 0) return null;
+  const pct = ((current - previous) / previous) * 100;
+  if (Math.abs(pct) < 500) return null;
+  return `${previous} → ${current} ${periode}`;
 }
 
 const LABEL_STATUS_REG = {
@@ -206,6 +217,7 @@ export default async function AdminHomePage() {
       caption: 'vs 7 hari sebelumnya',
       icon: 'inbox',
       deltaPct: deltaPct(leadBaru, leadPrev),
+      deltaRaw: deltaRaw(leadBaru, leadPrev, 'minggu ini'),
     },
     {
       id: 'pending',
@@ -222,6 +234,7 @@ export default async function AdminHomePage() {
       caption: bulanLabel,
       icon: 'badge',
       deltaPct: deltaPct(sertifikatBulanIni, sertifikatBulanLalu),
+      deltaRaw: deltaRaw(sertifikatBulanIni, sertifikatBulanLalu, 'bulan ini'),
     },
     {
       id: 'batches',

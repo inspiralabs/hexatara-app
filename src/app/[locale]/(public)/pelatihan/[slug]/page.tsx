@@ -390,7 +390,7 @@ export default async function BatchDetailPage({
         </div>
       </div>
 
-      <InstrukturSection limit={3} />
+      <InstrukturSection />
 
       {suggestions && suggestions.length > 0 && (
         <div className="mx-auto max-w-6xl px-4 pb-10">
