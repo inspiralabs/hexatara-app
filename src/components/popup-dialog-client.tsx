@@ -35,7 +35,10 @@ export function PopupDialogClient({ popup }: { popup: PopupAktif }) {
   }
 
   const src = isDesktop ? popup.gambarDesktopUrl : popup.gambarMobileUrl;
-  const sizes = isDesktop ? "(min-width: 768px) 512px, 100vw" : "360px";
+  // sizes ≈ max-w di md/lg/xl supaya next/image scale ikut container (bukan tetap 512px)
+  const sizes = isDesktop
+    ? "(min-width: 1280px) 1024px, (min-width: 1024px) 896px, (min-width: 768px) 768px, 100vw"
+    : "360px";
   const aspect = isDesktop ? "aspect-video" : "aspect-[9/16]";
 
   // Auto-open on mount → gambar adalah LCP kandidat; wajib priority (bukan lazy).
@@ -55,7 +58,10 @@ export function PopupDialogClient({ popup }: { popup: PopupAktif }) {
 
   return (
     <Dialog open={open} onOpenChange={(next) => !next && tutup()}>
-      <DialogContent showCloseButton={false} className="max-w-sm gap-0 overflow-hidden p-0 md:max-w-lg">
+      <DialogContent
+        showCloseButton={false}
+        className="max-w-sm gap-0 overflow-hidden p-0 md:max-w-3xl lg:max-w-4xl xl:max-w-5xl"
+      >
         <button
           type="button"
           onClick={tutup}

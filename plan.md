@@ -1,16 +1,11 @@
-# Plan — sync dokumen (PRD / ENGINEERING / registry)
+# Plan — sync + lint follow-up
 
-> 2026-09-22: tiga dokumen diselaraskan dengan status aktual registry.
+> F11.7 OK Alif termasuk follow-up lint (dialogSession remount). Registry diperbarui 2026-09-22.
 
-## Selesai
+## Status
 
-| Dokumen | Perubahan |
-|---------|-----------|
-| `feature-registry.md` | F10.3–F10.6 TODO→DONE (sesuai log uji); header Sprint 10 + F11.7; log sync dokumen |
-| `ENGINEERING.md` | ADR-020r amandemen Fix A (`sebagai_tamu`); ADR-024 + F11.7; riwayat 2026-09-22 |
-| `PRD.md` | §5.1g catatan F11.7 JSON; §9b cerita/alur/checklist Fix A; §9f F11.4–F11.7 + checklist |
-
-## Tidak diubah (sengaja)
-
-- F05.2 tetap **WIP** di registry (re-audit Lighthouse sitewide belum)
-- BRD-HXT-002 (dokumen klien) — di luar scope sync ini
+| Item | Status |
+|------|--------|
+| F11.7 polish UI | DONE + OK Alif |
+| Follow-up lint (eslint / FileUploadField / lampiran remount) | DONE + OK Alif → bukti F11.7 |
+| feature-registry | UPDATED |
