@@ -37,6 +37,7 @@ export async function InstrukturSection({ limit }: { limit?: number } = {}) {
                   fill
                   className="object-cover object-top transition-transform duration-300 group-hover:scale-105"
                   sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                  loading="lazy"
                 />
               ) : null}
             </div>
@@ -45,7 +46,7 @@ export async function InstrukturSection({ limit }: { limit?: number } = {}) {
                 {instruktur.nama}
               </p>
               {instruktur.jabatan_id && (
-                <p className="mt-0.5 text-xs text-muted-foreground sm:text-sm">
+                <p className="mt-0.5 text-sm text-muted-foreground">
                   {pick(instruktur.jabatan_id, instruktur.jabatan_en, locale)}
                 </p>
               )}

@@ -10,13 +10,13 @@ export const publicCtaSecondary =
   "inline-flex h-11 min-h-11 shrink-0 items-center justify-center rounded-md border border-border bg-background px-6 text-base font-semibold text-foreground [transition:var(--transition-hover)] hover:bg-accent hover:text-accent-foreground";
 
 export const publicBadgeKategori =
-  "inline-flex w-fit rounded-full bg-accent px-2.5 py-0.5 text-xs font-medium text-accent-foreground";
+  "inline-flex w-fit rounded-full bg-accent px-2.5 py-0.5 text-sm font-medium text-accent-foreground";
 
 /** Badge status batch di permukaan publik — token Cobalt (bukan STATUS_BATCH_LABEL admin). */
 export const publicStatusBatchClass = {
   upcoming:
-    "inline-flex w-fit rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary",
-  open: "inline-flex w-fit rounded-full bg-secondary/25 px-2.5 py-0.5 text-xs font-medium text-secondary-foreground",
+    "inline-flex w-fit rounded-full bg-primary/10 px-2.5 py-0.5 text-sm font-medium text-primary",
+  open: "inline-flex w-fit rounded-full bg-secondary/25 px-2.5 py-0.5 text-sm font-medium text-secondary-foreground",
   closed:
-    "inline-flex w-fit rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-muted-foreground",
+    "inline-flex w-fit rounded-full bg-muted px-2.5 py-0.5 text-sm font-medium text-muted-foreground",
 } as const;

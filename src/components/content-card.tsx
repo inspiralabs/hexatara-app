@@ -51,6 +51,7 @@ export function ContentCard({
             fill
             className={imageFit === "contain" ? "object-contain" : "object-cover"}
             sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            loading="lazy"
           />
         </div>
       )}

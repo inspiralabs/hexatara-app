@@ -1,0 +1,3148 @@
+{
+  "ranAt": "2026-09-21T11:05:20.125Z",
+  "base": "http://localhost:3000",
+  "results": [
+    {
+      "id": "beranda",
+      "path": "/id",
+      "note": null,
+      "finalUrl": "http://localhost:3000/",
+      "performance": 39,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "score": 0.95,
+          "displayValue": "1.6 s",
+          "numericValue": 1555.5747999999999
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "score": 0,
+          "displayValue": "11.8 s",
+          "numericValue": 11758.905499999997
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "score": 0.08,
+          "displayValue": "1,980 ms",
+          "numericValue": 1981.5000000000027
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "title": "Speed Index",
+          "score": 0.18,
+          "displayValue": "8.4 s",
+          "numericValue": 8441.45724181484
+        },
+        "TTI": {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.13,
+          "displayValue": "13.0 s",
+          "numericValue": 12999.099600000001
+        }
+      },
+      "lcpElement": null,
+      "diagnostics": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0,
+          "displayValue": "Est savings of 390 KiB",
+          "numericValue": 2930
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 1,
+          "displayValue": null,
+          "numericValue": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Reduce initial server response time",
+          "score": 0,
+          "displayValue": "Root document took 2,380 ms",
+          "numericValue": 2383
+        },
+        {
+          "id": "bootup-time",
+          "title": "Reduce JavaScript execution time",
+          "score": 0,
+          "displayValue": "5.3 s",
+          "numericValue": 5266.603999999952
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimize main-thread work",
+          "score": 0,
+          "displayValue": "7.4 s",
+          "numericValue": 7431.703999999878
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "score": 0,
+          "displayValue": "Est savings of 700 ms",
+          "numericValue": 700.7874
+        },
+        {
+          "id": "network-server-latency",
+          "title": "Server Backend Latencies",
+          "score": 1,
+          "displayValue": "100 ms",
+          "numericValue": 100.7874
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 390 KiB",
+          "savingsMs": 2930,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_next-devtools_index_0q9dr-y.js",
+              "wastedBytes": 151859,
+              "totalBytes": 250225
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 101644,
+              "totalBytes": 196550
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 63924,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 28741,
+              "totalBytes": 65796
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 26972,
+              "totalBytes": 52158
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0kw__%40base-ui_react_floating-ui-react_1mgiyfg._.js",
+              "wastedBytes": 26275,
+              "totalBytes": 54814
+            }
+          ]
+        },
+        {
+          "id": "server-response-time",
+          "title": "Reduce initial server response time",
+          "displayValue": "Root document took 2,380 ms",
+          "savingsMs": 2383,
+          "items": [
+            {
+              "url": "http://localhost:3000/",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        },
+        {
+          "id": "unminified-javascript",
+          "title": "Minify JavaScript",
+          "displayValue": "Est savings of 257 KiB",
+          "savingsMs": 1370,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 92394,
+              "totalBytes": 196635
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 50097,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 16506,
+              "totalBytes": 65822
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 15583,
+              "totalBytes": 52159
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_0pkymhi._.js",
+              "wastedBytes": 15567,
+              "totalBytes": 36227
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/turbopack-_0x47bla._.js",
+              "wastedBytes": 13886,
+              "totalBytes": 26167
+            }
+          ]
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "displayValue": "Est savings of 700 ms",
+          "savingsMs": 700.7874,
+          "items": [
+            {
+              "url": "http://localhost:3000/id",
+              "wastedBytes": null,
+              "totalBytes": null
+            },
+            {
+              "url": "http://localhost:3000/",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pelatihan",
+      "path": "/id/pelatihan",
+      "note": null,
+      "finalUrl": "http://localhost:3000/pelatihan",
+      "performance": 71,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "score": 0.99,
+          "displayValue": "1.1 s",
+          "numericValue": 1075.1875
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "score": 0,
+          "displayValue": "9.5 s",
+          "numericValue": 9546.375
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "score": 0.87,
+          "displayValue": "230 ms",
+          "numericValue": 228
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "title": "Speed Index",
+          "score": 1,
+          "displayValue": "1.7 s",
+          "numericValue": 1673.507467371608
+        },
+        "TTI": {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.25,
+          "displayValue": "10.2 s",
+          "numericValue": 10240.081250000001
+        }
+      },
+      "lcpElement": null,
+      "diagnostics": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0,
+          "displayValue": "Est savings of 403 KiB",
+          "numericValue": 2670
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 1,
+          "displayValue": null,
+          "numericValue": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "score": 1,
+          "displayValue": "Root document took 520 ms",
+          "numericValue": 524
+        },
+        {
+          "id": "bootup-time",
+          "title": "Reduce JavaScript execution time",
+          "score": 0,
+          "displayValue": "1.4 s",
+          "numericValue": 1355.496000000008
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimize main-thread work",
+          "score": 0,
+          "displayValue": "2.4 s",
+          "numericValue": 2375.4479999999885
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "score": 0,
+          "displayValue": "Est savings of 610 ms",
+          "numericValue": 612.59375
+        },
+        {
+          "id": "network-server-latency",
+          "title": "Server Backend Latencies",
+          "score": 1,
+          "displayValue": "10 ms",
+          "numericValue": 12.59375
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 403 KiB",
+          "savingsMs": 2670,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_next-devtools_index_0q9dr-y.js",
+              "wastedBytes": 151859,
+              "totalBytes": 250225
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 101265,
+              "totalBytes": 196550
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 68240,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0kw__%40base-ui_react_floating-ui-react_1mgiyfg._.js",
+              "wastedBytes": 33363,
+              "totalBytes": 54814
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 30516,
+              "totalBytes": 65796
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 26972,
+              "totalBytes": 52158
+            }
+          ]
+        },
+        {
+          "id": "unminified-javascript",
+          "title": "Minify JavaScript",
+          "displayValue": "Est savings of 255 KiB",
+          "savingsMs": 1500,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 92394,
+              "totalBytes": 196635
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 50097,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 16506,
+              "totalBytes": 65822
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 15583,
+              "totalBytes": 52159
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_0pkymhi._.js",
+              "wastedBytes": 15567,
+              "totalBytes": 36227
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/turbopack-_0x47bla._.js",
+              "wastedBytes": 13886,
+              "totalBytes": 26167
+            }
+          ]
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "displayValue": "Est savings of 610 ms",
+          "savingsMs": 612.59375,
+          "items": [
+            {
+              "url": "http://localhost:3000/id/pelatihan",
+              "wastedBytes": null,
+              "totalBytes": null
+            },
+            {
+              "url": "http://localhost:3000/pelatihan",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 520 ms",
+          "savingsMs": 524,
+          "items": [
+            {
+              "url": "http://localhost:3000/pelatihan",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "katalog",
+      "path": "/id/katalog",
+      "note": null,
+      "finalUrl": "http://localhost:3000/katalog",
+      "performance": 68,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "score": 0.99,
+          "displayValue": "1.1 s",
+          "numericValue": 1076.1145
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "score": 0,
+          "displayValue": "9.5 s",
+          "numericValue": 9452.229
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "score": 0.76,
+          "displayValue": "330 ms",
+          "numericValue": 326.0000000000009
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "title": "Speed Index",
+          "score": 1,
+          "displayValue": "1.8 s",
+          "numericValue": 1813.0027040472503
+        },
+        "TTI": {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.25,
+          "displayValue": "10.3 s",
+          "numericValue": 10285.271750000004
+        }
+      },
+      "lcpElement": null,
+      "diagnostics": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0,
+          "displayValue": "Est savings of 403 KiB",
+          "numericValue": 2730
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 1,
+          "displayValue": null,
+          "numericValue": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "score": 1,
+          "displayValue": "Root document took 580 ms",
+          "numericValue": 577
+        },
+        {
+          "id": "bootup-time",
+          "title": "Reduce JavaScript execution time",
+          "score": 0,
+          "displayValue": "1.5 s",
+          "numericValue": 1459.132000000006
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimize main-thread work",
+          "score": 0,
+          "displayValue": "2.3 s",
+          "numericValue": 2303.359999999989
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "score": 0,
+          "displayValue": "Est savings of 610 ms",
+          "numericValue": 613.05725
+        },
+        {
+          "id": "network-server-latency",
+          "title": "Server Backend Latencies",
+          "score": 1,
+          "displayValue": "10 ms",
+          "numericValue": 13.05725
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 403 KiB",
+          "savingsMs": 2730,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_next-devtools_index_0q9dr-y.js",
+              "wastedBytes": 151859,
+              "totalBytes": 250225
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 101265,
+              "totalBytes": 196550
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 68275,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0kw__%40base-ui_react_floating-ui-react_1mgiyfg._.js",
+              "wastedBytes": 33363,
+              "totalBytes": 54814
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 30516,
+              "totalBytes": 65796
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 26972,
+              "totalBytes": 52158
+            }
+          ]
+        },
+        {
+          "id": "unminified-javascript",
+          "title": "Minify JavaScript",
+          "displayValue": "Est savings of 255 KiB",
+          "savingsMs": 1500,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 92394,
+              "totalBytes": 196635
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 50097,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 16506,
+              "totalBytes": 65822
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 15583,
+              "totalBytes": 52159
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_0pkymhi._.js",
+              "wastedBytes": 15567,
+              "totalBytes": 36227
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/turbopack-_0x47bla._.js",
+              "wastedBytes": 13886,
+              "totalBytes": 26167
+            }
+          ]
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "displayValue": "Est savings of 610 ms",
+          "savingsMs": 613.05725,
+          "items": [
+            {
+              "url": "http://localhost:3000/id/katalog",
+              "wastedBytes": null,
+              "totalBytes": null
+            },
+            {
+              "url": "http://localhost:3000/katalog",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 580 ms",
+          "savingsMs": 577,
+          "items": [
+            {
+              "url": "http://localhost:3000/katalog",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verify",
+      "path": "/id/verify",
+      "note": null,
+      "finalUrl": "http://localhost:3000/verify",
+      "performance": 73,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "score": 0.99,
+          "displayValue": "1.1 s",
+          "numericValue": 1070.1583
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "score": 0,
+          "displayValue": "9.8 s",
+          "numericValue": 9788.356174999997
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "score": 0.98,
+          "displayValue": "100 ms",
+          "numericValue": 97
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "title": "Speed Index",
+          "score": 0.91,
+          "displayValue": "3.2 s",
+          "numericValue": 3240.3610149376836
+        },
+        "TTI": {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.28,
+          "displayValue": "9.8 s",
+          "numericValue": 9826.360132499998
+        }
+      },
+      "lcpElement": null,
+      "diagnostics": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0,
+          "displayValue": "Est savings of 405 KiB",
+          "numericValue": 2630
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 1,
+          "displayValue": null,
+          "numericValue": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "score": 1,
+          "displayValue": "Root document took 340 ms",
+          "numericValue": 340
+        },
+        {
+          "id": "bootup-time",
+          "title": "JavaScript execution time",
+          "score": 1,
+          "displayValue": "1.0 s",
+          "numericValue": 961.552000000002
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimizes main-thread work",
+          "score": 1,
+          "displayValue": "1.6 s",
+          "numericValue": 1603.3880000000065
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "score": 0,
+          "displayValue": "Est savings of 610 ms",
+          "numericValue": 610.07915
+        },
+        {
+          "id": "network-server-latency",
+          "title": "Server Backend Latencies",
+          "score": 1,
+          "displayValue": "10 ms",
+          "numericValue": 10.07915
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 405 KiB",
+          "savingsMs": 2630,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_next-devtools_index_0q9dr-y.js",
+              "wastedBytes": 151859,
+              "totalBytes": 250225
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 101570,
+              "totalBytes": 196550
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 69284,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0kw__%40base-ui_react_floating-ui-react_1mgiyfg._.js",
+              "wastedBytes": 33893,
+              "totalBytes": 54814
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 30925,
+              "totalBytes": 65796
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 26972,
+              "totalBytes": 52158
+            }
+          ]
+        },
+        {
+          "id": "unminified-javascript",
+          "title": "Minify JavaScript",
+          "displayValue": "Est savings of 257 KiB",
+          "savingsMs": 1500,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 92394,
+              "totalBytes": 196635
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 50097,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 16506,
+              "totalBytes": 65822
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 15583,
+              "totalBytes": 52159
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_0pkymhi._.js",
+              "wastedBytes": 15567,
+              "totalBytes": 36227
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/turbopack-_0x47bla._.js",
+              "wastedBytes": 13886,
+              "totalBytes": 26167
+            }
+          ]
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "displayValue": "Est savings of 610 ms",
+          "savingsMs": 610.07915,
+          "items": [
+            {
+              "url": "http://localhost:3000/id/verify",
+              "wastedBytes": null,
+              "totalBytes": null
+            },
+            {
+              "url": "http://localhost:3000/verify",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 340 ms",
+          "savingsMs": 340,
+          "items": [
+            {
+              "url": "http://localhost:3000/verify",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "faq",
+      "path": "/id/faq",
+      "note": null,
+      "finalUrl": "http://localhost:3000/faq",
+      "performance": 70,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "score": 0.99,
+          "displayValue": "1.1 s",
+          "numericValue": 1067.6129
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "score": 0,
+          "displayValue": "9.8 s",
+          "numericValue": 9831.629025
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "score": 0.92,
+          "displayValue": "180 ms",
+          "numericValue": 175
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "title": "Speed Index",
+          "score": 0.71,
+          "displayValue": "4.6 s",
+          "numericValue": 4590.270729119753
+        },
+        "TTI": {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.27,
+          "displayValue": "9.9 s",
+          "numericValue": 9869.6758
+        }
+      },
+      "lcpElement": null,
+      "diagnostics": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0,
+          "displayValue": "Est savings of 404 KiB",
+          "numericValue": 2680
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 1,
+          "displayValue": null,
+          "numericValue": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "score": 1,
+          "displayValue": "Root document took 380 ms",
+          "numericValue": 377
+        },
+        {
+          "id": "bootup-time",
+          "title": "JavaScript execution time",
+          "score": 1,
+          "displayValue": "1.1 s",
+          "numericValue": 1143.9760000000038
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimizes main-thread work",
+          "score": 1,
+          "displayValue": "1.8 s",
+          "numericValue": 1814.2480000000107
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "score": 0,
+          "displayValue": "Est savings of 610 ms",
+          "numericValue": 608.80645
+        },
+        {
+          "id": "network-server-latency",
+          "title": "Server Backend Latencies",
+          "score": 1,
+          "displayValue": "10 ms",
+          "numericValue": 8.80645
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 404 KiB",
+          "savingsMs": 2680,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_next-devtools_index_0q9dr-y.js",
+              "wastedBytes": 151859,
+              "totalBytes": 250225
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 101570,
+              "totalBytes": 196550
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 69001,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0kw__%40base-ui_react_floating-ui-react_1mgiyfg._.js",
+              "wastedBytes": 33893,
+              "totalBytes": 54814
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 30809,
+              "totalBytes": 65796
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 26972,
+              "totalBytes": 52158
+            }
+          ]
+        },
+        {
+          "id": "unminified-javascript",
+          "title": "Minify JavaScript",
+          "displayValue": "Est savings of 255 KiB",
+          "savingsMs": 1500,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 92394,
+              "totalBytes": 196635
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 50097,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 16506,
+              "totalBytes": 65822
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 15583,
+              "totalBytes": 52159
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_0pkymhi._.js",
+              "wastedBytes": 15567,
+              "totalBytes": 36227
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/turbopack-_0x47bla._.js",
+              "wastedBytes": 13886,
+              "totalBytes": 26167
+            }
+          ]
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "displayValue": "Est savings of 610 ms",
+          "savingsMs": 608.80645,
+          "items": [
+            {
+              "url": "http://localhost:3000/id/faq",
+              "wastedBytes": null,
+              "totalBytes": null
+            },
+            {
+              "url": "http://localhost:3000/faq",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 380 ms",
+          "savingsMs": 377,
+          "items": [
+            {
+              "url": "http://localhost:3000/faq",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kuis",
+      "path": "/id/kuis",
+      "note": null,
+      "finalUrl": "http://localhost:3000/kuis",
+      "performance": 71,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "score": 0.99,
+          "displayValue": "1.1 s",
+          "numericValue": 1073.9747
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "score": 0,
+          "displayValue": "9.8 s",
+          "numericValue": 9775.943075000001
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "score": 0.95,
+          "displayValue": "150 ms",
+          "numericValue": 149
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "title": "Speed Index",
+          "score": 0.73,
+          "displayValue": "4.4 s",
+          "numericValue": 4430.044795959659
+        },
+        "TTI": {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.28,
+          "displayValue": "9.8 s",
+          "numericValue": 9806.542442500002
+        }
+      },
+      "lcpElement": null,
+      "diagnostics": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0,
+          "displayValue": "Est savings of 402 KiB",
+          "numericValue": 2680
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 1,
+          "displayValue": null,
+          "numericValue": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "score": 1,
+          "displayValue": "Root document took 360 ms",
+          "numericValue": 356
+        },
+        {
+          "id": "bootup-time",
+          "title": "JavaScript execution time",
+          "score": 1,
+          "displayValue": "1.1 s",
+          "numericValue": 1096.7480000000019
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimizes main-thread work",
+          "score": 1,
+          "displayValue": "1.8 s",
+          "numericValue": 1765.5560000000069
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "score": 0,
+          "displayValue": "Est savings of 610 ms",
+          "numericValue": 611.98735
+        },
+        {
+          "id": "network-server-latency",
+          "title": "Server Backend Latencies",
+          "score": 1,
+          "displayValue": "10 ms",
+          "numericValue": 11.98735
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 402 KiB",
+          "savingsMs": 2680,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_next-devtools_index_0q9dr-y.js",
+              "wastedBytes": 151859,
+              "totalBytes": 250225
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 101570,
+              "totalBytes": 196550
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 70116,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0kw__%40base-ui_react_floating-ui-react_1mgiyfg._.js",
+              "wastedBytes": 33893,
+              "totalBytes": 54814
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 31646,
+              "totalBytes": 65796
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 22622,
+              "totalBytes": 52158
+            }
+          ]
+        },
+        {
+          "id": "unminified-javascript",
+          "title": "Minify JavaScript",
+          "displayValue": "Est savings of 255 KiB",
+          "savingsMs": 1500,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 92394,
+              "totalBytes": 196635
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 50097,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 16506,
+              "totalBytes": 65822
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 15583,
+              "totalBytes": 52159
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_0pkymhi._.js",
+              "wastedBytes": 15567,
+              "totalBytes": 36227
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/turbopack-_0x47bla._.js",
+              "wastedBytes": 13886,
+              "totalBytes": 26167
+            }
+          ]
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "displayValue": "Est savings of 610 ms",
+          "savingsMs": 611.98735,
+          "items": [
+            {
+              "url": "http://localhost:3000/id/kuis",
+              "wastedBytes": null,
+              "totalBytes": null
+            },
+            {
+              "url": "http://localhost:3000/kuis",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 360 ms",
+          "savingsMs": 356,
+          "items": [
+            {
+              "url": "http://localhost:3000/kuis",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tentang-kami",
+      "path": "/id/tentang-kami",
+      "note": null,
+      "finalUrl": "http://localhost:3000/tentang-kami",
+      "performance": 71,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "score": 0.99,
+          "displayValue": "1.1 s",
+          "numericValue": 1078.1976
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "score": 0.01,
+          "displayValue": "8.7 s",
+          "numericValue": 8653.3952
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "score": 0.86,
+          "displayValue": "230 ms",
+          "numericValue": 228.5
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "title": "Speed Index",
+          "score": 0.99,
+          "displayValue": "2.2 s",
+          "numericValue": 2152.5104679916285
+        },
+        "TTI": {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.28,
+          "displayValue": "9.8 s",
+          "numericValue": 9838.75074
+        }
+      },
+      "lcpElement": null,
+      "diagnostics": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0,
+          "displayValue": "Est savings of 406 KiB",
+          "numericValue": 2600
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 1,
+          "displayValue": null,
+          "numericValue": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Reduce initial server response time",
+          "score": 0,
+          "displayValue": "Root document took 880 ms",
+          "numericValue": 876
+        },
+        {
+          "id": "bootup-time",
+          "title": "Reduce JavaScript execution time",
+          "score": 0,
+          "displayValue": "1.3 s",
+          "numericValue": 1293.8640000000003
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimize main-thread work",
+          "score": 0,
+          "displayValue": "2.1 s",
+          "numericValue": 2055.035999999994
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "score": 0,
+          "displayValue": "Est savings of 610 ms",
+          "numericValue": 614.0988
+        },
+        {
+          "id": "network-server-latency",
+          "title": "Server Backend Latencies",
+          "score": 1,
+          "displayValue": "10 ms",
+          "numericValue": 14.098800000000004
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 406 KiB",
+          "savingsMs": 2600,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_next-devtools_index_0q9dr-y.js",
+              "wastedBytes": 151859,
+              "totalBytes": 250225
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 101570,
+              "totalBytes": 196550
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 70116,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0kw__%40base-ui_react_floating-ui-react_1mgiyfg._.js",
+              "wastedBytes": 33893,
+              "totalBytes": 54814
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 31762,
+              "totalBytes": 65796
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 26972,
+              "totalBytes": 52158
+            }
+          ]
+        },
+        {
+          "id": "unminified-javascript",
+          "title": "Minify JavaScript",
+          "displayValue": "Est savings of 255 KiB",
+          "savingsMs": 1500,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 92394,
+              "totalBytes": 196635
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 50097,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 16506,
+              "totalBytes": 65822
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 15583,
+              "totalBytes": 52159
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_0pkymhi._.js",
+              "wastedBytes": 15567,
+              "totalBytes": 36227
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/turbopack-_0x47bla._.js",
+              "wastedBytes": 13886,
+              "totalBytes": 26167
+            }
+          ]
+        },
+        {
+          "id": "server-response-time",
+          "title": "Reduce initial server response time",
+          "displayValue": "Root document took 880 ms",
+          "savingsMs": 876,
+          "items": [
+            {
+              "url": "http://localhost:3000/tentang-kami",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "displayValue": "Est savings of 610 ms",
+          "savingsMs": 614.0988,
+          "items": [
+            {
+              "url": "http://localhost:3000/id/tentang-kami",
+              "wastedBytes": null,
+              "totalBytes": null
+            },
+            {
+              "url": "http://localhost:3000/tentang-kami",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "syarat-ketentuan",
+      "path": "/id/syarat-ketentuan",
+      "note": null,
+      "finalUrl": "http://localhost:3000/syarat-ketentuan",
+      "performance": 71,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "score": 1,
+          "displayValue": "1.1 s",
+          "numericValue": 1063.3449
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "score": 0,
+          "displayValue": "9.7 s",
+          "numericValue": 9654.026025
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "score": 0.96,
+          "displayValue": "130 ms",
+          "numericValue": 134.5
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "title": "Speed Index",
+          "score": 0.75,
+          "displayValue": "4.3 s",
+          "numericValue": 4345.169982011977
+        },
+        "TTI": {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.29,
+          "displayValue": "9.7 s",
+          "numericValue": 9691.859647500001
+        }
+      },
+      "lcpElement": null,
+      "diagnostics": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0,
+          "displayValue": "Est savings of 406 KiB",
+          "numericValue": 2660
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 1,
+          "displayValue": null,
+          "numericValue": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "score": 1,
+          "displayValue": "Root document took 330 ms",
+          "numericValue": 333
+        },
+        {
+          "id": "bootup-time",
+          "title": "JavaScript execution time",
+          "score": 1,
+          "displayValue": "1.0 s",
+          "numericValue": 989.8680000000014
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimizes main-thread work",
+          "score": 1,
+          "displayValue": "1.6 s",
+          "numericValue": 1588.8040000000083
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "score": 0,
+          "displayValue": "Est savings of 610 ms",
+          "numericValue": 606.67245
+        },
+        {
+          "id": "network-server-latency",
+          "title": "Server Backend Latencies",
+          "score": 1,
+          "displayValue": "10 ms",
+          "numericValue": 6.6724499999999995
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 406 KiB",
+          "savingsMs": 2660,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_next-devtools_index_0q9dr-y.js",
+              "wastedBytes": 151859,
+              "totalBytes": 250225
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 101570,
+              "totalBytes": 196550
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 70178,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0kw__%40base-ui_react_floating-ui-react_1mgiyfg._.js",
+              "wastedBytes": 33893,
+              "totalBytes": 54814
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 31762,
+              "totalBytes": 65796
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 26972,
+              "totalBytes": 52158
+            }
+          ]
+        },
+        {
+          "id": "unminified-javascript",
+          "title": "Minify JavaScript",
+          "displayValue": "Est savings of 255 KiB",
+          "savingsMs": 1500,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 92394,
+              "totalBytes": 196635
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 50097,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 16506,
+              "totalBytes": 65822
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 15583,
+              "totalBytes": 52159
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_0pkymhi._.js",
+              "wastedBytes": 15567,
+              "totalBytes": 36227
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/turbopack-_0x47bla._.js",
+              "wastedBytes": 13886,
+              "totalBytes": 26167
+            }
+          ]
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "displayValue": "Est savings of 610 ms",
+          "savingsMs": 606.67245,
+          "items": [
+            {
+              "url": "http://localhost:3000/id/syarat-ketentuan",
+              "wastedBytes": null,
+              "totalBytes": null
+            },
+            {
+              "url": "http://localhost:3000/syarat-ketentuan",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 330 ms",
+          "savingsMs": 333,
+          "items": [
+            {
+              "url": "http://localhost:3000/syarat-ketentuan",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "kebijakan-privasi",
+      "path": "/id/kebijakan-privasi",
+      "note": null,
+      "finalUrl": "http://localhost:3000/kebijakan-privasi",
+      "performance": 70,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "score": 0.99,
+          "displayValue": "1.1 s",
+          "numericValue": 1070.9357
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "score": 0,
+          "displayValue": "9.7 s",
+          "numericValue": 9724.105325
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "score": 0.93,
+          "displayValue": "160 ms",
+          "numericValue": 160.9999999999991
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "title": "Speed Index",
+          "score": 0.74,
+          "displayValue": "4.4 s",
+          "numericValue": 4415.9631799929575
+        },
+        "TTI": {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.28,
+          "displayValue": "9.8 s",
+          "numericValue": 9762.128717500002
+        }
+      },
+      "lcpElement": null,
+      "diagnostics": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0,
+          "displayValue": "Est savings of 406 KiB",
+          "numericValue": 2710
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 1,
+          "displayValue": null,
+          "numericValue": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "score": 1,
+          "displayValue": "Root document took 260 ms",
+          "numericValue": 264
+        },
+        {
+          "id": "bootup-time",
+          "title": "JavaScript execution time",
+          "score": 1,
+          "displayValue": "1.0 s",
+          "numericValue": 1047.9640000000022
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimizes main-thread work",
+          "score": 1,
+          "displayValue": "1.7 s",
+          "numericValue": 1675.7600000000098
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "score": 0,
+          "displayValue": "Est savings of 610 ms",
+          "numericValue": 610.46785
+        },
+        {
+          "id": "network-server-latency",
+          "title": "Server Backend Latencies",
+          "score": 1,
+          "displayValue": "10 ms",
+          "numericValue": 10.46785
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 406 KiB",
+          "savingsMs": 2710,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_next-devtools_index_0q9dr-y.js",
+              "wastedBytes": 151859,
+              "totalBytes": 250225
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 101570,
+              "totalBytes": 196550
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 70178,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0kw__%40base-ui_react_floating-ui-react_1mgiyfg._.js",
+              "wastedBytes": 33893,
+              "totalBytes": 54814
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 31762,
+              "totalBytes": 65796
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 26972,
+              "totalBytes": 52158
+            }
+          ]
+        },
+        {
+          "id": "unminified-javascript",
+          "title": "Minify JavaScript",
+          "displayValue": "Est savings of 255 KiB",
+          "savingsMs": 1500,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 92394,
+              "totalBytes": 196635
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 50097,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 16506,
+              "totalBytes": 65822
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 15583,
+              "totalBytes": 52159
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_0pkymhi._.js",
+              "wastedBytes": 15567,
+              "totalBytes": 36227
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/turbopack-_0x47bla._.js",
+              "wastedBytes": 13886,
+              "totalBytes": 26167
+            }
+          ]
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "displayValue": "Est savings of 610 ms",
+          "savingsMs": 610.46785,
+          "items": [
+            {
+              "url": "http://localhost:3000/id/kebijakan-privasi",
+              "wastedBytes": null,
+              "totalBytes": null
+            },
+            {
+              "url": "http://localhost:3000/kebijakan-privasi",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 260 ms",
+          "savingsMs": 264,
+          "items": [
+            {
+              "url": "http://localhost:3000/kebijakan-privasi",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ketentuan-layanan",
+      "path": "/id/ketentuan-layanan",
+      "note": null,
+      "finalUrl": "http://localhost:3000/ketentuan-layanan",
+      "performance": 74,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "score": 1,
+          "displayValue": "1.1 s",
+          "numericValue": 1062.414
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "score": 0.01,
+          "displayValue": "8.8 s",
+          "numericValue": 8804.828000000001
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "score": 0.97,
+          "displayValue": "120 ms",
+          "numericValue": 118.5
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "title": "Speed Index",
+          "score": 1,
+          "displayValue": "1.1 s",
+          "numericValue": 1062.414
+        },
+        "TTI": {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.29,
+          "displayValue": "9.6 s",
+          "numericValue": 9610.584850000003
+        }
+      },
+      "lcpElement": null,
+      "diagnostics": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0,
+          "displayValue": "Est savings of 406 KiB",
+          "numericValue": 2620
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 1,
+          "displayValue": null,
+          "numericValue": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "score": 1,
+          "displayValue": "Root document took 220 ms",
+          "numericValue": 221
+        },
+        {
+          "id": "bootup-time",
+          "title": "JavaScript execution time",
+          "score": 1,
+          "displayValue": "0.9 s",
+          "numericValue": 923.3800000000012
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimizes main-thread work",
+          "score": 1,
+          "displayValue": "1.6 s",
+          "numericValue": 1562.432000000008
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "score": 0,
+          "displayValue": "Est savings of 610 ms",
+          "numericValue": 606.207
+        },
+        {
+          "id": "network-server-latency",
+          "title": "Server Backend Latencies",
+          "score": 1,
+          "displayValue": "10 ms",
+          "numericValue": 6.207
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 406 KiB",
+          "savingsMs": 2620,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_next-devtools_index_0q9dr-y.js",
+              "wastedBytes": 151859,
+              "totalBytes": 250225
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 101570,
+              "totalBytes": 196550
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 70116,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0kw__%40base-ui_react_floating-ui-react_1mgiyfg._.js",
+              "wastedBytes": 33893,
+              "totalBytes": 54814
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 31762,
+              "totalBytes": 65796
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 26972,
+              "totalBytes": 52158
+            }
+          ]
+        },
+        {
+          "id": "unminified-javascript",
+          "title": "Minify JavaScript",
+          "displayValue": "Est savings of 255 KiB",
+          "savingsMs": 1500,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 92394,
+              "totalBytes": 196635
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 50097,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_1vbxfhu._.js",
+              "wastedBytes": 16506,
+              "totalBytes": 65822
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 15583,
+              "totalBytes": 52159
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_0pkymhi._.js",
+              "wastedBytes": 15567,
+              "totalBytes": 36227
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/turbopack-_0x47bla._.js",
+              "wastedBytes": 13886,
+              "totalBytes": 26167
+            }
+          ]
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "displayValue": "Est savings of 610 ms",
+          "savingsMs": 606.207,
+          "items": [
+            {
+              "url": "http://localhost:3000/id/ketentuan-layanan",
+              "wastedBytes": null,
+              "totalBytes": null
+            },
+            {
+              "url": "http://localhost:3000/ketentuan-layanan",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 220 ms",
+          "savingsMs": 221,
+          "items": [
+            {
+              "url": "http://localhost:3000/ketentuan-layanan",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "login",
+      "path": "/id/login",
+      "note": null,
+      "finalUrl": "http://localhost:3000/login",
+      "performance": 69,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "score": 0.74,
+          "displayValue": "2.3 s",
+          "numericValue": 2295.42
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "score": 0,
+          "displayValue": "10.0 s",
+          "numericValue": 10027.560000000001
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "score": 0.98,
+          "displayValue": "100 ms",
+          "numericValue": 96.49999999999909
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "title": "Speed Index",
+          "score": 0.74,
+          "displayValue": "4.4 s",
+          "numericValue": 4406.900463982463
+        },
+        "TTI": {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.26,
+          "displayValue": "10.1 s",
+          "numericValue": 10072.560000000001
+        }
+      },
+      "lcpElement": null,
+      "diagnostics": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0,
+          "displayValue": "Est savings of 466 KiB",
+          "numericValue": 3070
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 1,
+          "displayValue": null,
+          "numericValue": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "score": 1,
+          "displayValue": "Root document took 280 ms",
+          "numericValue": 277
+        },
+        {
+          "id": "bootup-time",
+          "title": "JavaScript execution time",
+          "score": 1,
+          "displayValue": "0.9 s",
+          "numericValue": 926.9680000000026
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimizes main-thread work",
+          "score": 1,
+          "displayValue": "1.6 s",
+          "numericValue": 1587.64400000001
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "score": 0,
+          "displayValue": "Est savings of 610 ms",
+          "numericValue": 607.14
+        },
+        {
+          "id": "network-server-latency",
+          "title": "Server Backend Latencies",
+          "score": 1,
+          "displayValue": "10 ms",
+          "numericValue": 7.14
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 466 KiB",
+          "savingsMs": 3070,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_next-devtools_index_0q9dr-y.js",
+              "wastedBytes": 151859,
+              "totalBytes": 250225
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 101265,
+              "totalBytes": 196550
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/09ge_zod_v4_core_0570rwe._.js",
+              "wastedBytes": 71251,
+              "totalBytes": 90428
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 68135,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/09ge_zod_v4_locales_0h8gkg1._.js",
+              "wastedBytes": 36556,
+              "totalBytes": 42169
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 27156,
+              "totalBytes": 52158
+            }
+          ]
+        },
+        {
+          "id": "unminified-javascript",
+          "title": "Minify JavaScript",
+          "displayValue": "Est savings of 283 KiB",
+          "savingsMs": 1650,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 92394,
+              "totalBytes": 196635
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 50097,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/09ge_zod_v4_core_0570rwe._.js",
+              "wastedBytes": 24903,
+              "totalBytes": 90447
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 15583,
+              "totalBytes": 52159
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_0dl17o2._.js",
+              "wastedBytes": 15573,
+              "totalBytes": 36444
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/turbopack-_0x47bla._.js",
+              "wastedBytes": 13886,
+              "totalBytes": 26167
+            }
+          ]
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "displayValue": "Est savings of 610 ms",
+          "savingsMs": 607.14,
+          "items": [
+            {
+              "url": "http://localhost:3000/id/login",
+              "wastedBytes": null,
+              "totalBytes": null
+            },
+            {
+              "url": "http://localhost:3000/login",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 280 ms",
+          "savingsMs": 277,
+          "items": [
+            {
+              "url": "http://localhost:3000/login",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "daftar",
+      "path": "/id/daftar",
+      "note": null,
+      "finalUrl": "http://localhost:3000/daftar",
+      "performance": 71,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "score": 0.99,
+          "displayValue": "1.1 s",
+          "numericValue": 1077.7359
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "score": 0,
+          "displayValue": "10.1 s",
+          "numericValue": 10102.471799999998
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "score": 0.87,
+          "displayValue": "220 ms",
+          "numericValue": 220.4999999999991
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "title": "Speed Index",
+          "score": 0.98,
+          "displayValue": "2.5 s",
+          "numericValue": 2510.3788079908945
+        },
+        "TTI": {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.25,
+          "displayValue": "10.2 s",
+          "numericValue": 10188.7218
+        }
+      },
+      "lcpElement": null,
+      "diagnostics": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0,
+          "displayValue": "Est savings of 446 KiB",
+          "numericValue": 3010
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 1,
+          "displayValue": null,
+          "numericValue": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "score": 1,
+          "displayValue": "Root document took 260 ms",
+          "numericValue": 257
+        },
+        {
+          "id": "bootup-time",
+          "title": "JavaScript execution time",
+          "score": 1,
+          "displayValue": "1.2 s",
+          "numericValue": 1169.876000000002
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimizes main-thread work",
+          "score": 1,
+          "displayValue": "1.9 s",
+          "numericValue": 1877.792000000009
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "score": 0,
+          "displayValue": "Est savings of 610 ms",
+          "numericValue": 613.86795
+        },
+        {
+          "id": "network-server-latency",
+          "title": "Server Backend Latencies",
+          "score": 1,
+          "displayValue": "10 ms",
+          "numericValue": 13.86795
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 446 KiB",
+          "savingsMs": 3010,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_next-devtools_index_0q9dr-y.js",
+              "wastedBytes": 151859,
+              "totalBytes": 250225
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 101570,
+              "totalBytes": 196550
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/09ge_zod_v4_core_0570rwe._.js",
+              "wastedBytes": 71251,
+              "totalBytes": 90428
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 68360,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/09ge_zod_v4_locales_0h8gkg1._.js",
+              "wastedBytes": 36556,
+              "totalBytes": 42169
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 27156,
+              "totalBytes": 52158
+            }
+          ]
+        },
+        {
+          "id": "unminified-javascript",
+          "title": "Minify JavaScript",
+          "displayValue": "Est savings of 283 KiB",
+          "savingsMs": 1650,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 92394,
+              "totalBytes": 196635
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 50097,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/09ge_zod_v4_core_0570rwe._.js",
+              "wastedBytes": 24903,
+              "totalBytes": 90447
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 15583,
+              "totalBytes": 52159
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_0dl17o2._.js",
+              "wastedBytes": 15573,
+              "totalBytes": 36444
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/turbopack-_0x47bla._.js",
+              "wastedBytes": 13886,
+              "totalBytes": 26167
+            }
+          ]
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "displayValue": "Est savings of 610 ms",
+          "savingsMs": 613.86795,
+          "items": [
+            {
+              "url": "http://localhost:3000/id/daftar",
+              "wastedBytes": null,
+              "totalBytes": null
+            },
+            {
+              "url": "http://localhost:3000/daftar",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 260 ms",
+          "savingsMs": 257,
+          "items": [
+            {
+              "url": "http://localhost:3000/daftar",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lupa-sandi",
+      "path": "/id/lupa-sandi",
+      "note": null,
+      "finalUrl": "http://localhost:3000/lupa-sandi",
+      "performance": 95,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "score": 1,
+          "displayValue": "1.1 s",
+          "numericValue": 1067.0327
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "score": 0.86,
+          "displayValue": "2.7 s",
+          "numericValue": 2654.807225
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "score": 0.95,
+          "displayValue": "150 ms",
+          "numericValue": 147
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "title": "Speed Index",
+          "score": 1,
+          "displayValue": "1.1 s",
+          "numericValue": 1067.0327
+        },
+        "TTI": {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.26,
+          "displayValue": "10.1 s",
+          "numericValue": 10055.49905
+        }
+      },
+      "lcpElement": null,
+      "diagnostics": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0.5,
+          "displayValue": "Est savings of 468 KiB",
+          "numericValue": 0
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 1,
+          "displayValue": null,
+          "numericValue": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "score": 1,
+          "displayValue": "Root document took 240 ms",
+          "numericValue": 244
+        },
+        {
+          "id": "bootup-time",
+          "title": "JavaScript execution time",
+          "score": 1,
+          "displayValue": "0.9 s",
+          "numericValue": 926.4240000000017
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimizes main-thread work",
+          "score": 1,
+          "displayValue": "1.5 s",
+          "numericValue": 1512.3720000000042
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "score": 0,
+          "displayValue": "Est savings of 610 ms",
+          "numericValue": 608.51635
+        },
+        {
+          "id": "network-server-latency",
+          "title": "Server Backend Latencies",
+          "score": 1,
+          "displayValue": "10 ms",
+          "numericValue": 8.51635
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "displayValue": "Est savings of 610 ms",
+          "savingsMs": 608.51635,
+          "items": [
+            {
+              "url": "http://localhost:3000/id/lupa-sandi",
+              "wastedBytes": null,
+              "totalBytes": null
+            },
+            {
+              "url": "http://localhost:3000/lupa-sandi",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        },
+        {
+          "id": "unminified-javascript",
+          "title": "Minify JavaScript",
+          "displayValue": "Est savings of 282 KiB",
+          "savingsMs": 300,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 92394,
+              "totalBytes": 196635
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 50097,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/09ge_zod_v4_core_0570rwe._.js",
+              "wastedBytes": 24903,
+              "totalBytes": 90447
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 15583,
+              "totalBytes": 52159
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_0dl17o2._.js",
+              "wastedBytes": 15573,
+              "totalBytes": 36444
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/turbopack-_0x47bla._.js",
+              "wastedBytes": 13886,
+              "totalBytes": 26167
+            }
+          ]
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 240 ms",
+          "savingsMs": 244,
+          "items": [
+            {
+              "url": "http://localhost:3000/lupa-sandi",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dashboard",
+      "path": "/id/dashboard",
+      "note": "auth-gated",
+      "finalUrl": "http://localhost:3000/login",
+      "performance": 68,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "score": 0.69,
+          "displayValue": "2.5 s",
+          "numericValue": 2450.7676
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "score": 0,
+          "displayValue": "10.0 s",
+          "numericValue": 10025.613550000002
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "score": 0.96,
+          "displayValue": "140 ms",
+          "numericValue": 137.5000000000009
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "title": "Speed Index",
+          "score": 0.71,
+          "displayValue": "4.6 s",
+          "numericValue": 4562.2630119786645
+        },
+        "TTI": {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.26,
+          "displayValue": "10.1 s",
+          "numericValue": 10070.228955000002
+        }
+      },
+      "lcpElement": null,
+      "diagnostics": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0,
+          "displayValue": "Est savings of 466 KiB",
+          "numericValue": 3070
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 1,
+          "displayValue": null,
+          "numericValue": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "score": 1,
+          "displayValue": "Root document took 240 ms",
+          "numericValue": 243
+        },
+        {
+          "id": "bootup-time",
+          "title": "JavaScript execution time",
+          "score": 1,
+          "displayValue": "1.0 s",
+          "numericValue": 1010.884000000003
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimizes main-thread work",
+          "score": 1,
+          "displayValue": "1.6 s",
+          "numericValue": 1586.1640000000066
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "score": 0,
+          "displayValue": "Est savings of 770 ms",
+          "numericValue": 765.3838000000001
+        },
+        {
+          "id": "network-server-latency",
+          "title": "Server Backend Latencies",
+          "score": 1,
+          "displayValue": "10 ms",
+          "numericValue": 7.6919
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 466 KiB",
+          "savingsMs": 3070,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_next-devtools_index_0q9dr-y.js",
+              "wastedBytes": 151859,
+              "totalBytes": 250225
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 101265,
+              "totalBytes": 196550
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/09ge_zod_v4_core_0570rwe._.js",
+              "wastedBytes": 71251,
+              "totalBytes": 90428
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 68135,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/09ge_zod_v4_locales_0h8gkg1._.js",
+              "wastedBytes": 36556,
+              "totalBytes": 42169
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 27156,
+              "totalBytes": 52158
+            }
+          ]
+        },
+        {
+          "id": "unminified-javascript",
+          "title": "Minify JavaScript",
+          "displayValue": "Est savings of 283 KiB",
+          "savingsMs": 1650,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 92394,
+              "totalBytes": 196635
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 50097,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/09ge_zod_v4_core_0570rwe._.js",
+              "wastedBytes": 24903,
+              "totalBytes": 90447
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 15583,
+              "totalBytes": 52159
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_0dl17o2._.js",
+              "wastedBytes": 15573,
+              "totalBytes": 36444
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/turbopack-_0x47bla._.js",
+              "wastedBytes": 13886,
+              "totalBytes": 26167
+            }
+          ]
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "displayValue": "Est savings of 770 ms",
+          "savingsMs": 765.3838000000001,
+          "items": [
+            {
+              "url": "http://localhost:3000/id/dashboard",
+              "wastedBytes": null,
+              "totalBytes": null
+            },
+            {
+              "url": "http://localhost:3000/dashboard",
+              "wastedBytes": null,
+              "totalBytes": null
+            },
+            {
+              "url": "http://localhost:3000/login",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 240 ms",
+          "savingsMs": 243,
+          "items": [
+            {
+              "url": "http://localhost:3000/login",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "materi-1",
+      "path": "/id/materi/1",
+      "note": "LMS auth-gated",
+      "finalUrl": "http://localhost:3000/materi/1",
+      "performance": 68,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "title": "First Contentful Paint",
+          "score": 0.99,
+          "displayValue": "1.1 s",
+          "numericValue": 1070.912
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "title": "Largest Contentful Paint",
+          "score": 0,
+          "displayValue": "10.1 s",
+          "numericValue": 10136.580000000002
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "title": "Total Blocking Time",
+          "score": 0.78,
+          "displayValue": "300 ms",
+          "numericValue": 303.4390000000003
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "title": "Cumulative Layout Shift",
+          "score": 1,
+          "displayValue": "0.004",
+          "numericValue": 0.004340578950554309
+        },
+        "SI": {
+          "id": "speed-index",
+          "title": "Speed Index",
+          "score": 1,
+          "displayValue": "1.5 s",
+          "numericValue": 1467.0346420330682
+        },
+        "TTI": {
+          "id": "interactive",
+          "title": "Time to Interactive",
+          "score": 0.25,
+          "displayValue": "10.2 s",
+          "numericValue": 10167.667800000001
+        }
+      },
+      "lcpElement": null,
+      "diagnostics": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "score": 0,
+          "displayValue": "Est savings of 365 KiB",
+          "numericValue": 2020
+        },
+        {
+          "id": "unused-css-rules",
+          "title": "Reduce unused CSS",
+          "score": 1,
+          "displayValue": null,
+          "numericValue": 0
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "score": 1,
+          "displayValue": "Root document took 430 ms",
+          "numericValue": 425
+        },
+        {
+          "id": "bootup-time",
+          "title": "JavaScript execution time",
+          "score": 1,
+          "displayValue": "1.1 s",
+          "numericValue": 1094.5160000000026
+        },
+        {
+          "id": "mainthread-work-breakdown",
+          "title": "Minimizes main-thread work",
+          "score": 1,
+          "displayValue": "1.7 s",
+          "numericValue": 1699.89600000001
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "score": 0,
+          "displayValue": "Est savings of 610 ms",
+          "numericValue": 610.456
+        },
+        {
+          "id": "network-server-latency",
+          "title": "Server Backend Latencies",
+          "score": 1,
+          "displayValue": "220 ms",
+          "numericValue": 221.96200000000002
+        }
+      ],
+      "opportunities": [
+        {
+          "id": "unused-javascript",
+          "title": "Reduce unused JavaScript",
+          "displayValue": "Est savings of 365 KiB",
+          "savingsMs": 2020,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_next-devtools_index_0q9dr-y.js",
+              "wastedBytes": 151859,
+              "totalBytes": 250225
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 101796,
+              "totalBytes": 196550
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 63301,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0kw__%40base-ui_react_1g_t1b3._.js",
+              "wastedBytes": 34239,
+              "totalBytes": 84080
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 22762,
+              "totalBytes": 52158
+            }
+          ]
+        },
+        {
+          "id": "unminified-javascript",
+          "title": "Minify JavaScript",
+          "displayValue": "Est savings of 249 KiB",
+          "savingsMs": 1240,
+          "items": [
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_client_0wnkc16._.js",
+              "wastedBytes": 92394,
+              "totalBytes": 196635
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_dist_compiled_react-dom_0_0d0my._.js",
+              "wastedBytes": 50097,
+              "totalBytes": 185065
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/node_modules__pnpm_0ni3aat._.js",
+              "wastedBytes": 15583,
+              "totalBytes": 52159
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0h_8_next_0dl17o2._.js",
+              "wastedBytes": 15573,
+              "totalBytes": 36444
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/0kw__%40base-ui_react_1g_t1b3._.js",
+              "wastedBytes": 14532,
+              "totalBytes": 84082
+            },
+            {
+              "url": "http://localhost:3000/_next/static/chunks/turbopack-_0x47bla._.js",
+              "wastedBytes": 13886,
+              "totalBytes": 26167
+            }
+          ]
+        },
+        {
+          "id": "redirects",
+          "title": "Avoid multiple page redirects",
+          "displayValue": "Est savings of 610 ms",
+          "savingsMs": 610.456,
+          "items": [
+            {
+              "url": "http://localhost:3000/id/materi/1",
+              "wastedBytes": null,
+              "totalBytes": null
+            },
+            {
+              "url": "http://localhost:3000/materi/1",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        },
+        {
+          "id": "server-response-time",
+          "title": "Initial server response time was short",
+          "displayValue": "Root document took 430 ms",
+          "savingsMs": 425,
+          "items": [
+            {
+              "url": "http://localhost:3000/materi/1",
+              "wastedBytes": null,
+              "totalBytes": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

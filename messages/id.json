@@ -227,6 +227,7 @@
     "freemiumHeroCta": "Mulai Sekarang",
     "filterKategoriLabel": "Kategori:",
     "filterStatusLabel": "Status:",
+    "filterSortLabel": "Urutkan",
     "semua": "Semua",
     "lihatDetail": "Lihat Detail",
     "sort": {
@@ -254,6 +255,7 @@
     "heroDesc": "Dari drone kamera enterprise sampai drone multi-sensor untuk misi industri. Tim kami bantu pilih unit yang sesuai kebutuhan bisnis atau instansi Anda.",
     "heroCta": "Konsultasi via WhatsApp",
     "filterKategoriLabel": "Kategori:",
+    "filterSortLabel": "Urutkan",
     "semua": "Semua",
     "sort": {
       "terbaru": "Terbaru",

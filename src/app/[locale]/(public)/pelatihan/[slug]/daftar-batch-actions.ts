@@ -108,8 +108,9 @@ export async function daftarBatchAction(batchId: unknown, formData: FormData) {
     return { ok: false as const, pesan: 'Data yang diisi belum valid. Periksa kembali formnya.' };
   }
 
+  const sebagaiTamu = formData.get('sebagai_tamu') === '1';
   const claims = await getOptionalUser();
-  const userId = claims?.sub ?? null;
+  const userId = sebagaiTamu ? null : (claims?.sub ?? null);
   const data = parsed.data;
 
   const fileKtp = formData.get('foto_ktp');

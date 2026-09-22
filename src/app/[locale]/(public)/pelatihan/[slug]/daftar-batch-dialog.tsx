@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import imageCompression from 'browser-image-compression';
-import { ImagePlusIcon, Loader2Icon } from 'lucide-react';
+import { Loader2Icon } from 'lucide-react';
 import { toast } from 'sonner';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
@@ -13,6 +13,7 @@ import {
   type PendaftaranBatchInput,
 } from '@/lib/validations/pendaftaran-batch';
 import { DatePickerField } from '@/components/admin/date-picker-field';
+import { FileUploadField } from '@/components/file-upload-field';
 import {
   Dialog,
   DialogContent,
@@ -44,6 +45,19 @@ const SUMBER_OPSI = [
   { value: 'Lainnya', labelKey: 'sumberLainnya' },
 ] as const;
 
+const EMPTY_FORM: PendaftaranBatchInput = {
+  nama_lengkap: '',
+  email: '',
+  whatsapp: '',
+  nomor_ktp: '',
+  tempat_lahir: '',
+  tanggal_lahir: '',
+  alamat_lengkap: '',
+  kategori_peserta: 'penerbitan_baru',
+  sumber_info: '',
+  kode_referral: '',
+};
+
 type Prefill = {
   nama_lengkap: string;
   email: string;
@@ -73,27 +87,14 @@ function FotoPicker({
   hintAda: string;
   hintKosong: string;
 }) {
-  const inputId = useId();
   return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor={inputId}>{label}</Label>
-      <input
-        id={inputId}
-        type="file"
-        accept="image/jpeg,image/png,image/webp"
-        className="sr-only"
-        onChange={(e) => onFile(e.target.files?.[0] ?? null)}
-      />
-      <label
-        htmlFor={inputId}
-        className="flex h-24 cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-border bg-muted/40 px-3 text-center hover:bg-muted"
-      >
-        <ImagePlusIcon className="size-5 text-muted-foreground" aria-hidden />
-        <span className="text-xs text-muted-foreground">
-          {file ? file.name : sudahAdaDiProfil ? hintAda : hintKosong}
-        </span>
-      </label>
-    </div>
+    <FileUploadField
+      label={label}
+      accept="image/jpeg,image/png,image/webp"
+      hint={sudahAdaDiProfil ? hintAda : hintKosong}
+      file={file}
+      onFile={onFile}
+    />
   );
 }
 
@@ -111,14 +112,18 @@ export function DaftarBatchDialog({
   const t = useTranslations('batch.register');
   const locale = useLocale();
   const [open, setOpen] = useState(false);
-  const [view, setView] = useState<View>(loggedIn ? 'form' : 'pilih');
+  const [view, setView] = useState<View>('pilih');
+  const [sebagaiTamu, setSebagaiTamu] = useState(false);
   const [waLink, setWaLink] = useState<string | null>(null);
   const [pesanSukses, setPesanSukses] = useState('');
   const [fileKtp, setFileKtp] = useState<File | null>(null);
   const [filePas, setFilePas] = useState<File | null>(null);
   const [sumberPilihan, setSumberPilihan] = useState<string>('');
   const [sumberLainnya, setSumberLainnya] = useState('');
-  const punyaFotoProfil = Boolean(prefill?.foto_ktp_url && prefill?.pas_foto_url);
+  const pakaiProfil = loggedIn && !sebagaiTamu;
+  const punyaFotoProfil = Boolean(
+    pakaiProfil && prefill?.foto_ktp_url && prefill?.pas_foto_url,
+  );
 
   const {
     register,
@@ -128,22 +133,44 @@ export function DaftarBatchDialog({
     formState: { errors, isSubmitting },
   } = useForm<PendaftaranBatchInput>({
     resolver: zodResolver(PendaftaranBatchSchema),
-    defaultValues: {
-      nama_lengkap: '',
-      email: '',
-      whatsapp: '',
-      nomor_ktp: '',
-      tempat_lahir: '',
-      tanggal_lahir: '',
-      alamat_lengkap: '',
-      kategori_peserta: 'penerbitan_baru',
-      sumber_info: '',
-      kode_referral: '',
-    },
+    defaultValues: EMPTY_FORM,
   });
 
   useEffect(() => {
-    if (!open) return;
+    if (!open || sebagaiTamu || !prefill) return;
+    reset({
+      nama_lengkap: prefill.nama_lengkap,
+      email: prefill.email,
+      whatsapp: prefill.whatsapp,
+      nomor_ktp: prefill.nomor_ktp,
+      tempat_lahir: prefill.tempat_lahir,
+      tanggal_lahir: prefill.tanggal_lahir,
+      alamat_lengkap: prefill.alamat_lengkap,
+      kategori_peserta: 'penerbitan_baru',
+      sumber_info: '',
+      kode_referral: '',
+    });
+  }, [open, sebagaiTamu, prefill, reset]);
+
+  function handleOpenChange(next: boolean) {
+    setOpen(next);
+    if (!next) {
+      setView('pilih');
+      setSebagaiTamu(false);
+      setWaLink(null);
+      setPesanSukses('');
+      setFileKtp(null);
+      setFilePas(null);
+      setSumberPilihan('');
+      setSumberLainnya('');
+      reset(EMPTY_FORM);
+    }
+  }
+
+  function mulaiDenganAkun() {
+    setSebagaiTamu(false);
+    setFileKtp(null);
+    setFilePas(null);
     if (prefill) {
       reset({
         nama_lengkap: prefill.nama_lengkap,
@@ -157,21 +184,18 @@ export function DaftarBatchDialog({
         sumber_info: '',
         kode_referral: '',
       });
+    } else {
+      reset(EMPTY_FORM);
     }
-  }, [open, prefill, reset]);
+    setView('form');
+  }
 
-  function handleOpenChange(next: boolean) {
-    setOpen(next);
-    if (!next) {
-      setView(loggedIn ? 'form' : 'pilih');
-      setWaLink(null);
-      setPesanSukses('');
-      setFileKtp(null);
-      setFilePas(null);
-      setSumberPilihan('');
-      setSumberLainnya('');
-      reset();
-    }
+  function mulaiSebagaiTamu() {
+    setSebagaiTamu(true);
+    setFileKtp(null);
+    setFilePas(null);
+    reset(EMPTY_FORM);
+    setView('form');
   }
 
   async function onSubmit(data: PendaftaranBatchInput) {
@@ -190,6 +214,7 @@ export function DaftarBatchDialog({
     }
     formData.set('sumber_info', sumberPilihan);
     if (sumberPilihan === 'Lainnya') formData.set('sumber_info_lainnya', sumberLainnya);
+    if (sebagaiTamu) formData.set('sebagai_tamu', '1');
 
     try {
       if (fileKtp) {
@@ -224,6 +249,15 @@ export function DaftarBatchDialog({
   }
 
   const loginHref = `/login?next=${encodeURIComponent(`/pelatihan/${slug}`)}`;
+  // ponytail: copy lokal di sini — messages/*.json ditambah kalau Alif minta i18n penuh
+  const labelDenganAkun =
+    locale === 'en' ? 'Register with this account' : 'Daftar dengan akun ini';
+  const labelTanpaTaut =
+    locale === 'en' ? 'Register without linking account' : 'Daftar tanpa taut akun';
+  const bodyLoggedIn =
+    locale === 'en'
+      ? 'Use your profile data, or register without linking this account.'
+      : 'Pakai data profilmu, atau daftar tanpa menautkan akun ini.';
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -236,21 +270,44 @@ export function DaftarBatchDialog({
             <DialogHeader>
               <DialogTitle>{t('chooseTitle')}</DialogTitle>
             </DialogHeader>
-            <p className="text-sm text-muted-foreground">{t('chooseBody')}</p>
-            <Link
-              href={loginHref}
-              className={cn(publicCtaPrimary, 'w-full')}
-              onClick={() => setOpen(false)}
-            >
-              {t('loginFirst')}
-            </Link>
-            <button
-              type="button"
-              className={cn(publicCtaSecondary, 'w-full')}
-              onClick={() => setView('form')}
-            >
-              {t('guestContinue')}
-            </button>
+            <p className="text-sm text-muted-foreground">
+              {loggedIn ? bodyLoggedIn : t('chooseBody')}
+            </p>
+            {loggedIn ? (
+              <>
+                <button
+                  type="button"
+                  className={cn(publicCtaPrimary, 'w-full')}
+                  onClick={mulaiDenganAkun}
+                >
+                  {labelDenganAkun}
+                </button>
+                <button
+                  type="button"
+                  className={cn(publicCtaSecondary, 'w-full')}
+                  onClick={mulaiSebagaiTamu}
+                >
+                  {labelTanpaTaut}
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href={loginHref}
+                  className={cn(publicCtaPrimary, 'w-full')}
+                  onClick={() => setOpen(false)}
+                >
+                  {t('loginFirst')}
+                </Link>
+                <button
+                  type="button"
+                  className={cn(publicCtaSecondary, 'w-full')}
+                  onClick={mulaiSebagaiTamu}
+                >
+                  {t('guestContinue')}
+                </button>
+              </>
+            )}
           </div>
         )}
 
@@ -289,8 +346,8 @@ export function DaftarBatchDialog({
             <DialogHeader>
               <DialogTitle>{t('formTitle')}</DialogTitle>
             </DialogHeader>
-            {loggedIn && prefill && (
-              <p className="text-xs text-muted-foreground">{t('prefillHint')}</p>
+            {pakaiProfil && prefill && (
+              <p className="text-sm text-muted-foreground">{t('prefillHint')}</p>
             )}
 
             <div className="flex flex-col gap-1.5">
@@ -373,7 +430,7 @@ export function DaftarBatchDialog({
                 label={t('fotoKtpLabel')}
                 file={fileKtp}
                 onFile={setFileKtp}
-                sudahAdaDiProfil={Boolean(prefill?.foto_ktp_url)}
+                sudahAdaDiProfil={Boolean(pakaiProfil && prefill?.foto_ktp_url)}
                 hintAda={t('fotoAdaProfil')}
                 hintKosong={t('fotoHint')}
               />
@@ -381,7 +438,7 @@ export function DaftarBatchDialog({
                 label={t('pasFotoLabel')}
                 file={filePas}
                 onFile={setFilePas}
-                sudahAdaDiProfil={Boolean(prefill?.pas_foto_url)}
+                sudahAdaDiProfil={Boolean(pakaiProfil && prefill?.pas_foto_url)}
                 hintAda={t('fotoAdaProfil')}
                 hintKosong={t('fotoHint')}
               />

@@ -1,7 +1,8 @@
+import Image from "next/image";
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { pick } from "@/lib/i18n/pick";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { publicSectionHeading } from "@/lib/public-ui";
 
 export async function TestimoniSection() {
@@ -38,18 +39,22 @@ export async function TestimoniSection() {
               <div className="flex items-center gap-3">
                 <Avatar
                   size="lg"
-                  className="size-12 rounded-md after:rounded-md data-[size=lg]:size-12"
+                  className="relative size-12 overflow-hidden rounded-md after:rounded-md data-[size=lg]:size-12"
                 >
                   {testi.foto_url ? (
-                    <AvatarImage
+                    <Image
                       src={testi.foto_url}
                       alt=""
-                      className="rounded-md"
+                      fill
+                      className="rounded-md object-cover"
+                      sizes="48px"
+                      loading="lazy"
                     />
-                  ) : null}
-                  <AvatarFallback className="rounded-md bg-muted text-sm font-medium text-muted-foreground">
-                    {initials || "?"}
-                  </AvatarFallback>
+                  ) : (
+                    <AvatarFallback className="rounded-md bg-muted text-sm font-medium text-muted-foreground">
+                      {initials || "?"}
+                    </AvatarFallback>
+                  )}
                 </Avatar>
                 <div className="flex min-w-0 flex-col items-start">
                   <figcaption className="truncate text-base font-semibold leading-none text-foreground">

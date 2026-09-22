@@ -1,17 +1,16 @@
-# Plan Sprint 10 — F11.5 Kategori Batch (teks → relasi)
+# Plan — sync dokumen (PRD / ENGINEERING / registry)
 
-> **Status:** TAHAP 1 DIAGNOSIS. Jangan ubah kode sampai Alif konfirmasi aman / pilih alternatif.
-> Tidak ada DDL. Kolom `kategori_id`/`kategori_en` di DB tidak dihapus.
+> 2026-09-22: tiga dokumen diselaraskan dengan status aktual registry.
 
-| # | Langkah | Status |
-|---|---------|--------|
-| 1 | Query: count batch aktif tanpa `category_id` | PENDING |
-| 2 | Query: daftar batch aktif `category_id` null (+ teks) | PENDING |
-| 3 | Laporkan Alif — STOP jika count > 0 | PENDING |
-| 4 | Tahap 2 (hapus field teks + badge + suggestions) | BLOCKED sampai aman |
-| 5 | tsc/lint/build + uji | — |
-| 6 | Registry F11.5 DONE setelah Alif OK | — |
+## Selesai
 
-## Gate
-- count = 0 → lanjut Tahap 2
-- count > 0 → STOP, sarankan label "cadangan", tunggu Alif
+| Dokumen | Perubahan |
+|---------|-----------|
+| `feature-registry.md` | F10.3–F10.6 TODO→DONE (sesuai log uji); header Sprint 10 + F11.7; log sync dokumen |
+| `ENGINEERING.md` | ADR-020r amandemen Fix A (`sebagai_tamu`); ADR-024 + F11.7; riwayat 2026-09-22 |
+| `PRD.md` | §5.1g catatan F11.7 JSON; §9b cerita/alur/checklist Fix A; §9f F11.4–F11.7 + checklist |
+
+## Tidak diubah (sengaja)
+
+- F05.2 tetap **WIP** di registry (re-audit Lighthouse sitewide belum)
+- BRD-HXT-002 (dokumen klien) — di luar scope sync ini

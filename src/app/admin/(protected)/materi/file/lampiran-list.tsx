@@ -71,14 +71,17 @@ export function LampiranList({ chapterId, lampiran }: { chapterId: number; lampi
   const [pending, startTransition] = useTransition();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Lampiran | null>(null);
+  const [dialogSession, setDialogSession] = useState(0);
 
   function bukaTambah() {
     setEditing(null);
+    setDialogSession((s) => s + 1);
     setDialogOpen(true);
   }
 
   function bukaUbah(l: Lampiran) {
     setEditing(l);
+    setDialogSession((s) => s + 1);
     setDialogOpen(true);
   }
 
@@ -141,6 +144,7 @@ export function LampiranList({ chapterId, lampiran }: { chapterId: number; lampi
       )}
 
       <LampiranFormDialog
+        key={`${dialogSession}-${editing?.id ?? 'baru'}`}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         chapterId={chapterId}

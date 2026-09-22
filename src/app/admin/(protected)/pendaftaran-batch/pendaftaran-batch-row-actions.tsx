@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { setujuiPendaftaranBatchAction, tolakPendaftaranBatchAction } from './actions';
+import { FileUploadField } from '@/components/file-upload-field';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -80,22 +81,15 @@ export function PendaftaranBatchRowActions({ registrasiId }: { registrasiId: num
               bisa dibatalkan dari sini.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="flex flex-col gap-2 px-4 sm:px-0">
-            <label className="text-sm font-medium text-foreground" htmlFor={`bukti-${registrasiId}`}>
-              Bukti pembayaran
-            </label>
-            <input
-              id={`bukti-${registrasiId}`}
-              type="file"
-              accept="image/*"
-              className="block w-full text-sm text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-muted file:px-3 file:py-2 file:text-sm file:font-medium file:text-foreground"
-              onChange={(e) => setBuktiFile(e.target.files?.[0] ?? null)}
+          <div className="px-4 sm:px-0">
+            <FileUploadField
+              label="Bukti pembayaran"
+              accept="image/jpeg,image/png,image/webp"
+              hint="JPG, PNG, atau WebP · wajib sebelum Setuju"
+              file={buktiFile}
+              onFile={setBuktiFile}
+              disabled={pending}
             />
-            {buktiFile ? (
-              <p className="text-xs text-muted-foreground">Dipilih: {buktiFile.name}</p>
-            ) : (
-              <p className="text-xs text-muted-foreground">Wajib gambar (JPG/PNG/WebP).</p>
-            )}
           </div>
           <AlertDialogFooter>
             <AlertDialogCancel>Batal</AlertDialogCancel>

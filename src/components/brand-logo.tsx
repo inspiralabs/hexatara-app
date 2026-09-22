@@ -13,6 +13,11 @@ type BrandLogoProps = {
   className?: string;
   alt?: string;
   priority?: boolean;
+  /**
+   * Default true — next/image WEBP kadang drop alpha (kotak hitam).
+   * Header publik light: set false supaya resize/AVIF (audit ~148 KiB).
+   */
+  unoptimized?: boolean;
 };
 
 /** Logo Hexatara — pakai aset sesuai arahan; tanpa border/clip tambahan. */
@@ -22,10 +27,10 @@ export function BrandLogo({
   className,
   alt = "Hexatara",
   priority,
+  unoptimized = true,
 }: BrandLogoProps) {
   const imgClass = cn("object-contain", className);
 
-  // unoptimized: next/image WEBP sering drop alpha → pojok transparan jadi kotak hitam
   if (variant === "auto") {
     return (
       <span className="relative inline-flex shrink-0" style={{ width: size, height: size }}>
@@ -35,7 +40,7 @@ export function BrandLogo({
           width={size}
           height={size}
           priority={priority}
-          unoptimized
+          unoptimized={unoptimized}
           className={cn(imgClass, "dark:hidden")}
         />
         <Image
@@ -44,7 +49,7 @@ export function BrandLogo({
           width={size}
           height={size}
           priority={priority}
-          unoptimized
+          unoptimized={unoptimized}
           className={cn(imgClass, "absolute inset-0 hidden dark:block")}
           aria-hidden
         />
@@ -59,7 +64,7 @@ export function BrandLogo({
       width={size}
       height={size}
       priority={priority}
-      unoptimized
+      unoptimized={unoptimized}
       className={imgClass}
     />
   );

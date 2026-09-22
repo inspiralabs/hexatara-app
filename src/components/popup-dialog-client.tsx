@@ -12,35 +12,46 @@ const KEY_PREFIX = "hexatara-popup-tertutup-";
 export function PopupDialogClient({ popup }: { popup: PopupAktif }) {
   const t = useTranslations("common");
   const [open, setOpen] = useState(false);
+  // Satu gambar saja — CSS hide tetap fetch. MatchMedia pilih mobile vs desktop.
+  const [isDesktop, setIsDesktop] = useState(false);
 
   useEffect(() => {
-    // sessionStorage tidak ada di server — baru bisa dicek setelah mount di client.
     const sudahDitutup = sessionStorage.getItem(`${KEY_PREFIX}${popup.id}`);
     // eslint-disable-next-line react-hooks/set-state-in-effect
     if (!sudahDitutup) setOpen(true);
   }, [popup.id]);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const sync = () => setIsDesktop(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   function tutup() {
     sessionStorage.setItem(`${KEY_PREFIX}${popup.id}`, "1");
     setOpen(false);
   }
 
-  // Popup ADR-015: murni gambar, dua versi (potret mobile / lanskap desktop)
-  // dipilih lewat breakpoint Tailwind `md`, bukan JS matchMedia — CSS saja.
-  const gambar = (
-    <>
-      {popup.gambarMobileUrl && (
-        <div className="relative aspect-[9/16] w-full overflow-hidden rounded-xl md:hidden">
-          <Image src={popup.gambarMobileUrl} alt={popup.judul} fill className="object-cover" sizes="360px" priority />
-        </div>
-      )}
-      {popup.gambarDesktopUrl && (
-        <div className="relative hidden aspect-video w-full overflow-hidden rounded-xl md:block">
-          <Image src={popup.gambarDesktopUrl} alt={popup.judul} fill className="object-cover" sizes="480px" priority />
-        </div>
-      )}
-    </>
-  );
+  const src = isDesktop ? popup.gambarDesktopUrl : popup.gambarMobileUrl;
+  const sizes = isDesktop ? "(min-width: 768px) 512px, 100vw" : "360px";
+  const aspect = isDesktop ? "aspect-video" : "aspect-[9/16]";
+
+  // Auto-open on mount → gambar adalah LCP kandidat; wajib priority (bukan lazy).
+  const gambar =
+    open && src ? (
+      <div className={`relative w-full overflow-hidden rounded-xl ${aspect}`}>
+        <Image
+          src={src}
+          alt={popup.judul}
+          fill
+          priority
+          className="object-cover"
+          sizes={sizes}
+        />
+      </div>
+    ) : null;
 
   return (
     <Dialog open={open} onOpenChange={(next) => !next && tutup()}>
@@ -54,8 +65,6 @@ export function PopupDialogClient({ popup }: { popup: PopupAktif }) {
           <XIcon className="size-5" aria-hidden="true" />
         </button>
 
-        {/* Judul cuma untuk aksesibilitas (nama dialog dibacakan screen reader) — tidak
-            tampil secara visual, gambar sendiri sudah menyampaikan pesannya. */}
         <DialogHeader className="sr-only">
           <DialogTitle>{popup.judul}</DialogTitle>
         </DialogHeader>

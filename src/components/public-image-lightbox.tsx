@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 
 /** Overlay perbesar gambar — pola sama pendaftaran-batch-detail (backdrop button + Escape). */
@@ -39,16 +40,20 @@ export function PublicImageLightbox({
         className="absolute inset-0 cursor-default"
         onClick={onClose}
       />
-      {/* eslint-disable-next-line @next/next/no-img-element -- URL storage publik, next/image tidak perlu di overlay */}
-      <img
-        src={src}
-        alt=""
-        className="relative max-h-[90vh] max-w-[95vw] rounded-lg object-contain"
-      />
+      <div className="relative z-[1] h-[90vh] w-[95vw]">
+        <Image
+          src={src}
+          alt=""
+          fill
+          className="rounded-lg object-contain"
+          sizes="95vw"
+          priority
+        />
+      </div>
       <button
         type="button"
         onClick={onClose}
-        className="absolute right-4 top-4 rounded-full bg-black/60 px-3 py-1.5 text-sm text-white hover:bg-black/80"
+        className="absolute right-4 top-4 z-[2] rounded-full bg-black/60 px-3 py-1.5 text-sm text-white hover:bg-black/80"
       >
         {t('closeAriaLabel')}
       </button>

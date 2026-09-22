@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import {
   CheckCircle2,
   Download,
@@ -421,8 +422,16 @@ export function CourseReader({
                     />
 
                     {active.gambarUrl && (
-                      // eslint-disable-next-line @next/next/no-img-element -- URL bebas dari Admin (bisa domain apa saja), next/image butuh remotePatterns per host
-                      <img src={active.gambarUrl} alt="" onLoad={cekPosisiScroll} className="mt-4 w-full rounded-lg" />
+                      <Image
+                        src={active.gambarUrl}
+                        alt=""
+                        width={1344}
+                        height={756}
+                        sizes="(max-width: 42rem) calc(100vw - 2rem), 42rem"
+                        priority
+                        onLoad={cekPosisiScroll}
+                        className="mt-4 h-auto w-full rounded-lg"
+                      />
                     )}
                   </div>
                 </div>

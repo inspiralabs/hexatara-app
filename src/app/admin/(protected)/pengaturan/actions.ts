@@ -36,6 +36,7 @@ export async function simpanKontakAction(input: unknown) {
     email: parsed.data.email || undefined,
     instagram: parsed.data.instagram || undefined,
     jam_operasional: parsed.data.jam_operasional?.trim() || undefined,
+    jam_operasional_en: parsed.data.jam_operasional_en?.trim() || undefined,
   });
   if (error) {
     console.error('[pengaturan] kontak:', error);

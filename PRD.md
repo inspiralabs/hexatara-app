@@ -311,7 +311,7 @@ Bucket storage baru: `identity-documents` (privat, pola sama `certificates`/`pay
 
 **Tidak ada tabel/kolom baru di Modul 11.** Satu-satunya perubahan skema adalah view `products_public` (F11.1) — ditambah kolom turunan `category_nama_id`/`category_nama_en` (JOIN ke `product_categories` lewat `category_id` yang sudah ada), BUKAN kolom fisik baru di tabel `products`. Kolom teks bebas `products.kategori` (lama) TIDAK dihapus dari database, hanya tidak dipakai lagi form Admin maupun tampilan publik. Perubahan view ini WAJIB menjaga properti `security_invoker = off` (lihat Bagian 5.2/ADR-004) — lihat `usulan-sql-modul11-adr024.sql` untuk detail dan langkah verifikasi.
 
-Dashboard Admin (F11.2) dan halaman Login Admin (F11.3) **TIDAK butuh tabel/kolom/view baru** — murni query baca dari tabel yang sudah ada (`batch_registrations`, `quote_requests`, `certificates`) dan komponen tampilan yang sudah ada (`BrandLogo`).
+Dashboard Admin (F11.2), Login Admin (F11.3), status penawaran (F11.4), kategori batch (F11.5), polish i18n (F11.6), dan polish UI F11.7 (filter lebar, jam operasional EN, `FileUploadField`) **TIDAK butuh tabel/kolom/view baru** — F11.7 menambah field opsional `jam_operasional_en` di value JSON key `kontak` (`site_settings`), pola key-value yang sama (bukan DDL).
 
 ### 5.2 View publik — WAJIB untuk akses anonim
 
@@ -911,9 +911,9 @@ F01.6 sendiri (Bagian 6.4) TIDAK diedit sebagai fitur — statusnya tetap DONE a
 
 ### 9b.2 Cerita pengguna
 
-> Sebagai calon peserta pelatihan RPC yang belum punya akun, saya membuka halaman detail batch dan klik "Daftar Sekarang". Form pendaftaran lengkap langsung terbuka — saya isi nama sesuai KTP, nomor KTP, tempat/tanggal lahir, alamat, kategori peserta, upload foto KTP dan pas foto, lalu submit. Tidak ada yang memaksa saya bikin akun dulu. Dua tahun kemudian saat saya perlu perpanjang RPC, saya mendaftar lagi dengan cara yang sama — isi ulang datanya, tidak masalah.
+> Sebagai calon peserta pelatihan RPC yang belum punya akun, saya membuka halaman detail batch dan klik "Daftar Sekarang". Saya melihat pilihan: login dulu atau daftar tanpa akun. Saya pilih daftar tanpa akun — form lengkap terbuka kosong, saya isi, submit. Tidak ada yang memaksa saya bikin akun.
 >
-> Sebagai peserta yang SUDAH punya akun dan login, saya klik "Daftar Sekarang" di batch lain. Karena saya sudah pernah mengisi data identitas di halaman Profil sebelumnya, form pendaftaran langsung terisi otomatis — saya tinggal pilih kategori peserta dan konfirmasi. Kalau saya belum pernah mengisi data identitas, form tetap terbuka kosong untuk saya isi manual saat itu juga — tidak ada yang memblokir saya, hanya saja di dashboard saya ada pengingat kecil yang mengarahkan ke halaman Profil supaya pendaftaran berikutnya lebih cepat.
+> Sebagai peserta yang SUDAH login, saya klik "Daftar Sekarang". Saya melihat pilihan: **daftar dengan akun ini** (form pra-terisi dari profil kalau lengkap) atau **daftar tanpa taut akun** (form kosong, tidak menaut ke akun saya, profil saya tidak berubah) — berguna kalau saya mendaftar untuk orang lain atau sedang uji sebagai Admin. Kalau saya pilih dengan akun dan profil belum lengkap, form tetap bisa diisi manual; di dashboard ada pengingat kecil ke halaman Profil.
 
 ### 9b.3 Daftar fitur
 
@@ -921,18 +921,19 @@ F01.6 sendiri (Bagian 6.4) TIDAK diedit sebagai fitur — statusnya tetap DONE a
 |---|---|---|---|
 | F07.1 | Perluasan `profiles` (field identitas RPC, untuk reuse pendaftar login) DAN `batch_registrations` (field identitas mandiri + `email`, `user_id` nullable) | MUST | `profiles`, `batch_registrations` |
 | F07.2 | Halaman Profil User — section lengkapi data identitas + upload dokumen (tersimpan ke `profiles`) | MUST | `profiles` |
-| F07.3 | Form pendaftaran batch lengkap menggantikan dialog "daftar minat" (F01.6) di halaman publik — TANPA wajib login, prefill otomatis kalau login & profil lengkap | MUST | `batch_registrations` |
+| F07.3 | Form pendaftaran batch lengkap menggantikan dialog "daftar minat" (F01.6) — TANPA wajib login; prefill kalau pilih "dengan akun" & profil lengkap; **Fix A 2026-09-22:** user login bisa pilih "tanpa taut akun" (`sebagai_tamu`) | MUST | `batch_registrations` |
 | F07.4 | Card pengingat non-blokir di dashboard — muncul kalau login & profil identitas belum lengkap, hilang otomatis kalau sudah lengkap. BUKAN gate yang memblokir pendaftaran | MUST | `profiles` |
 | F07.5 | Admin: panel verifikasi pendaftaran batch — lihat data peserta (login maupun tanpa akun), lihat KTP/pas foto via signed URL, setujui/tolak | MUST | `batch_registrations` |
 
-### 9b.4 Alur — tanpa akun vs login lengkap vs login belum lengkap vs punya akun belum login
+### 9b.4 Alur — tanpa akun vs login (dengan akun / tanpa taut) vs punya akun belum login
 
-Empat cabang yang disepakati (revisi ADR-020r, menggantikan versi 3-cabang wajib-login sebelumnya), berlaku di halaman publik (`/pelatihan/[slug]`):
+Cabang yang berlaku di halaman publik (`/pelatihan/[slug]`), termasuk amandemen Fix A 2026-09-22 (ADR-020r):
 
-1. **Tanpa akun** → klik "Daftar Sekarang" → form pendaftaran lengkap (identitas + kategori peserta + sumber info + kode referral) terbuka langsung, isi dari nol, submit. Baris tersimpan ke `batch_registrations` dengan `user_id = null`, `email` terisi dari form. Mendaftar batch lain nanti → isi ulang dari nol lagi, tidak ada pencarian data lama.
-2. **Sudah login, profil identitas (`profiles`) lengkap** → form pendaftaran pra-terisi dari data profil, tinggal pilih kategori peserta + batch, konfirmasi, submit. Baris tersimpan dengan `user_id` terisi DAN snapshot identitas disalin ke `batch_registrations` juga.
-3. **Sudah login, profil identitas belum lengkap** → form pendaftaran TETAP terbuka langsung untuk diisi manual (SAMA seperti cabang 1, tidak diblokir) — bedanya baris tersimpan dengan `user_id` terisi. Terpisah dari alur pendaftaran, di dashboard user muncul card pengingat (F07.4) yang mengarahkan ke halaman Profil untuk melengkapi, supaya pendaftaran BERIKUTNYA bisa pra-terisi.
-4. **Punya akun tapi belum login di device ini** → saat klik "Daftar Sekarang", tampilkan dua pilihan eksplisit: "Login dulu" (lanjut ke cabang 2/3 setelah berhasil) atau "Daftar tanpa akun sekarang" (lanjut ke cabang 1) — sistem tidak menebak, user yang memilih.
+1. **Belum login** → klik "Daftar Sekarang" → dua pilihan: "Login dulu" (`/login?next=…` kembali ke pelatihan) atau "Daftar tanpa akun sekarang" → form kosong, submit → `user_id = null`.
+2. **Sudah login** → klik "Daftar Sekarang" → dua pilihan:
+   - **"Daftar dengan akun ini"** → prefill dari `profiles` jika lengkap; submit taut `user_id` + sync identitas ke `profiles` + path foto `${userId}/…`.
+   - **"Daftar tanpa taut akun"** → form kosong; FormData `sebagai_tamu=1`; server memaksa `user_id = null`, path `registrasi/<id>/…`, **tidak** sync `profiles`.
+3. **Sudah login, profil belum lengkap, pilih "dengan akun"** → form tetap bisa diisi manual (tidak diblokir); baris tetap bertaut `user_id`. Card pengingat F07.4 di dashboard tetap ada sampai profil lengkap.
 
 ### 9b.5 Batasan yang tetap berlaku penuh
 
@@ -947,15 +948,16 @@ Seluruh 25 larangan di Bagian 13 berlaku tanpa pengecualian untuk Modul 7, denga
 
 ### 9b.6 Selesai bila
 
-- [ ] Seluruh F07.1 s/d F07.5 berstatus DONE di `feature-registry.md` dengan bukti uji manual di browser (Definition of Done Bagian 14 berlaku penuh — butir 5 tetap wajib Alif)
-- [ ] Pendaftar TANPA akun bisa submit form pendaftaran lengkap sampai selesai tanpa diarahkan login sama sekali
-- [ ] Pendaftar login dengan profil identitas lengkap mendapat form pra-terisi otomatis
-- [ ] Pendaftar login dengan profil identitas BELUM lengkap tetap bisa submit form (isi manual), TIDAK diblokir — dan melihat card pengingat di dashboard yang bisa diklik ke halaman Profil
-- [ ] User yang punya akun tapi belum login di device itu melihat dua pilihan eksplisit (login / daftar tanpa akun) saat klik Daftar
-- [ ] Foto KTP/pas foto tidak bisa diakses lewat URL publik langsung — diuji untuk pendaftar login maupun tanpa akun (dua skema path berbeda)
-- [ ] Admin bisa melihat data peserta (baik yang login maupun tanpa akun) dan kedua foto lewat panel verifikasi, menyetujui/menolak pendaftaran
-- [ ] `batch_leads` (F01.6) tidak terhapus/rusak — tetap ada sebagai riwayat data lama
-- [ ] Diuji di viewport 375px untuk form pendaftaran (tanpa akun & login) dan section identitas di halaman Profil
+- [x] Seluruh F07.1 s/d F07.5 berstatus DONE di `feature-registry.md` dengan bukti uji manual di browser (Definition of Done Bagian 14 berlaku penuh — butir 5 tetap wajib Alif)
+- [x] Pendaftar TANPA akun bisa submit form pendaftaran lengkap sampai selesai tanpa diarahkan login sama sekali
+- [x] Pendaftar login yang pilih "dengan akun" & profil lengkap mendapat form pra-terisi otomatis
+- [x] Pendaftar login yang pilih "dengan akun" & profil belum lengkap tetap bisa submit (isi manual), TIDAK diblokir — card pengingat F07.4 di dashboard
+- [x] User belum login melihat dua pilihan (login / daftar tanpa akun); user sudah login melihat dua pilihan (dengan akun / tanpa taut akun) — Fix A 2026-09-22
+- [x] Mode "tanpa taut akun" → dashboard Admin baca Tanpa akun / `user_id` null; profil sesi TIDAK berubah
+- [x] Foto KTP/pas foto tidak bisa diakses lewat URL publik langsung — diuji untuk pendaftar login maupun tanpa akun (dua skema path berbeda)
+- [x] Admin bisa melihat data peserta (baik yang login maupun tanpa akun) dan kedua foto lewat panel verifikasi, menyetujui/menolak pendaftaran
+- [x] `batch_leads` (F01.6) tidak terhapus/rusak — tetap ada sebagai riwayat data lama
+- [x] Diuji di viewport 375px untuk form pendaftaran (tanpa akun & login) dan section identitas di halaman Profil
 
 ---
 
@@ -1171,21 +1173,25 @@ Memperbaiki bug nyata yang ditemukan Alif di lingkungan production (bukan lagi l
 
 ---
 
-## 9f. MODUL 11 — KATEGORI PRODUK, RINGKASAN LEADS DASHBOARD ADMIN, REDESIGN LOGIN ADMIN
+## 9f. MODUL 11 — KATEGORI PRODUK/BATCH, RINGKASAN LEADS, LOGIN ADMIN, STATUS PENAWARAN, POLISH i18n + UI
 
-> Bukan bagian dari scope asli BRD-HXT-002. 3 temuan Alif setelah push F10.x, ditelusuri ke kode dulu sebelum dikelompokkan. Dicatat sebagai ADR-024 di `ENGINEERING.md`.
+> Bukan bagian dari scope asli BRD-HXT-002. Temuan Alif setelah push F10.x (F11.1–F11.3), diperluas F11.4–F11.6 (2026-09-19…20) dan **F11.7** (2026-09-22). Dicatat sebagai ADR-024 di `ENGINEERING.md`. Status aktual: lihat `feature-registry.md` Sprint 10.
 
 ### 9f.1 Tujuan
 
-Menghilangkan ambiguitas dua field kategori di form Produk, melengkapi dashboard Admin dengan ringkasan Leads yang lebih rinci dan grafik yang lebih informatif (garis + pie/bar) sesuai permintaan Abi, dan memberi identitas brand pada halaman Login Admin yang sebelumnya polos.
+Menghilangkan ambiguitas field kategori Produk/Batch, melengkapi dashboard Admin (ringkasan Leads + grafik), branding Login Admin, status penawaran interaktif, polish i18n publik, lalu polish UI operasional (filter lebar, jam operasional dwibahasa, upload berkas konsisten).
 
 ### 9f.2 Daftar fitur
 
-| Kode | Fitur | Prio | Tabel |
+| Kode | Fitur | Prio | Tabel / catatan |
 |---|---|---|---|
-| F11.1 | Hapus field teks "Kategori" dari form Produk, badge kategori publik pindah baca dari relasi `category_id` | MUST | view `products_public` (kolom turunan baru, bukan kolom tabel) |
-| F11.2 | Dashboard Admin: ringkasan Leads per sumber + breakdown status, grafik tren 2 garis, pie chart status Leads, bar chart Sertifikat, angka stat card diperbesar | MUST | — (tanpa perubahan skema) |
-| F11.3 | Redesign halaman Login Admin — tambahkan `BrandLogo` (komponen sudah ada) | MUST | — (tanpa perubahan skema) |
+| F11.1 | Hapus field teks "Kategori" form Produk; badge publik dari `category_id` | MUST | view `products_public` |
+| F11.2 | Dashboard Admin: ringkasan Leads + tren 2 garis + pie/bar + angka diperbesar | MUST | — |
+| F11.3 | Redesign Login Admin — `BrandLogo` | MUST | — |
+| F11.4 | Dropdown Status penawaran (baru/dihubungi/selesai), bebas pilih | MUST | `quote_requests` |
+| F11.5 | Hapus teks kategori form Batch; badge dari join `batch_categories` | MUST | `batches` (tanpa DDL) |
+| F11.6 | Polish: Hero tanpa teks tombol; FAQ detail = Silabus; footer tagline; gap i18n EN | MUST | — |
+| F11.7 | Polish UI: filter kategori lebar ikut teks; `jam_operasional_en` di Admin; `FileUploadField` konsisten (lampiran/bukti/impor/FotoPicker) | MUST | JSON `site_settings.kontak` (tanpa DDL) |
 
 ### 9f.3 F11.1 — Kategori produk
 
@@ -1208,21 +1214,35 @@ Menghilangkan ambiguitas dua field kategori di form Produk, melengkapi dashboard
 - Halaman Login Admin (`admin/login/page.tsx`) mendapat komponen `BrandLogo` (sudah ada, `src/components/brand-logo.tsx`, `variant="auto"` otomatis menyesuaikan tema terang/gelap) di bagian atas kartu login, disusun ulang supaya terasa branded (logo + judul + deskripsi).
 - Field, validasi, dan alur submit form (`admin-login-form.tsx`) TIDAK berubah — murni penambahan elemen visual di sekitar form yang sudah berfungsi.
 
+### 9f.5b F11.4–F11.6 — Status penawaran, kategori batch, polish i18n
+
+- **F11.4:** kolom Status di `/admin/leads/penawaran` = dropdown interaktif (`baru`/`dihubungi`/`selesai`), bebas maju/mundur — pola sama Status Pengiriman upgrade.
+- **F11.5:** form Batch hanya combobox `category_id`; badge Admin+publik dari join `batch_categories`; kolom teks `kategori_id`/`kategori_en` tetap di DB, tidak dipakai form.
+- **F11.6:** Hero Admin tanpa Teks Tombol ID/EN; FAQ detail batch = accordion Silabus; footer tagline Hexatara Indonesia; dialog daftar + label batch mengikuti locale EN.
+
+### 9f.5c F11.7 — Filter, jam operasional EN, upload berkas konsisten
+
+- Filter kategori `/katalog` dan `/pelatihan`: lebar trigger tablet/desktop mengikuti teks opsi (bukan `sm:w-48` tetap).
+- Admin Pengaturan → Kontak publik: field **Jam operasional (Indonesia)** + **Jam operasional (Inggris)**; disimpan di JSON `site_settings.kontak` sebagai `jam_operasional` / `jam_operasional_en` (tanpa DDL). Footer publik memilih teks by locale.
+- Komponen bersama `FileUploadField` (dashed + hint format + preview): lampiran materi (upload saat Simpan), bukti pembayaran Setuju pendaftaran, bukti transfer user, impor sertifikat/soal, FotoPicker daftar batch publik — selaras pola visual upload gambar.
+
 ### 9f.6 Batasan yang tetap berlaku penuh
 
-- Larangan #1 (jangan tambah tabel/kolom di luar Bagian 5) — F11.1 hanya mengubah VIEW (kolom turunan), bukan tabel/kolom fisik baru; dicatat di Bagian 5.1g sebelum SQL apa pun diajukan.
+- Larangan #1 (jangan tambah tabel/kolom di luar Bagian 5) — F11.1 hanya mengubah VIEW (kolom turunan), bukan tabel/kolom fisik baru; dicatat di Bagian 5.1g sebelum SQL apa pun diajukan. F11.7 hanya field JSON di `site_settings`.
 - F11.1 WAJIB menjaga properti keamanan `security_invoker = off` pada `products_public` (Bagian 5.2/ADR-004) — lihat Konsekuensi ADR-024.
 - F11.2 TIDAK menambah dependency chart baru — memakai `recharts` yang sudah disetujui sejak ADR-019.
 - Prinsip MOBILE FIRST dan RESPONSIF berlaku penuh, termasuk untuk chart baru (tidak overflow di 375px).
 
 ### 9f.7 Selesai bila
 
-- [ ] Seluruh F11.1 s/d F11.3 berstatus DONE di `feature-registry.md` dengan bukti uji manual (Definisi Selesai Bagian 14)
-- [ ] Form Produk hanya punya satu field kategori (combobox), badge kategori publik tetap tampil benar untuk produk yang sudah punya `category_id` terisi
-- [ ] `select harga from products_public where tampilkan_harga = false;` masih mengembalikan semua NULL setelah view diubah (regresi keamanan harga TIDAK terjadi)
-- [ ] Dashboard Admin menampilkan ringkasan Leads per sumber, grafik tren 2 garis, pie chart status Leads, bar chart Sertifikat, dan angka stat card yang lebih besar — semua data cocok dengan angka di halaman Leads/Sertifikat masing-masing
-- [ ] Halaman Login Admin menampilkan logo Hexatara, form tetap berfungsi seperti sebelumnya (login berhasil/gagal dengan pesan yang sama)
-- [ ] Diuji di viewport 375px untuk semua perubahan tampilan, termasuk chart baru
+- [x] Seluruh F11.1 s/d F11.7 berstatus DONE di `feature-registry.md` dengan bukti uji manual (Definisi Selesai Bagian 14)
+- [x] Form Produk hanya punya satu field kategori (combobox), badge kategori publik tetap tampil benar untuk produk yang sudah punya `category_id` terisi
+- [x] `select harga from products_public where tampilkan_harga = false;` masih mengembalikan semua NULL setelah view diubah (regresi keamanan harga TIDAK terjadi)
+- [x] Dashboard Admin menampilkan ringkasan Leads per sumber, grafik tren 2 garis, pie chart status Leads, bar chart Sertifikat, dan angka stat card yang lebih besar
+- [x] Halaman Login Admin menampilkan logo Hexatara, form tetap berfungsi
+- [x] F11.4–F11.6 sesuai registry (status penawaran, kategori batch, polish i18n)
+- [x] F11.7: filter kategori tidak terpotong di desktop; footer jam ID/EN ikut locale; upload berkas dashed+preview di titik yang disepakati
+- [x] Diuji di viewport 375px untuk perubahan tampilan Modul 11 (termasuk chart)
 
 ---
 

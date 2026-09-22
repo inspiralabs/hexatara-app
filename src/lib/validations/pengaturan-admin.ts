@@ -14,6 +14,7 @@ export const KontakPublikSchema = z.object({
   email: z.email({ error: 'Email kontak tidak valid' }).or(z.literal('')),
   instagram: z.string().optional().default(''),
   jam_operasional: z.string().optional().default(''),
+  jam_operasional_en: z.string().optional().default(''),
 });
 
 const waOpsional = z

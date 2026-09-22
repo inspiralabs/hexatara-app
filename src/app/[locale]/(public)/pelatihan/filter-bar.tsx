@@ -1,5 +1,6 @@
 'use client';
 
+import { useId } from 'react';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { useRouter, usePathname } from '@/i18n/navigation';
@@ -8,6 +9,8 @@ import { SORT_VALUES, type PelatihanSort } from './sort-options';
 
 const STATUS_VALUES = ['upcoming', 'open', 'closed'] as const;
 const ALL_VALUE = 'semua';
+/** Beat SelectTrigger data-[size=default]:h-8 (32px) → PRD §12.3 min 44px */
+const TRIGGER_H = 'h-11 min-h-11 data-[size=default]:h-11';
 
 export function FilterBar({
   kategoriOptions,
@@ -25,6 +28,8 @@ export function FilterBar({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const kategoriLabelId = useId();
+  const statusLabelId = useId();
 
   function update(key: 'kategori' | 'status' | 'sort', value: string | null) {
     const params = new URLSearchParams(searchParams.toString());
@@ -44,13 +49,18 @@ export function FilterBar({
   return (
     <div className="flex flex-col gap-3 md:flex-row md:flex-wrap md:items-center">
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-muted-foreground">{t('filterKategoriLabel')}</span>
+        <span id={kategoriLabelId} className="text-sm font-medium text-muted-foreground">
+          {t('filterKategoriLabel')}
+        </span>
         <Select
           items={kategoriItems}
           value={kategoriValue ?? ALL_VALUE}
           onValueChange={(v: string | null) => update('kategori', v)}
         >
-          <SelectTrigger className="h-11 w-full sm:w-48">
+          <SelectTrigger
+            className={`${TRIGGER_H} w-full sm:w-auto sm:min-w-48 sm:max-w-md`}
+            aria-labelledby={kategoriLabelId}
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -64,13 +74,18 @@ export function FilterBar({
       </div>
 
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-muted-foreground">{t('filterStatusLabel')}</span>
+        <span id={statusLabelId} className="text-sm font-medium text-muted-foreground">
+          {t('filterStatusLabel')}
+        </span>
         <Select
           items={statusItems}
           value={statusValue ?? ALL_VALUE}
           onValueChange={(v: string | null) => update('status', v)}
         >
-          <SelectTrigger className="h-11 w-full sm:w-48">
+          <SelectTrigger
+            className={`${TRIGGER_H} w-full sm:w-48`}
+            aria-labelledby={statusLabelId}
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -85,7 +100,10 @@ export function FilterBar({
 
       <div className="flex items-center gap-2 md:ml-auto">
         <Select items={sortItems} value={sortValue} onValueChange={(v: string | null) => update('sort', v)}>
-          <SelectTrigger className="h-11 w-full sm:w-56">
+          <SelectTrigger
+            className={`${TRIGGER_H} w-full sm:w-56`}
+            aria-label={t('filterSortLabel')}
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

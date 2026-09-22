@@ -227,6 +227,7 @@
     "freemiumHeroCta": "Start Now",
     "filterKategoriLabel": "Category:",
     "filterStatusLabel": "Status:",
+    "filterSortLabel": "Sort",
     "semua": "All",
     "lihatDetail": "View Detail",
     "sort": {
@@ -254,6 +255,7 @@
     "heroDesc": "From enterprise camera drones to multi-sensor units for industrial missions. Our team can help you pick the right unit for your business or organization.",
     "heroCta": "Consult via WhatsApp",
     "filterKategoriLabel": "Category:",
+    "filterSortLabel": "Sort",
     "semua": "All",
     "sort": {
       "terbaru": "Newest",

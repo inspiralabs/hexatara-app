@@ -38,7 +38,7 @@ export function ProductGallery({ images, alt }: { images: { id: number; url: str
     <div>
       <Carousel setApi={setApi} opts={{ align: 'start' }}>
         <CarouselContent>
-          {images.map((img) => (
+          {images.map((img, index) => (
             <CarouselItem key={img.id}>
               <button
                 type="button"
@@ -50,7 +50,7 @@ export function ProductGallery({ images, alt }: { images: { id: number; url: str
                   src={img.url}
                   alt={alt}
                   fill
-                  priority
+                  priority={index === 0}
                   className="object-contain"
                   sizes="(max-width: 768px) 100vw, 768px"
                 />

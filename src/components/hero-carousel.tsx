@@ -49,7 +49,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlideItem[] }) {
           fill
           priority
           className="object-cover [transition:var(--transition-hover)] group-hover:scale-105"
-          sizes="(max-width: 640px) 100vw, 50vw"
+          sizes="(max-width: 768px) 100vw, 50vw"
         />
       )}
       {/* Overlay penuh: gelap bawah → transparan atas. pointer-events-none agar

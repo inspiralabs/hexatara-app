@@ -8,7 +8,8 @@ export const LampiranFormSchema = z.object({
   judul_en: teksOpsional,
   deskripsi_id: teksOpsional,
   deskripsi_en: teksOpsional,
-  url_file: z.string().min(1, { error: 'Berkas wajib diunggah' }),
+  // Boleh kosong di form — upload berkas baru terjadi saat Simpan (pending File).
+  url_file: z.string().optional().default(''),
 });
 
 export type LampiranFormInput = z.input<typeof LampiranFormSchema>;

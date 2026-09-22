@@ -18,8 +18,10 @@ export type KontakSettings = {
   wa?: string;
   email?: string;
   instagram?: string;
-  /** Teks bebas, contoh: "Senin - Jumat, 09.00 - 16.00 WIB" */
+  /** Teks bebas ID, contoh: "Senin - Jumat, 09.00 - 16.00 WIB" */
   jam_operasional?: string;
+  /** Teks bebas EN untuk footer locale en */
+  jam_operasional_en?: string;
 };
 
 export type KontakPelatihanSettings = {

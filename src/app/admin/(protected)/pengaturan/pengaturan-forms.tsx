@@ -134,6 +134,7 @@ function KontakForm({ defaults }: { defaults: KontakSettings }) {
       email: defaults.email ?? '',
       instagram: defaults.instagram ?? '',
       jam_operasional: defaults.jam_operasional ?? '',
+      jam_operasional_en: defaults.jam_operasional_en ?? '',
     },
   });
 
@@ -173,11 +174,19 @@ function KontakForm({ defaults }: { defaults: KontakSettings }) {
             <Input id="instagram" placeholder="https://instagram.com/…" {...register('instagram')} />
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="jam_operasional">Jam operasional</Label>
+            <Label htmlFor="jam_operasional">Jam operasional (Indonesia)</Label>
             <Input
               id="jam_operasional"
               placeholder="Senin - Jumat, 09.00 - 16.00 WIB"
               {...register('jam_operasional')}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="jam_operasional_en">Jam operasional (Inggris)</Label>
+            <Input
+              id="jam_operasional_en"
+              placeholder="Monday - Friday, 09:00 - 16:00 WIB"
+              {...register('jam_operasional_en')}
             />
           </div>
           <div className="sm:col-span-2">

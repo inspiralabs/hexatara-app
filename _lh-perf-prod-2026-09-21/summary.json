@@ -1,0 +1,1397 @@
+{
+  "ranAt": "2026-09-21T14:25:40.837Z",
+  "base": "http://localhost:3001",
+  "results": [
+    {
+      "id": "beranda",
+      "path": "/",
+      "note": null,
+      "finalUrl": "http://localhost:3001/",
+      "performance": 75,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 0.87,
+          "displayValue": "1.9 s",
+          "numericValue": 1887.402
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.18,
+          "displayValue": "5.6 s",
+          "numericValue": 5576.103
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 0.97,
+          "displayValue": "120 ms",
+          "numericValue": 122
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 0.77,
+          "displayValue": "4.2 s",
+          "numericValue": 4214.486309972095
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.69,
+          "displayValue": "5.7 s",
+          "numericValue": 5651.9731
+        }
+      },
+      "lcpNode": {
+        "selector": "div#_R_ann5tivb_ > a.block > div.relative > img.object-cover",
+        "snippet": "<img alt=\"HEXATARA PELATIHAN &amp; SERTIFIKASI PILOT JARAK JAUH \" loading=\"lazy\" decoding=\"async\" data-nimg=\"fill\" class=\"object-cover\" sizes=\"360px\" srcset=\"/_next/image?url=https%3A%2F%2Fojltfmvmbolalhtzrhva.supabase.co%2Fstorage%…\" src=\""
+      },
+      "lcpDiscovery": {
+        "priorityHinted": {
+          "label": "fetchpriority=high should be applied",
+          "value": false
+        },
+        "requestDiscoverable": {
+          "label": "Request is discoverable in initial document",
+          "value": false
+        },
+        "eagerlyLoaded": {
+          "label": "LCP resources should not use loading=lazy",
+          "value": false
+        }
+      },
+      "imageDelivery": {
+        "score": 0.5,
+        "displayValue": "Est savings of 148 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 25 KiB",
+        "numericValue": 150
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 180 ms",
+        "numericValue": 181
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 1,
+        "displayValue": null,
+        "numericValue": 0
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.5 s",
+        "numericValue": 530.7280000000017
+      }
+    },
+    {
+      "id": "pelatihan",
+      "path": "/pelatihan",
+      "note": null,
+      "finalUrl": "http://localhost:3001/pelatihan",
+      "performance": 81,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 0.99,
+          "displayValue": "1.2 s",
+          "numericValue": 1220.1315
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.25,
+          "displayValue": "5.1 s",
+          "numericValue": 5120.131499999999
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 1,
+          "displayValue": "50 ms",
+          "numericValue": 49
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 1,
+          "displayValue": "1.2 s",
+          "numericValue": 1220.1315
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.74,
+          "displayValue": "5.2 s",
+          "numericValue": 5195.1314999999995
+        }
+      },
+      "lcpNode": {
+        "selector": "section.relative > div.relative > div.mx-auto > p.mx-auto",
+        "snippet": "<p class=\"mx-auto mt-3 max-w-xl text-base text-muted-foreground\">"
+      },
+      "lcpDiscovery": null,
+      "imageDelivery": {
+        "score": 0.5,
+        "displayValue": "Est savings of 148 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 26 KiB",
+        "numericValue": 150
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 210 ms",
+        "numericValue": 206
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 1,
+        "displayValue": null,
+        "numericValue": 0
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.5 s",
+        "numericValue": 494.9399999999994
+      }
+    },
+    {
+      "id": "pelatihan-detail",
+      "path": "/pelatihan/rpc-juli-2026",
+      "note": null,
+      "finalUrl": "http://localhost:3001/pelatihan/rpc-juli-2026",
+      "performance": 76,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 0.99,
+          "displayValue": "1.2 s",
+          "numericValue": 1211.1554
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.09,
+          "displayValue": "6.5 s",
+          "numericValue": 6491.832749999999
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 0.99,
+          "displayValue": "80 ms",
+          "numericValue": 84
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 0.95,
+          "displayValue": "0.075",
+          "numericValue": 0.07503857295002857
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 0.99,
+          "displayValue": "2.3 s",
+          "numericValue": 2308.323770637461
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.58,
+          "displayValue": "6.6 s",
+          "numericValue": 6566.553864999999
+        }
+      },
+      "lcpNode": {
+        "selector": "div.relative > div.mx-auto > button.relative > img.h-auto",
+        "snippet": "<img alt=\"\" width=\"1200\" height=\"800\" decoding=\"async\" data-nimg=\"1\" class=\"h-auto w-full object-contain\" style=\"color:transparent\" sizes=\"(max-width: 768px) 100vw, 768px\" srcset=\"/_next/image?url=https%3A%2F%2Fojltfmvmbolalhtzrhva.supabase"
+      },
+      "lcpDiscovery": {
+        "priorityHinted": {
+          "label": "fetchpriority=high should be applied to the image preload request",
+          "value": false
+        },
+        "requestDiscoverable": {
+          "label": "Request is discoverable in initial document",
+          "value": true
+        },
+        "eagerlyLoaded": {
+          "label": "LCP resources should not use loading=lazy",
+          "value": true
+        }
+      },
+      "imageDelivery": {
+        "score": 0.5,
+        "displayValue": "Est savings of 148 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 144 KiB",
+        "numericValue": 780
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 300 ms",
+        "numericValue": 295
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 1,
+        "displayValue": null,
+        "numericValue": 0
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.5 s",
+        "numericValue": 450.8120000000008
+      }
+    },
+    {
+      "id": "katalog",
+      "path": "/katalog",
+      "note": null,
+      "finalUrl": "http://localhost:3001/katalog",
+      "performance": 81,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 0.99,
+          "displayValue": "1.2 s",
+          "numericValue": 1209.8158
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.25,
+          "displayValue": "5.1 s",
+          "numericValue": 5109.8158
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 0.99,
+          "displayValue": "80 ms",
+          "numericValue": 76.99999999999955
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 1,
+          "displayValue": "1.2 s",
+          "numericValue": 1209.8158
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.74,
+          "displayValue": "5.2 s",
+          "numericValue": 5169.815800000001
+        }
+      },
+      "lcpNode": {
+        "selector": "div.mt-6 > article.flex > div.relative > img.object-cover",
+        "snippet": "<img alt=\"EVO II PRO V3\" loading=\"lazy\" decoding=\"async\" data-nimg=\"fill\" class=\"object-cover\" style=\"position: absolute; height: 100%; width: 100%; inset: 0px;\" sizes=\"(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw\" srcset=\"/_nex"
+      },
+      "lcpDiscovery": {
+        "priorityHinted": {
+          "label": "fetchpriority=high should be applied",
+          "value": false
+        },
+        "requestDiscoverable": {
+          "label": "Request is discoverable in initial document",
+          "value": true
+        },
+        "eagerlyLoaded": {
+          "label": "LCP resources should not use loading=lazy",
+          "value": false
+        }
+      },
+      "imageDelivery": {
+        "score": 0.5,
+        "displayValue": "Est savings of 148 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 26 KiB",
+        "numericValue": 150
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 160 ms",
+        "numericValue": 161
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 1,
+        "displayValue": null,
+        "numericValue": 0
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.4 s",
+        "numericValue": 427.83200000000227
+      }
+    },
+    {
+      "id": "katalog-detail",
+      "path": "/katalog/evo-ii-pro-v3",
+      "note": null,
+      "finalUrl": "http://localhost:3001/katalog/evo-ii-pro-v3",
+      "performance": 77,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 0.99,
+          "displayValue": "1.2 s",
+          "numericValue": 1206.7331
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.13,
+          "displayValue": "6.0 s",
+          "numericValue": 5950.249124999999
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 0.96,
+          "displayValue": "130 ms",
+          "numericValue": 125.99999999999909
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 0.99,
+          "displayValue": "2.2 s",
+          "numericValue": 2229.6261977879826
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.64,
+          "displayValue": "6.0 s",
+          "numericValue": 6018.2541075
+        }
+      },
+      "lcpNode": {
+        "selector": "div.flex > div.min-w-0 > button.relative > img.object-contain",
+        "snippet": "<img alt=\"EVO II PRO V3\" decoding=\"async\" data-nimg=\"fill\" class=\"object-contain\" style=\"position: absolute; height: 100%; width: 100%; inset: 0px;\" sizes=\"(max-width: 768px) 100vw, 768px\" srcset=\"/_next/image?url=https%3A%2F%2Fojltfmvmbola"
+      },
+      "lcpDiscovery": {
+        "priorityHinted": {
+          "label": "fetchpriority=high should be applied to the image preload request",
+          "value": false
+        },
+        "requestDiscoverable": {
+          "label": "Request is discoverable in initial document",
+          "value": true
+        },
+        "eagerlyLoaded": {
+          "label": "LCP resources should not use loading=lazy",
+          "value": true
+        }
+      },
+      "imageDelivery": {
+        "score": 0.5,
+        "displayValue": "Est savings of 148 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 105 KiB",
+        "numericValue": 460
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 300 ms",
+        "numericValue": 297
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 1,
+        "displayValue": null,
+        "numericValue": 0
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.5 s",
+        "numericValue": 518.084000000003
+      }
+    },
+    {
+      "id": "verify",
+      "path": "/verify",
+      "note": null,
+      "finalUrl": "http://localhost:3001/verify",
+      "performance": 81,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 0.99,
+          "displayValue": "1.2 s",
+          "numericValue": 1211.6455
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.25,
+          "displayValue": "5.1 s",
+          "numericValue": 5111.645499999998
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 0.98,
+          "displayValue": "100 ms",
+          "numericValue": 99.99999999999955
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 1,
+          "displayValue": "1.2 s",
+          "numericValue": 1211.6455
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.75,
+          "displayValue": "5.1 s",
+          "numericValue": 5111.645499999999
+        }
+      },
+      "lcpNode": {
+        "selector": "footer.border-t > div.mx-auto > div > p.mt-3",
+        "snippet": "<p class=\"mt-3\">"
+      },
+      "lcpDiscovery": null,
+      "imageDelivery": {
+        "score": 0,
+        "displayValue": "Est savings of 148 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 27 KiB",
+        "numericValue": 150
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 80 ms",
+        "numericValue": 81
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 1,
+        "displayValue": null,
+        "numericValue": 0
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.5 s",
+        "numericValue": 500.35600000000085
+      }
+    },
+    {
+      "id": "faq",
+      "path": "/faq",
+      "note": null,
+      "finalUrl": "http://localhost:3001/faq",
+      "performance": 83,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 0.99,
+          "displayValue": "1.2 s",
+          "numericValue": 1212.5077
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.32,
+          "displayValue": "4.7 s",
+          "numericValue": 4737.5077
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 0.99,
+          "displayValue": "80 ms",
+          "numericValue": 83
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 1,
+          "displayValue": "1.2 s",
+          "numericValue": 1212.5077
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.79,
+          "displayValue": "4.8 s",
+          "numericValue": 4775.0077
+        }
+      },
+      "lcpNode": {
+        "selector": "div.flex > div.not-last:border-b > h3.flex > button#base-ui-_R_39bsnn5tivbH2_",
+        "snippet": "<button type=\"button\" data-value=\"\" data-orientation=\"vertical\" data-hidden=\"\" data-index=\"5\" tabindex=\"0\" aria-disabled=\"false\" aria-expanded=\"false\" id=\"base-ui-_R_39bsnn5tivbH2_\" data-slot=\"accordion-trigger\" class=\"group/accordion-trigg"
+      },
+      "lcpDiscovery": null,
+      "imageDelivery": {
+        "score": 0.5,
+        "displayValue": "Est savings of 148 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 27 KiB",
+        "numericValue": 150
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 80 ms",
+        "numericValue": 83
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 1,
+        "displayValue": null,
+        "numericValue": 0
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.4 s",
+        "numericValue": 359.80000000000126
+      }
+    },
+    {
+      "id": "kuis",
+      "path": "/kuis",
+      "note": null,
+      "finalUrl": "http://localhost:3001/kuis",
+      "performance": 90,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 0.99,
+          "displayValue": "1.2 s",
+          "numericValue": 1209.4071
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.61,
+          "displayValue": "3.6 s",
+          "numericValue": 3608.665975000001
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 1,
+          "displayValue": "40 ms",
+          "numericValue": 37.5
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 1,
+          "displayValue": "1.2 s",
+          "numericValue": 1209.4071
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.88,
+          "displayValue": "4.0 s",
+          "numericValue": 3991.784555000001
+        }
+      },
+      "lcpNode": {
+        "selector": "div.mx-auto > div.mt-6 > div.rounded-xl > h2.text-lg",
+        "snippet": "<h2 class=\"text-lg font-semibold text-foreground\">"
+      },
+      "lcpDiscovery": null,
+      "imageDelivery": {
+        "score": 0.5,
+        "displayValue": "Est savings of 148 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 27 KiB",
+        "numericValue": 120
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 140 ms",
+        "numericValue": 138
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 1,
+        "displayValue": null,
+        "numericValue": 0
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.4 s",
+        "numericValue": 417.9040000000013
+      }
+    },
+    {
+      "id": "tentang-kami",
+      "path": "/tentang-kami",
+      "note": null,
+      "finalUrl": "http://localhost:3001/tentang-kami",
+      "performance": 83,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 0.99,
+          "displayValue": "1.2 s",
+          "numericValue": 1212.7066
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.33,
+          "displayValue": "4.7 s",
+          "numericValue": 4662.7065999999995
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 1,
+          "displayValue": "60 ms",
+          "numericValue": 63.000000000000455
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 1,
+          "displayValue": "1.2 s",
+          "numericValue": 1212.7066
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.8,
+          "displayValue": "4.7 s",
+          "numericValue": 4707.7065999999995
+        }
+      },
+      "lcpNode": {
+        "selector": "div.bg-background > div.mx-auto > div.flex > p",
+        "snippet": "<p>"
+      },
+      "lcpDiscovery": null,
+      "imageDelivery": {
+        "score": 0.5,
+        "displayValue": "Est savings of 148 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 27 KiB",
+        "numericValue": 150
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 80 ms",
+        "numericValue": 82
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 1,
+        "displayValue": null,
+        "numericValue": 0
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.4 s",
+        "numericValue": 393.1079999999997
+      }
+    },
+    {
+      "id": "syarat-ketentuan",
+      "path": "/syarat-ketentuan",
+      "note": null,
+      "finalUrl": "http://localhost:3001/syarat-ketentuan",
+      "performance": 83,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 0.99,
+          "displayValue": "1.2 s",
+          "numericValue": 1210.1135
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.33,
+          "displayValue": "4.7 s",
+          "numericValue": 4660.1135
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 0.99,
+          "displayValue": "70 ms",
+          "numericValue": 66
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 1,
+          "displayValue": "1.3 s",
+          "numericValue": 1281.2510120285992
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.8,
+          "displayValue": "4.7 s",
+          "numericValue": 4705.113500000001
+        }
+      },
+      "lcpNode": {
+        "selector": "div.bg-background > div.mx-auto > div.flex > p",
+        "snippet": "<p>"
+      },
+      "lcpDiscovery": null,
+      "imageDelivery": {
+        "score": 0.5,
+        "displayValue": "Est savings of 148 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 27 KiB",
+        "numericValue": 150
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 330 ms",
+        "numericValue": 328
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 1,
+        "displayValue": null,
+        "numericValue": 0
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.4 s",
+        "numericValue": 356.8120000000008
+      }
+    },
+    {
+      "id": "kebijakan-privasi",
+      "path": "/kebijakan-privasi",
+      "note": null,
+      "finalUrl": "http://localhost:3001/kebijakan-privasi",
+      "performance": 83,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 0.99,
+          "displayValue": "1.2 s",
+          "numericValue": 1208.456
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.33,
+          "displayValue": "4.7 s",
+          "numericValue": 4658.456
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 0.99,
+          "displayValue": "70 ms",
+          "numericValue": 69
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 1,
+          "displayValue": "1.4 s",
+          "numericValue": 1378.1478520344735
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.8,
+          "displayValue": "4.7 s",
+          "numericValue": 4703.456
+        }
+      },
+      "lcpNode": {
+        "selector": "div.bg-background > div.mx-auto > div.flex > p",
+        "snippet": "<p>"
+      },
+      "lcpDiscovery": null,
+      "imageDelivery": {
+        "score": 0.5,
+        "displayValue": "Est savings of 148 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 27 KiB",
+        "numericValue": 150
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 400 ms",
+        "numericValue": 402
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 1,
+        "displayValue": null,
+        "numericValue": 0
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.4 s",
+        "numericValue": 358.020000000001
+      }
+    },
+    {
+      "id": "ketentuan-layanan",
+      "path": "/ketentuan-layanan",
+      "note": null,
+      "finalUrl": "http://localhost:3001/ketentuan-layanan",
+      "performance": 83,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 0.99,
+          "displayValue": "1.2 s",
+          "numericValue": 1208.5563
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.33,
+          "displayValue": "4.7 s",
+          "numericValue": 4658.5563
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 1,
+          "displayValue": "60 ms",
+          "numericValue": 64
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 1,
+          "displayValue": "1.4 s",
+          "numericValue": 1425.9405299470613
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.8,
+          "displayValue": "4.7 s",
+          "numericValue": 4703.5563
+        }
+      },
+      "lcpNode": {
+        "selector": "div.bg-background > div.mx-auto > div.flex > p",
+        "snippet": "<p>"
+      },
+      "lcpDiscovery": null,
+      "imageDelivery": {
+        "score": 0.5,
+        "displayValue": "Est savings of 148 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 27 KiB",
+        "numericValue": 150
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 430 ms",
+        "numericValue": 433
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 1,
+        "displayValue": null,
+        "numericValue": 0
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.3 s",
+        "numericValue": 343.34800000000064
+      }
+    },
+    {
+      "id": "login",
+      "path": "/login",
+      "note": null,
+      "finalUrl": "http://localhost:3001/login",
+      "performance": 88,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 0.99,
+          "displayValue": "1.2 s",
+          "numericValue": 1209.0278
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.54,
+          "displayValue": "3.8 s",
+          "numericValue": 3849.8264500000005
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 1,
+          "displayValue": "60 ms",
+          "numericValue": 60.5
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 1,
+          "displayValue": "1.2 s",
+          "numericValue": 1209.0278
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.85,
+          "displayValue": "4.3 s",
+          "numericValue": 4262.0417
+        }
+      },
+      "lcpNode": {
+        "selector": "div.mx-auto > div.mt-6 > div.flex > p",
+        "snippet": "<p>"
+      },
+      "lcpDiscovery": null,
+      "imageDelivery": {
+        "score": 0.5,
+        "displayValue": "Est savings of 148 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 105 KiB",
+        "numericValue": 450
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 180 ms",
+        "numericValue": 176
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 1,
+        "displayValue": null,
+        "numericValue": 0
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.4 s",
+        "numericValue": 433.4080000000012
+      }
+    },
+    {
+      "id": "daftar",
+      "path": "/daftar",
+      "note": null,
+      "finalUrl": "http://localhost:3001/daftar",
+      "performance": 86,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 0.99,
+          "displayValue": "1.2 s",
+          "numericValue": 1209.3503
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.47,
+          "displayValue": "4.1 s",
+          "numericValue": 4075.713325
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 0.99,
+          "displayValue": "70 ms",
+          "numericValue": 74.5
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 1,
+          "displayValue": "1.2 s",
+          "numericValue": 1209.3503
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.84,
+          "displayValue": "4.4 s",
+          "numericValue": 4384.175450000001
+        }
+      },
+      "lcpNode": {
+        "selector": "div.mt-8 > form.flex > div.flex > label#persetujuan-label",
+        "snippet": "<label data-slot=\"label\" class=\"flex items-center gap-2 text-sm leading-none select-none group-data-[disab…\" for=\"persetujuan\" id=\"persetujuan-label\">"
+      },
+      "lcpDiscovery": null,
+      "imageDelivery": {
+        "score": 0.5,
+        "displayValue": "Est savings of 148 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 104 KiB",
+        "numericValue": 600
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 150 ms",
+        "numericValue": 148
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 1,
+        "displayValue": null,
+        "numericValue": 0
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.4 s",
+        "numericValue": 392.64800000000173
+      }
+    },
+    {
+      "id": "lupa-sandi",
+      "path": "/lupa-sandi",
+      "note": null,
+      "finalUrl": "http://localhost:3001/lupa-sandi",
+      "performance": 89,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 1,
+          "displayValue": "1.1 s",
+          "numericValue": 1059.2357
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.56,
+          "displayValue": "3.8 s",
+          "numericValue": 3773.08925
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 1,
+          "displayValue": "60 ms",
+          "numericValue": 63.5
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 1,
+          "displayValue": "1.1 s",
+          "numericValue": 1059.2357
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.86,
+          "displayValue": "4.1 s",
+          "numericValue": 4118.353550000001
+        }
+      },
+      "lcpNode": {
+        "selector": "div.grid > div.flex > div.mx-auto > p.mt-2",
+        "snippet": "<p class=\"mt-2 text-sm text-muted-foreground\">"
+      },
+      "lcpDiscovery": null,
+      "imageDelivery": {
+        "score": 0.5,
+        "displayValue": "Est savings of 148 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 106 KiB",
+        "numericValue": 600
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 140 ms",
+        "numericValue": 139
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 1,
+        "displayValue": null,
+        "numericValue": 0
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.4 s",
+        "numericValue": 370.328000000001
+      }
+    },
+    {
+      "id": "dashboard",
+      "path": "/dashboard",
+      "note": "auth → login",
+      "finalUrl": "http://localhost:3001/login",
+      "performance": 82,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 0.99,
+          "displayValue": "1.2 s",
+          "numericValue": 1210.6454
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.3,
+          "displayValue": "4.8 s",
+          "numericValue": 4831.9362
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 1,
+          "displayValue": "60 ms",
+          "numericValue": 57.499999999999545
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 1,
+          "displayValue": "0",
+          "numericValue": 0
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 0.99,
+          "displayValue": "2.3 s",
+          "numericValue": 2262.5630347932115
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.78,
+          "displayValue": "4.9 s",
+          "numericValue": 4879.065280000001
+        }
+      },
+      "lcpNode": {
+        "selector": "div.mx-auto > div.mt-6 > div.flex > p",
+        "snippet": "<p>"
+      },
+      "lcpDiscovery": null,
+      "imageDelivery": {
+        "score": 0.5,
+        "displayValue": "Est savings of 148 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 105 KiB",
+        "numericValue": 450
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 150 ms",
+        "numericValue": 147
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 0,
+        "displayValue": "Est savings of 610 ms",
+        "numericValue": 605.3227
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.4 s",
+        "numericValue": 440.3000000000011
+      }
+    },
+    {
+      "id": "materi-1",
+      "path": "/materi/1",
+      "note": "LMS",
+      "finalUrl": "http://localhost:3001/materi/1",
+      "performance": 76,
+      "metrics": {
+        "FCP": {
+          "id": "first-contentful-paint",
+          "score": 0.99,
+          "displayValue": "1.2 s",
+          "numericValue": 1209.798
+        },
+        "LCP": {
+          "id": "largest-contentful-paint",
+          "score": 0.11,
+          "displayValue": "6.2 s",
+          "numericValue": 6162.754999999999
+        },
+        "TBT": {
+          "id": "total-blocking-time",
+          "score": 0.93,
+          "displayValue": "160 ms",
+          "numericValue": 163
+        },
+        "CLS": {
+          "id": "cumulative-layout-shift",
+          "score": 1,
+          "displayValue": "0.004",
+          "numericValue": 0.004340578950554309
+        },
+        "SI": {
+          "id": "speed-index",
+          "score": 1,
+          "displayValue": "1.2 s",
+          "numericValue": 1222.8015820095063
+        },
+        "TTI": {
+          "id": "interactive",
+          "score": 0.62,
+          "displayValue": "6.2 s",
+          "numericValue": 6186.781399999999
+        }
+      },
+      "lcpNode": {
+        "selector": "div#base-ui-_R_5aav5ubt5tivb_ > div.flex-1 > div.mx-auto > img.mt-4",
+        "snippet": "<img src=\"https://ojltfmvmbolalhtzrhva.supabase.co/storage/v1/object/public/content/…\" alt=\"\" class=\"mt-4 w-full rounded-lg\">"
+      },
+      "lcpDiscovery": {
+        "priorityHinted": {
+          "label": "fetchpriority=high should be applied to the image preload request",
+          "value": false
+        },
+        "requestDiscoverable": {
+          "label": "Request is discoverable in initial document",
+          "value": true
+        },
+        "eagerlyLoaded": {
+          "label": "LCP resources should not use loading=lazy",
+          "value": true
+        }
+      },
+      "imageDelivery": {
+        "score": 0,
+        "displayValue": "Est savings of 475 KiB"
+      },
+      "unusedJs": {
+        "id": "unused-javascript",
+        "score": 0,
+        "displayValue": "Est savings of 25 KiB",
+        "numericValue": 160
+      },
+      "ttfb": {
+        "id": "server-response-time",
+        "score": 1,
+        "displayValue": "Root document took 300 ms",
+        "numericValue": 301
+      },
+      "redirects": {
+        "id": "redirects",
+        "score": 1,
+        "displayValue": null,
+        "numericValue": 0
+      },
+      "bootup": {
+        "id": "bootup-time",
+        "score": 1,
+        "displayValue": "0.4 s",
+        "numericValue": 405.9920000000024
+      }
+    }
+  ]
+}

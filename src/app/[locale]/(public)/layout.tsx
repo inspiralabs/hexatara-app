@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { ClockIcon, MailIcon } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { getOptionalUser } from "@/lib/auth/guard";
@@ -29,6 +29,7 @@ function InstagramIcon({ className }: { className?: string }) {
 }
 
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getLocale();
   const tNav = await getTranslations("nav");
   const tCommon = await getTranslations("common");
   const tFooter = await getTranslations("footer");
@@ -46,7 +47,11 @@ export default async function PublicLayout({ children }: { children: React.React
   ];
   const hrefMasuk = sudahLogin ? "/dashboard" : "/login";
 
-  const jamOperasional = kontak.jam_operasional?.trim() || tFooter("serviceHours") || DEFAULT_JAM_OPERASIONAL;
+  const jamDariDb =
+    locale === "en"
+      ? kontak.jam_operasional_en?.trim() || kontak.jam_operasional?.trim()
+      : kontak.jam_operasional?.trim() || kontak.jam_operasional_en?.trim();
+  const jamOperasional = jamDariDb || tFooter("serviceHours") || DEFAULT_JAM_OPERASIONAL;
 
   return (
     <div data-surface="public" className="flex min-h-full flex-1 flex-col bg-background text-foreground">
@@ -54,7 +59,7 @@ export default async function PublicLayout({ children }: { children: React.React
       <PublicStickyHeader>
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2 font-heading text-lg font-semibold text-foreground">
-            <BrandLogo variant="default" size={32} priority />
+            <BrandLogo variant="default" size={32} priority unoptimized={false} />
             Hexatara
           </Link>
 
@@ -91,7 +96,7 @@ export default async function PublicLayout({ children }: { children: React.React
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-8 px-4 py-16 text-sm text-muted-foreground sm:grid-cols-3 md:py-24">
           <div>
             <div className="flex items-center gap-2 text-base font-bold text-foreground">
-              <BrandLogo variant="default" size={28} />
+              <BrandLogo variant="default" size={28} unoptimized={false} />
               Hexatara
             </div>
             <p className="mt-3">{tCommon("footerTagline")}</p>
@@ -166,7 +171,7 @@ export default async function PublicLayout({ children }: { children: React.React
           </div>
         </div>
 
-        <div className="border-t border-border px-4 py-4 text-center text-xs text-muted-foreground">
+        <div className="border-t border-border px-4 py-4 text-center text-sm text-muted-foreground">
           {tCommon("footerCopyright", { year: new Date().getFullYear() })}
         </div>
       </footer>

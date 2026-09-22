@@ -1,15 +1,15 @@
 'use client';
 
-import { useRef, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
+import { FileUploadField } from '@/components/file-upload-field';
 import { imporSertifikatAction, type BarisGagal } from './actions';
 
 type Laporan = { berhasil: number; gagal: BarisGagal[] };
 
 export function ImporForm() {
-  const fileRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [pending, startTransition] = useTransition();
   const [laporan, setLaporan] = useState<Laporan | null>(null);
 
@@ -17,14 +17,13 @@ export function ImporForm() {
     e.preventDefault();
     setLaporan(null);
 
-    const berkas = fileRef.current?.files?.[0];
-    if (!berkas) {
+    if (!file) {
       toast.error('Pilih berkas CSV atau Excel terlebih dahulu.');
       return;
     }
 
     const formData = new FormData();
-    formData.set('berkas', berkas);
+    formData.set('berkas', file);
 
     startTransition(async () => {
       const hasil = await imporSertifikatAction(formData);
@@ -34,23 +33,22 @@ export function ImporForm() {
       }
       setLaporan({ berhasil: hasil.berhasil, gagal: hasil.gagal });
       toast.success(`Impor selesai: ${hasil.berhasil} berhasil, ${hasil.gagal.length} gagal.`);
-      if (fileRef.current) fileRef.current.value = '';
+      setFile(null);
     });
   }
 
   return (
     <div className="flex flex-col gap-6">
       <form onSubmit={onSubmit} className="flex flex-col gap-3">
-        <Label htmlFor="berkas">Berkas CSV atau Excel</Label>
-        <input
-          ref={fileRef}
-          id="berkas"
-          name="berkas"
-          type="file"
+        <FileUploadField
+          label="Berkas CSV atau Excel"
           accept=".csv,.xlsx,.xls"
-          className="h-11 w-full rounded-lg border border-border bg-background px-3 text-sm text-foreground file:mr-3 file:h-full file:border-0 file:bg-transparent file:font-medium file:text-primary"
+          hint="CSV atau Excel (.csv, .xlsx, .xls)"
+          file={file}
+          onFile={setFile}
+          disabled={pending}
         />
-        <Button type="submit" disabled={pending} className="h-11 w-fit px-6">
+        <Button type="submit" disabled={pending || !file} className="h-11 w-fit px-6">
           {pending ? 'Memproses…' : 'Impor'}
         </Button>
       </form>
