@@ -10,6 +10,7 @@ const JSX_TS_FILES = ["**/*.{js,jsx,mjs,ts,tsx,mts,cts}"];
 
 const eslintConfig = defineConfig([
   // Skrip audit Lighthouse sementara — tetap di repo untuk re-run, bukan sumber app.
+  // Skrip uji keamanan (console.log PASS/FAIL) — bukan sumber app.
   globalIgnores([
     "/_lh-*.cjs",
     "/_lh-*.mjs",
@@ -18,6 +19,7 @@ const eslintConfig = defineConfig([
     "_lh-run-perf.cjs",
     "_lh-run-perf.mjs",
     "_lh-run-prod.cjs",
+    "scripts/test-role-escalation.mjs",
     // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",

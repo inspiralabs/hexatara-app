@@ -1,26 +1,25 @@
 'use server';
 
-import { cookies } from 'next/headers';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { createClient } from '@/lib/supabase/server';
+import {
+  clearPendingVerifyEmailCookie,
+  getPendingVerifyEmail,
+  konfirmasiMasihDalamJendela,
+} from '@/lib/auth/pending-verify-email';
+import { cekRateLimitVerifikasiPoll } from '@/lib/rate-limit/verifikasi-poll';
 
-const COOKIE_PENDING = 'pending_verify_email';
-
-/** Dipanggil dari daftarAction — sumber kebenaran email untuk polling (bukan argumen klien). */
-export async function setPendingVerifyEmailCookie(email: string) {
-  const jar = await cookies();
-  jar.set(COOKIE_PENDING, email, {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    path: '/',
-    maxAge: 60 * 60 * 24,
-  });
-}
-
+/**
+ * Poll dari device yang baru daftar (cookie HttpOnly di-set HANYA oleh daftarAction).
+ * Email TIDAK diterima dari argumen klien — hanya dari cookie.
+ */
 export async function cekStatusVerifikasiAction() {
-  const jar = await cookies();
-  const email = jar.get(COOKIE_PENDING)?.value;
+  const boleh = await cekRateLimitVerifikasiPoll();
+  if (!boleh) {
+    return { terverifikasi: false as const, rateLimited: true as const };
+  }
+
+  const email = await getPendingVerifyEmail();
   if (!email) {
     return { terverifikasi: false as const };
   }
@@ -36,17 +35,25 @@ export async function cekStatusVerifikasiAction() {
         apikey: process.env.SUPABASE_SERVICE_ROLE_KEY!,
       },
       cache: 'no-store',
-    }
+    },
   );
   if (!res.ok) {
     console.error('[verifikasi] list users by email gagal:', res.status);
     return { terverifikasi: false as const };
   }
-  const body = (await res.json()) as { users?: { email?: string; email_confirmed_at?: string | null }[] };
-  const user = body.users?.find((u) => u.email?.toLowerCase() === email.toLowerCase());
+  const body = (await res.json()) as {
+    users?: { email?: string; email_confirmed_at?: string | null }[];
+  };
+  const user = body.users?.find((u) => u.email?.toLowerCase() === email);
 
   if (!user?.email_confirmed_at) {
     return { terverifikasi: false as const };
+  }
+
+  // Akun yang sudah lama terverifikasi jangan di-magic-link (defense in depth).
+  if (!konfirmasiMasihDalamJendela(user.email_confirmed_at)) {
+    await clearPendingVerifyEmailCookie();
+    return { terverifikasi: true as const, gagalLogin: true as const };
   }
 
   // generateLink magiclink TIDAK mengirim email — hanya token untuk verifyOtp di device asal.
@@ -70,6 +77,6 @@ export async function cekStatusVerifikasiAction() {
     return { terverifikasi: true as const, gagalLogin: true as const };
   }
 
-  jar.delete(COOKIE_PENDING);
+  await clearPendingVerifyEmailCookie();
   return { terverifikasi: true as const, gagalLogin: false as const };
 }

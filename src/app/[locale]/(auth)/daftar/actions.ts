@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { kirimEmailVerifikasi } from '@/lib/email/send';
 import type { MateriSessionProgress } from '@/lib/materi/session-progress';
-import { setPendingVerifyEmailCookie } from '../verifikasi-email/actions';
+import { setPendingVerifyEmailCookie } from '@/lib/auth/pending-verify-email';
 
 export async function daftarAction(
   input: unknown,
