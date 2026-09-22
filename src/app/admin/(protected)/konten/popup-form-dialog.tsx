@@ -141,7 +141,8 @@ export function PopupFormDialog({
                     <ImageUploadField
                       label="Gambar Mobile (potret)"
                       aspectRatio={9 / 16}
-                      suggestedPx="1080×1920px"
+                      suggestedPx="1080×1920px (saran; sisi terpanjang hingga 2048)"
+                      compression="poster"
                       value={field.value ?? null}
                       onChange={field.onChange}
                       onUpload={async (file) => {
@@ -165,7 +166,8 @@ export function PopupFormDialog({
                     <ImageUploadField
                       label="Gambar Desktop (lanskap)"
                       aspectRatio={16 / 9}
-                      suggestedPx="1920×1080px"
+                      suggestedPx="2048×1152px"
+                      compression="poster"
                       value={field.value ?? null}
                       onChange={field.onChange}
                       onUpload={async (file) => {

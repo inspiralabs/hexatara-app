@@ -404,6 +404,8 @@ export function BatchForm({
                     label="Gambar Detail (ditampilkan utuh di halaman pelatihan)"
                     skipCrop
                     previewFit="contain"
+                    compression="poster"
+                    suggestedPx="sisi terpanjang hingga 2048px"
                     value={field.value ?? null}
                     onChange={field.onChange}
                     onUpload={async (file) => {

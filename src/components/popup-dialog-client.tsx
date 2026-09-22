@@ -50,6 +50,7 @@ export function PopupDialogClient({ popup }: { popup: PopupAktif }) {
           alt={popup.judul}
           fill
           priority
+          quality={90}
           className="object-cover"
           sizes={sizes}
         />

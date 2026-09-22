@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ReorderButtons } from '@/components/admin/reorder-buttons';
 import { moveItem } from '@/lib/reorder';
-import { HeroCarousel } from '@/components/hero-carousel';
+import { HeroCarouselView } from '@/components/hero-carousel';
 import { HeroSlideRowActions } from './hero-slide-row-actions';
 import { HeroSlideActiveSwitch } from './hero-slide-active-switch';
 import { HeroSlideFormDialog } from './hero-slide-form-dialog';
@@ -88,7 +88,11 @@ export function HeroSlideList({ slides }: { slides: HeroSlide[] }) {
         <p className="mb-2 text-sm font-semibold text-muted-foreground">Preview carousel (yang aktif, sesuai urutan)</p>
         {previewSlides.length > 0 ? (
           <div className="max-w-md">
-            <HeroCarousel slides={previewSlides} />
+            <HeroCarouselView
+              slides={previewSlides}
+              prevLabel="Slide sebelumnya"
+              nextLabel="Slide berikutnya"
+            />
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">Belum ada slide aktif untuk dipratinjau.</p>

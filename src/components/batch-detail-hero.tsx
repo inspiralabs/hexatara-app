@@ -32,10 +32,12 @@ export function BatchDetailHero({
           width={1200}
           height={800}
           priority
+          quality={90}
           className={
             gambarDetailUrl ? 'h-auto w-full object-contain' : 'aspect-video w-full object-cover'
           }
-          sizes="(max-width: 768px) 100vw, 768px"
+          // Container di page detail: max-w-4xl (896px) + px-4 — jangan hint 768 (underserve).
+          sizes="(max-width: 896px) calc(100vw - 2rem), 896px"
         />
       </button>
       <PublicImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />

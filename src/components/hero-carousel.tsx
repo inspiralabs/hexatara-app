@@ -15,11 +15,16 @@ export type HeroSlideItem = {
 
 const JEDA_OTOMATIS_MS = 5000;
 
-// Carousel galeri hero — bukan hitung mundur (larangan PRD §13.4 itu untuk
-// banner urgensi/harga). Ini transisi visual antar poster, jeda 5 detik
-// dipilih supaya tetap terasa seperti galeri, bukan timer fungsional.
-export function HeroCarousel({ slides }: { slides: HeroSlideItem[] }) {
-  const t = useTranslations("common");
+/** UI tanpa next-intl — aman di Admin (tidak ada NextIntlClientProvider). */
+export function HeroCarouselView({
+  slides,
+  prevLabel,
+  nextLabel,
+}: {
+  slides: HeroSlideItem[];
+  prevLabel: string;
+  nextLabel: string;
+}) {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -52,8 +57,6 @@ export function HeroCarousel({ slides }: { slides: HeroSlideItem[] }) {
           sizes="(max-width: 768px) 100vw, 50vw"
         />
       )}
-      {/* Overlay penuh: gelap bawah → transparan atas. pointer-events-none agar
-          tidak menghalangi klik CTA/gambar; panah carousel di sibling luar. */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent"
@@ -82,7 +85,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlideItem[] }) {
           <button
             type="button"
             onClick={() => pindah("prev")}
-            aria-label={t("prevSlide")}
+            aria-label={prevLabel}
             className="absolute left-2 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 text-foreground hover:bg-background"
           >
             <ChevronLeftIcon className="size-5" aria-hidden="true" />
@@ -90,7 +93,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlideItem[] }) {
           <button
             type="button"
             onClick={() => pindah("next")}
-            aria-label={t("nextSlide")}
+            aria-label={nextLabel}
             className="absolute right-2 top-1/2 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/80 text-foreground hover:bg-background"
           >
             <ChevronRightIcon className="size-5" aria-hidden="true" />
@@ -111,5 +114,19 @@ export function HeroCarousel({ slides }: { slides: HeroSlideItem[] }) {
         </>
       )}
     </div>
+  );
+}
+
+// Carousel galeri hero — bukan hitung mundur (larangan PRD §13.4 itu untuk
+// banner urgensi/harga). Ini transisi visual antar poster, jeda 5 detik
+// dipilih supaya tetap terasa seperti galeri, bukan timer fungsional.
+export function HeroCarousel({ slides }: { slides: HeroSlideItem[] }) {
+  const t = useTranslations("common");
+  return (
+    <HeroCarouselView
+      slides={slides}
+      prevLabel={t("prevSlide")}
+      nextLabel={t("nextSlide")}
+    />
   );
 }

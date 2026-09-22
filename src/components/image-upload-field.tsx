@@ -23,6 +23,18 @@ const FORMAT_DIIZINKAN = ['image/jpeg', 'image/png', 'image/webp'];
 const FORMAT_LABEL = 'JPG, PNG, atau WebP';
 const UKURAN_MAKS = 5 * 1024 * 1024; // 5MB sebelum kompresi (ENGINEERING §5.3)
 
+/** Default: foto/kartu biasa. `poster`: popup promo & gambar detail pelatihan (tipografi padat, retina). */
+export type ImageCompressionPreset = 'default' | 'poster';
+
+const COMPRESSION: Record<
+  ImageCompressionPreset,
+  { maxSizeMB: number; maxWidthOrHeight: number; initialQuality?: number }
+> = {
+  default: { maxSizeMB: 0.5, maxWidthOrHeight: 1920 },
+  // 2048 ≈ tampil popup xl/detail ×2 (retina); 1.5 MB + q0.9 supaya PNG tidak dipaksa shrink dimensi.
+  poster: { maxSizeMB: 1.5, maxWidthOrHeight: 2048, initialQuality: 0.9 },
+};
+
 function formatMB(bytes: number) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
@@ -39,6 +51,7 @@ export function ImageUploadField({
   skipCrop = false,
   previewFit = 'cover',
   lockSize = false,
+  compression = 'default',
 }: {
   label: string;
   value: string | null;
@@ -54,6 +67,8 @@ export function ImageUploadField({
   previewFit?: 'cover' | 'contain';
   /** Ukuran kotak crop tetap — hanya boleh digeser (thumbnail kartu / hero slide). */
   lockSize?: boolean;
+  /** Preset kompresi. Default = upload biasa; poster = popup/gambar detail (resolusi+budget lebih tinggi). */
+  compression?: ImageCompressionPreset;
 }) {
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -62,18 +77,34 @@ export function ImageUploadField({
   const [pending, setPending] = useState<{ file: File; objectUrl: string } | null>(null);
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
+  const compressOpts = COMPRESSION[compression];
+
+  async function kompresLaluUpload(file: File, namaFile: string) {
+    const compressed = await imageCompression(file, compressOpts);
+    const keluar = new File([compressed], namaFile, { type: compressed.type || file.type });
+    try {
+      return await onUpload(keluar);
+    } catch (err) {
+      console.error('[ImageUploadField] upload gagal:', err);
+      // Server Action body default 1MB — poster 1.5MB sering kena 500 tanpa pesan jelas.
+      return {
+        ok: false as const,
+        pesan: 'Gagal mengunggah gambar (server menolak berkas — coba lagi atau perkecil file).',
+      };
+    }
+  }
 
   async function uploadTanpaCrop(file: File) {
     setUploading(true);
     try {
-      const compressed = await imageCompression(file, { maxSizeMB: 0.5, maxWidthOrHeight: 1920 });
-      const hasil = await onUpload(new File([compressed], file.name, { type: compressed.type }));
+      const hasil = await kompresLaluUpload(file, file.name);
       if (!hasil.ok) {
         toast.error(hasil.pesan);
         return;
       }
       onChange(hasil.url);
-    } catch {
+    } catch (err) {
+      console.error('[ImageUploadField] kompresi gagal:', err);
       toast.error('Gagal memproses gambar. Coba berkas lain.');
     } finally {
       setUploading(false);
@@ -125,15 +156,15 @@ export function ImageUploadField({
       if (!blob) throw new Error('gagal membuat blob dari crop');
 
       const cropped = new File([blob], pending.file.name, { type: pending.file.type });
-      const compressed = await imageCompression(cropped, { maxSizeMB: 0.5, maxWidthOrHeight: 1920 });
-      const hasil = await onUpload(new File([compressed], pending.file.name, { type: compressed.type }));
+      const hasil = await kompresLaluUpload(cropped, pending.file.name);
       if (!hasil.ok) {
         toast.error(hasil.pesan);
         return;
       }
       onChange(hasil.url);
       tutupDialogCrop();
-    } catch {
+    } catch (err) {
+      console.error('[ImageUploadField] crop/kompresi gagal:', err);
       toast.error('Gagal memproses gambar. Coba berkas lain.');
     } finally {
       setUploading(false);
