@@ -113,9 +113,16 @@ NEXT_PUBLIC_WA_ADMIN=             # format 62xxx
 UPSTASH_REDIS_REST_URL=           # Sprint 2
 UPSTASH_REDIS_REST_TOKEN=         # Sprint 2
 RATE_LIMIT_VERIFY_ENABLED=false
+NEXT_PUBLIC_SENTRY_DSN=           # F05.5 — publik (inline ke browser); bukan secret
 ```
 
 Apa pun tanpa prefix `NEXT_PUBLIC_` hanya terbaca di server. Menambahkan prefix itu pada `SUPABASE_SERVICE_ROLE_KEY` adalah kebocoran total, bukan kesalahan kecil.
+
+### 2.4 Sentry — kebijakan privasi (F05.5, 2026-09-23)
+
+Pemantauan error lewat `@sentry/nextjs`. Wajib: event **tanpa** cookie, body form, email, atau data identitas (KTP). Di kode: `sendDefaultPii: false`, Session Replay off, `beforeSend` scrub + hapus `event.user`/`contexts.geo`, `setUser({ ip_address: null })`. Di dashboard: Prevent Storing of IP Addresses (Organization Security & Privacy).
+
+**Keputusan final:** Geography (kota+negara) yang masih muncul dari **geo enrichment backend Sentry atas peer IP koneksi HTTPS ke ingest** diterima sebagai **batas wajar / acceptable risk**. Tiga lapis mitigasi (dashboard + beforeSend + setUser) sudah dicoba; Advanced Data Scrubbing / proxy tidak dilanjutkan — tidak proporsional, dan scrub UI tidak menghentikan pemrosesan IP di sisi Sentry. Data sensitif kritis yang wajib bersih sudah terverifikasi.
 
 ---
 

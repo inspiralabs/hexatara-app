@@ -13,6 +13,7 @@
   "dependencies": {
     "@base-ui/react": "^1.7.0",
     "@hookform/resolvers": "^5.9.1",
+    "@sentry/nextjs": "^10.75.1",
     "@supabase/ssr": "^0.12.5",
     "@supabase/supabase-js": "^2.115.0",
     "@tanstack/react-table": "^9.2.4",
