@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { CheckCircle2Icon } from "lucide-react";
@@ -6,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { formatRupiah, formatTanggalBatch, splitHtmlByHeadings } from "@/lib/batch";
 import { pick } from "@/lib/i18n/pick";
 import { getKontakPelatihan, getWhatsappAdmin } from "@/lib/site-settings";
+import { pageMetadata, plainDescription } from "@/lib/seo/page-metadata";
 import {
   Accordion,
   AccordionContent,
@@ -50,6 +52,37 @@ function buildWaTanyaLink(nomor: string | undefined, pesan: string) {
 function buildWaPelatihanLink(nomor: string | undefined, pesan: string) {
   if (!nomor) return null;
   return `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const t = await getTranslations({ locale, namespace: "seo" });
+  const supabase = await createClient();
+  const { data: batch } = await supabase
+    .from("batches")
+    .select("judul_id, judul_en, deskripsi_id, deskripsi_en")
+    .eq("slug", slug)
+    .eq("is_active", true)
+    .maybeSingle();
+
+  const title =
+    (batch ? pick(batch.judul_id, batch.judul_en, locale) : null) ??
+    t("pelatihanDetailFallbackTitle");
+  const description =
+    plainDescription(
+      batch ? pick(batch.deskripsi_id, batch.deskripsi_en, locale) : null,
+    ) || t("pelatihanDetailFallbackDescription");
+
+  return pageMetadata({
+    locale,
+    path: `/pelatihan/${slug}`,
+    title,
+    description,
+  });
 }
 
 export default async function BatchDetailPage({

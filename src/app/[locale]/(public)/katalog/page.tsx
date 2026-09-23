@@ -1,8 +1,10 @@
+import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { pick } from "@/lib/i18n/pick";
 import { PublicHeroMist } from "@/components/public-hero-mist";
 import { publicCtaPrimary, publicSectionHeading } from "@/lib/public-ui";
+import { pageMetadata } from "@/lib/seo/page-metadata";
 import { ProdukCard } from "./produk-card";
 import { FilterBar } from "./filter-bar";
 import { SORT_VALUES, type ProdukSort } from "./sort-options";
@@ -19,6 +21,21 @@ function buildWaKonsultasiLink(nomor: string | undefined, pesan: string) {
 function buildWaBulkLink(nomor: string | undefined, pesan: string) {
   if (!nomor) return null;
   return `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo" });
+  return pageMetadata({
+    locale,
+    path: "/katalog",
+    title: t("katalogTitle"),
+    description: t("katalogDescription"),
+  });
 }
 
 export default async function KatalogPage({

@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Fraunces, Geist } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import { Toaster } from "@/components/ui/sonner";
+import { OG_IMAGE, siteOrigin } from "@/lib/seo/page-metadata";
 import "../globals.css";
 
 const geist = Geist({
@@ -30,9 +31,31 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "common" });
+  const title = t("metaTitle");
+  const description = t("metaDescription");
+  const ogLocale = locale === "en" ? "en_US" : "id_ID";
+
   return {
-    title: t("metaTitle"),
-    description: t("metaDescription"),
+    metadataBase: new URL(siteOrigin()),
+    title: {
+      default: title,
+      template: "%s | Hexatara",
+    },
+    description,
+    openGraph: {
+      title,
+      description,
+      siteName: "Hexatara",
+      locale: ogLocale,
+      type: "website",
+      images: [OG_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [OG_IMAGE.url],
+    },
   };
 }
 

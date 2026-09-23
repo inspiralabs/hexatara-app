@@ -1,9 +1,26 @@
+import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Link } from "@/i18n/navigation";
 import { PublicHeroMist } from "@/components/public-hero-mist";
 import { publicSectionHeading } from "@/lib/public-ui";
+import { pageMetadata } from "@/lib/seo/page-metadata";
 import { CertificateResult } from "../certificate-result";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; token: string }>;
+}): Promise<Metadata> {
+  const { locale, token } = await params;
+  const t = await getTranslations({ locale, namespace: "seo" });
+  return pageMetadata({
+    locale,
+    path: `/verify/${token}`,
+    title: t("verifyTokenTitle"),
+    description: t("verifyTokenDescription"),
+  });
+}
 
 export default async function VerifyTokenPage({
   params,

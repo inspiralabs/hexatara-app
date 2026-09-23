@@ -1,8 +1,25 @@
+import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { getOptionalUser } from "@/lib/auth/guard";
 import { pick } from "@/lib/i18n/pick";
+import { pageMetadata } from "@/lib/seo/page-metadata";
 import { QuizEngine, type QuizQuestion } from "./quiz-engine";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo" });
+  return pageMetadata({
+    locale,
+    path: "/kuis",
+    title: t("kuisTitle"),
+    description: t("kuisDescription"),
+  });
+}
 
 export default async function KuisPage() {
   const supabase = await createClient();

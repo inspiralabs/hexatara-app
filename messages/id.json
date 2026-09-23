@@ -444,5 +444,43 @@
       ]
     }
   },
+  "seo": {
+    "homeTitle": "Hexatara — Pelatihan Pilot Drone Bersertifikat",
+    "homeDescription": "Pelatihan pilot drone bersertifikat (Remote Pilot Certificate) dan penjualan drone profesional Autel oleh Hexatara Indonesia.",
+    "pelatihanTitle": "Jadwal Pelatihan",
+    "pelatihanDescription": "Jadwal pelatihan pilot drone bersertifikat RPC bersama instruktur berpengalaman. Lihat batch mendatang dan daftar minat lewat Hexatara.",
+    "pelatihanDetailFallbackTitle": "Detail Pelatihan",
+    "pelatihanDetailFallbackDescription": "Detail pelatihan pilot drone bersertifikat di Hexatara Indonesia.",
+    "katalogTitle": "Katalog Produk",
+    "katalogDescription": "Katalog drone profesional Autel untuk survei, pemetaan, dan operasional industri. Minta penawaran lewat Hexatara.",
+    "katalogDetailFallbackTitle": "Detail Produk",
+    "katalogDetailFallbackDescription": "Detail produk drone profesional dari Hexatara Indonesia.",
+    "verifyTitle": "Cek Keabsahan Sertifikat",
+    "verifyDescription": "Verifikasi keaslian sertifikat Hexatara secara publik tanpa login. Masukkan nomor sertifikat atau pindai QR.",
+    "verifyTokenTitle": "Hasil Verifikasi Sertifikat",
+    "verifyTokenDescription": "Hasil pemeriksaan keabsahan sertifikat Hexatara dari pemindaian kode QR.",
+    "faqTitle": "FAQ",
+    "faqDescription": "Pertanyaan yang sering diajukan tentang pelatihan, sertifikat, dan produk Hexatara Indonesia.",
+    "kuisTitle": "Kuis Dasar Keselamatan Drone",
+    "kuisDescription": "Kuis dasar keselamatan drone gratis dari Hexatara. Jawab sampai benar — tanpa ambang nilai, tanpa batas percobaan.",
+    "tentangKamiTitle": "Tentang Kami",
+    "tentangKamiDescription": "Hexatara Indonesia — penyelenggara pelatihan pilot drone bersertifikat RPC dan penjual drone profesional Autel di Bekasi.",
+    "ketentuanLayananTitle": "Ketentuan Layanan",
+    "ketentuanLayananDescription": "Ketentuan penggunaan situs dan layanan Hexatara Indonesia.",
+    "kebijakanPrivasiTitle": "Kebijakan Privasi",
+    "kebijakanPrivasiDescription": "Bagaimana Hexatara Indonesia mengumpulkan dan memakai data pribadi Anda.",
+    "syaratKetentuanTitle": "Syarat & Ketentuan",
+    "syaratKetentuanDescription": "Syarat dan ketentuan penggunaan situs Hexatara Indonesia."
+  },
+  "errors": {
+    "notFoundTitle": "Halaman tidak ditemukan",
+    "notFoundBody": "Alamat yang Anda buka tidak ada atau sudah dipindahkan. Kalau Anda mencari sertifikat, coba lewat halaman verifikasi.",
+    "notFoundHome": "Kembali ke beranda",
+    "notFoundVerify": "Verifikasi sertifikat",
+    "errorTitle": "Terjadi kesalahan",
+    "errorBody": "Maaf, ada yang tidak beres. Silakan coba lagi. Kalau masalah berlanjut, hubungi Admin Hexatara.",
+    "errorRetry": "Coba lagi",
+    "errorHome": "Kembali ke beranda"
+  },
   "admin": {}
 }

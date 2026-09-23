@@ -1,8 +1,10 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { formatRupiah } from "@/lib/batch";
 import { pick } from "@/lib/i18n/pick";
+import { pageMetadata, plainDescription } from "@/lib/seo/page-metadata";
 import { StarRating } from "@/components/star-rating";
 import {
   publicBadgeKategori,
@@ -22,6 +24,36 @@ const cardHeading = "font-heading text-lg font-semibold tracking-tight text-fore
 function buildWaProdukLink(nomor: string | undefined, pesan: string) {
   if (!nomor) return null;
   return `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const t = await getTranslations({ locale, namespace: "seo" });
+  const supabase = await createClient();
+  const { data: produk } = await supabase
+    .from("products_public")
+    .select("nama_id, nama_en, deskripsi_id, deskripsi_en")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  const title =
+    (produk ? pick(produk.nama_id, produk.nama_en, locale) : null) ??
+    t("katalogDetailFallbackTitle");
+  const description =
+    plainDescription(
+      produk ? pick(produk.deskripsi_id, produk.deskripsi_en, locale) : null,
+    ) || t("katalogDetailFallbackDescription");
+
+  return pageMetadata({
+    locale,
+    path: `/katalog/${slug}`,
+    title,
+    description,
+  });
 }
 
 export default async function KatalogDetailPage({

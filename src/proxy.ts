@@ -50,5 +50,9 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+  // Jangan jalankan next-intl pada metadata route / berkas bertitik.
+  // Tanpa ini, /sitemap.xml & /robots.txt masuk [locale] → 404 bawaan Next.
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|robots\\.txt|sitemap\\.xml|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 };

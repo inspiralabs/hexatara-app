@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
@@ -5,11 +6,27 @@ import { cekRateLimitVerify } from "@/lib/rate-limit/verify";
 import { PublicHeroMist } from "@/components/public-hero-mist";
 import { Input } from "@/components/ui/input";
 import { publicCtaPrimary, publicSectionHeading } from "@/lib/public-ui";
+import { pageMetadata } from "@/lib/seo/page-metadata";
 import { CertificateResult } from "./certificate-result";
 
 async function getClientIp() {
   const h = await headers();
   return h.get("x-forwarded-for")?.split(",")[0]?.trim() || h.get("x-real-ip") || "";
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo" });
+  return pageMetadata({
+    locale,
+    path: "/verify",
+    title: t("verifyTitle"),
+    description: t("verifyDescription"),
+  });
 }
 
 export default async function VerifyPage({

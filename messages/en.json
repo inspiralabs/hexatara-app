@@ -444,5 +444,43 @@
       ]
     }
   },
+  "seo": {
+    "homeTitle": "Hexatara — Certified Drone Pilot Training",
+    "homeDescription": "Certified drone pilot training (Remote Pilot Certificate) and professional Autel drone sales by Hexatara Indonesia.",
+    "pelatihanTitle": "Training Schedule",
+    "pelatihanDescription": "Certified RPC drone pilot training schedule with experienced instructors. Browse upcoming batches and register interest with Hexatara.",
+    "pelatihanDetailFallbackTitle": "Training Detail",
+    "pelatihanDetailFallbackDescription": "Certified drone pilot training details from Hexatara Indonesia.",
+    "katalogTitle": "Product Catalog",
+    "katalogDescription": "Professional Autel drones for survey, mapping, and industrial use. Request a quote from Hexatara.",
+    "katalogDetailFallbackTitle": "Product Detail",
+    "katalogDetailFallbackDescription": "Professional drone product details from Hexatara Indonesia.",
+    "verifyTitle": "Verify Certificate Authenticity",
+    "verifyDescription": "Publicly verify a Hexatara certificate without logging in. Enter the certificate number or scan the QR code.",
+    "verifyTokenTitle": "Certificate Verification Result",
+    "verifyTokenDescription": "Hexatara certificate authenticity result from a QR code scan.",
+    "faqTitle": "FAQ",
+    "faqDescription": "Frequently asked questions about Hexatara Indonesia training, certificates, and products.",
+    "kuisTitle": "Drone Safety Basics Quiz",
+    "kuisDescription": "Free Hexatara drone safety basics quiz. Answer until correct — no pass mark, no attempt limit.",
+    "tentangKamiTitle": "About Us",
+    "tentangKamiDescription": "Hexatara Indonesia — certified RPC drone pilot training provider and professional Autel drone seller in Bekasi.",
+    "ketentuanLayananTitle": "Terms of Service",
+    "ketentuanLayananDescription": "Terms for using the Hexatara Indonesia website and services.",
+    "kebijakanPrivasiTitle": "Privacy Policy",
+    "kebijakanPrivasiDescription": "How Hexatara Indonesia collects and uses your personal data.",
+    "syaratKetentuanTitle": "Terms & Conditions",
+    "syaratKetentuanDescription": "Terms and conditions for using the Hexatara Indonesia website."
+  },
+  "errors": {
+    "notFoundTitle": "Page not found",
+    "notFoundBody": "The address you opened does not exist or has moved. If you are looking up a certificate, try the verification page.",
+    "notFoundHome": "Back to home",
+    "notFoundVerify": "Verify certificate",
+    "errorTitle": "Something went wrong",
+    "errorBody": "Sorry, something went wrong. Please try again. If the problem continues, contact Hexatara Admin.",
+    "errorRetry": "Try again",
+    "errorHome": "Back to home"
+  },
   "admin": {}
 }
