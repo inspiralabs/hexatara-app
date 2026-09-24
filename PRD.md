@@ -1421,6 +1421,7 @@ Penambahan salah satu butir ini merupakan **perubahan scope yang memerlukan kese
 
 | Butir | Rencana |
 |---|---|
+| Email notifikasi Admin untuk **pendaftaran batch baru** (`batch_registrations`) | Fase 2. Di Fase 1, `kirimEmailLeadBaru` hanya dipanggil untuk penawaran produk (`jenis: 'penawaran'`). Cabang tipe `minat_batch` di `send.ts`/`templates.ts` **sengaja ditahan** (keputusan Alif 2026-09-24) sebagai placeholder — jangan dihapus sebagai dead code knip; saat dibangun, pertimbangkan jenis baru (mis. `pendaftaran_batch`) daripada menghidupkan label “minat” (UI F01.6 sudah dihapus F10.1) |
 | LMS Advance — materi mitra ("Uncle Sam"/Emergent) | Fase 3, menunggu MOU |
 | LMS Basic untuk batch RPC | Fase 2. Delivery tetap manual lewat WhatsApp Group + Zoom |
 | Payment gateway otomatis | Fase 2 |

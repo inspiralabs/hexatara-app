@@ -57,6 +57,10 @@ export async function kirimEmailPembayaranDitolak(
   return kirim(to, templatePembayaranDitolak(params, kontak));
 }
 
+// jenis 'minat_batch': sengaja DITAHAN (tidak dipanggil dari UI). Keputusan Alif
+// 2026-09-24 — jangan hapus sampai Fase 2 punya email notifikasi pendaftaran batch
+// baru (batch_registrations). Saat itu pertimbangkan jenis baru (mis. pendaftaran_batch)
+// daripada menghidupkan label "minat". Jalur hidup sekarang hanya 'penawaran' (F04.5).
 export async function kirimEmailLeadBaru(params: {
   jenis: 'minat_batch' | 'penawaran';
   nama: string;

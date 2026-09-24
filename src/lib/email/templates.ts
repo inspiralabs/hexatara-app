@@ -167,6 +167,7 @@ export function templatePembayaranDitolak(
   };
 }
 
+/** Cabang `minat_batch` ditahan untuk Fase 2 (email pendaftaran batch) — lihat komentar di `send.ts`. */
 export function templateLeadBaru(
   params: {
     jenis: 'minat_batch' | 'penawaran';

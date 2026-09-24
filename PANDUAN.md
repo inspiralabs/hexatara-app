@@ -1464,6 +1464,8 @@ Ganti tiga baris pertama dengan nilai dari Fase 3.2. `RESEND_API_KEY` dari resen
 
 `EMAIL_FROM` sengaja memakai `onboarding@resend.dev` dulu — alamat itu berfungsi tanpa verifikasi domain. Diganti di Fase 7.
 
+**`ADMIN_NOTIFY_EMAIL` = fallback saja (bukan sumber utama).** Penerima email lead (permintaan penawaran produk, dsb.) diambil lewat `getAdminNotifyEmail()` di `src/lib/site-settings.ts`: **prioritas (1)** key `admin_notify_email` di tabel `site_settings` (diatur Admin di `/admin/pengaturan` → kartu “Email notifikasi Admin”), **(2)** baru env `ADMIN_NOTIFY_EMAIL` kalau setting DB kosong. Env tetap berguna sebagai seed awal sebelum Admin mengisi pengaturan, dan sebagai cadangan di staging.
+
 **CEK**
 
 ```powershell
@@ -4312,7 +4314,7 @@ Paparkan rencana dulu.
 **Uji sendiri:**
 
 - Isi form → kirim → cek Supabase `quote_requests`, baris barunya ada, `consent_at` terisi waktu
-- Email pemberitahuan masuk ke `ADMIN_NOTIFY_EMAIL` (cek spam juga)
+- Email pemberitahuan masuk ke alamat dari **Pengaturan Admin** (`site_settings.admin_notify_email` via `getAdminNotifyEmail()`; fallback env `ADMIN_NOTIFY_EMAIL` hanya jika setting DB kosong). Cek inbox + spam.
 - Isi dengan email `test@gmail.com` → **diterima**. Kalau ditolak karena bukan domain perusahaan, larangan nomor 20 dilanggar
 - Isi dengan email tanpa `@` → ditolak dengan pesan **berbahasa Indonesia**
 - Muat ulang `Ctrl+Shift+R` → centang persetujuan **kosong**
