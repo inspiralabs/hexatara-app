@@ -6067,7 +6067,7 @@ verifikasi. Jangan mengubah status baris fitur lain.
 ```powershell
 pnpm tsc --noEmit; pnpm lint; pnpm build
 git add -A
-git commit -m "feat(auth): redesign login, daftar, reset sandi ke pola auth v2 (Fase 12.6)"
+git commit -m "feat(design-v3): fondasi shadcn/ui, AdminShell dan DashboardUserShell (Fase 12.6) & feat(auth): redesign login, daftar, reset sandi ke pola auth v2 (Fase 12.6)"
 ```
 
 ---
@@ -6119,11 +6119,21 @@ sebelum menulis kode.
 
 ```
 Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
-Saya sudah menguji halaman overview Dashboard Admin baru sendiri di browser
-dan hasilnya sesuai, metrik menampilkan data nyata. Tambahkan baris baru
-untuk fitur ini kalau belum ada, isi Status DONE, Berkas [daftar berkas],
-Diuji [tanggal], Bukti [ringkas hasil uji]. Tambahkan satu baris ke Log
+Saya sudah menguji redesign halaman login/daftar/reset sandi (varian v2)
+sendiri di browser, termasuk mobile dan dark mode, dan hasilnya sesuai —
+alur autentikasi yang sudah ada tidak berubah, hanya tampilan. Isi baris
+terkait (menggantikan F06.18 lama): Status DONE, Berkas [daftar berkas],
+Diuji [tanggal]. Tambahkan satu baris ke Log
 verifikasi. Jangan mengubah status baris fitur lain.
+Saya sudah menguji redesign halaman login/daftar/reset sandi (varian v2)
+sendiri di browser, termasuk mobile dan dark mode, dan hasilnya sesuai —
+alur autentikasi yang sudah ada tidak berubah, hanya tampilan. Isi baris
+terkait (menggantikan F06.18 lama): Status DONE, Berkas [daftar berkas],
+Diuji [tanggal]. Tambahkan satu baris ke Log verifikasi. Jangan mengubah status baris fitur lain. Saya sudah menguji halaman overview Dashboard Admin baru sendiri di browser dan hasilnya sesuai, metrik menampilkan data nyata. Tambahkan baris baru
+untuk fitur ini kalau belum ada, isi Status DONE, Berkas [daftar berkas],
+Diuji [tanggal]. Tambahkan satu baris ke Log verifikasi. Jangan mengubah status baris fitur lain.
+Tambahkan catatan yang sesuai dengan perubahan atau tambahan yang kita lakukan untuk fitur 12.6.0 - 12.6.2
+
 ```
 
 **Commit:**
@@ -6199,8 +6209,7 @@ Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji DataTable generik baru (TanStack Table) di seluruh tabel
 Admin sendiri di browser, termasuk mobile 375px, dan hasilnya sesuai. Isi
 baris terkait (menggantikan F06.14 lama): Status DONE, Berkas [daftar
-berkas], Diuji [tanggal], Bukti [sebutkan tabel mana saja yang sudah
-dimigrasi]. Tambahkan satu baris ke Log verifikasi. Jangan mengubah status
+berkas], Diuji [tanggal]. Tambahkan satu baris ke Log verifikasi. Jangan mengubah status
 baris fitur lain.
 ```
 
@@ -6272,7 +6281,7 @@ Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji form components generik dan ImageUploadField dengan crop
 sendiri di browser, termasuk mobile, dan hasilnya sesuai. Isi baris terkait
 (menggantikan F06.15 lama): Status DONE, Berkas [daftar berkas], Diuji
-[tanggal], Bukti [ringkas hasil uji]. Tambahkan satu baris ke Log verifikasi.
+[tanggal]. Tambahkan satu baris ke Log verifikasi.
 Jangan mengubah status baris fitur lain.
 ```
 
@@ -6311,8 +6320,6 @@ sama sekali (bukan cuma soal tampilan), bangun dulu logikanya sesuai
 ADR-011/ADR-012 sebelum membungkusnya dengan tampilan baru — cek dulu status
 sebenarnya, jangan asumsikan sudah ada.
 
-Migrasi SATU menu dulu sampai benar dan teruji, baru lanjut ke menu
-berikutnya.
 
 Paparkan dulu rencana (daftar lengkap menu yang akan dimigrasi, urutan,
 konfirmasi status kategori dinamis/rating sudah ada atau belum) sebelum
@@ -6538,8 +6545,7 @@ Tugas: update feature-registry.md saja. Jangan sentuh berkas lain.
 Saya sudah menguji redesign penuh Dashboard User sendiri di browser,
 termasuk mobile, dan memastikan bug navigasi transaksi lama sudah teratasi
 (atau memang sudah tidak ada). Isi baris terkait (menggantikan F06.17 lama):
-Status DONE, Berkas [daftar berkas], Diuji [tanggal], Bukti [ringkas hasil
-uji]. Tambahkan satu baris ke Log verifikasi. Jangan mengubah status baris
+Status DONE, Berkas [daftar berkas], Diuji [tanggal], tulis setiap perubahan sampai perbaikan. Tambahkan satu baris ke Log verifikasi. Jangan mengubah status baris
 fitur lain.
 ```
 
@@ -6547,7 +6553,7 @@ fitur lain.
 
 ```powershell
 pnpm tsc --noEmit; pnpm lint; pnpm build
-git add -A
+git add -A 
 git commit -m "feat(user): redesign penuh Dashboard User dengan preview sertifikat dan riwayat"
 ```
 
@@ -6702,7 +6708,7 @@ Jalankan /impeccable audit sebagai pelengkap, lalu periksa manual:
 3. Kontras warna tetap memenuhi standar aksesibilitas (4.5:1 minimum) —
    PENTING karena palet Neutral banyak abu-abu, rawan kontras kurang kalau
    tidak hati-hati
-4. Dark mode konsisten di SEMUA halaman, tidak ada elemen yang "ketinggalan"
+4. Dark mode konsisten di dasboard user dan admin, tidak ada elemen yang "ketinggalan"
    di mode terang saat dark mode aktif atau sebaliknya
 5. 375px di SEMUA halaman yang sudah disentuh Fase 12.6
 
@@ -6924,7 +6930,7 @@ Jangan mengubah status baris fitur lain.
 ```powershell
 pnpm tsc --noEmit; pnpm lint; pnpm build
 git add -A
-git commit -m "fix(F05.1): audit aksesibilitas kontras, area sentuh, dan fokus keyboard" -m "Diuji: Lighthouse mobile Performance [angka] Accessibility [angka]; navigasi keyboard penuh tanpa fokus hilang; zoom 200% tata letak utuh; 375px tanpa scroll samping di semua halaman"
+git commit -m "fix(F05.1): audit aksesibilitas kontras, area sentuh, dan fokus keyboard" -m "Diuji: Lighthouse mobile Performance 87 Accessibility 90; navigasi keyboard penuh tanpa fokus hilang; zoom 200% tata letak utuh; 375px tanpa scroll samping di semua halaman"
 git push
 ```
 
@@ -7028,7 +7034,7 @@ Laporkan mana yang sudah siap dan mana yang menunggu saya.
 
 ### Yang kamu kerjakan sendiri — Fase 14
 
-Blok prompt di atas hanya menyiapkan kodenya. Enam langkah ini kamu yang jalankan:
+Blok prompt di atas hanya menyiapkan kodenya. Tujuh langkah ini kamu yang jalankan:
 
 1. **Domain** — Vercel → Settings → Domains → tambah `hexatara.com`, pasang record DNS di Hostinger (Bagian 14.1)
 2. **Env produksi** — `NEXT_PUBLIC_SITE_URL` dan `EMAIL_FROM` diubah, lalu **Redeploy** (7.2)
@@ -7036,6 +7042,7 @@ Blok prompt di atas hanya menyiapkan kodenya. Enam langkah ini kamu yang jalanka
 4. **Custom SMTP** — Supabase diarahkan ke Resend (7.3)
 5. **Bersihkan data seed** — `12_seed_dev.sql` jangan tertinggal di produksi (7.4)
 6. **Backup pertama** — `pg_dump`, lalu **uji pulihkan ke project Supabase kosong** (7.5)
+7. **Skew Protection** — Vercel → Settings → aktifkan Skew Protection (Bagian 14.6) supaya client lama tidak memanggil Server Action ID yang sudah diganti setelah redeploy
 
 Backup yang tidak pernah dicoba dipulihkan adalah harapan, bukan cadangan.
 
@@ -7277,6 +7284,9 @@ Mingguan, dan wajib sebelum tiap migrasi. Simpan di dua tempat — backup yang c
 - [ ] Data seed sudah dibersihkan
 - [ ] `pnpm knip` bersih (kalau Lampiran B sudah dipasang)
 - [ ] Backup Supabase pertama sudah diambil **dan sudah diuji pulihkan**
+- [ ] **Vercel Skew Protection aktif** (Settings → Skew Protection) — cegah
+      `Failed to find Server Action` saat user masih di tab lama setelah redeploy.
+      Lihat `docs/AS_BUILT/00-KNOWN-WARNINGS.md`.
 
 ## 14.7 Rollback
 

@@ -27,6 +27,16 @@ export default async function KuisPage() {
   const t = await getTranslations("quiz");
   const claims = await getOptionalUser();
 
+  let sudahPunyaSertifikat = false;
+  if (claims) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("free_track_selesai_at")
+      .eq("id", claims.sub)
+      .maybeSingle();
+    sudahPunyaSertifikat = profile?.free_track_selesai_at != null;
+  }
+
   // Dua query paralel (bukan nested embed PostgREST) — pola yang sama dipakai
   // halaman detail batch. is_correct & penjelasan opsi SENGAJA publik (lihat
   // PANDUAN.md §3.3.10): kuis correctable tanpa kegagalan, tidak ada yang bisa
@@ -70,7 +80,11 @@ export default async function KuisPage() {
           {t("kosong")}
         </p>
       ) : (
-        <QuizEngine questions={questions} sudahLogin={claims != null} />
+        <QuizEngine
+          questions={questions}
+          sudahLogin={claims != null}
+          sudahPunyaSertifikat={sudahPunyaSertifikat}
+        />
       )}
     </div>
   );

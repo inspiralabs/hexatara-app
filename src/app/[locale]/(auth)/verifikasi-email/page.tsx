@@ -57,11 +57,22 @@ export default async function VerifikasiEmailPage({
         ) : null}
 
         {status !== 'gagal' && sudahLogin ? (
-          <Button render={<Link href="/dashboard" />} size="lg" className="w-full">
+          <Button
+            nativeButton={false}
+            render={<Link href="/dashboard" />}
+            size="lg"
+            className="w-full"
+          >
             {t('goToDashboard')}
           </Button>
         ) : (
-          <Button render={<Link href="/login" />} variant="outline" size="lg" className="w-full">
+          <Button
+            nativeButton={false}
+            render={<Link href="/login" />}
+            variant="outline"
+            size="lg"
+            className="w-full"
+          >
             {tAuth('backToLogin')}
           </Button>
         )}

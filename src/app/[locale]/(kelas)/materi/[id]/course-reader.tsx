@@ -101,7 +101,9 @@ export function CourseReader({
   const [belumSemuaBenar, setBelumSemuaBenar] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const kuisSudahSelesai = kuisDisubmitLokal || kuisSelesai;
+  const kuisSudahSelesai = kuisDisubmitLokal;
+  // `kuisSelesai` (free_track_selesai_at) TIDAK memaksa layar selesai — user
+  // boleh mengulang materi/kuis. Label tombol di QuizFinishScreen yang beda.
 
   // Progress anonim disimpan sessionStorage (tiga halaman berbeda: materi -> kuis
   // -> daftar), tidak bisa dibaca saat render server — hidrasi sekali di client.
@@ -351,7 +353,7 @@ export function CourseReader({
               <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-8">
                 {kuisSudahSelesai ? (
                   <div className="mx-auto max-w-2xl">
-                    <QuizFinishScreen sudahLogin={sudahLogin} />
+                    <QuizFinishScreen sudahLogin={sudahLogin} sudahPunyaSertifikat={kuisSelesai} />
                   </div>
                 ) : belumSemuaBenar ? (
                   <div className="mx-auto max-w-2xl rounded-xl border border-amber-600/30 bg-amber-600/10 p-6 text-center dark:border-amber-500/30 dark:bg-amber-500/10">

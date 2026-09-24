@@ -216,6 +216,8 @@
     "progres": "Question {sekarang} of {total}",
     "lanjut": "Next",
     "dapatkanSertifikat": "Get Certificate",
+    "lihatSertifikat": "View Certificate",
+    "sudahPunyaSertifikatInfo": "You've already finished this training and have a certificate. Retaking the material will not issue a new certificate.",
     "selesai": "All questions answered correctly! Congratulations, you're ready to continue."
   },
   "pelatihan": {

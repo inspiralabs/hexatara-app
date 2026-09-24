@@ -134,10 +134,12 @@ Daftar tabel dan kolomnya ada di `PRD.md` Bagian 5. DDL-nya di `PANDUAN.md` Bagi
 
 ```
 src/lib/supabase/
-├─ client.ts   createBrowserClient   → Client Component saja
+├─ client.ts   createBrowserClient   → Client Component saja (slot resmi — lihat catatan di bawah)
 ├─ server.ts   createServerClient    → Server Component & Server Action. Default
 └─ admin.ts    service role          → HANYA untuk operasi yang harus melewati RLS
 ```
+
+**`client.ts` — slot resmi, belum dipanggil di Fase 1.** Arsitektur Fase 1 murni server-first (ADR-001: baca di Server Component, tulis di Server Action). Tidak ada realtime subscription, `onAuthStateChange`, maupun query langsung dari Client Component. File ini **sengaja dipertahankan** sebagai pintu masuk resmi kalau nanti dibutuhkan auth/realtime di browser; **jangan hapus** hanya karena knip melaporkan unused. Diabaikan knip lewat `knip.json` → `ignore: ["src/lib/supabase/client.ts"]`. Keputusan serah-terima 2026-09-24.
 
 `admin.ts` **wajib** diawali:
 
@@ -562,7 +564,7 @@ Tiga hal ini tidak boleh disederhanakan dengan alasan apa pun, karena kesalahann
 
 **Keputusan.** Satu aplikasi Next.js App Router. Server Component untuk baca, Server Action untuk tulis.
 
-**Konsekuensi.** Penskalaan horizontal per komponen tidak tersedia. Pada beban Fase 1 itu bukan kekurangan yang terasa. Kalau suatu saat perlu, pemisahan dilakukan saat ada alasannya, bukan sekarang.
+**Konsekuensi.** Penskalaan horizontal per komponen tidak tersedia. Pada beban Fase 1 itu bukan kekurangan yang terasa. Kalau suatu saat perlu, pemisahan dilakukan saat ada alasannya, bukan sekarang. Client browser Supabase (`src/lib/supabase/client.ts`) tetap ada sebagai slot resmi (lihat §3.1) tetapi **tidak dipakai** selama pola server-first ini berlaku — bukan gap fitur, bukan dead code yang wajib dibuang.
 
 ---
 

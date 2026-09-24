@@ -77,12 +77,32 @@ export function QuizQuestionCard({
   );
 }
 
-// Layar "Dapatkan Sertifikat" setelah kuis selesai — dipakai QuizEngine
-// (/kuis) DAN layar penyelesaian kuis di dalam LMS (§12.5.3 revisi kuis).
-// Alur F03.4 existing, tidak berubah: anonim -> /daftar, login -> Server Action.
-export function QuizFinishScreen({ sudahLogin = false }: { sudahLogin?: boolean }) {
+// Layar selesai setelah kuis — dipakai QuizEngine (/kuis) DAN LMS (§12.5.3).
+// Anonim → /daftar. Login pertama kali → Server Action (isi free_track_selesai_at
+// idempotent). Login yang SUDAH punya free_track → "Lihat Sertifikat" ke dashboard
+// (satu akun satu free_track; ulang kuis tidak invent nomor baru).
+export function QuizFinishScreen({
+  sudahLogin = false,
+  sudahPunyaSertifikat = false,
+}: {
+  sudahLogin?: boolean;
+  sudahPunyaSertifikat?: boolean;
+}) {
   const t = useTranslations('quiz');
   const tombolClassName = cn(buttonVariants(), 'mt-4 h-11 px-6');
+
+  if (sudahLogin && sudahPunyaSertifikat) {
+    return (
+      <div className="mt-6 rounded-xl border border-emerald-600/30 bg-emerald-500/5 p-6 text-center">
+        <p className="text-lg font-semibold text-emerald-700 dark:text-emerald-400">{t('selesai')}</p>
+        <p className="mt-3 text-sm text-muted-foreground">{t('sudahPunyaSertifikatInfo')}</p>
+        <Link href="/dashboard/sertifikat" className={tombolClassName}>
+          {t('lihatSertifikat')}
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="mt-6 rounded-xl border border-emerald-600/30 bg-emerald-500/5 p-6 text-center">
       <p className="text-lg font-semibold text-emerald-700 dark:text-emerald-400">{t('selesai')}</p>
@@ -104,9 +124,11 @@ export function QuizFinishScreen({ sudahLogin = false }: { sudahLogin?: boolean 
 export function QuizEngine({
   questions,
   sudahLogin = false,
+  sudahPunyaSertifikat = false,
 }: {
   questions: QuizQuestion[];
   sudahLogin?: boolean;
+  sudahPunyaSertifikat?: boolean;
 }) {
   const t = useTranslations('quiz');
   const [index, setIndex] = useState(0);
@@ -114,7 +136,9 @@ export function QuizEngine({
   const [benar, setBenar] = useState(false);
 
   if (index >= questions.length) {
-    return <QuizFinishScreen sudahLogin={sudahLogin} />;
+    return (
+      <QuizFinishScreen sudahLogin={sudahLogin} sudahPunyaSertifikat={sudahPunyaSertifikat} />
+    );
   }
 
   const soal = questions[index]!;

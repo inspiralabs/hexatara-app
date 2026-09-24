@@ -49,6 +49,10 @@ ditanyakan berulang kali oleh orang berbeda.]
 |---|---|---|
 | | | |
 
+> Saat mengisi tabel di atas, cek dulu `docs/AS_BUILT/00-KNOWN-WARNINGS.md`
+> (Server Action ID di dev, warning script `next-themes`). Jangan mengulang
+> keduanya sebagai bug baru — sudah diterima untuk Fase 1.
+
 ## Untuk manual book Hexatara
 [Poin-poin yang perlu masuk panduan pengguna. Tulis dengan sudut pandang Admin Hexatara
 yang tidak punya latar belakang teknis.]

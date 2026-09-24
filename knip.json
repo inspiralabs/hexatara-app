@@ -1,6 +1,5 @@
 {
   "entry": ["src/app/**/*.{ts,tsx}"],
   "project": ["src/**/*.{ts,tsx}"],
-  "ignoreDependencies": ["pdf-lib", "qrcode", "@types/qrcode"],
-  "ignore": ["src/lib/constants.ts", "src/lib/supabase/client.ts"]
+  "ignore": ["src/lib/supabase/client.ts"]
 }

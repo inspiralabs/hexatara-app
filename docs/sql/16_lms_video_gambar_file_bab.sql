@@ -122,15 +122,15 @@ select id, 1,
   null, null
 from materials where judul_id = 'Dasar Keselamatan Penerbangan Drone';
 
--- Bab 2 — teks + gambar
+-- Bab 2 — teks saja (gambar diisi Admin lewat Storage, bukan placeholder eksternal)
 insert into material_chapters (material_id, urutan, judul_id, judul_en, konten_id, konten_en, video_url, gambar_url)
 select id, 2,
   'Pemeriksaan Pra-Terbang',
   'Pre-Flight Checklist',
-  '<p>Sebelum menerbangkan drone, lakukan pemeriksaan berikut secara berurutan: kondisi fisik baling-baling, level baterai drone dan remote, kalibrasi kompas, dan sinyal GPS.</p><p>Gambar di bawah menunjukkan titik-titik pemeriksaan visual yang wajib dilakukan setiap kali sebelum lepas landas.</p>',
-  '<p>Before flying a drone, perform the following checks in order: propeller physical condition, drone and remote battery level, compass calibration, and GPS signal.</p><p>The image below shows the visual inspection points required before every takeoff.</p>',
+  '<p>Sebelum menerbangkan drone, lakukan pemeriksaan berikut secara berurutan: kondisi fisik baling-baling, level baterai drone dan remote, kalibrasi kompas, dan sinyal GPS.</p><p>Gambar pendukung (kalau diunggah Admin) tampil di bawah konten ini.</p>',
+  '<p>Before flying a drone, perform the following checks in order: propeller physical condition, drone and remote battery level, compass calibration, and GPS signal.</p><p>Supporting images (if uploaded by Admin) appear below this content.</p>',
   null,
-  'https://placehold.co/1200x675/1E40AF/FFFFFF?text=Contoh+Gambar+Pemeriksaan+Pra-Terbang'
+  null
 from materials where judul_id = 'Dasar Keselamatan Penerbangan Drone';
 
 -- Bab 3 — teks + video
@@ -144,7 +144,7 @@ select id, 3,
   null
 from materials where judul_id = 'Dasar Keselamatan Penerbangan Drone';
 
--- Bab 4 — teks + gambar + video + lampiran file (kondisi paling lengkap)
+-- Bab 4 — teks + video + lampiran file (gambar diisi Admin lewat Storage)
 insert into material_chapters (material_id, urutan, judul_id, judul_en, konten_id, konten_en, video_url, gambar_url)
 select id, 4,
   'Prosedur Darurat dan Kehilangan Sinyal',
@@ -152,7 +152,7 @@ select id, 4,
   '<p>Kehilangan sinyal remote atau baterai kritis adalah dua skenario darurat paling umum. Ketahui fitur Return to Home (RTH) dan kapan harus melakukan pendaratan darurat manual.</p><p>Unduh lembar prosedur darurat di bagian File pada bab ini sebagai referensi cetak yang bisa dibawa saat terbang di lapangan.</p>',
   '<p>Remote signal loss or critical battery are the two most common emergency scenarios. Know the Return to Home (RTH) feature and when to perform a manual emergency landing.</p><p>Download the emergency procedure sheet in the File section of this chapter as a printable field reference.</p>',
   'https://www.youtube.com/embed/dQw4w9WgXcQ',
-  'https://placehold.co/1200x675/F59E0B/111827?text=Diagram+Prosedur+Darurat'
+  null
 from materials where judul_id = 'Dasar Keselamatan Penerbangan Drone';
 
 -- Lampiran file untuk Bab 4 (dua file contoh, menunjukkan satu bab bisa
@@ -179,12 +179,12 @@ from material_chapters mc
 join materials m on m.id = mc.material_id
 where m.judul_id = 'Dasar Keselamatan Penerbangan Drone' and mc.urutan = 4;
 
--- CATATAN: url_file dan gambar_url/video_url dummy di atas memakai domain
--- contoh (example.com, placehold.co, YouTube publik) HANYA untuk uji coba
--- tampilan. Ganti dengan URL bucket Supabase Storage yang sebenarnya
--- setelah Admin panel upload file (§12.5.4/§12.5.12) selesai dibuat, atau
--- upload manual dulu lewat Supabase Storage kalau ingin data dummy yang
--- benar-benar bisa diunduh.
+-- CATATAN (2026-09-24): jangan isi gambar_url dengan host eksternal
+-- (placehold.co dkk.) — next/image hanya mengizinkan Supabase Storage
+-- (next.config.ts remotePatterns). Seed pakai NULL; Admin unggah ke
+-- Storage lewat form bab. video_url YouTube embed tetap OK (iframe, bukan
+-- next/image). url_file example.com di lampiran di bawah masih dummy unduh —
+-- ganti ke bucket Storage saat konten produksi siap.
 
 
 -- ============================================================

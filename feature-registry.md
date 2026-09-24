@@ -36,13 +36,13 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
 |---|---|---|---|---|---|
 | F00.1 | Project Next.js + TS + Tailwind + shadcn | DONE | | 2026-09-06 | Alif konfirmasi: project sudah berjalan sejak awal (dipakai seluruh fitur lain), `pnpm build` bersih (tsc/lint/build lolos, 20 route ter-generate tanpa error) |
-| F00.2 | Supabase client (client/server/admin) | DONE | `src/lib/supabase/` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; diverifikasi tambahan: client.ts & admin.ts terhubung ke project Supabase live (ojltfmvmbolalhtzrhva), admin client sukses memanggil rpc `is_admin()` (200 OK) |
+| F00.2 | Supabase client (client/server/admin) | DONE | `src/lib/supabase/` | 2026-09-06; catatan 2026-09-24 | Alif menguji sendiri, hasil sesuai; diverifikasi tambahan: client.ts & admin.ts terhubung ke project Supabase live (ojltfmvmbolalhtzrhva), admin client sukses memanggil rpc `is_admin()` (200 OK). **2026-09-24 (serah-terima / knip):** `client.ts` tidak pernah diimpor sejak F00.2 — arsitektur Fase 1 server-first. Dipertahankan sengaja sebagai slot resmi Client Component auth/realtime; tetap di `knip.json` ignore. Bukan dihapus. Lihat ENGINEERING §3.1 + PRD §2. |
 | F00.3 | Tipe database generated | DONE | `src/types/database.ts` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; diverifikasi tambahan: nama tabel/kolom di database.ts cocok dengan skema live (query ke `site_settings`/`profiles` tidak error nama relasi/kolom, hanya permission denied 42501 karena GRANT belum diberikan ke anon/service_role) |
 | F00.4 | next-intl + middleware + messages | DONE | `src/i18n/`, `messages/`, `src/proxy.ts`, `src/lib/i18n/pick.ts`; seluruh route `(public)`/`(auth)` dipindah ke `src/app/[locale]/` | 2026-09-07 | Alif menguji sendiri di browser, hasil sesuai: 9 tahap uji lolos |
 | F00.5 | Layout publik + pemilih bahasa + floating WA | DONE | `src/app/(public)/layout.tsx`, `src/app/(public)/page.tsx`, `src/components/public-nav-mobile.tsx`, `src/components/floating-whatsapp.tsx` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; sudah berganti font dan sudah berubah menjadi hamburger ketika resize |
 | F00.6 | Auth: daftar, login, verifikasi email, reset sandi | DONE | `src/app/(auth)/` | 2026-09-06 | Alif menguji sendiri di browser: daftar akun baru + email verifikasi masuk + klik link → login berhasil; lupa sandi sampai tuntas (link reset masuk, sandi baru berhasil dipakai login); login dengan sandi salah/akun belum verifikasi ditolak dengan pesan error yang sesuai |
 | F00.7 | Login Admin terpisah + `requireAdmin()` | DONE | `src/lib/auth/guard.ts` | 2026-09-06 | Alif menguji sendiri di browser: login admin berhasil, sidebar 9 menu (PRD §4) tampil; akses /admin tanpa login → redirect ke halaman login; akses /admin pakai akun non-admin → ditolak |
-| F00.8 | Kerangka Admin Panel | DONE | `src/app/admin/(protected)/layout.tsx`, `src/components/admin/admin-sidebar.tsx`, `src/components/admin/admin-stub-page.tsx`, `src/app/admin/(protected)/{batch,konten,leads,sertifikat,upgrade,materi,produk,pengaturan}/page.tsx` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; sudah berganti font dan sudah berubah menjadi hamburger ketika resize |
+| F00.8 | Kerangka Admin Panel | DONE | `src/app/admin/(protected)/layout.tsx`, `src/components/admin/admin-sidebar.tsx`, `src/app/admin/(protected)/{batch,konten,leads,sertifikat,upgrade,materi,produk,pengaturan}/page.tsx` | 2026-09-06; stub dihapus 2026-09-24 | Alif menguji sendiri, hasil sesuai; sudah berganti font dan sudah berubah menjadi hamburger ketika resize. **2026-09-24:** `admin-stub-page.tsx` dihapus (scaffold F00.8 sudah diganti halaman nyata; 0 import). |
 | F00.9 | Helper Resend + template email | TODO | `src/lib/email/` |  | |
 | F00.10 | Design tokens | DONE | `src/app/globals.css`, `src/app/layout.tsx` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; sudah berganti font dan sudah berubah menjadi hamburger ketika resize |
 
@@ -393,6 +393,18 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 2026-09-23  F05.3/F05.4  Alif menguji sendiri di browser: 404 custom dwibahasa + tautan `/verify`; sitemap.xml path statis × 2 locale; robots.txt disallow admin/dashboard; hreflang as-needed + OG/Twitter ke `og-hexatara.png` di view-source. Kedua baris DONE. **Ditunda sampai setelah push:** (f) picu error.tsx; (g) FB Sharing Debugger / WhatsApp preview di URL publik.
 2026-09-23  F05.5 (kebijakan privasi)  Alif memilih **Opsi B**: Prevent Storing of IP Addresses diaktifkan di Sentry Organization Settings → Security & Privacy (bukan perubahan kode). Cookie/body/email sudah bersih di uji event sebelumnya.
 2026-09-23  F05.5/F05.6/F05.7  Alif menyelesaikan verifikasi: (F05.5) Opsi C di kode + Opsi B dashboard — Geography kota tetap (peer IP ingest); diterima sebagai acceptable risk, Advanced Scrubbing tidak dilanjutkan; data kritis bersih; route `uji-sentry-sementara` dihapus. (F05.6) pg_dump + restore ke project kosong via Session Pooler, certificates utuh. (F05.7) env Production+Preview (SITE_URL, EMAIL_FROM, SENTRY_DSN Config) + Redeploy; audit API Vercel nol. Ketiga baris DONE. Domain/SSL/Auth/SMTP/seed = Fase 14.
+2026-09-24  (knip / serah-terima)  Hapus `admin-stub-page.tsx`; bersihkan ignore knip yang sudah terdeteksi dipakai (`pdf-lib`, `qrcode`, `@types/qrcode`, `constants.ts`); hapus deps unused (`clsx`, `tailwind-merge`, `@vitejs/plugin-react`). **`client.ts` tetap ada + tetap ignore knip** — slot resmi browser client (auth/realtime) kalau dibutuhkan nanti; Fase 1 server-first by design (ENGINEERING §3.1, PRD §2, F00.2). `tsc`/`lint`/`build` bersih.
+2026-09-24  (LMS gambar)  next/image crash di `/materi/[id]` + Admin bab karena seed `gambar_url` = placehold.co. Usulan: `usulan-sql-bersihkan-gambar-placehold-lms.sql` (NULL-kan). Seed `docs/sql/16_*.sql` diperbarui tanpa placehold. **Alif jalankan usulan di SQL Editor, lalu reload LMS/Admin bab.**
+2026-09-24  (serah-terima / console)  Dua known-warning dicatat di `docs/AS_BUILT/00-KNOWN-WARNINGS.md`: (1) `Failed to find Server Action` = artefak Turbopack/dev atau skew production → **Fase 14 checklist: aktifkan Vercel Skew Protection** (PANDUAN §14.6); (2) script tag React 19 + `next-themes` = biarkan, bukan bug fungsional. Base UI `nativeButton={false}` di `/verifikasi-email` sudah diperbaiki.
+
+---
+
+## Known warnings (serah-terima) — jangan dikira bug baru
+
+Lihat **`docs/AS_BUILT/00-KNOWN-WARNINGS.md`**. Ringkas:
+
+1. **Server Action ID not found** di `pnpm dev` setelah hot-reload / poller verifikasi-email → normal. Production: aktifkan Skew Protection di Fase 14.
+2. **Script tag while rendering** saat masuk `/dashboard` atau `/admin` → `next-themes` anti-FOUC + React 19; tema tetap jalan.
 
 ---
 

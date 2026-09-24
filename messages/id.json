@@ -216,6 +216,8 @@
     "progres": "Soal {sekarang} dari {total}",
     "lanjut": "Lanjut",
     "dapatkanSertifikat": "Dapatkan Sertifikat",
+    "lihatSertifikat": "Lihat Sertifikat",
+    "sudahPunyaSertifikatInfo": "Kamu sudah menyelesaikan pelatihan ini dan memiliki sertifikat. Mengulang materi tidak akan membuat sertifikat baru.",
     "selesai": "Semua soal terjawab benar! Selamat, Anda siap melanjutkan."
   },
   "pelatihan": {

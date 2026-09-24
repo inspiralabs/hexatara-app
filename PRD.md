@@ -122,6 +122,8 @@ Dikunci 5 September 2026 sesuai BRD Bagian 13.4. Mengubah baris mana pun butuh i
 
 **Arsitektur: monolit tertata.** Bukan microservice, bukan arsitektur berlapis. Satu developer, trafik rendah, delapan minggu. ADR-001.
 
+**Akses Supabase: server-first.** Baca lewat Server Component, tulis lewat Server Action (`src/lib/supabase/server.ts` / `admin.ts`). Tidak ada realtime atau auth listener di browser pada Fase 1. Berkas `src/lib/supabase/client.ts` (`createBrowserClient`) **dipertahankan sengaja** sebagai slot resmi kalau nanti dibutuhkan Client Component auth/realtime — bukan utang hapus. Detail: `ENGINEERING.md` §3.1.
+
 **Kode wajib portabel.** Sistem pindah ke VPS setelah stabil di Vercel 2–4 minggu. Apa pun yang hanya ada di Vercel — `@vercel/blob`, Edge Config, Edge Runtime — menjadi utang. ADR-006.
 
 Daftar lengkap paket, alasan tiap paket ada, dan daftar yang sengaja **tidak** dipasang ada di `PANDUAN.md` Fase 2.7 dan 2.8.
