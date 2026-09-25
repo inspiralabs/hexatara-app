@@ -132,7 +132,7 @@ export default async function KursusPage() {
 
             {!kuisSelesai && (
               <Link
-                href={`/materi/${material.id}`}
+                href="/materi/get-free-certificate-rpc"
                 className="mt-4 inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks"
               >
                 {babSelesai === 0 ? 'Mulai Belajar' : 'Lanjutkan Belajar'}

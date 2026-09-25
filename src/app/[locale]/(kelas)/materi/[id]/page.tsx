@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
+import { Link, redirect } from "@/i18n/navigation";
+import { getMateriAktifId, MATERI_PATH } from "@/lib/materi";
 import { createClient } from "@/lib/supabase/server";
 import { getOptionalUser } from "@/lib/auth/guard";
 import { pick } from "@/lib/i18n/pick";
@@ -29,6 +30,13 @@ export default async function MateriCoursePage({
     .maybeSingle();
 
   if (!material) notFound();
+
+  // Id aktif lain (sisa uji coba) tidak ditampilkan. Redirect ke pintu resmi,
+  // sama seperti /batch/[slug] → /pelatihan. Id resmi tetap di halaman ini.
+  const aktifId = await getMateriAktifId();
+  if (aktifId == null || aktifId !== material.id) {
+    redirect({ href: MATERI_PATH, locale });
+  }
 
   const { data: babData, error: errBab } = await supabase
     .from("material_chapters")

@@ -237,3 +237,76 @@ Admin gagal menyetujui pesanan `merch_addon` dengan error Postgres P0001: “Pen
 ### Pengingat registry
 
 ☐ Jangan tandai DONE di `feature-registry.md` sampai Alif konfirmasi di browser **setelah SQL dijalankan**. Sama seperti Temuan 1/2/3: log kronologis + kolom Bukti hanya setelah konfirmasi eksplisit.
+
+---
+
+## Temuan Baru — Routing /materi/[id] Membingungkan (25 September 2026)
+
+> Laporan terpisah dari dashboard/WA dan dari bug approval merch_addon.
+> Status: **DIKONFIRMASI ALIF 2026-09-25.** SQL sudah dijalankan. `/materi/1` dan `/materi/2` = 404. `/materi/3` jalan.
+
+### Ringkasan
+
+- `/materi` (tanpa id) 404 karena memang tidak ada halaman daftar. Sengaja, sejak komentar di `src/lib/materi.ts`.
+- `/materi/3` adalah course resmi. Tombol Mulai Sekarang memilih course aktif pertama yang punya bab, bukan angka yang di-hardcode.
+- `/materi/1` dan `/materi/2` adalah sisa uji coba pra-LMS (`uji_materi_ppt`, `uji_materi_pdf`), masih `is_active = true`. Admin Materi hanya menampilkan satu course, jadi tidak ada tombol di UI untuk mematikannya.
+- Siapa pun yang mengubah angka di URL bisa melihat halaman uji itu dan mengiranya kerusakan course yang sedang dipakai.
+
+### Yang dikerjakan
+
+Pintu dari dalam aplikasi sekarang `/materi/get-free-certificate-rpc`. Fungsi itu mengalihkan ke `/materi/{id}` course resmi (URL akhir di browser tetap angka — itu memang batas redirect Next.js). Kalau belum ada course berbab, diarahkan ke `/pelatihan`.
+
+`getMateriHeroHref()` tidak lagi mengembalikan `/materi/{id}`. Ia tetap meng-query database hanya untuk tahu ada course atau tidak, lalu mengembalikan path bernama atau `null` (tombol tetap disembunyikan).
+
+Halaman `/materi/[id]` tetap ada. Kalau id yang dibuka **bukan** course resmi, pengguna diarahkan ke pintu bernama (lalu ke course resmi). Dipilih **redirect**, bukan `notFound()`, supaya pola sama dengan `/batch/[slug]` → `/pelatihan`: pengunjung tidak melihat data uji.
+
+`getMateriId()` (Admin) tidak diubah.
+
+### File
+
+| File | Perubahan |
+|---|---|
+| `src/lib/materi.ts` | `getMateriAktifId()` + `getMateriHeroHref()` → path bernama |
+| `src/app/[locale]/(kelas)/materi/get-free-certificate-rpc/page.tsx` | Redirect ke `/materi/{id}` atau `/pelatihan` |
+| `src/app/[locale]/(kelas)/materi/[id]/page.tsx` | Id bukan course resmi → redirect ke pintu bernama |
+| `src/app/[locale]/(user)/dashboard/kursus/page.tsx` | Link belajar memakai pintu bernama |
+| `usulan-sql-nonaktifkan-materi-lama.sql` | Sudah dijalankan Alif 2026-09-25 |
+
+`/pelatihan` dan `/dashboard/pelatihan` sudah memakai `getMateriHeroHref()`, jadi ikut path baru tanpa edit terpisah.
+
+### SQL
+
+**Sudah dijalankan Alif di Supabase 2026-09-25.** Hasil uji: `/materi/1` dan `/materi/2` 404; `/materi/3` tetap jalan. Baris uji `is_active = false`, tidak dihapus.
+
+### Hasil cek
+
+| Cek | Hasil |
+|---|---|
+| `pnpm tsc --noEmit` | Lolos |
+| `pnpm lint` | Lolos |
+
+### Cara uji Alif
+
+1. Buka `/materi/get-free-certificate-rpc` — alamat di browser berubah ke course resmi (sekarang `/materi/3`), isi halaman benar.
+2. Mulai Sekarang di `/pelatihan` — tautan awalnya pintu bernama, hasil akhirnya course yang sama.
+3. `/dashboard/kursus` — tombol Mulai/Lanjutkan Belajar juga pintu bernama.
+4. `/materi/1` dan `/materi/2` — tidak menampilkan data uji, diarahkan ke course resmi (ini dari kode, belum perlu SQL).
+5. Jalankan `usulan-sql-nonaktifkan-materi-lama.sql` setelah SELECT-nya cocok.
+6. Ulangi `/materi/1` dan `/materi/2` — tetap tidak menampilkan data uji.
+7. `/materi/3` langsung tetap normal.
+
+### Usulan belum dikerjakan
+
+Daftar semua baris `materials` di Admin Materi plus saklar aktif/nonaktif **tidak** dibuat sekarang. Itu mengubah UI Admin yang saat ini singleton. Diskusikan terpisah kalau Alif mau membereskan data uji berikutnya tanpa SQL.
+
+Catatan tambahan dari Alif (25 Sep 2026): URL `/materi/get-free-certificate-rpc` untuk sekarang cukup sebagai solusi sementara — akan diuji dulu bersama Abi. Kemungkinan akan diubah lagi nanti (nama path lain, dan/atau pendekatan slug dari database kalau kebutuhan multi-course jadi nyata). Tidak perlu dikerjakan sekarang, cukup jadi catatan supaya tidak dianggap keputusan final.
+
+### Pengingat registry
+
+☑ Registry sudah diupdate 2026-09-25 (log + Bukti F06.2 dan F06.11). Status kedua baris tetap DONE.
+
+### Pesan commit yang disarankan
+
+```
+fix(public): pintu materi bernama, jangan tampilkan sisa uji coba
+```

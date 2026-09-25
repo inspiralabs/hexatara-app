@@ -5,8 +5,8 @@ import { createClient } from '@/lib/supabase/server';
 // memperlakukan `materials` sebagai singleton, bukan daftar yang dikelola.
 // "Yang mana" ditentukan dari isinya (baris yang punya bab), BUKAN dari id
 // terkecil — sisa baris uji coba era pra-LMS (`uji_materi_ppt`/`uji_materi_pdf`,
-// F03.12 lama) masih ada di database dan id-nya lebih kecil dari course
-// sungguhan, jadi order-by-id-terkecil salah pilih baris.
+// F03.12 lama) id-nya lebih kecil. Sejak 2026-09-25 keduanya is_active = false
+// (usulan-sql-nonaktifkan-materi-lama.sql). Jangan kembali ke order-by-id-terkecil.
 // ponytail: kalau Fase 3 butuh multi-course sungguhan, pola ini perlu dibongkar.
 export async function getMateriId(): Promise<number | null> {
   const supabase = await createClient();

@@ -17,8 +17,9 @@ Pengunjung belajar materi keselamatan drone dan mengerjakan kuis tanpa wajib log
 Seperti yang berjalan di sistem final (bukan hanya cerita PRD §8.3 “materi → kuis” datar):
 
 ```
-1. Entry tipikal: hero pelatihan "Mulai Sekarang" → /materi/{id} (LMS berbab).
-   Alternatif: /kuis standalone (masih hidup; tidak melewati gate bab).
+1. Entry tipikal: hero pelatihan "Mulai Sekarang" → /materi/get-free-certificate-rpc
+   (lalu redirect ke course resmi, sekarang /materi/3). /materi/1 dan /materi/2
+   (uji coba lama) 404 sejak SQL 2026-09-25. Alternatif: /kuis standalone.
 2. LMS /materi/[id]: mode fokus (bukan shell dashboard); kunci progresif per bab;
    validasi baca sampai akhir; lampiran File; tab kuis terkunci sampai semua bab selesai.
 3. Kuis correctable: salah → penjelasan per opsi; boleh ganti; tanpa status gagal.
