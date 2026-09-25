@@ -5,6 +5,7 @@ import { pick } from "@/lib/i18n/pick";
 import { PublicHeroMist } from "@/components/public-hero-mist";
 import { publicCtaPrimary, publicSectionHeading } from "@/lib/public-ui";
 import { pageMetadata } from "@/lib/seo/page-metadata";
+import { getWhatsappAdmin } from "@/lib/site-settings";
 import { ProdukCard } from "./produk-card";
 import { FilterBar } from "./filter-bar";
 import { SORT_VALUES, type ProdukSort } from "./sort-options";
@@ -96,7 +97,7 @@ export default async function KatalogPage({
     if (!coverByProductId.has(g.product_id)) coverByProductId.set(g.product_id, g.url);
   }
 
-  const nomorWa = process.env.NEXT_PUBLIC_WA_ADMIN;
+  const nomorWa = (await getWhatsappAdmin()) ?? undefined;
   const waKonsultasiLink = buildWaKonsultasiLink(nomorWa, t("waConsult"));
   const waBulkLink = buildWaBulkLink(nomorWa, t("waBulk"));
   const kategoriOptions = (kategoriList ?? []).map((k) => ({

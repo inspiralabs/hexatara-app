@@ -81,6 +81,7 @@ export default async function TransaksiSayaPage() {
               rekening={rekening}
               paketOptions={['cert_only', 'cert_merch']}
               harga={harga}
+              paket={pesananUtama?.paket}
             />
           </div>
         </div>
@@ -104,6 +105,7 @@ export default async function TransaksiSayaPage() {
                 rekening={rekening}
                 paketOptions={['merch_addon']}
                 harga={harga}
+                paket="merch_addon"
               />
             </div>
           </div>

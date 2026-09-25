@@ -1,4 +1,4 @@
-import { CheckCircle2Icon, ClockIcon, PackageIcon } from 'lucide-react';
+import { CheckCircle2Icon, ClockIcon } from 'lucide-react';
 import { PesananUpgradeForm } from './pesanan-upgrade-form';
 import type { HargaUpgrade } from '@/lib/site-settings';
 import { BuktiTransferUpload } from './bukti-transfer-upload';
@@ -29,11 +29,13 @@ export function PesananStatusSection({
   rekening,
   paketOptions,
   harga,
+  paket,
 }: {
   order: Order | null;
   rekening: Rekening;
   paketOptions: Paket[];
   harga: HargaUpgrade;
+  paket?: Paket;
 }) {
   if (!order) {
     return <PesananUpgradeForm paketOptions={paketOptions} harga={harga} />;
@@ -55,20 +57,34 @@ export function PesananStatusSection({
   }
 
   if (order.status === 'disetujui') {
+    const kirim =
+      order.status_pengiriman !== 'tidak_ada' ? LABEL_STATUS_KIRIM[order.status_pengiriman] : null;
     return (
       <div className="flex flex-col gap-2 rounded-lg border border-emerald-600/30 bg-emerald-500/5 p-4">
         <div className="flex items-center gap-2 text-foreground">
           <CheckCircle2Icon className="size-5 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden />
-          <p className="font-medium">Pesanan sudah disetujui</p>
+          <p className="font-medium">
+            {paket === 'merch_addon'
+              ? 'Pesanan merchandise sudah disetujui'
+              : paket === 'cert_merch'
+                ? 'Sertifikat + merchandise sudah disetujui'
+                : 'Sertifikat saja sudah disetujui'}
+          </p>
         </div>
-        {order.status_pengiriman !== 'tidak_ada' ? (
-          <p className="flex items-center gap-2 text-sm text-muted-foreground">
-            <PackageIcon className="size-4 shrink-0" aria-hidden />
-            Status pengiriman:{' '}
-            <span className="font-medium text-foreground">{LABEL_STATUS_KIRIM[order.status_pengiriman]}</span>
+        {paket === 'merch_addon' ? (
+          <p className="text-sm text-muted-foreground">
+            Sertifikat Anda tidak berubah. Merchandise sedang diurus pengirimannya
+            {kirim ? ` (${kirim})` : ''}.
+          </p>
+        ) : paket === 'cert_merch' ? (
+          <p className="text-sm text-muted-foreground">
+            QR sertifikat sudah aktif. Merchandise sedang diurus pengirimannya
+            {kirim ? ` (${kirim})` : ''}.
           </p>
         ) : (
-          <p className="text-sm text-muted-foreground">Sertifikat QR aktif sudah tersedia di menu Sertifikat Saya.</p>
+          <p className="text-sm text-muted-foreground">
+            QR sertifikat sudah aktif di menu Sertifikat Saya. Paket ini tidak termasuk merchandise.
+          </p>
         )}
       </div>
     );

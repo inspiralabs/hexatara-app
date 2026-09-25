@@ -54,6 +54,7 @@ export default async function MerchandisePage() {
           rekening={rekening}
           paketOptions={['merch_addon']}
           harga={harga}
+          paket="merch_addon"
         />
       </div>
     </div>

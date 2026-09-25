@@ -44,11 +44,6 @@ const cardHeading = "font-heading text-lg font-semibold tracking-tight text-fore
 const SUGGEST_SELECT =
   "id, slug, judul_id, judul_en, lokasi_id, lokasi_en, deskripsi_id, deskripsi_en, harga, status, rating, hero_gambar_url, tanggal_mulai, tanggal_selesai, batch_categories(nama_id, nama_en)";
 
-function buildWaTanyaLink(nomor: string | undefined, pesan: string) {
-  if (!nomor) return null;
-  return `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
-}
-
 function buildWaPelatihanLink(nomor: string | undefined, pesan: string) {
   if (!nomor) return null;
   return `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
@@ -141,7 +136,6 @@ export default async function BatchDetailPage({
     if (data && data.length > 0) suggestions = data;
   }
 
-  const nomorWa = process.env.NEXT_PUBLIC_WA_ADMIN;
   const kontakPelatihan = await getKontakPelatihan();
   const waUmum = await getWhatsappAdmin();
   const tanggal = formatTanggalBatch(batch.tanggal_mulai, batch.tanggal_selesai, locale);
@@ -154,7 +148,6 @@ export default async function BatchDetailPage({
   const lokasi = pick(batch.lokasi_id, batch.lokasi_en, locale);
   const deskripsi = pick(batch.deskripsi_id, batch.deskripsi_en, locale);
   const silabus = pick(batch.silabus_id, batch.silabus_en, locale);
-  const waTanyaLink = buildWaTanyaLink(nomorWa, t("waAskBatch", { judul }));
   const waRegulerLink = buildWaPelatihanLink(
     kontakPelatihan.wa_reguler?.trim() || waUmum || undefined,
     t("waAskBatchNamed", { name: "Admin", judul }),
@@ -316,30 +309,6 @@ export default async function BatchDetailPage({
                   </div>
                 )}
               </div>
-              {(waRegulerLink || waPrivateLink) && (
-                <div className="mt-5 flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-                  {waRegulerLink && (
-                    <a
-                      href={waRegulerLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`w-full sm:w-auto ${publicCtaSecondary}`}
-                    >
-                      {t("waRegulerLabel")}
-                    </a>
-                  )}
-                  {waPrivateLink && (
-                    <a
-                      href={waPrivateLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`w-full sm:w-auto ${publicCtaSecondary}`}
-                    >
-                      {t("waPrivateLabel")}
-                    </a>
-                  )}
-                </div>
-              )}
             </div>
           )}
 
@@ -357,14 +326,14 @@ export default async function BatchDetailPage({
           <div className="rounded-xl border border-border bg-card p-5 shadow-none">
             <h2 className={cardHeading}>{t("supportHeading")}</h2>
             <p className="mt-2 text-sm text-muted-foreground">{t("supportDescription")}</p>
-            {waTanyaLink && (
+            {waRegulerLink && (
               <a
-                href={waTanyaLink}
+                href={waRegulerLink}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`mt-4 w-full ${publicCtaSecondary}`}
               >
-                {t("contactAdmin")}
+                {t("waRegulerLabel")}
               </a>
             )}
           </div>
@@ -446,9 +415,9 @@ export default async function BatchDetailPage({
         <div className="flex flex-col items-center gap-4 rounded-xl border border-border bg-card p-8 text-center sm:p-12">
           <h2 className={publicSectionHeading}>{t("finalCtaHeading")}</h2>
           <p className="max-w-xl text-base text-muted-foreground">{t("finalCtaDesc")}</p>
-          {waTanyaLink && (
+          {waPrivateLink && (
             <a
-              href={waTanyaLink}
+              href={waPrivateLink}
               target="_blank"
               rel="noopener noreferrer"
               className={`mt-2 ${publicCtaPrimary}`}

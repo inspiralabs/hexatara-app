@@ -6,6 +6,8 @@ import {
   templateResetSandi,
   templatePembayaranDisetujui,
   templatePembayaranDitolak,
+  templateCertMerchDisetujui,
+  templateMerchDisetujui,
   templateLeadBaru,
   type EmailTemplate,
 } from './templates';
@@ -47,6 +49,22 @@ export async function kirimEmailPembayaranDisetujui(
 ) {
   const kontak = await getKontak();
   return kirim(to, templatePembayaranDisetujui(params, kontak));
+}
+
+export async function kirimEmailCertMerchDisetujui(
+  to: string,
+  params: { nama: string; tautanDashboard: string }
+) {
+  const kontak = await getKontak();
+  return kirim(to, templateCertMerchDisetujui(params, kontak));
+}
+
+export async function kirimEmailMerchDisetujui(
+  to: string,
+  params: { nama: string; tautanMerchandise: string }
+) {
+  const kontak = await getKontak();
+  return kirim(to, templateMerchDisetujui(params, kontak));
 }
 
 export async function kirimEmailPembayaranDitolak(

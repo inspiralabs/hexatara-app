@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { formatRupiah } from "@/lib/batch";
 import { pick } from "@/lib/i18n/pick";
 import { pageMetadata, plainDescription } from "@/lib/seo/page-metadata";
+import { getWhatsappAdmin } from "@/lib/site-settings";
 import { StarRating } from "@/components/star-rating";
 import {
   publicBadgeKategori,
@@ -114,7 +115,8 @@ export default async function KatalogDetailPage({
   const namaKategori = pick(produk.category_nama_id, produk.category_nama_en, locale);
   const deskripsi = pick(produk.deskripsi_id, produk.deskripsi_en, locale);
   const spesifikasi = pick(produk.spesifikasi_id, produk.spesifikasi_en, locale);
-  const waLink = buildWaProdukLink(process.env.NEXT_PUBLIC_WA_ADMIN, t("waAskProduct", { nama }));
+  const nomorWa = (await getWhatsappAdmin()) ?? undefined;
+  const waLink = buildWaProdukLink(nomorWa, t("waAskProduct", { nama }));
 
   return (
     <div className="bg-background pb-16">

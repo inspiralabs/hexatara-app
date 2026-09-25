@@ -1,4 +1,12 @@
-import { CheckCircle2Icon, ClockIcon, LockIcon, PackageIcon, UserRoundIcon, XCircleIcon } from 'lucide-react';
+import {
+  BadgeCheckIcon,
+  CheckCircle2Icon,
+  ClockIcon,
+  LockIcon,
+  PackageIcon,
+  UserRoundIcon,
+  XCircleIcon,
+} from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { requireUser } from '@/lib/auth/guard';
@@ -96,6 +104,36 @@ export default async function DashboardPage() {
     .in('paket', ['cert_only', 'cert_merch'])
     .maybeSingle();
 
+  // Kartu ajakan upgrade: kuis selesai + belum resmi disetujui.
+  // menunggu_verifikasi: TIDAK tampil — StatTile "Diperiksa Admin" sudah cukup.
+  // belum diajukan / menunggu_bukti / ditolak: tampil (teks disesuaikan).
+  const perluAjakanUpgrade =
+    !!profile?.free_track_selesai_at &&
+    pesananUtama?.status !== 'disetujui' &&
+    pesananUtama?.status !== 'menunggu_verifikasi';
+
+  const teksAjakanUpgrade =
+    pesananUtama?.status === 'ditolak'
+      ? {
+          judul: 'Pengajuan upgrade ditolak',
+          deskripsi:
+            'Sertifikat Anda masih pratinjau (QR blur). Perbaiki dan ajukan ulang di Transaksi Saya supaya mendapat sertifikat resmi yang bisa diverifikasi publik.',
+          cta: 'Ajukan ulang di Transaksi',
+        }
+      : pesananUtama?.status === 'menunggu_bukti'
+        ? {
+            judul: 'Lanjutkan upgrade sertifikat',
+            deskripsi:
+              'Pesanan sudah dibuat, tapi bukti transfer belum diunggah. Sertifikat masih pratinjau (QR blur) sampai Admin menyetujui.',
+            cta: 'Lanjut di Transaksi',
+          }
+        : {
+            judul: 'Upgrade untuk aktifkan QR',
+            deskripsi:
+              'Sertifikat Anda masih pratinjau (QR blur). Upgrade supaya mendapat sertifikat resmi yang bisa diverifikasi publik.',
+            cta: 'Upgrade di Transaksi',
+          };
+
   const { data: aktivitas } = await supabase
     .from('activity_logs')
     .select('id, aksi, created_at')
@@ -152,6 +190,26 @@ export default async function DashboardPage() {
             className="inline-flex h-11 shrink-0 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
           >
             Lengkapi di Profil
+          </Link>
+        </div>
+      )}
+
+      {perluAjakanUpgrade && (
+        <div className="flex flex-col gap-4 rounded-xl border border-warna-aksen/30 bg-warna-aksen/5 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex gap-3">
+            <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-warna-aksen/10 text-warna-aksen">
+              <BadgeCheckIcon className="size-5" aria-hidden />
+            </span>
+            <div>
+              <p className="text-base font-semibold text-warna-teks">{teksAjakanUpgrade.judul}</p>
+              <p className="mt-0.5 text-sm text-warna-teks-2">{teksAjakanUpgrade.deskripsi}</p>
+            </div>
+          </div>
+          <Link
+            href="/dashboard/transaksi"
+            className="inline-flex h-11 shrink-0 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
+          >
+            {teksAjakanUpgrade.cta}
           </Link>
         </div>
       )}

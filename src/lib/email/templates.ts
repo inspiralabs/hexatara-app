@@ -140,8 +140,42 @@ export function templatePembayaranDisetujui(
     html: baseLayout(
       'Sertifikat Anda aktif!',
       `<p>Halo ${nama},</p>
-       <p>Pembayaran Anda sudah kami verifikasi. QR sertifikat Anda sekarang aktif dan dapat diverifikasi siapa pun di halaman publik Hexatara.</p>
+       <p>Pembayaran paket Sertifikat Saja sudah kami verifikasi. QR sertifikat Anda sekarang aktif dan dapat diverifikasi siapa pun di halaman publik Hexatara. Paket ini tidak termasuk merchandise.</p>
        ${tombol(params.tautanDashboard, 'Lihat Sertifikat')}`,
+      kontak
+    ),
+  };
+}
+
+export function templateCertMerchDisetujui(
+  params: { nama: string; tautanDashboard: string },
+  kontak?: KontakSettings
+): EmailTemplate {
+  const nama = escapeHtml(params.nama);
+  return {
+    subject: 'Sertifikat aktif, merchandise akan dikirim',
+    html: baseLayout(
+      'Sertifikat + merchandise disetujui',
+      `<p>Halo ${nama},</p>
+       <p>Pembayaran paket Sertifikat + Merchandise sudah kami verifikasi. QR sertifikat Anda sekarang aktif, dan merchandise akan diproses untuk pengiriman.</p>
+       ${tombol(params.tautanDashboard, 'Lihat di Dashboard')}`,
+      kontak
+    ),
+  };
+}
+
+export function templateMerchDisetujui(
+  params: { nama: string; tautanMerchandise: string },
+  kontak?: KontakSettings
+): EmailTemplate {
+  const nama = escapeHtml(params.nama);
+  return {
+    subject: 'Pesanan merchandise Anda sudah disetujui',
+    html: baseLayout(
+      'Merchandise akan diproses',
+      `<p>Halo ${nama},</p>
+       <p>Pembayaran tambahan merchandise sudah kami verifikasi. Pesanan akan diproses untuk pengiriman. Sertifikat Anda tidak berubah — QR yang sudah aktif tetap berlaku.</p>
+       ${tombol(params.tautanMerchandise, 'Lihat Pesanan Merchandise')}`,
       kontak
     ),
   };

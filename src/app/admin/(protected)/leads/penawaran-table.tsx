@@ -5,6 +5,13 @@ import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 import { DownloadIcon, Trash2Icon } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { toast } from 'sonner';
 import { hapusPenawaranAction } from './penawaran-actions';
 import { PenawaranStatusSelect } from './penawaran-status-select';
@@ -69,6 +76,47 @@ function BarisHapus({ id, nama }: { id: number; nama: string }) {
   );
 }
 
+const LABEL_STATUS: Record<Penawaran['status'], string> = {
+  baru: 'Baru',
+  dihubungi: 'Dihubungi',
+  selesai: 'Selesai',
+};
+
+function BarisDetail({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="grid gap-1 border-b border-border py-2.5 sm:grid-cols-[9rem_1fr] sm:gap-4">
+      <dt className="text-sm text-muted-foreground">{label}</dt>
+      <dd className="text-sm whitespace-pre-wrap break-words text-foreground">{value || '—'}</dd>
+    </div>
+  );
+}
+
+function PenawaranDetail({ row }: { row: Penawaran }) {
+  return (
+    <Dialog>
+      <DialogTrigger render={<Button size="sm" variant="outline" />}>Detail</DialogTrigger>
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
+        <DialogHeader>
+          <DialogTitle>Detail permintaan penawaran</DialogTitle>
+        </DialogHeader>
+        <dl className="pr-6">
+          <BarisDetail label="Nama" value={row.nama} />
+          <BarisDetail label="Perusahaan" value={row.perusahaan ?? ''} />
+          <BarisDetail label="Email" value={row.email} />
+          <BarisDetail label="WhatsApp" value={row.whatsapp ?? ''} />
+          <BarisDetail label="Produk" value={row.products?.nama_id ?? ''} />
+          <BarisDetail label="Kebutuhan" value={row.kebutuhan ?? ''} />
+          <BarisDetail label="Status" value={LABEL_STATUS[row.status]} />
+          <BarisDetail
+            label="Diajukan"
+            value={format(new Date(row.created_at), 'd MMM yyyy HH:mm', { locale: localeId })}
+          />
+        </dl>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 const columnHelper = createDataTableColumnHelper<Penawaran>();
 
 const columns = [
@@ -104,7 +152,8 @@ const columns = [
     id: 'aksi',
     header: () => <span className="sr-only">Aksi</span>,
     cell: ({ row }) => (
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-2">
+        <PenawaranDetail row={row.original} />
         <BarisHapus id={row.original.id} nama={row.original.nama} />
       </div>
     ),

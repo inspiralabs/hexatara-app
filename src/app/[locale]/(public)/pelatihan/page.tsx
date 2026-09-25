@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { pick } from "@/lib/i18n/pick";
 import { getMateriHeroHref } from "@/lib/materi";
+import { getWhatsappAdmin } from "@/lib/site-settings";
 import { PublicHeroMist } from "@/components/public-hero-mist";
 import { publicCtaPrimary, publicSectionHeading } from "@/lib/public-ui";
 import { pageMetadata } from "@/lib/seo/page-metadata";
@@ -89,7 +90,7 @@ export default async function PelatihanPage({
 
   if (error) console.error("[pelatihan] gagal memuat:", error);
 
-  const waCustomLink = buildWaCustomLink(process.env.NEXT_PUBLIC_WA_ADMIN, t("waCustom"));
+  const waCustomLink = buildWaCustomLink((await getWhatsappAdmin()) ?? undefined, t("waCustom"));
   const materiHref = await getMateriHeroHref();
   const kategoriOptions = (kategoriList ?? []).map((k) => ({
     value: k.id,

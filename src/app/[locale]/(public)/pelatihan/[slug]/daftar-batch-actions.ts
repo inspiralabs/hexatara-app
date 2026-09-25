@@ -5,6 +5,7 @@ import { getOptionalUser } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { PendaftaranBatchSchema } from '@/lib/validations/pendaftaran-batch';
+import { getWhatsappAdmin } from '@/lib/site-settings';
 
 const BatchIdSchema = z.number().int().positive();
 const FORMAT_DIIZINKAN = ['image/jpeg', 'image/png', 'image/webp'] as const;
@@ -252,7 +253,7 @@ export async function daftarBatchAction(batchId: unknown, formData: FormData) {
       }
     }
 
-    const nomorAdmin = process.env.NEXT_PUBLIC_WA_ADMIN;
+    const nomorAdmin = await getWhatsappAdmin();
     const pesanWa = `Halo Admin Hexatara, saya ${data.nama_lengkap} sudah mendaftar pelatihan "${batch.judul_id}".\nEmail: ${data.email}\nWhatsApp: ${data.whatsapp}`;
     const waLink = nomorAdmin
       ? `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesanWa)}`

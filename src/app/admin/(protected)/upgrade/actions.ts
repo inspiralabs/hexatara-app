@@ -4,7 +4,12 @@ import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { generateSertifikatFinalPdf } from '@/lib/certificate/pdf';
-import { kirimEmailPembayaranDisetujui, kirimEmailPembayaranDitolak } from '@/lib/email/send';
+import {
+  kirimEmailCertMerchDisetujui,
+  kirimEmailMerchDisetujui,
+  kirimEmailPembayaranDisetujui,
+  kirimEmailPembayaranDitolak,
+} from '@/lib/email/send';
 import type { Database } from '@/types/database';
 
 // AKTIVASI — satu Server Action, PRD §8.8 / ENGINEERING §5.2.
@@ -16,6 +21,13 @@ import type { Database } from '@/types/database';
 export async function setujuiPesananAction(orderId: number) {
   await requireAdmin();
   const supabase = await createClient();
+
+  const { data: orderRow } = await supabase
+    .from('certificate_orders')
+    .select('paket')
+    .eq('id', orderId)
+    .single();
+  const merchAddon = orderRow?.paket === 'merch_addon';
 
   const { data, error } = await supabase
     .rpc('aktivasi_sertifikat_free_track', { p_order_id: orderId })
@@ -36,8 +48,8 @@ export async function setujuiPesananAction(orderId: number) {
 
   const supabaseAdmin = createAdminClient();
 
-  // Best-effort — kegagalan di sini tidak membatalkan aktivasi yang sudah tercatat.
-  if (cert) {
+  // merch_addon: sertifikat sudah ada — jangan timpa PDF yang sama.
+  if (cert && !merchAddon) {
     try {
       const pdfBytes = await generateSertifikatFinalPdf({
         namaLengkap: cert.nama_lengkap,
@@ -63,16 +75,33 @@ export async function setujuiPesananAction(orderId: number) {
   const { data: authUser } = await supabaseAdmin.auth.admin.getUserById(user_id);
   const email = authUser.user?.email;
   if (email) {
-    await kirimEmailPembayaranDisetujui(email, {
-      nama: cert?.nama_lengkap ?? '',
-      tautanDashboard: `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard`,
-    });
+    const nama = cert?.nama_lengkap ?? '';
+    const situs = process.env.NEXT_PUBLIC_SITE_URL;
+    if (orderRow?.paket === 'merch_addon') {
+      await kirimEmailMerchDisetujui(email, {
+        nama,
+        tautanMerchandise: `${situs}/dashboard/merchandise`,
+      });
+    } else if (orderRow?.paket === 'cert_merch') {
+      await kirimEmailCertMerchDisetujui(email, {
+        nama,
+        tautanDashboard: `${situs}/dashboard`,
+      });
+    } else {
+      await kirimEmailPembayaranDisetujui(email, {
+        nama,
+        tautanDashboard: `${situs}/dashboard`,
+      });
+    }
   }
 
+  // aksi teks bebas. merch tidak memakai 'sertifikat_aktif' supaya tidak
+  // tampil "Sertifikat diaktifkan". LABEL_AKSI di dashboard tidak diubah
+  // (di luar scope) — fallback menampilkan string ini apa adanya.
   const { error: logError } = await supabaseAdmin.from('activity_logs').insert({
     user_id,
-    aksi: 'sertifikat_aktif',
-    detail: { order_id: orderId, nomor_sertifikat },
+    aksi: merchAddon ? 'Pesanan merchandise disetujui' : 'sertifikat_aktif',
+    detail: { order_id: orderId, nomor_sertifikat, paket: orderRow?.paket ?? null },
   });
   if (logError) {
     console.error('[admin-upgrade] gagal catat activity_log:', logError);

@@ -44,6 +44,8 @@ export async function simpanKontakAction(input: unknown) {
   }
   revalidatePath('/admin/pengaturan');
   revalidatePath('/');
+  revalidatePath('/katalog');
+  revalidatePath('/pelatihan');
   return { ok: true as const };
 }
 

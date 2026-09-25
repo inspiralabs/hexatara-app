@@ -154,15 +154,20 @@ function KontakForm({ defaults }: { defaults: KontakSettings }) {
       <CardHeader>
         <CardTitle>Kontak publik</CardTitle>
         <CardDescription>
-          Tampil di footer situs (bukan email notifikasi lead di bawah). WA format: 62… tanpa +.
+          WhatsApp di sini = nomor default/umum (floating WA, katalog, listing pelatihan, footer).
+          Email & Instagram untuk footer. Bukan email notifikasi lead di bawah. WA format: 62… tanpa +.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 sm:grid-cols-2" noValidate>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="wa">WhatsApp</Label>
+            <Label htmlFor="wa">WhatsApp (default/umum)</Label>
             <Input id="wa" placeholder="62812…" {...register('wa')} />
             {errors.wa && <p className="text-sm text-destructive">{errors.wa.message}</p>}
+            <p className="text-xs text-muted-foreground">
+              Dipakai floating button, tombol WA katalog & listing pelatihan, plus fallback batch
+              reguler jika field Kontak Pelatihan kosong.
+            </p>
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="email_kontak">Email kontak resmi (footer)</Label>
