@@ -528,6 +528,84 @@ export type Database = {
         }
         Relationships: []
       }
+      certificate_order_items: {
+        Row: {
+          created_at: string
+          harga_satuan: number
+          id: number
+          order_id: number
+          product_id: number
+          qty: number
+        }
+        Insert: {
+          created_at?: string
+          harga_satuan: number
+          id?: number
+          order_id: number
+          product_id: number
+          qty: number
+        }
+        Update: {
+          created_at?: string
+          harga_satuan?: number
+          id?: number
+          order_id?: number
+          product_id?: number
+          qty?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificate_order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "certificate_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificate_order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      merchandise_public_orders: {
+        Row: {
+          alamat_pengiriman: Json
+          catatan: string | null
+          created_at: string
+          id: number
+          items: Json
+          nama_lengkap: string
+          status: Database["public"]["Enums"]["status_lead"]
+          updated_at: string
+          whatsapp: string
+        }
+        Insert: {
+          alamat_pengiriman: Json
+          catatan?: string | null
+          created_at?: string
+          id?: number
+          items: Json
+          nama_lengkap: string
+          status?: Database["public"]["Enums"]["status_lead"]
+          updated_at?: string
+          whatsapp: string
+        }
+        Update: {
+          alamat_pengiriman?: Json
+          catatan?: string | null
+          created_at?: string
+          id?: number
+          items?: Json
+          nama_lengkap?: string
+          status?: Database["public"]["Enums"]["status_lead"]
+          updated_at?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
       certificates: {
         Row: {
           catatan: string | null

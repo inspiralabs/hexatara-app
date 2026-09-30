@@ -370,10 +370,96 @@ Cara uji: akun yang baru selesai kuis dan belum pernah ajukan pesanan → `/dash
 | `pnpm lint` | Lolos |
 | Navbar desktop + lebar 390px | Teks lebih besar, sejajar logo, menu tidak pecah |
 
-☐ Jangan tandai F13.1 atau F13.2 DONE di `feature-registry.md` sebelum Alif konfirmasi uji browser. Boleh konfirmasi terpisah.
+☑ F13.1 dan F13.2 DONE di registry (konfirmasi Alif 30 Sep 2026).
 
 **Pesan commit yang disarankan**
 
 ```
 fix(public): perbesar nama Hexatara di navbar dan ajakan upgrade di sertifikat
+```
+
+---
+
+## Permintaan Abi (30 September 2026) — Session Timeout Admin
+
+Hanya area Admin yang sudah login. `/admin/login` tidak kena karena layoutnya terpisah: timer dipasang di `AdminShell`, dan shell itu hanya dirender dari `src/app/admin/(protected)/layout.tsx`.
+
+Tidak ada throttle helper di proyek ini. Gerakan mouse diabaikan jika belum lewat 1 detik. Klik, tombol, scroll, dan sentuh langsung mereset. Peringatan memakai Dialog yang sudah ada. Logout memakai `logoutAdminAction()` yang sudah ada.
+
+| File | Perubahan |
+|---|---|
+| `src/components/shell/admin-idle-timeout.tsx` | Baru |
+| `src/components/shell/admin-shell.tsx` | Pasang komponen di dalam shell |
+
+Angka uji ada di bagian atas `admin-idle-timeout.tsx`: `ADMIN_IDLE_MS` (30 menit) dan `ADMIN_IDLE_WARN_MS` (28 menit). Untuk uji cepat, ganti sementara jadi `60_000` dan `30_000`, lalu **kembalikan** sebelum push.
+
+Cara uji: login Admin, ubah dua konstanta itu, jangan gerakkan mouse. Sekitar 30 detik modal muncul. Klik “Tetap login” lalu diam lagi: modal muncul lagi. Biarkan sampai 1 menit: harus pindah ke `/admin/login`. Pindah menu Admin di tengah jalan harus mengulang hitungan. Halaman publik dan dashboard user tidak boleh logout sendiri.
+
+☑ F13.3 DONE di registry (uji Alif 30 Sep 2026, hasil OKE).
+
+**Pesan commit yang disarankan**
+
+```
+feat(admin): logout otomatis setelah 30 menit tanpa aktivitas
+```
+
+---
+
+## Permintaan Abi (30 September 2026) — F13.4 Merchandise jadi produk
+
+Bagian dashboard dan Admin saja. Pembelian dari katalog publik menyusul.
+
+Jalankan dulu `usulan-sql-merchandise-jadi-produk.sql` di Supabase sebelum uji. Agent tidak mengeksekusinya.
+
+| File | Perubahan |
+|---|---|
+| `src/lib/validations/upgrade.ts` | Wajib pilih produk jika bukan sertifikat saja |
+| `src/app/[locale]/(user)/actions.ts` | Harga dari produk, snapshot ke `certificate_order_items` |
+| `pesanan-upgrade-form.tsx` + Transaksi + Merchandise user | Checklist + qty |
+| `pengaturan-forms.tsx` | Hanya harga QR |
+| `admin/merchandise/**` | Daftar produk dan pesanan yang sudah disetujui |
+| `upgrade/page.tsx` | Nama produk di antrean verifikasi |
+
+Status: **menunggu uji Alif**. F13.4 tetap TODO. F13.3 sudah DONE.
+
+Cara uji: ikuti tujuh langkah di prompt (buat kategori Merchandise, tambah produk, cert_merch, merch_addon, approve, pengaturan, validasi tanpa produk).
+
+**Pesan commit yang disarankan**
+
+```
+feat(merchandise): jadikan merchandise produk sungguhan + keranjang multi-produk (F13.4a)
+```
+
+---
+
+## Permintaan Abi (30 September 2026) — F13.4b Beli merchandise dari katalog
+
+Uji dashboard (2a) **lolos 30 Sep 2026**: kategori, produk tampil di katalog, `cert_merch` (biaya sertifikat + produk), `merch_addon` (harga produk saja), approve muncul di Pesanan dengan alamat, pengaturan hanya harga QR, dan submit tanpa produk ditolak.
+
+Publik: satu form per produk di halaman detail Merchandise, bukan keranjang lintas halaman. Form Minta Penawaran tidak diubah.
+
+Jalankan `usulan-sql-merchandise-publik.sql` sebelum uji. Agent tidak menjalankannya.
+
+Status: **menunggu uji Alif**. F13.4 tetap TODO sampai uji publik ini.
+
+**Pesan commit yang disarankan**
+
+```
+feat(merchandise): alur pembelian publik untuk produk merchandise (F13.4b)
+```
+
+---
+
+## Bug F13.4 — redirect edit dan kolom kategori (30 September 2026)
+
+Klik Ubah di Merchandise kembali ke `/admin/merchandise` setelah simpan atau batal. Kolom Kategori menampilkan nama dari relasi, bukan tanda hubung.
+
+File: `produk-table.tsx`, `produk-row-actions.tsx`, `produk-form.tsx`, `produk/page.tsx`, `merchandise/page.tsx`, `merchandise/[id]/page.tsx`.
+
+Status: **menunggu uji Alif**. F13.4 tetap TODO.
+
+**Pesan commit yang disarankan**
+
+```
+fix(admin-produk): perbaiki redirect edit merchandise & kolom kategori kosong
 ```

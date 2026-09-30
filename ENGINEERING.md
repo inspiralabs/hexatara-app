@@ -1362,7 +1362,7 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 ---
 
 ### ADR-026 — Modul 13: Permintaan Abi Langsung saat UAT (Navbar, Kartu Ajakan, Session Timeout Admin, Merchandise jadi Produk, Pendaftaran Perusahaan)
-**2026-09-30 · Diperluas 2026-09-30 (F13.1/F13.2) · Berlaku — sebagian, 3 poin lain menyusul**
+**2026-09-30 · Diperluas 2026-09-30 (F13.1–F13.3, lalu F13.4 dashboard) · Berlaku — sebagian, F13.5 dan etalase publik menyusul**
 
 **Konteks.** Pada UAT bersama klien 30 September 2026, Abi menyampaikan lima permintaan. Ini terpisah dari ADR-025 (gladi resik internal InspiraLabs).
 
@@ -1372,11 +1372,15 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 4. Merchandise menjadi produk sungguhan di tabel `products` dan bisa dibundling ke sertifikat. Belum dikerjakan.
 5. Jalur pendaftaran perusahaan/komunitas (unggah Excel, harga negosiasi manual). Belum dikerjakan.
 
-**Keputusan.** Hanya F13.1 dan F13.2. F13.3–F13.5 belum punya Keputusan.
-- **F13.1:** teks “Hexatara” di navbar publik (`layout.tsx`) dari `text-lg` menjadi `text-2xl leading-none`, sejajar logo 32px. Footer di file yang sama tetap `text-base font-bold`.
-- **F13.2:** di `/dashboard/sertifikat`, kartu “Dapatkan Sertifikat & QR Resmi” hanya jika pratinjau aktif dan belum ada satupun baris `certificate_orders`. Tombol ke `/dashboard/transaksi`. Kalau sudah pernah ada pesanan (status apa pun), kartu ini tidak tampil. Kartu merchandise `cert_only` tidak diubah. `/dashboard/transaksi` tidak diubah.
+**Keputusan.**
+- **F13.1:** teks “Hexatara” di navbar publik (`layout.tsx`) dari `text-lg` menjadi `text-2xl leading-none`, sejajar logo 32px. Footer di file yang sama tetap `text-base font-bold`. Alif konfirmasi DONE 30 Sep 2026.
+- **F13.2:** di `/dashboard/sertifikat`, kartu “Dapatkan Sertifikat & QR Resmi” hanya jika pratinjau aktif dan belum ada satupun baris `certificate_orders`. Tombol ke `/dashboard/transaksi`. Kartu merchandise `cert_only` tidak diubah. Alif konfirmasi DONE 30 Sep 2026.
+- **F13.3:** idle timeout hanya di `AdminShell`. Alif konfirmasi DONE 30 Sep 2026.
+- **F13.4 dashboard (30 Sep, diuji Alif):** merchandise adalah produk kategori “Merchandise”. User memilih beberapa produk beserta qty. `cert_merch` = fee QR + total produk; `merch_addon` = total produk saja. Snapshot di `certificate_order_items`. Pengaturan hanya mengedit fee QR. Menu Admin: daftar produk dan pesanan yang sudah disetujui.
+- **F13.4 publik (30 Sep, belum diuji):** di detail katalog, produk Merchandise memakai dialog Beli (satu produk + qty + alamat), bukan Minta Penawaran. Disimpan di `merchandise_public_orders` lewat service role, lalu tautan WhatsApp. Drone tetap form penawaran. Menu Pesanan Publik memakai status `baru` / `dihubungi` / `selesai`. SQL `usulan-sql-merchandise-publik.sql` belum dijalankan agent.
+- **F13.4 perbaikan UAT (30 Sep, menunggu uji):** ubah merchandise kembali ke `/admin/merchandise` (bukan menu Produk). Kolom kategori di tabel memakai nama dari `product_categories`, bukan kolom teks lama.
 
-**Konsekuensi.** Status registry F13.1/F13.2 tetap TODO sampai Alif uji di browser. F13.3 (timeout), F13.4 (merchandise sebagai produk), dan F13.5 (pendaftaran perusahaan) menyusul lewat prompt terpisah. F13.4 dan F13.5 berpotensi mengubah skema database. ADR ini akan diperluas lagi, pola ADR-024.
+**Konsekuensi.** F13.4 menambah tabel `certificate_order_items` (Alif jalankan SQL dulu). Tanpa kategori Merchandise di UI, form menampilkan pesan kosong. F13.5 dan pembelian merchandise dari katalog publik masih menyusul. ADR ini akan diperluas lagi.
 
 ---
 
@@ -1420,3 +1424,7 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-09-30 | **ADR-025 ditambahkan** (dokumentasi susulan untuk pekerjaan UAT internal 24–25 Sep yang sudah selesai di kode: dashboard/WA, merch addon, routing materi). Bukan keputusan baru. |
 | 2026-09-30 | **ADR-026 dibuka** (Sprint 12/Modul 13, permintaan Abi 30 Sept 2026). Navbar, kartu ajakan “belum pernah order”, dan timeout Admin belum punya laporan di `plan.md`. Merchandise-jadi-produk dan pendaftaran perusahaan menyusul. |
 | 2026-09-30 | **ADR-026 diperluas — F13.1/F13.2 dikerjakan, F13.3–F13.5 menyusul.** Navbar publik `text-2xl` (footer tidak diubah). Kartu sertifikat hanya jika belum pernah ada `certificate_orders`. Status registry tetap TODO sampai uji Alif. |
+| 2026-09-30 | **F13.1 dan F13.2 DONE** setelah uji Alif. **ADR-026 diperluas — F13.3 Session Timeout Admin dikerjakan** (belum DONE). F13.4 dan F13.5 menyusul. |
+| 2026-09-30 | **F13.3 DONE** setelah uji Alif. **ADR-026 diperluas — F13.4 bagian dashboard** (merchandise sebagai produk, keranjang, menu Admin). SQL usulan belum dijalankan agent. Etalase publik dan F13.5 menyusul. |
+| 2026-09-30 | **F13.4 dashboard DONE** (uji 7 langkah Alif). **ADR-026 diperluas — pembelian publik per produk** di katalog Merchandise + Pesanan Publik. SQL `merchandise_public_orders` menunggu Alif. F13.5 menyusul. |
+| 2026-09-30 | **ADR-026 diperluas — bug F13.4:** edit merchandise kembali ke menu Merchandise; kolom kategori baca relasi `category_id`. Menunggu uji Alif. |

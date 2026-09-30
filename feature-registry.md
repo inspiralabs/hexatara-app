@@ -244,10 +244,10 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
 |---|---|---|---|---|---|
-| F13.1 | Navbar publik: teks Hexatara lebih besar | TODO | `src/app/[locale]/(public)/layout.tsx`; `prompt-navbar-dan-kartu-sertifikat.md` | | Kode: `text-2xl` di navbar saja, footer tidak diubah. Menunggu uji browser Alif. |
-| F13.2 | Kartu Sertifikat: ajakan upgrade bila belum pernah ada `certificate_orders` | TODO | `src/app/[locale]/(user)/dashboard/sertifikat/page.tsx`; `prompt-navbar-dan-kartu-sertifikat.md` | | Kartu “Dapatkan Sertifikat & QR Resmi” → `/dashboard/transaksi`. Menunggu uji browser Alif. |
-| F13.3 | Session timeout Admin, idle 30 menit | TODO | `prompt-session-timeout-admin.md` | | Belum ada laporan di `plan.md`. Timer idle belum ada di kode. |
-| F13.4 | Merchandise jadi produk di `products` (bundling sertifikat) | TODO | | | Menyusul, prompt terpisah belum dikirim. |
+| F13.1 | Navbar publik: teks Hexatara lebih besar | DONE | `src/app/[locale]/(public)/layout.tsx`; `prompt-navbar-dan-kartu-sertifikat.md` | 2026-09-30 | Alif konfirmasi DONE. Teks navbar `text-2xl`; footer tidak diubah. |
+| F13.2 | Kartu Sertifikat: ajakan upgrade bila belum pernah ada `certificate_orders` | DONE | `src/app/[locale]/(user)/dashboard/sertifikat/page.tsx`; `prompt-navbar-dan-kartu-sertifikat.md` | 2026-09-30 | Alif konfirmasi DONE. Kartu hanya untuk user yang belum pernah ajukan pesanan. |
+| F13.3 | Session timeout Admin, idle 30 menit | DONE | `src/components/shell/admin-idle-timeout.tsx`; `prompt-session-timeout-admin.md` | 2026-09-30 | Alif uji browser: hasil OKE. |
+| F13.4 | Merchandise jadi produk: bundling sertifikat (dashboard) dan beli dari katalog (publik, per produk) | TODO | `usulan-sql-merchandise-jadi-produk.sql`, `usulan-sql-merchandise-publik.sql`, `src/lib/merchandise.ts`, `pesanan-upgrade-form.tsx`, `katalog/[slug]/beli-merchandise-dialog.tsx`, `katalog/[slug]/actions.ts`, `admin/merchandise/**` | | Dashboard dan Admin: Alif uji 7 langkah 30 Sep 2026, lolos (kategori, katalog, cert_merch, merch_addon, approve, pengaturan, validasi tanpa produk). Publik: kode selesai, menunggu uji Alif. SQL publik belum dijalankan agent. Bug UAT: edit merchandise dan kolom kategori kosong sudah diperbaiki, menunggu konfirmasi Alif. |
 | F13.5 | Pendaftaran perusahaan/komunitas (Excel, harga negosiasi) | TODO | | | Menyusul, prompt terpisah belum dikirim. |
 
 ---

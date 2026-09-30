@@ -2,6 +2,7 @@ import { requireUser } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { PesananStatusSection } from '../../pesanan-status-section';
 import { getHargaUpgrade } from '@/lib/site-settings';
+import { getProdukMerchandiseAktif } from '@/lib/merchandise';
 import type { Database } from '@/types/database';
 
 type Paket = Database['public']['Enums']['paket_upgrade'];
@@ -48,6 +49,7 @@ export default async function TransaksiSayaPage() {
   const rekening = rekeningSetting?.value as { bank?: string; nomor?: string; atas_nama?: string } | undefined;
 
   const harga = await getHargaUpgrade();
+  const merchandise = await getProdukMerchandiseAktif();
   const bisaUpgrade = profile?.free_track_selesai_at != null;
 
   return (
@@ -82,6 +84,7 @@ export default async function TransaksiSayaPage() {
               paketOptions={['cert_only', 'cert_merch']}
               harga={harga}
               paket={pesananUtama?.paket}
+              merchandise={merchandise}
             />
           </div>
         </div>
@@ -106,6 +109,7 @@ export default async function TransaksiSayaPage() {
                 paketOptions={['merch_addon']}
                 harga={harga}
                 paket="merch_addon"
+                merchandise={merchandise}
               />
             </div>
           </div>

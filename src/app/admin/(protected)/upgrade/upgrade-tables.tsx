@@ -34,6 +34,7 @@ export type AntreanRow = {
   nominal: number;
   alamat_pengiriman: unknown;
   buktiUrl: string | null;
+  merchandise?: string;
 };
 
 const antreanColumnHelper = createDataTableColumnHelper<AntreanRow>();
@@ -47,7 +48,14 @@ const antreanColumns = [
     id: 'paket',
     header: 'Paket',
     filterFn: 'equalsString',
-    cell: (info) => PAKET_LABEL[info.getValue()] ?? info.getValue(),
+    cell: (info) => (
+      <span>
+        {PAKET_LABEL[info.getValue()] ?? info.getValue()}
+        {info.row.original.merchandise ? (
+          <span className="mt-0.5 block text-xs text-muted-foreground">{info.row.original.merchandise}</span>
+        ) : null}
+      </span>
+    ),
   }),
   antreanColumnHelper.accessor('nominal', {
     header: (ctx) => <SortableHeader column={ctx.column} label="Nominal" />,

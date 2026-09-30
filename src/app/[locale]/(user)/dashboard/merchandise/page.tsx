@@ -2,6 +2,7 @@ import { requireUser } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { PesananStatusSection } from '../../pesanan-status-section';
 import { getHargaUpgrade } from '@/lib/site-settings';
+import { getProdukMerchandiseAktif } from '@/lib/merchandise';
 
 export default async function MerchandisePage() {
   const claims = await requireUser();
@@ -44,6 +45,7 @@ export default async function MerchandisePage() {
     | undefined;
 
   const harga = await getHargaUpgrade();
+  const merchandise = await getProdukMerchandiseAktif();
 
   return (
     <div className="mx-auto max-w-md px-4 py-10">
@@ -55,6 +57,7 @@ export default async function MerchandisePage() {
           paketOptions={['merch_addon']}
           harga={harga}
           paket="merch_addon"
+          merchandise={merchandise}
         />
       </div>
     </div>

@@ -16,6 +16,8 @@ import {
 import { ProductGallery } from "./product-gallery";
 import { ProdukCard } from "../produk-card";
 import { QuoteDialog } from "./quote-dialog";
+import { BeliMerchandiseDialog } from "./beli-merchandise-dialog";
+import { getKategoriMerchandiseId } from "@/lib/merchandise";
 
 const KONTEN_HTML_CLASS =
   "mt-2 space-y-3 text-base text-muted-foreground [&_a]:underline [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-foreground [&_ol]:list-decimal [&_ol]:pl-5 [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-5";
@@ -117,6 +119,8 @@ export default async function KatalogDetailPage({
   const spesifikasi = pick(produk.spesifikasi_id, produk.spesifikasi_en, locale);
   const nomorWa = (await getWhatsappAdmin()) ?? undefined;
   const waLink = buildWaProdukLink(nomorWa, t("waAskProduct", { nama }));
+  const kategoriMerch = await getKategoriMerchandiseId();
+  const iniMerchandise = produk.category_id != null && produk.category_id === kategoriMerch;
 
   return (
     <div className="bg-background pb-16">
@@ -160,7 +164,11 @@ export default async function KatalogDetailPage({
                   {t("contactWhatsapp")}
                 </a>
               )}
-              <QuoteDialog productId={produk.id} />
+              {iniMerchandise && produk.id != null ? (
+                <BeliMerchandiseDialog productId={produk.id} namaProduk={nama} />
+              ) : (
+                <QuoteDialog productId={produk.id} />
+              )}
             </div>
           </div>
         </div>

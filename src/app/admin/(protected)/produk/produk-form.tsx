@@ -29,11 +29,13 @@ export function ProdukForm({
   produkId,
   defaultValues,
   kategoriOptions,
+  afterSaveHref = '/admin/produk',
 }: {
   mode: 'create' | 'edit';
   produkId?: number;
   defaultValues: ProductFormInput;
   kategoriOptions: KategoriOption[];
+  afterSaveHref?: string;
 }) {
   const router = useRouter();
   const [slugDisentuh, setSlugDisentuh] = useState(mode === 'edit');
@@ -57,7 +59,7 @@ export function ProdukForm({
       return;
     }
     toast.success('Produk berhasil disimpan.');
-    router.push('/admin/produk');
+    router.push(afterSaveHref);
     router.refresh();
   }
 
@@ -355,7 +357,7 @@ export function ProdukForm({
           <Button type="submit" disabled={isSubmitting} className="h-11 px-6">
             {isSubmitting ? 'Menyimpan…' : 'Simpan'}
           </Button>
-          <Button type="button" variant="outline" className="h-11 px-6" onClick={() => router.push('/admin/produk')}>
+          <Button type="button" variant="outline" className="h-11 px-6" onClick={() => router.push(afterSaveHref)}>
             Batal
           </Button>
         </div>

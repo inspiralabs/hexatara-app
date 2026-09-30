@@ -319,7 +319,7 @@ function HargaForm({ defaults }: { defaults: HargaUpgrade }) {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(HargaUpgradeSchema),
-    defaultValues: defaults,
+    defaultValues: { cert_only: defaults.cert_only },
   });
 
   async function onSubmit(data: z.output<typeof HargaUpgradeSchema>) {
@@ -338,33 +338,19 @@ function HargaForm({ defaults }: { defaults: HargaUpgrade }) {
       <CardHeader>
         <CardTitle>Harga upgrade sertifikat</CardTitle>
         <CardDescription>
-          Nominal Rupiah. Default dari constants.ts dipakai jika belum pernah disimpan.
+          Hanya biaya aktivasi QR. Paket dengan merchandise dihitung dari harga produk yang dipilih user.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 sm:grid-cols-3" noValidate>
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 sm:max-w-sm" noValidate>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="cert_only">Sertifikat saja</Label>
+            <Label htmlFor="cert_only">Harga Upgrade Sertifikat (QR)</Label>
             <Input id="cert_only" type="number" min={1} step={1} {...register('cert_only')} />
             {errors.cert_only && (
               <p className="text-sm text-destructive">{errors.cert_only.message}</p>
             )}
           </div>
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="cert_merch">Sertifikat + merchandise</Label>
-            <Input id="cert_merch" type="number" min={1} step={1} {...register('cert_merch')} />
-            {errors.cert_merch && (
-              <p className="text-sm text-destructive">{errors.cert_merch.message}</p>
-            )}
-          </div>
-          <div className="flex flex-col gap-1.5">
-            <Label htmlFor="merch_addon">Tambah merchandise</Label>
-            <Input id="merch_addon" type="number" min={1} step={1} {...register('merch_addon')} />
-            {errors.merch_addon && (
-              <p className="text-sm text-destructive">{errors.merch_addon.message}</p>
-            )}
-          </div>
-          <div className="sm:col-span-3">
+          <div>
             <Button type="submit" disabled={pending}>
               {pending ? 'Menyimpan…' : 'Simpan harga'}
             </Button>

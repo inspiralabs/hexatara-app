@@ -40,6 +40,24 @@ export default async function AdminUpgradePage() {
 
   // Bucket payment-proofs privat — bukti transfer cuma boleh dilihat lewat
   // signed URL berumur pendek, tidak pernah lewat URL publik (PRD §8.7).
+  const antreanIds = (antrean ?? []).map((o) => o.id);
+  const { data: itemMerch } =
+    antreanIds.length > 0
+      ? await supabase.from('certificate_order_items').select('order_id, qty, product_id').in('order_id', antreanIds)
+      : { data: [] as { order_id: number; qty: number; product_id: number }[] };
+  const produkIds = [...new Set((itemMerch ?? []).map((i) => i.product_id))];
+  const { data: produkNama } =
+    produkIds.length > 0
+      ? await supabase.from('products').select('id, nama_id').in('id', produkIds)
+      : { data: [] as { id: number; nama_id: string }[] };
+  const namaProduk = new Map((produkNama ?? []).map((p) => [p.id, p.nama_id]));
+  const ringkasByOrder = new Map<number, string>();
+  for (const item of itemMerch ?? []) {
+    const prev = ringkasByOrder.get(item.order_id);
+    const baris = `${namaProduk.get(item.product_id) ?? 'Produk'} × ${item.qty}`;
+    ringkasByOrder.set(item.order_id, prev ? `${prev}, ${baris}` : baris);
+  }
+
   const antreanDenganUrl = await Promise.all(
     (antrean ?? []).map(async (order) => {
       let buktiUrl: string | null = null;
@@ -49,7 +67,12 @@ export default async function AdminUpgradePage() {
           .createSignedUrl(order.bukti_url, 300);
         buktiUrl = signed?.signedUrl ?? null;
       }
-      return { ...order, buktiUrl, nama: namaById.get(order.user_id) ?? '—' };
+      return {
+        ...order,
+        buktiUrl,
+        nama: namaById.get(order.user_id) ?? '—',
+        merchandise: ringkasByOrder.get(order.id) ?? '',
+      };
     })
   );
 

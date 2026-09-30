@@ -12,6 +12,7 @@ import {
   BadgeCheckIcon,
   BookOpenIcon,
   PackageIcon,
+  ShoppingBagIcon,
   SettingsIcon,
   PanelLeftIcon,
   LogOutIcon,
@@ -21,6 +22,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { logoutAdminAction } from "@/app/admin/(protected)/actions";
+import { AdminIdleTimeout } from "@/components/shell/admin-idle-timeout";
 import { BrandLogo } from "@/components/brand-logo";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -103,6 +105,15 @@ const MENU_ADMIN: MenuSection[] = [
       { href: "/admin/materi", label: "Materi & Bab" },
       { href: "/admin/materi/file", label: "File" },
       { href: "/admin/materi/soal", label: "Bank Soal" },
+    ],
+  },
+  {
+    section: "Merchandise",
+    icon: ShoppingBagIcon,
+    items: [
+      { href: "/admin/merchandise", label: "Daftar Produk" },
+      { href: "/admin/merchandise/pesanan", label: "Pesanan" },
+      { href: "/admin/merchandise/pesanan-publik", label: "Pesanan Publik" },
     ],
   },
   {
@@ -467,6 +478,7 @@ export function AdminShell({
 
         <main className="flex-1 p-4 md:p-6">{children}</main>
       </div>
+      <AdminIdleTimeout />
     </div>
   );
 }

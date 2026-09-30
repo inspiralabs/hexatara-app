@@ -1,5 +1,5 @@
 import { CheckCircle2Icon, ClockIcon } from 'lucide-react';
-import { PesananUpgradeForm } from './pesanan-upgrade-form';
+import { PesananUpgradeForm, type ProdukMerchandiseForm } from './pesanan-upgrade-form';
 import type { HargaUpgrade } from '@/lib/site-settings';
 import { BuktiTransferUpload } from './bukti-transfer-upload';
 import type { Database } from '@/types/database';
@@ -30,15 +30,17 @@ export function PesananStatusSection({
   paketOptions,
   harga,
   paket,
+  merchandise = [],
 }: {
   order: Order | null;
   rekening: Rekening;
   paketOptions: Paket[];
   harga: HargaUpgrade;
   paket?: Paket;
+  merchandise?: ProdukMerchandiseForm[];
 }) {
   if (!order) {
-    return <PesananUpgradeForm paketOptions={paketOptions} harga={harga} />;
+    return <PesananUpgradeForm paketOptions={paketOptions} harga={harga} merchandise={merchandise} />;
   }
 
   if (order.status === 'menunggu_verifikasi') {

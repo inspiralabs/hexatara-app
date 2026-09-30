@@ -13,7 +13,7 @@ export default async function AdminProdukPage() {
   const supabase = await createClient();
   const { data: produk, error } = await supabase
     .from('products')
-    .select('id, nama_id, kategori, harga, tampilkan_harga, is_active, urutan')
+    .select('id, nama_id, harga, tampilkan_harga, is_active, urutan, product_categories(nama_id)')
     .order('urutan');
 
   if (error) console.error('[admin-produk] gagal memuat daftar:', error);
@@ -27,7 +27,18 @@ export default async function AdminProdukPage() {
         </Link>
       </div>
 
-      <ProdukTable produk={produk ?? []} />
+      <ProdukTable
+        basePath="/admin/produk"
+        produk={(produk ?? []).map((p) => ({
+          id: p.id,
+          nama_id: p.nama_id,
+          kategoriNama: p.product_categories?.nama_id ?? null,
+          harga: p.harga,
+          tampilkan_harga: p.tampilkan_harga,
+          is_active: p.is_active,
+          urutan: p.urutan,
+        }))}
+      />
     </div>
   );
 }

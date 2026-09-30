@@ -33,8 +33,6 @@ export const AdminNotifyEmailSchema = z.object({
 
 export const HargaUpgradeSchema = z.object({
   cert_only: z.coerce.number().int().positive({ error: 'Harga harus bilangan bulat positif' }),
-  cert_merch: z.coerce.number().int().positive({ error: 'Harga harus bilangan bulat positif' }),
-  merch_addon: z.coerce.number().int().positive({ error: 'Harga harus bilangan bulat positif' }),
 });
 
 export const AdminProfilSchema = z.object({

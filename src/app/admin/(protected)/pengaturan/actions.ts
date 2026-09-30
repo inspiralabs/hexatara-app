@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
-import { upsertSiteSetting } from '@/lib/site-settings';
+import { getHargaUpgrade, upsertSiteSetting } from '@/lib/site-settings';
 import {
   AdminNotifyEmailSchema,
   AdminProfilSchema,
@@ -83,7 +83,8 @@ export async function simpanHargaUpgradeAction(input: unknown) {
   await requireAdmin();
   const parsed = HargaUpgradeSchema.safeParse(input);
   if (!parsed.success) return { ok: false as const, pesan: 'Harga belum valid (bilangan bulat positif).' };
-  const error = await upsertSiteSetting('harga_upgrade', parsed.data);
+  const sekarang = await getHargaUpgrade();
+  const error = await upsertSiteSetting('harga_upgrade', { ...sekarang, cert_only: parsed.data.cert_only });
   if (error) {
     console.error('[pengaturan] harga_upgrade:', error);
     return { ok: false as const, pesan: 'Gagal menyimpan harga upgrade.' };

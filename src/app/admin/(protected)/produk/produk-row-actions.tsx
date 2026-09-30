@@ -24,7 +24,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-export function ProdukRowActions({ id, nama }: { id: number; nama: string }) {
+export function ProdukRowActions({ id, nama, basePath = '/admin/produk' }: { id: number; nama: string; basePath?: string }) {
   const router = useRouter();
   const [hapusOpen, setHapusOpen] = useState(false);
   const [pending, startTransition] = useTransition();
@@ -49,7 +49,7 @@ export function ProdukRowActions({ id, nama }: { id: number; nama: string }) {
           <MoreVerticalIcon />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem variant="edit" render={<Link href={`/admin/produk/${id}`} />}>Ubah</DropdownMenuItem>
+          <DropdownMenuItem variant="edit" render={<Link href={`${basePath}/${id}`} />}>Ubah</DropdownMenuItem>
           <DropdownMenuItem variant="destructive" onClick={() => setHapusOpen(true)}>
             Hapus
           </DropdownMenuItem>

@@ -8,19 +8,30 @@ export const AlamatPengirimanSchema = z.object({
   kode_pos: z.string().min(1, { error: 'Kode pos wajib diisi' }),
 });
 
+export const ProdukDipilihSchema = z.object({
+  product_id: z.number().int().positive(),
+  qty: z.number().int().positive(),
+});
+
 export const PesananSchema = z
   .object({
     paket: z.enum(['cert_only', 'cert_merch', 'merch_addon']),
+    produk: z.array(ProdukDipilihSchema).optional(),
     alamat: AlamatPengirimanSchema.optional(),
   })
   .superRefine((val, ctx) => {
-    // Pertahanan kedua di atas UI (field alamat disembunyikan) dan constraint DB
-    // chk_alamat_merch — supaya pengguna tidak sempat melihat error mentah.
     if (val.paket !== 'cert_only' && !val.alamat) {
       ctx.addIssue({
         code: 'custom',
         path: ['alamat'],
         message: 'Alamat pengiriman wajib diisi untuk paket ini',
+      });
+    }
+    if (val.paket !== 'cert_only' && (!val.produk || val.produk.length === 0)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['produk'],
+        message: 'Pilih minimal satu produk merchandise',
       });
     }
   });

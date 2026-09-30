@@ -31,7 +31,7 @@ export async function buatPesananAction(input: unknown) {
   if (!parsed.success) {
     return { ok: false as const, pesan: 'Data yang diisi belum valid. Periksa kembali formnya.' };
   }
-  const { paket, alamat } = parsed.data;
+  const { paket, alamat, produk } = parsed.data;
 
   const claims = await requireUser();
   const supabase = await createClient();
@@ -67,15 +67,47 @@ export async function buatPesananAction(input: unknown) {
     return { ok: false as const, pesan: 'Kamu sudah punya pesanan untuk paket ini.' };
   }
 
-  // Nominal dari site_settings (fallback constants) — tidak pernah dari input klien (PRD §8.7).
   const harga = await getHargaUpgrade();
+  const admin = createAdminClient();
+  let nominal = harga.cert_only;
+  const barisItem: { product_id: number; qty: number; harga_satuan: number }[] = [];
+
+  if (paket !== 'cert_only') {
+    const dipilih = produk ?? [];
+    const ids = [...new Set(dipilih.map((p) => p.product_id))];
+    const { data: kategori } = await admin
+      .from('product_categories')
+      .select('id')
+      .ilike('nama_id', 'merchandise')
+      .limit(1)
+      .maybeSingle();
+    const { data: rows } = await admin
+      .from('products')
+      .select('id, harga, is_active, category_id')
+      .in('id', ids);
+    const byId = new Map((rows ?? []).map((r) => [r.id, r]));
+    for (const item of dipilih) {
+      const row = byId.get(item.product_id);
+      if (
+        !row ||
+        !row.is_active ||
+        row.category_id !== kategori?.id ||
+        typeof row.harga !== 'number'
+      ) {
+        return { ok: false as const, pesan: 'Ada produk merchandise yang tidak lagi tersedia.' };
+      }
+      barisItem.push({ product_id: row.id, qty: item.qty, harga_satuan: row.harga });
+    }
+    const totalProduk = barisItem.reduce((sum, item) => sum + item.harga_satuan * item.qty, 0);
+    nominal = paket === 'cert_merch' ? harga.cert_only + totalProduk : totalProduk;
+  }
 
   const { data: order, error } = await supabase
     .from('certificate_orders')
     .insert({
       user_id: claims.sub,
       paket,
-      nominal: harga[paket],
+      nominal,
       alamat_pengiriman: alamat ?? null,
     })
     .select('id')
@@ -83,6 +115,20 @@ export async function buatPesananAction(input: unknown) {
 
   if (error || !order) {
     return { ok: false as const, pesan: 'Gagal membuat pesanan. Coba lagi.' };
+  }
+
+  if (barisItem.length > 0) {
+    const { error: itemError } = await admin.from('certificate_order_items').insert(
+      barisItem.map((item) => ({ ...item, order_id: order.id })),
+    );
+    if (itemError) {
+      console.error('[upgrade] gagal simpan item merchandise:', itemError);
+      await admin.from('certificate_orders').delete().eq('id', order.id);
+      return {
+        ok: false as const,
+        pesan: 'Gagal menyimpan produk pesanan. Jalankan SQL certificate_order_items jika belum.',
+      };
+    }
   }
 
   revalidateDashboardPesanan();

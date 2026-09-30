@@ -21,14 +21,14 @@ function formatRupiah(nilai: number) {
 export type ProdukRow = {
   id: number;
   nama_id: string;
-  kategori: string | null;
+  kategoriNama: string | null;
   harga: number | null;
   tampilkan_harga: boolean;
   is_active: boolean;
   urutan: number;
 };
 
-export function ProdukTable({ produk }: { produk: ProdukRow[] }) {
+export function ProdukTable({ produk, basePath = '/admin/produk' }: { produk: ProdukRow[]; basePath?: string }) {
   const router = useRouter();
   const [daftar, setDaftar] = useState(produk);
   const [cari, setCari] = useState('');
@@ -115,7 +115,7 @@ export function ProdukTable({ produk }: { produk: ProdukRow[] }) {
                       />
                     </TableCell>
                     <TableCell className="font-medium text-foreground">{row.nama_id}</TableCell>
-                    <TableCell>{row.kategori ?? '—'}</TableCell>
+                    <TableCell>{row.kategoriNama ?? '—'}</TableCell>
                     <TableCell>
                       {row.tampilkan_harga
                         ? row.harga != null
@@ -126,7 +126,7 @@ export function ProdukTable({ produk }: { produk: ProdukRow[] }) {
                     <TableCell>{row.is_active ? 'Ya' : 'Tidak'}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end">
-                        <ProdukRowActions id={row.id} nama={row.nama_id} />
+                        <ProdukRowActions id={row.id} nama={row.nama_id} basePath={basePath} />
                       </div>
                     </TableCell>
                   </TableRow>

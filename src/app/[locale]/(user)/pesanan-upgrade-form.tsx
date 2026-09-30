@@ -25,12 +25,16 @@ function formatRupiah(angka: number) {
   return `Rp ${angka.toLocaleString('id-ID')}`;
 }
 
+export type ProdukMerchandiseForm = { id: number; nama: string; harga: number };
+
 export function PesananUpgradeForm({
   paketOptions,
   harga,
+  merchandise = [],
 }: {
   paketOptions: Paket[];
   harga: HargaUpgrade;
+  merchandise?: ProdukMerchandiseForm[];
 }) {
   const router = useRouter();
   // Dijamin tidak kosong oleh pemanggil (dashboard/transaksi & dashboard/merchandise) —
@@ -41,13 +45,32 @@ export function PesananUpgradeForm({
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<PesananInput>({
     resolver: zodResolver(PesananSchema),
-    defaultValues: { paket: paketTunggal },
+    defaultValues: { paket: paketTunggal, produk: [] },
   });
 
   const perluAlamat = paketDipilih !== 'cert_only';
+  const [qty, setQty] = useState<Record<number, number>>({});
+
+  function ubahQty(id: number, next: number) {
+    const pilihan = { ...qty, [id]: next };
+    if (next <= 0) delete pilihan[id];
+    setQty(pilihan);
+    setValue(
+      'produk',
+      Object.entries(pilihan).map(([productId, jumlah]) => ({
+        product_id: Number(productId),
+        qty: jumlah,
+      })),
+      { shouldValidate: true },
+    );
+  }
+
+  const subtotal = merchandise.reduce((sum, item) => sum + item.harga * (qty[item.id] ?? 0), 0);
+  const totalBayar = paketDipilih === 'cert_merch' ? harga.cert_only + subtotal : subtotal;
 
   async function onSubmit(data: PesananInput) {
     const hasil = await buatPesananAction(data);
@@ -83,7 +106,9 @@ export function PesananUpgradeForm({
                 >
                   <RadioGroupItem value={paket} />
                   <span className="flex-1">{LABEL_PAKET[paket]}</span>
-                  <span className="font-semibold text-foreground">{formatRupiah(harga[paket])}</span>
+                  <span className="font-semibold text-foreground">
+                    {paket === 'cert_only' ? formatRupiah(harga.cert_only) : 'Sesuai produk'}
+                  </span>
                 </Label>
               ))}
             </RadioGroup>
@@ -92,7 +117,48 @@ export function PesananUpgradeForm({
       ) : (
         <div className="flex items-center justify-between rounded-lg border border-border p-4">
           <span>{LABEL_PAKET[paketTunggal]}</span>
-          <span className="font-semibold text-foreground">{formatRupiah(harga[paketTunggal])}</span>
+          <span className="font-semibold text-foreground">
+            {paketTunggal === 'cert_only' ? formatRupiah(harga.cert_only) : 'Sesuai produk'}
+          </span>
+        </div>
+      )}
+
+      {perluAlamat && (
+        <div className="flex flex-col gap-3 rounded-lg border border-border p-4">
+          <p className="text-sm font-medium text-foreground">Produk merchandise</p>
+          {merchandise.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              Belum ada produk merchandise tersedia, hubungi Admin.
+            </p>
+          ) : (
+            merchandise.map((item) => (
+              <label key={item.id} className="flex items-center gap-3 text-sm">
+                <input
+                  type="checkbox"
+                  checked={(qty[item.id] ?? 0) > 0}
+                  onChange={(e) => ubahQty(item.id, e.target.checked ? 1 : 0)}
+                />
+                <span className="flex-1">{item.nama}</span>
+                <span>{formatRupiah(item.harga)}</span>
+                {(qty[item.id] ?? 0) > 0 && (
+                  <Input
+                    type="number"
+                    min={1}
+                    className="w-20"
+                    value={qty[item.id]}
+                    onChange={(e) => ubahQty(item.id, Number(e.target.value) || 1)}
+                    aria-label={`Jumlah ${item.nama}`}
+                  />
+                )}
+              </label>
+            ))
+          )}
+          {errors.produk && <p className="text-sm text-destructive">{errors.produk.message}</p>}
+          <p className="text-sm text-foreground">
+            {paketDipilih === 'cert_merch'
+              ? `Total: ${formatRupiah(totalBayar)} (termasuk sertifikat ${formatRupiah(harga.cert_only)})`
+              : `Total: ${formatRupiah(subtotal)}`}
+          </p>
         </div>
       )}
 
