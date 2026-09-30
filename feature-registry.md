@@ -226,6 +226,32 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 ---
 
+## Sprint 11 — Modul 12: Temuan UAT Internal InspiraLabs
+
+> Gladi resik internal Alif 24–25 September 2026, sebelum UAT bersama Abi. Dicatat susulan sebagai ADR-025 di `ENGINEERING.md` (30 Sep 2026). DONE hanya bila `plan.md` sudah memuat konfirmasi uji browser Alif.
+
+| Kode | Fitur | Status | Berkas | Diuji | Bukti |
+|---|---|---|---|---|---|
+| F12.1 | Kartu ajakan upgrade + merchandise, tombol WA detail pelatihan, nomor WA default lewat `getWhatsappAdmin()` | DONE | `dashboard/page.tsx`, `dashboard/sertifikat/page.tsx`, `pelatihan/[slug]/page.tsx`, `katalog/page.tsx`, `katalog/[slug]/page.tsx`, `pelatihan/page.tsx`, `pengaturan/actions.ts`; `prompt-temuan-uat-internal-1.md` | 2026-09-30 | Alif konfirmasi DONE (30 Sep 2026) untuk tiga bagian UAT internal: kartu upgrade/merchandise, tombol WA pelatihan, nomor WA dari Pengaturan. |
+| F12.2 | Persetujuan `merch_addon` tidak menerbitkan sertifikat baru; email dan PDF dipisah dari `cert_only` / `cert_merch` | DONE | `usulan-sql-fix-aktivasi-merch-addon.sql`, `admin/upgrade/actions.ts`, `lib/email/templates.ts`, `lib/email/send.ts`, `prompt-fix-approval-merch-addon.md` | 2026-09-30 | Alif konfirmasi DONE (30 Sep 2026). SQL aktivasi merch sudah dijalankan dan uji browser normal. |
+| F12.3 | Pintu `/materi/get-free-certificate-rpc`; id uji nonaktif | DONE | `src/lib/materi.ts`, `materi/get-free-certificate-rpc/page.tsx`, `materi/[id]/page.tsx`, `usulan-sql-nonaktifkan-materi-lama.sql`, `prompt-fix-routing-materi.md` | 2026-09-25 | Alif: SQL dijalankan; `/materi/1` dan `/materi/2` 404; `/materi/3` jalan. Path bernama sementara. |
+
+---
+
+## Sprint 12 — Modul 13: Permintaan Abi Langsung saat UAT
+
+> Lima permintaan Abi, 30 September 2026. F13.1 dan F13.2 sudah dikodekan (tetap TODO sampai uji Alif). F13.3–F13.5 menyusul.
+
+| Kode | Fitur | Status | Berkas | Diuji | Bukti |
+|---|---|---|---|---|---|
+| F13.1 | Navbar publik: teks Hexatara lebih besar | TODO | `src/app/[locale]/(public)/layout.tsx`; `prompt-navbar-dan-kartu-sertifikat.md` | | Kode: `text-2xl` di navbar saja, footer tidak diubah. Menunggu uji browser Alif. |
+| F13.2 | Kartu Sertifikat: ajakan upgrade bila belum pernah ada `certificate_orders` | TODO | `src/app/[locale]/(user)/dashboard/sertifikat/page.tsx`; `prompt-navbar-dan-kartu-sertifikat.md` | | Kartu “Dapatkan Sertifikat & QR Resmi” → `/dashboard/transaksi`. Menunggu uji browser Alif. |
+| F13.3 | Session timeout Admin, idle 30 menit | TODO | `prompt-session-timeout-admin.md` | | Belum ada laporan di `plan.md`. Timer idle belum ada di kode. |
+| F13.4 | Merchandise jadi produk di `products` (bundling sertifikat) | TODO | | | Menyusul, prompt terpisah belum dikirim. |
+| F13.5 | Pendaftaran perusahaan/komunitas (Excel, harga negosiasi) | TODO | | | Menyusul, prompt terpisah belum dikirim. |
+
+---
+
 ## Sprint 5 — Hardening & Deploy
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
@@ -370,6 +396,7 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 2026-09-18  (dokumen, bukan hasil uji) SQL ADR-023 (`usulan-sql-modul10-adr023.sql` Bagian 1) dikonfirmasi Alif sudah berhasil dijalankan penuh di Supabase live. Kolom `batch_registrations.bukti_url` sudah ada. Status F10.1–F10.6 TETAP TODO sesuai Definition of Done (§14) — SQL berhasil bukan berarti fitur selesai. Prompt Cursor F10.4 (`cursor-prompt-sprint9-modul10-f10.4-bukti-pembayaran.md`) sudah siap dipakai — `src/types/database.ts` WAJIB di-regenerate ulang sebagai langkah pertama Cursor di F10.4 supaya `bukti_url` ikut terbaca. F10.1/F10.3/F10.5/F10.6 tidak bergantung SQL ini, bisa dikerjakan kapan saja sesuai urutan termudah→tersulit yang sudah disepakati.
 2026-09-18  F10.1  Alif menguji sendiri di browser tiga bagian prompt asli (menu Leads, warna tombol edit/hapus/setujui, hint silabus) — hasil sesuai. **Temuan tambahan selama pengerjaan (di luar prompt F10.1 asli):** Cursor menemukan menu "Pendaftaran Minat" (`/admin/leads/minat`, tabel `batch_leads`, fitur F01.6 lama) sudah orphan — alur publik baru (`batch_registrations` sejak ADR-020r) sudah sepenuhnya menggantikannya, `DaftarMinatDialog`/`daftarMinatAction` tidak lagi dipanggil dari halaman mana pun. Sebelum Cursor menghapus apa pun, dikonfirmasi dulu lewat AskUserQuestion ke Alif (2026-09-18): dipilih hapus menu+kode publik+halaman Admin+actions/export terkait, TAPI tabel `batch_leads` di Supabase TIDAK dihapus (riwayat lama, sesuai PRD.md §9b yang sejak awal sudah menyatakan "batch_leads TIDAK dihapus — dipertahankan sebagai riwayat"). Yang dihapus Cursor: item menu, halaman/table/export/actions Admin Minat, komponen dialog publik, server action, validasi terkait; `/admin/leads` diarahkan redirect ke Penawaran; Overview (`admin/overview`) dan Kursus Saya (`dashboard/kursus`, baca riwayat) dialihkan membaca dari `batch_registrations`. `tsc`/`lint`/`build` bersih, dikonfirmasi Alif sudah diuji manual di browser (redirect, Overview, Kursus Saya). F01.6/F01.14 (baris lama di Sprint 1) TIDAK diedit sebagai catatan sejarah pengujian, sesuai kebijakan yang sudah dinyatakan di PRD.md §9b saat ADR-020 pertama kali ditulis — perubahan dicatat di sini saja, di baris F10.1 Sprint 9. F10.1 diubah TODO → DONE.
 2026-09-25  (UAT internal, pintu materi) Alif mengonfirmasi SQL `usulan-sql-nonaktifkan-materi-lama.sql` sudah dijalankan: `/materi/1` dan `/materi/2` (uji_materi_ppt / uji_materi_pdf, is_active false) tampil 404; `/materi/3` (course resmi) tetap jalan. Pintu dari UI memakai `/materi/get-free-certificate-rpc` (`getMateriHeroHref`), bukan angka id. Status F06.2 dan F06.11 tetap DONE; Bukti keduanya dilengkapi untuk kondisi ini. Listing+toggle semua materials di Admin belum dibuat (usulan terpisah di plan.md).
+2026-09-30  F12.1/F12.2  Alif mengunci DONE: tiga temuan UAT internal (kartu upgrade/merchandise, tombol WA pelatihan, WA dari Pengaturan) dan persetujuan merch_addon (SQL sudah jalan, uji normal). F12.3 tetap DONE dari 25 Sep. F13.x tetap TODO.
 ```
 
 ---

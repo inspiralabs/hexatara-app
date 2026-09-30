@@ -58,7 +58,7 @@ export default async function PublicLayout({ children }: { children: React.React
       <ForceLightDocument surface="public" />
       <PublicStickyHeader>
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-          <Link href="/" className="flex items-center gap-2 font-heading text-lg font-semibold text-foreground">
+          <Link href="/" className="flex items-center gap-2 font-heading text-2xl font-semibold leading-none text-foreground">
             <BrandLogo variant="default" size={32} priority unoptimized={false} />
             Hexatara
           </Link>

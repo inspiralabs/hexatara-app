@@ -1,4 +1,4 @@
-import { PackageIcon } from 'lucide-react';
+import { BadgeCheckIcon, PackageIcon } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { requireUser } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
@@ -45,8 +45,15 @@ export default async function SertifikatSayaPage() {
     .eq('paket', 'merch_addon')
     .maybeSingle();
 
+  const { data: pernahOrder } = await supabase
+    .from('certificate_orders')
+    .select('id')
+    .eq('user_id', claims.sub)
+    .limit(1);
+
   const adaFreeTrackAktif = (sertifikat ?? []).some((s) => s.jenis === 'free_track' && s.qr_aktif);
   const tampilkanPreview = profile?.free_track_selesai_at != null && !adaFreeTrackAktif;
+  const tampilkanAjakanUpgrade = tampilkanPreview && (pernahOrder?.length ?? 0) === 0;
   // Fitur BARU (bukan restore) — git: tidak pernah ada kartu merch di /dashboard/sertifikat.
   // Tampil jika cert_only sudah disetujui dan merch_addon belum disetujui.
   const tampilkanAjakanMerch =
@@ -84,6 +91,29 @@ export default async function SertifikatSayaPage() {
                 jenisLabel={LABEL_JENIS[s.jenis]}
               />
             ))}
+        </div>
+      )}
+
+      {tampilkanAjakanUpgrade && (
+        <div className="flex flex-col gap-4 rounded-xl border border-warna-aksen/30 bg-warna-aksen/5 p-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex gap-3">
+            <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-lg bg-warna-aksen/10 text-warna-aksen">
+              <BadgeCheckIcon className="size-5" aria-hidden />
+            </span>
+            <div>
+              <p className="text-base font-semibold text-warna-teks">Dapatkan Sertifikat & QR Resmi</p>
+              <p className="mt-0.5 text-sm text-warna-teks-2">
+                Sertifikat ini masih pratinjau. Upgrade di Transaksi Saya supaya QR-nya aktif dan bisa
+                diverifikasi publik.
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/dashboard/transaksi"
+            className="inline-flex h-11 shrink-0 items-center justify-center rounded-lg bg-warna-aksen px-5 text-base font-semibold text-warna-teks"
+          >
+            Upgrade di Transaksi
+          </Link>
         </div>
       )}
 

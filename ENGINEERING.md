@@ -1338,6 +1338,46 @@ karena kedua prop baru defaultnya menjaga perilaku lama.
 - **F11.7 (polish UI, tanpa DDL, 2026-09-22):** (a) filter kategori `/katalog` + `/pelatihan` — lebar trigger ikut teks di tablet/desktop (`sm:w-auto sm:min-w-48 sm:max-w-md`); (b) jam operasional footer dwibahasa — field `jam_operasional_en` di JSON `site_settings.kontak` (Admin Pengaturan), footer pilih by locale; (c) UI upload berkas konsisten lewat komponen baru `FileUploadField` (dashed + hint + preview): lampiran materi (upload saat Simpan, bukan saat pilih), bukti Setuju pendaftaran, bukti transfer user, impor sertifikat/soal CSV, FotoPicker daftar batch publik.
 
 **Konsekuensi.** F11.1 mengubah definisi view `products_public` (bukan tabel/kolom baru, tapi tetap perubahan skema yang harus dijalankan manual oleh Alif di Supabase sesuai kebiasaan proyek — agent tidak pernah eksekusi DDL) dan berpotensi butuh regenerate `src/types/database.ts` sebelum Cursor mulai coding, supaya kolom baru `category_nama_id`/`category_nama_en` dikenali TypeScript. **Risiko keamanan yang harus dijaga:** PRD.md §5.2/ADR-004 mencatat `products_public` sengaja `security_invoker = off` (security definer view) supaya `harga` produk yang `tampilkan_harga = false` selalu NULL untuk publik — perubahan definisi view WAJIB memastikan properti ini tidak berubah, dan query uji `select harga from products_public where tampilkan_harga = false;` (semua baris harus NULL) WAJIB diulang setelah view diubah, sebelum F11.1 dianggap aman dikerjakan. F11.2 murni tampilan/query baca (tidak ada perubahan skema), risiko rendah. F11.3 murni tampilan, risiko rendah. F11.4 murni UI + update satu kolom status (tanpa DDL), risiko rendah; terhubung F11.2 — angka breakdown penawaran di dashboard hanya berubah setelah Admin memakai dropdown ini. F11.5 murni kode + join PostgREST (tanpa view/DDL); kolom teks kategori batch tetap di DB sebagai warisan. F11.6 murni copy/UI/i18n. F11.7 murni CSS filter + JSON kontak + komponen upload bersama (tanpa DDL). Dicatat sebagai Sprint 10/Modul 11 (F11.x) di `feature-registry.md`. Detail lengkap SQL di `usulan-sql-modul11-adr024.sql`.
+
+---
+
+### ADR-025 — Modul 12: Temuan UAT Internal InspiraLabs (Dashboard/WA, Bug Merch Addon, Bug Routing Materi)
+**2026-09-30 · dokumentasi susulan · Berlaku**
+
+Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan saat itu hanya tercatat di `plan.md`, bukan sebagai ADR. Entri ini mendokumentasikan ulang apa yang sudah ada di kode dan di catatan itu. Bukan keputusan baru.
+
+**Konteks.** Gladi resik internal Alif menemukan tiga kelompok:
+
+1. **Dashboard, tombol WA pelatihan, dan nomor WA default (24–25 Sep).** Kartu dashboard hanya mengingatkan identitas. User yang sudah selesai kuis tetapi belum punya sertifikat resmi tidak melihat ajakan upgrade. Di halaman detail pelatihan, syarat/fasilitas, dukungan, dan CTA akhir bisa menampilkan sampai empat tombol WhatsApp sekaligus. Beberapa halaman publik membaca `NEXT_PUBLIC_WA_ADMIN` langsung, sehingga ubahan di Pengaturan → Kontak Publik tidak sampai ke katalog dan listing. Alif menguji katalog: tombol Hubungi via WhatsApp tetap membuka nomor env (`6281210374787`), bukan nomor yang baru disimpan.
+2. **Persetujuan `merch_addon` gagal (25 Sep).** Setelah `cert_only` disetujui, Admin menolak pesanan tambahan merchandise dengan error Postgres P0001: “Pengguna sudah punya sertifikat free_track”. Fungsi `aktivasi_sertifikat_free_track()` di `docs/sql/14_aktivasi_sertifikat.sql` menjalankan guard dan `insert into certificates` untuk semua paket. Untuk `merch_addon` sertifikat itu memang sudah ada.
+3. **URL materi angka (25 Sep).** `/materi` tanpa id memang 404 (tidak ada listing). `/materi/3` adalah course resmi karena `getMateriHeroHref()` memilih baris aktif pertama yang punya bab. `/materi/1` (`uji_materi_ppt`) dan `/materi/2` (`uji_materi_pdf`) adalah sisa uji pra-LMS, masih `is_active = true`, dan Admin Materi hanya menampilkan satu course sehingga tidak ada saklar untuk mematikannya.
+
+**Keputusan.**
+- **F12.1:** kartu ajakan di dashboard utama muncul bila kuis selesai dan pesanan utama belum `disetujui` serta bukan `menunggu_verifikasi` (kasus itu cukup StatTile “Diperiksa Admin”). Teks beda untuk belum diajukan, `menunggu_bukti`, dan `ditolak`. CTA ke `/dashboard/transaksi`. Di `/dashboard/sertifikat`, kartu “Tambah merchandise” hanya jika `cert_only` sudah disetujui dan `merch_addon` belum disetujui — fitur baru, bukan restore (git tidak menemukan kartu itu sebelumnya). Card Syarat & Fasilitas tanpa tombol WA; Dukungan memakai `waRegulerLink` (Admin); CTA akhir memakai `waPrivateLink` (Abiyyi). `getWhatsappAdmin()` dipakai di katalog (listing + detail), listing pelatihan, dan tautan WA setelah daftar batch. `simpanKontakAction` juga `revalidatePath` `/katalog` dan `/pelatihan`. Label field WhatsApp di Pengaturan jadi “WhatsApp (default/umum)”. Env tetap fallback. **Alif mengunci DONE 30 Sep 2026.**
+- **F12.2:** SQL `usulan-sql-fix-aktivasi-merch-addon.sql` — untuk `merch_addon` lewati insert sertifikat baru, kembalikan id/nomor sertifikat yang sudah ada, `status_pengiriman` = `belum_diproses`. `cert_only` dan `cert_merch` tidak berubah. Setelah RPC, TypeScript tidak menimpa PDF untuk addon dan mengirim email merchandise (`templateMerchDisetujui` / `kirimEmailMerchDisetujui`), bukan “sertifikat sudah aktif”. Pesan disetujui di Transaksi juga dipisah tiga: sertifikat saja, sertifikat + merchandise dari awal (`templateCertMerchDisetujui`), dan tambahan merchandise. Riwayat aktivitas addon memakai teks “Pesanan merchandise disetujui” (`LABEL_AKSI` dashboard tidak diubah). Detail permintaan penawaran di Admin ditambah dialog Detail (pola dialog pendaftaran batch, tanpa foto). **Alif mengunci DONE 30 Sep 2026** (SQL sudah dijalankan, uji normal).
+- **F12.3:** pintu UI `/materi/get-free-certificate-rpc` mengalihkan ke `/materi/{id}` course aktif (atau `/pelatihan` jika belum ada). `getMateriHeroHref()` mengembalikan path bernama itu, bukan angka. `/materi/[id]` yang bukan course resmi diarahkan ke pintu bernama (bukan `notFound()`, mengikuti redirect `/batch/[slug]`). `getMateriId()` Admin tidak diubah. SQL `usulan-sql-nonaktifkan-materi-lama.sql` hanya `is_active = false` untuk judul uji, bukan DELETE. **Alif konfirmasi 25 Sep:** `/materi/1` dan `/materi/2` 404, `/materi/3` jalan. Path bernama disepakati sementara; bisa diganti nama atau slug database nanti. Daftar semua `materials` di Admin tidak dibuat.
+
+**Konsekuensi.** Tiga email persetujuan tidak boleh digabung lagi. Path materi bernama bukan kontrak permanen. Admin masih tidak bisa mematikan baris `materials` dari UI. Nomor WA umum dan WA pelatihan tetap dua pengaturan berbeda (`kontak.wa` vs `kontak_pelatihan`). Dicatat sebagai Sprint 11/Modul 12 (F12.x).
+
+---
+
+### ADR-026 — Modul 13: Permintaan Abi Langsung saat UAT (Navbar, Kartu Ajakan, Session Timeout Admin, Merchandise jadi Produk, Pendaftaran Perusahaan)
+**2026-09-30 · Diperluas 2026-09-30 (F13.1/F13.2) · Berlaku — sebagian, 3 poin lain menyusul**
+
+**Konteks.** Pada UAT bersama klien 30 September 2026, Abi menyampaikan lima permintaan. Ini terpisah dari ADR-025 (gladi resik internal InspiraLabs).
+
+1. Perbesar teks “Hexatara” di navbar publik (bukan footer).
+2. Di halaman Sertifikat Saya, ajakan upgrade untuk user yang selesai LMS, sertifikat masih pratinjau, dan belum pernah punya baris `certificate_orders` sama sekali. Kartu merchandise `cert_only` yang sudah ada (F12.1) tidak menutup kasus ini.
+3. Admin otomatis logout setelah 30 menit tanpa aktivitas, dengan peringatan di menit ke-28; hanya area `/admin` yang sudah login, bukan publik atau dashboard user.
+4. Merchandise menjadi produk sungguhan di tabel `products` dan bisa dibundling ke sertifikat. Belum dikerjakan.
+5. Jalur pendaftaran perusahaan/komunitas (unggah Excel, harga negosiasi manual). Belum dikerjakan.
+
+**Keputusan.** Hanya F13.1 dan F13.2. F13.3–F13.5 belum punya Keputusan.
+- **F13.1:** teks “Hexatara” di navbar publik (`layout.tsx`) dari `text-lg` menjadi `text-2xl leading-none`, sejajar logo 32px. Footer di file yang sama tetap `text-base font-bold`.
+- **F13.2:** di `/dashboard/sertifikat`, kartu “Dapatkan Sertifikat & QR Resmi” hanya jika pratinjau aktif dan belum ada satupun baris `certificate_orders`. Tombol ke `/dashboard/transaksi`. Kalau sudah pernah ada pesanan (status apa pun), kartu ini tidak tampil. Kartu merchandise `cert_only` tidak diubah. `/dashboard/transaksi` tidak diubah.
+
+**Konsekuensi.** Status registry F13.1/F13.2 tetap TODO sampai Alif uji di browser. F13.3 (timeout), F13.4 (merchandise sebagai produk), dan F13.5 (pendaftaran perusahaan) menyusul lewat prompt terpisah. F13.4 dan F13.5 berpotensi mengubah skema database. ADR ini akan diperluas lagi, pola ADR-024.
+
 ---
 
 ### Template ADR baru
@@ -1377,3 +1417,6 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-09-20 | **ADR-024 diperluas — F11.4–F11.6.** F11.4 (2026-09-19): dropdown Status penawaran. F11.5: kasus kategori Batch sama F11.1 (hapus teks form, badge dari join `batch_categories`, tanpa DDL/view; bersyarat diagnosis `category_id`). F11.6: polish Hero (tanpa teks tombol), FAQ detail = Silabus, footer tagline baru, gap i18n EN ditutup. |
 | 2026-09-22 | **ADR-020r amandemen F07.3 Fix A + ADR-024 F11.7.** Fix A: user login tetap pilih "dengan akun" / "tanpa taut akun" (`sebagai_tamu` → `user_id` null, skip sync `profiles`). F11.7: filter kategori lebar ikut teks; `jam_operasional_en` di JSON kontak; `FileUploadField` konsisten (lampiran/bukti/impor/FotoPicker). Diuji Alif — DONE di `feature-registry.md`. |
 | 2026-09-24 | **Email lead: DB-first + keputusan `minat_batch`.** Penerima `kirimEmailLeadBaru` lewat `getAdminNotifyEmail()` (`site_settings.admin_notify_email`, fallback `ADMIN_NOTIFY_EMAIL`) — e2e inbox F04.5 LOLOS. Cabang tipe `minat_batch` **ditahan** sampai Fase 2 (email notifikasi pendaftaran batch); jangan bersihkan sebagai dead code. Tercatat PRD.md §15 + kandidat Fase 2 di `feature-registry.md`. |
+| 2026-09-30 | **ADR-025 ditambahkan** (dokumentasi susulan untuk pekerjaan UAT internal 24–25 Sep yang sudah selesai di kode: dashboard/WA, merch addon, routing materi). Bukan keputusan baru. |
+| 2026-09-30 | **ADR-026 dibuka** (Sprint 12/Modul 13, permintaan Abi 30 Sept 2026). Navbar, kartu ajakan “belum pernah order”, dan timeout Admin belum punya laporan di `plan.md`. Merchandise-jadi-produk dan pendaftaran perusahaan menyusul. |
+| 2026-09-30 | **ADR-026 diperluas — F13.1/F13.2 dikerjakan, F13.3–F13.5 menyusul.** Navbar publik `text-2xl` (footer tidak diubah). Kartu sertifikat hanya jika belum pernah ada `certificate_orders`. Status registry tetap TODO sampai uji Alif. |

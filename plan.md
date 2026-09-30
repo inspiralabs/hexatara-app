@@ -310,3 +310,70 @@ Catatan tambahan dari Alif (25 Sep 2026): URL `/materi/get-free-certificate-rpc`
 ```
 fix(public): pintu materi bernama, jangan tampilkan sisa uji coba
 ```
+
+---
+
+## Dokumentasi Susulan — ADR-025 & ADR-026 (30 September 2026)
+
+Murni dokumen. Tidak ada perubahan kode di tugas ini.
+
+| ADR | Registry | Status yang dipilih | Alasan |
+|---|---|---|---|
+| ADR-025 | F12.1 | **DONE** | Alif konfirmasi 30 Sep 2026. |
+| ADR-025 | F12.2 | **DONE** | Alif konfirmasi 30 Sep 2026. SQL merch sudah dijalankan, uji normal. |
+| ADR-025 | F12.3 | **DONE** | `plan.md`: “DIKONFIRMASI ALIF 2026-09-25”, `/materi/1`–`/2` 404, `/materi/3` jalan. |
+| ADR-026 | F13.1 navbar | **TODO** | Kode `text-2xl` sudah masuk. Menunggu uji browser Alif. |
+| ADR-026 | F13.2 kartu belum-pernah-order | **TODO** | Kartu sudah masuk. Menunggu uji browser Alif. |
+| ADR-026 | F13.3 timeout Admin | **TODO** | Ada prompt, tidak ada laporan hasil di `plan.md`. Tidak ada timer idle di kode. |
+| ADR-026 | F13.4 merchandise jadi produk | **TODO** | Belum ada prompt dan belum ada kode. |
+| ADR-026 | F13.5 pendaftaran perusahaan | **TODO** | Belum ada prompt dan belum ada kode. |
+
+**Dikunci Alif 30 Sep 2026:** F12.1 dan F12.2 DONE. F13.x tetap TODO.
+
+**Pesan commit yang disarankan**
+
+```
+docs: catat ADR-025 dan ADR-026 untuk UAT internal dan permintaan Abi
+```
+
+---
+
+## Permintaan Abi (30 September 2026) — Navbar & Kartu Ajakan Upgrade
+
+Dua bagian terpisah. Keduanya tetap TODO di registry sampai Alif uji sendiri.
+
+### Bagian A — Navbar
+
+Teks “Hexatara” di navbar publik naik dari `text-lg` ke `text-2xl leading-none`, sejajar logo 32px. Footer di file yang sama **sengaja tidak diubah** (`text-base font-bold`).
+
+| File | Perubahan |
+|---|---|
+| `src/app/[locale]/(public)/layout.tsx` | Kelas teks navbar saja |
+
+Cara uji: buka beranda dan satu halaman publik lain (misalnya `/katalog`). Teks navbar lebih besar, sejajar logo, tidak memakan menu. Ulangi di lebar HP di bawah 768px.
+
+### Bagian B — Kartu Sertifikat
+
+Kartu “Dapatkan Sertifikat & QR Resmi” muncul hanya jika sertifikat masih pratinjau dan user belum pernah punya baris `certificate_orders`. Tombol ke `/dashboard/transaksi`. Kartu merchandise yang sudah ada tidak diubah. Halaman Transaksi tidak diubah.
+
+| File | Perubahan |
+|---|---|
+| `src/app/[locale]/(user)/dashboard/sertifikat/page.tsx` | Query `limit(1)` seluruh pesanan + kartu baru |
+
+Cara uji: akun yang baru selesai kuis dan belum pernah ajukan pesanan → `/dashboard/sertifikat` menampilkan kartu itu. Akun yang sudah pernah ajukan pesanan (status apa pun) → kartu ini tidak muncul.
+
+### Verifikasi
+
+| Cek | Hasil |
+|---|---|
+| `pnpm tsc --noEmit` | Lolos |
+| `pnpm lint` | Lolos |
+| Navbar desktop + lebar 390px | Teks lebih besar, sejajar logo, menu tidak pecah |
+
+☐ Jangan tandai F13.1 atau F13.2 DONE di `feature-registry.md` sebelum Alif konfirmasi uji browser. Boleh konfirmasi terpisah.
+
+**Pesan commit yang disarankan**
+
+```
+fix(public): perbesar nama Hexatara di navbar dan ajakan upgrade di sertifikat
+```
