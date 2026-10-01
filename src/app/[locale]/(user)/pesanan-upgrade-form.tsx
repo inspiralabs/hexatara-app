@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -25,7 +26,7 @@ function formatRupiah(angka: number) {
   return `Rp ${angka.toLocaleString('id-ID')}`;
 }
 
-export type ProdukMerchandiseForm = { id: number; nama: string; harga: number };
+export type ProdukMerchandiseForm = { id: number; nama: string; harga: number; thumbnail_url?: string | null };
 
 export function PesananUpgradeForm({
   paketOptions,
@@ -133,6 +134,17 @@ export function PesananUpgradeForm({
           ) : (
             merchandise.map((item) => (
               <label key={item.id} className="flex items-center gap-3 text-sm">
+                {item.thumbnail_url ? (
+                  <Image
+                    src={item.thumbnail_url}
+                    alt=""
+                    width={44}
+                    height={44}
+                    className="size-11 shrink-0 rounded-md object-cover"
+                  />
+                ) : (
+                  <span className="size-11 shrink-0 rounded-md bg-muted" aria-hidden />
+                )}
                 <input
                   type="checkbox"
                   checked={(qty[item.id] ?? 0) > 0}
@@ -172,7 +184,7 @@ export function PesananUpgradeForm({
             )}
           </div>
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="telepon">Nomor telepon</Label>
+            <Label htmlFor="telepon">Nomor telepon (WhatsApp)</Label>
             <Input id="telepon" {...register('alamat.telepon')} />
             {errors.alamat?.telepon && (
               <p className="text-sm text-destructive">{errors.alamat.telepon.message}</p>

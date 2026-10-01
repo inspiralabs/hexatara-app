@@ -17,11 +17,11 @@ export default async function SettingPage() {
     <div className="flex flex-col gap-8">
       <div>
         <h1 className="text-2xl font-semibold text-foreground sm:text-3xl">Setting</h1>
-        <p className="mt-1 text-base text-muted-foreground">Ubah nomor WhatsApp dan kata sandi akun.</p>
+        <p className="mt-1 text-base text-muted-foreground">Ubah nomor telepon (WhatsApp) dan kata sandi akun.</p>
       </div>
 
       <section className="max-w-md rounded-xl border border-border bg-card p-5">
-        <h2 className="text-base font-semibold text-foreground">WhatsApp</h2>
+        <h2 className="text-base font-semibold text-foreground">Nomor telepon (WhatsApp)</h2>
         <div className="mt-4">
           <ProfilForm
             variant="kontak"

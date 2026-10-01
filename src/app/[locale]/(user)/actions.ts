@@ -37,7 +37,6 @@ export async function buatPesananAction(input: unknown) {
   const supabase = await createClient();
 
   if (paket === 'merch_addon') {
-    // F03.10 — hanya untuk cert_only yang SUDAH disetujui (PRD §8.7).
     const { data: certOnlyDisetujui } = await supabase
       .from('certificate_orders')
       .select('id')
@@ -49,22 +48,28 @@ export async function buatPesananAction(input: unknown) {
     if (!certOnlyDisetujui) {
       return { ok: false as const, pesan: 'Paket cert_only kamu belum disetujui Admin.' };
     }
-  }
-
-  // Satu pengguna satu pesanan aktif per kelompok paket — kalau sudah ada baris
-  // (apa pun statusnya), pesanan baru ditolak di sini. Ditolak (`ditolak`) tidak
-  // membuat baris baru — kirim ulang lewat unggahBuktiTransferAction pada baris yang sama.
-  const kelompokPaket: (typeof paket)[] =
-    paket === 'merch_addon' ? ['merch_addon'] : ['cert_only', 'cert_merch'];
-  const { data: orderAda } = await supabase
-    .from('certificate_orders')
-    .select('id')
-    .eq('user_id', claims.sub)
-    .in('paket', kelompokPaket)
-    .limit(1)
-    .maybeSingle();
-  if (orderAda) {
-    return { ok: false as const, pesan: 'Kamu sudah punya pesanan untuk paket ini.' };
+    const { data: terakhir } = await supabase
+      .from('certificate_orders')
+      .select('status')
+      .eq('user_id', claims.sub)
+      .eq('paket', 'merch_addon')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (terakhir && (terakhir.status === 'menunggu_bukti' || terakhir.status === 'menunggu_verifikasi')) {
+      return { ok: false as const, pesan: 'Selesaikan pesanan merchandise yang masih berjalan dulu.' };
+    }
+  } else {
+    const { data: orderAda } = await supabase
+      .from('certificate_orders')
+      .select('id')
+      .eq('user_id', claims.sub)
+      .in('paket', ['cert_only', 'cert_merch'])
+      .limit(1)
+      .maybeSingle();
+    if (orderAda) {
+      return { ok: false as const, pesan: 'Kamu sudah punya pesanan untuk paket ini.' };
+    }
   }
 
   const harga = await getHargaUpgrade();

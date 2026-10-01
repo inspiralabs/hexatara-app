@@ -30,7 +30,7 @@ export function ProfilForm({
       return;
     }
     toast.success(
-      variant === 'profil' ? 'Profil berhasil disimpan.' : 'Nomor WhatsApp berhasil disimpan.',
+      variant === 'profil' ? 'Profil berhasil disimpan.' : 'Nomor telepon (WhatsApp) berhasil disimpan.',
     );
   }
 
@@ -45,14 +45,14 @@ export function ProfilForm({
         </div>
       ) : (
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="whatsapp">WhatsApp</Label>
+          <Label htmlFor="whatsapp">Nomor telepon (WhatsApp)</Label>
           <Input id="whatsapp" {...register('whatsapp')} placeholder="08…" />
           <input type="hidden" {...register('nama_lengkap')} />
         </div>
       )}
 
       <Button type="submit" disabled={isSubmitting} className="w-fit">
-        {isSubmitting ? 'Menyimpan…' : variant === 'profil' ? 'Simpan Profil' : 'Simpan WhatsApp'}
+        {isSubmitting ? 'Menyimpan…' : variant === 'profil' ? 'Simpan Profil' : 'Simpan nomor'}
       </Button>
     </form>
   );

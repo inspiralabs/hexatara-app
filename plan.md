@@ -456,10 +456,72 @@ Klik Ubah di Merchandise kembali ke `/admin/merchandise` setelah simpan atau bat
 
 File: `produk-table.tsx`, `produk-row-actions.tsx`, `produk-form.tsx`, `produk/page.tsx`, `merchandise/page.tsx`, `merchandise/[id]/page.tsx`.
 
-Status: **menunggu uji Alif**. F13.4 tetap TODO.
+Status: **dikonfirmasi Alif 30 Sep 2026.** F13.4 tetap TODO.
 
 **Pesan commit yang disarankan**
 
 ```
 fix(admin-produk): perbaiki redirect edit merchandise & kolom kategori kosong
 ```
+
+---
+
+## Bug F13.4 — tabel pesanan dan sertifikat ditolak (30 September 2026)
+
+Pesanan Merchandise dan Pesanan Publik memakai tabel yang bisa dicari, plus unduh Excel. Bagian Pengiriman Merchandise di Sertifikat → Upgrade dihapus karena sama dengan menu Merchandise. Gantinya daftar Sertifikat Ditolak, dengan tautan WhatsApp dari nomor di profil.
+
+Status: **menunggu uji Alif**. F13.4 tetap TODO.
+
+**Pesan commit yang disarankan**
+
+```
+fix(admin-merchandise): pesanan jadi tabel + export Excel, rapikan menu Sertifikat
+```
+
+---
+
+## Bug F13.4 — detail pesanan dan baris toolbar (1 Oktober 2026)
+
+Popup Detail di Pesanan Merchandise dan Pesanan Publik. Nomor WhatsApp tidak di tabel; muncul di popup. Tombol Konfirmasi pesanan membuka WhatsApp pemilik. Judul, filter, dan Ekspor Excel satu baris.
+
+Status: **dikonfirmasi Alif 1 Okt 2026.** F13.4 tetap TODO.
+
+---
+
+## F13.4 — pesan ulang merchandise, gambar, stepper (1 Oktober 2026)
+
+`merch_addon` boleh dipesan lagi setelah pesanan terakhir disetujui (tidak perlu menunggu diterima) atau ditolak (unggah ulang bukti, atau pesanan baru). Pesanan menunggu bukti atau verifikasi tetap mengunci. Riwayat tidak dihapus. `cert_only` dan `cert_merch` tetap satu pesanan. Tidak ada SQL.
+
+| File | Perubahan |
+|---|---|
+| `src/lib/merchandise.ts` | `thumbnail_url`, pecah order aktif vs riwayat |
+| `src/app/[locale]/(user)/actions.ts` | Izinkan insert `merch_addon` baru kalau yang terakhir sudah disetujui atau ditolak |
+| `dashboard/merchandise/page.tsx`, `dashboard/transaksi/page.tsx` | Status utama + riwayat |
+| `pesanan-upgrade-form.tsx` | Thumbnail produk |
+| `status-pengiriman-stepper.tsx`, `pesanan-status-section.tsx` | Stepper kirim untuk `cert_merch` dan `merch_addon` yang disetujui |
+
+Status: **menunggu uji Alif**. F13.4 tetap TODO.
+
+**Pesan commit yang disarankan**
+
+```
+fix(dashboard-merchandise): boleh pesan ulang, gambar produk, stepper status kirim
+
+- Order merch_addon tidak lagi dibatasi satu seumur hidup: boleh order baru setelah
+  order sebelumnya disetujui atau ditolak (riwayat tetap tersimpan)
+- Form pemilihan produk tampilkan gambar (thumbnail_url)
+- Status pengiriman (belum diproses/diproses/dikirim/diterima) jadi stepper visual
+  di /dashboard/transaksi & /dashboard/merchandise
+
+Ref: ADR-026, F13.4 (temuan UAT)
+```
+
+---
+
+## F13.4 — satu nomor telepon (WhatsApp) dan judul pesanan (1 Oktober 2026)
+
+Satu nomor untuk chat dan kurir. Label di form dashboard, form beli publik, dan Pengaturan user: **Nomor telepon (WhatsApp)**. Admin membaca nomor itu dari alamat pengiriman, bukan dari WhatsApp di profil. Kolom `profiles.whatsapp` dan `merchandise_public_orders.whatsapp` tidak diubah skemanya; pesanan publik menyalin nomor alamat ke kolom yang sudah ada. Form pendaftaran pelatihan tidak diubah.
+
+Judul Pesanan Merchandise dan Pesanan Publik berada di atas kotak cari. Filter dan Ekspor tetap sebaris dengan pencarian.
+
+Status: **menunggu uji Alif**. F13.4 tetap TODO. Registry belum diperbarui.

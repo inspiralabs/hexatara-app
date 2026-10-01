@@ -73,10 +73,10 @@ export async function kirimPesananMerchandisePublikAction(productId: unknown, in
   }
 
   const hargaSatuan = typeof produk.harga === 'number' ? produk.harga : 0;
-  const { nama_lengkap, whatsapp, qty, alamat, catatan } = parsed.data;
+  const { nama_lengkap, qty, alamat, catatan } = parsed.data;
   const { error } = await supabaseAdmin.from('merchandise_public_orders').insert({
     nama_lengkap,
-    whatsapp,
+    whatsapp: alamat.telepon,
     alamat_pengiriman: alamat,
     catatan: catatan?.trim() || null,
     items: [{ product_id: produk.id, nama_produk: produk.nama_id, qty, harga_satuan: hargaSatuan }],
@@ -87,7 +87,7 @@ export async function kirimPesananMerchandisePublikAction(productId: unknown, in
   }
 
   const nomor = await getWhatsappAdmin();
-  const pesan = `Halo Admin Hexatara, saya ${nama_lengkap} ingin beli ${produk.nama_id} (${qty} pcs). Kota: ${alamat.kota}. WA: ${whatsapp}`;
+  const pesan = `Halo Admin Hexatara, saya ${nama_lengkap} ingin beli ${produk.nama_id} (${qty} pcs). Kota: ${alamat.kota}. Nomor telepon (WhatsApp): ${alamat.telepon}`;
   const waLink = nomor ? `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}` : null;
   return { ok: true as const, waLink };
 }

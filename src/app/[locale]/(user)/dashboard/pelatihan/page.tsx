@@ -72,6 +72,8 @@ export default async function DashboardPelatihanPage({
         .select('status')
         .eq('user_id', claims.sub)
         .eq('paket', 'merch_addon')
+        .eq('status', 'disetujui')
+        .limit(1)
         .maybeSingle(),
     ]);
 

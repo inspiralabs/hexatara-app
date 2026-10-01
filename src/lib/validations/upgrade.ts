@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const AlamatPengirimanSchema = z.object({
   nama_penerima: z.string().min(1, { error: 'Nama penerima wajib diisi' }),
-  telepon: z.string().min(1, { error: 'Nomor telepon wajib diisi' }),
+  telepon: z.string().min(1, { error: 'Nomor telepon (WhatsApp) wajib diisi' }),
   alamat_lengkap: z.string().min(1, { error: 'Alamat lengkap wajib diisi' }),
   kota: z.string().min(1, { error: 'Kota wajib diisi' }),
   kode_pos: z.string().min(1, { error: 'Kode pos wajib diisi' }),

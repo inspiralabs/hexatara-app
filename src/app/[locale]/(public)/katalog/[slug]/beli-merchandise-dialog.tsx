@@ -40,7 +40,7 @@ export function BeliMerchandiseDialog({
     formState: { errors, isSubmitting },
   } = useForm<MerchandisePublikInput>({
     resolver: zodResolver(MerchandisePublikSchema),
-    defaultValues: { nama_lengkap: '', whatsapp: '', qty: 1, catatan: '' },
+    defaultValues: { nama_lengkap: '', qty: 1, catatan: '' },
   });
 
   async function onSubmit(data: MerchandisePublikInput) {
@@ -101,11 +101,6 @@ export function BeliMerchandiseDialog({
               {errors.nama_lengkap && <p className="text-sm text-destructive">{errors.nama_lengkap.message}</p>}
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="whatsapp">WhatsApp</Label>
-              <Input id="whatsapp" {...register('whatsapp')} />
-              {errors.whatsapp && <p className="text-sm text-destructive">{errors.whatsapp.message}</p>}
-            </div>
-            <div className="flex flex-col gap-1.5">
               <Label htmlFor="qty">Jumlah</Label>
               <Input id="qty" type="number" min={1} {...register('qty', { valueAsNumber: true })} />
               {errors.qty && <p className="text-sm text-destructive">{errors.qty.message}</p>}
@@ -116,7 +111,7 @@ export function BeliMerchandiseDialog({
               {errors.alamat?.nama_penerima && <p className="text-sm text-destructive">{errors.alamat.nama_penerima.message}</p>}
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="telepon">Telepon penerima</Label>
+              <Label htmlFor="telepon">Nomor telepon (WhatsApp)</Label>
               <Input id="telepon" {...register('alamat.telepon')} />
               {errors.alamat?.telepon && <p className="text-sm text-destructive">{errors.alamat.telepon.message}</p>}
             </div>

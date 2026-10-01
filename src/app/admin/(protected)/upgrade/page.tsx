@@ -1,7 +1,7 @@
 import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { AntreanTable, PengirimanTable } from './upgrade-tables';
+import { AntreanTable, SertifikatDitolakTable } from './upgrade-tables';
 
 export default async function AdminUpgradePage() {
   // Layout sudah memanggil requireAdmin(), dipanggil lagi eksplisit di sini
@@ -11,32 +11,29 @@ export default async function AdminUpgradePage() {
   const supabase = await createClient();
   const supabaseAdmin = createAdminClient();
 
-  const [{ data: antrean, error: errorAntrean }, { data: pengiriman, error: errorPengiriman }] =
-    await Promise.all([
-      supabase
-        .from('certificate_orders')
-        .select('id, user_id, paket, nominal, bukti_url, alamat_pengiriman')
-        .eq('status', 'menunggu_verifikasi')
-        .order('created_at', { ascending: true }),
-      supabase
-        .from('certificate_orders')
-        .select('id, user_id, paket, status_pengiriman, alamat_pengiriman')
-        .eq('status', 'disetujui')
-        .neq('status_pengiriman', 'tidak_ada')
-        .order('updated_at', { ascending: false }),
-    ]);
+  const [{ data: antrean, error: errorAntrean }, { data: ditolak, error: errorDitolak }] = await Promise.all([
+    supabase
+      .from('certificate_orders')
+      .select('id, user_id, paket, nominal, bukti_url, alamat_pengiriman')
+      .eq('status', 'menunggu_verifikasi')
+      .order('created_at', { ascending: true }),
+    supabase
+      .from('certificate_orders')
+      .select('id, user_id, paket, alasan_tolak, created_at')
+      .eq('status', 'ditolak')
+      .order('created_at', { ascending: false }),
+  ]);
 
   if (errorAntrean) console.error('[admin-upgrade] gagal memuat antrean:', errorAntrean);
-  if (errorPengiriman) console.error('[admin-upgrade] gagal memuat pengiriman:', errorPengiriman);
+  if (errorDitolak) console.error('[admin-upgrade] gagal memuat ditolak:', errorDitolak);
 
-  // certificate_orders.user_id menunjuk auth.users, bukan profiles — tidak bisa
-  // di-embed lewat relasi Supabase, jadi digabung manual di sini.
-  const userIds = [...new Set([...(antrean ?? []), ...(pengiriman ?? [])].map((o) => o.user_id))];
+  const userIds = [...new Set([...(antrean ?? []), ...(ditolak ?? [])].map((o) => o.user_id))];
   const { data: profiles } =
     userIds.length > 0
-      ? await supabase.from('profiles').select('id, nama_lengkap').in('id', userIds)
+      ? await supabase.from('profiles').select('id, nama_lengkap, whatsapp').in('id', userIds)
       : { data: [] };
   const namaById = new Map((profiles ?? []).map((p) => [p.id, p.nama_lengkap]));
+  const waById = new Map((profiles ?? []).map((p) => [p.id, p.whatsapp]));
 
   // Bucket payment-proofs privat — bukti transfer cuma boleh dilihat lewat
   // signed URL berumur pendek, tidak pernah lewat URL publik (PRD §8.7).
@@ -76,9 +73,10 @@ export default async function AdminUpgradePage() {
     })
   );
 
-  const pengirimanDenganNama = (pengiriman ?? []).map((order) => ({
+  const ditolakRows = (ditolak ?? []).map((order) => ({
     ...order,
     nama: namaById.get(order.user_id) ?? '—',
+    whatsapp: waById.get(order.user_id) ?? null,
   }));
 
   return (
@@ -91,9 +89,9 @@ export default async function AdminUpgradePage() {
       </div>
 
       <div>
-        <h1 className="text-xl font-bold text-foreground">Pengiriman Merchandise</h1>
+        <h1 className="text-xl font-bold text-foreground">Sertifikat Ditolak</h1>
         <div className="mt-4">
-          <PengirimanTable pengiriman={pengirimanDenganNama} />
+          <SertifikatDitolakTable rows={ditolakRows} />
         </div>
       </div>
     </div>

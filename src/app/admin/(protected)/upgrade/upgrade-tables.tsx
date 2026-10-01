@@ -2,7 +2,6 @@
 
 import { DataTable, SortableHeader, createDataTableColumnHelper } from '@/components/data-table';
 import { UpgradeRowActions } from './upgrade-row-actions';
-import { StatusPengirimanSelect } from './status-pengiriman-select';
 import type { Database } from '@/types/database';
 
 const PAKET_LABEL: Record<string, string> = {
@@ -99,61 +98,62 @@ export function AntreanTable({ antrean }: { antrean: AntreanRow[] }) {
   );
 }
 
-export type PengirimanRow = {
+export type DitolakRow = {
   id: number;
   nama: string;
   paket: Database['public']['Enums']['paket_upgrade'];
-  alamat_pengiriman: unknown;
-  status_pengiriman: Database['public']['Enums']['status_kirim'];
+  alasan_tolak: string | null;
+  created_at: string;
+  whatsapp: string | null;
 };
 
-const pengirimanColumnHelper = createDataTableColumnHelper<PengirimanRow>();
+const ditolakColumnHelper = createDataTableColumnHelper<DitolakRow>();
 
-const pengirimanColumns = [
-  pengirimanColumnHelper.accessor('nama', {
+const ditolakColumns = [
+  ditolakColumnHelper.accessor('nama', {
     header: (ctx) => <SortableHeader column={ctx.column} label="Nama" />,
     cell: (info) => <span className="font-medium text-foreground">{info.getValue()}</span>,
   }),
-  pengirimanColumnHelper.accessor('paket', {
+  ditolakColumnHelper.accessor('paket', {
     id: 'paket',
     header: 'Paket',
     filterFn: 'equalsString',
     cell: (info) => PAKET_LABEL[info.getValue()] ?? info.getValue(),
   }),
-  pengirimanColumnHelper.accessor((row) => alamatRingkas(row.alamat_pengiriman), { id: 'alamat', header: 'Alamat' }),
-  pengirimanColumnHelper.accessor('status_pengiriman', {
-    id: 'status_pengiriman',
-    header: 'Status Pengiriman',
-    filterFn: 'equalsString',
-    enableSorting: false,
-    cell: ({ row }) => (
-      <StatusPengirimanSelect orderId={row.original.id} statusSaatIni={row.original.status_pengiriman} />
-    ),
+  ditolakColumnHelper.accessor('alasan_tolak', {
+    header: 'Alasan Ditolak',
+    cell: (info) => info.getValue() || '—',
+  }),
+  ditolakColumnHelper.accessor('created_at', {
+    header: (ctx) => <SortableHeader column={ctx.column} label="Tanggal" />,
+    cell: (info) =>
+      new Date(info.getValue()).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }),
+  }),
+  ditolakColumnHelper.display({
+    id: 'wa',
+    header: 'WhatsApp',
+    cell: ({ row }) => {
+      const angka = row.original.whatsapp?.replace(/\D/g, '') ?? '';
+      if (!angka) return '—';
+      return (
+        <a href={`https://wa.me/${angka}`} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4">
+          Hubungi WA
+        </a>
+      );
+    },
   }),
 ];
 
-export function PengirimanTable({ pengiriman }: { pengiriman: PengirimanRow[] }) {
+export function SertifikatDitolakTable({ rows }: { rows: DitolakRow[] }) {
   return (
     <DataTable
-      columns={pengirimanColumns}
-      data={pengiriman}
+      columns={ditolakColumns}
+      data={rows}
       getRowId={(row) => String(row.id)}
       searchColumnId="nama"
       searchPlaceholder="Cari nama..."
-      emptyMessage="Tidak ada merchandise yang perlu dikirim."
-      columnFilters={[
-        { id: 'paket', label: 'Paket', options: PAKET_FILTER_OPTIONS },
-        {
-          id: 'status_pengiriman',
-          label: 'Status',
-          options: [
-            { value: 'belum_diproses', label: 'Belum Diproses' },
-            { value: 'diproses', label: 'Diproses' },
-            { value: 'dikirim', label: 'Dikirim' },
-            { value: 'diterima', label: 'Diterima' },
-          ],
-        },
-      ]}
+      emptyMessage="Tidak ada sertifikat yang ditolak."
+      columnFilters={[{ id: 'paket', label: 'Paket', options: PAKET_FILTER_OPTIONS }]}
     />
   );
 }

@@ -38,12 +38,13 @@ export default async function SertifikatSayaPage() {
     .eq('status', 'disetujui')
     .maybeSingle();
 
-  const { data: pesananMerch } = await supabase
+  const { data: merchDisetujui } = await supabase
     .from('certificate_orders')
-    .select('id, status')
+    .select('id')
     .eq('user_id', claims.sub)
     .eq('paket', 'merch_addon')
-    .maybeSingle();
+    .eq('status', 'disetujui')
+    .limit(1);
 
   const { data: pernahOrder } = await supabase
     .from('certificate_orders')
@@ -56,8 +57,7 @@ export default async function SertifikatSayaPage() {
   const tampilkanAjakanUpgrade = tampilkanPreview && (pernahOrder?.length ?? 0) === 0;
   // Fitur BARU (bukan restore) — git: tidak pernah ada kartu merch di /dashboard/sertifikat.
   // Tampil jika cert_only sudah disetujui dan merch_addon belum disetujui.
-  const tampilkanAjakanMerch =
-    !!certOnlyDisetujui && pesananMerch?.status !== 'disetujui';
+  const tampilkanAjakanMerch = !!certOnlyDisetujui && (merchDisetujui?.length ?? 0) === 0;
 
   return (
     <div className="flex flex-col gap-6">
