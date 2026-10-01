@@ -2,6 +2,7 @@
 
 import { DataTable, SortableHeader, createDataTableColumnHelper } from '@/components/data-table';
 import { UpgradeRowActions } from './upgrade-row-actions';
+import { LihatBukti } from './lihat-bukti';
 import type { Database } from '@/types/database';
 
 const PAKET_LABEL: Record<string, string> = {
@@ -10,10 +11,9 @@ const PAKET_LABEL: Record<string, string> = {
   merch_addon: 'Tambah Merchandise',
 };
 
-const PAKET_FILTER_OPTIONS = [
+const PAKET_FILTER_SERTIFIKAT = [
   { value: 'cert_only', label: 'Sertifikat saja' },
   { value: 'cert_merch', label: 'Sertifikat + Merchandise' },
-  { value: 'merch_addon', label: 'Tambah Merchandise' },
 ];
 
 function formatRupiah(angka: number) {
@@ -65,26 +65,20 @@ const antreanColumns = [
     id: 'bukti',
     header: 'Bukti',
     cell: ({ row }) =>
-      row.original.buktiUrl ? (
-        <a href={row.original.buktiUrl} target="_blank" rel="noopener noreferrer" className="text-foreground underline underline-offset-4">
-          Lihat bukti
-        </a>
-      ) : (
-        '—'
-      ),
+      row.original.buktiUrl ? <LihatBukti url={row.original.buktiUrl} /> : '—',
   }),
   antreanColumnHelper.display({
     id: 'aksi',
     header: () => <span className="sr-only">Aksi</span>,
     cell: ({ row }) => (
       <div className="flex justify-end">
-        <UpgradeRowActions orderId={row.original.id} />
+        <UpgradeRowActions orderId={row.original.id} merchandise={row.original.paket === 'merch_addon'} />
       </div>
     ),
   }),
 ];
 
-export function AntreanTable({ antrean }: { antrean: AntreanRow[] }) {
+export function AntreanTable({ antrean, merchandise = false }: { antrean: AntreanRow[]; merchandise?: boolean }) {
   return (
     <DataTable
       columns={antreanColumns}
@@ -92,8 +86,8 @@ export function AntreanTable({ antrean }: { antrean: AntreanRow[] }) {
       getRowId={(row) => String(row.id)}
       searchColumnId="nama"
       searchPlaceholder="Cari nama..."
-      emptyMessage="Tidak ada pesanan menunggu verifikasi."
-      columnFilters={[{ id: 'paket', label: 'Paket', options: PAKET_FILTER_OPTIONS }]}
+      emptyMessage={merchandise ? 'Tidak ada pesanan merchandise menunggu verifikasi.' : 'Tidak ada pesanan menunggu verifikasi.'}
+      columnFilters={merchandise ? undefined : [{ id: 'paket', label: 'Paket', options: PAKET_FILTER_SERTIFIKAT }]}
     />
   );
 }
@@ -144,7 +138,15 @@ const ditolakColumns = [
   }),
 ];
 
-export function SertifikatDitolakTable({ rows }: { rows: DitolakRow[] }) {
+export function SertifikatDitolakTable({
+  rows,
+  emptyMessage = 'Tidak ada sertifikat yang ditolak.',
+  tanpaFilter = false,
+}: {
+  rows: DitolakRow[];
+  emptyMessage?: string;
+  tanpaFilter?: boolean;
+}) {
   return (
     <DataTable
       columns={ditolakColumns}
@@ -152,8 +154,8 @@ export function SertifikatDitolakTable({ rows }: { rows: DitolakRow[] }) {
       getRowId={(row) => String(row.id)}
       searchColumnId="nama"
       searchPlaceholder="Cari nama..."
-      emptyMessage="Tidak ada sertifikat yang ditolak."
-      columnFilters={[{ id: 'paket', label: 'Paket', options: PAKET_FILTER_OPTIONS }]}
+      emptyMessage={emptyMessage}
+      columnFilters={tanpaFilter ? undefined : [{ id: 'paket', label: 'Paket', options: PAKET_FILTER_SERTIFIKAT }]}
     />
   );
 }

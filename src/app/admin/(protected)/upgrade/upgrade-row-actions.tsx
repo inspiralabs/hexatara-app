@@ -17,7 +17,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 
-export function UpgradeRowActions({ orderId }: { orderId: number }) {
+export function UpgradeRowActions({ orderId, merchandise = false }: { orderId: number; merchandise?: boolean }) {
   const router = useRouter();
   const [setujuiOpen, setSetujuiOpen] = useState(false);
   const [tolakOpen, setTolakOpen] = useState(false);
@@ -32,7 +32,7 @@ export function UpgradeRowActions({ orderId }: { orderId: number }) {
         return;
       }
       setSetujuiOpen(false);
-      toast.success('Pesanan disetujui, sertifikat aktif.');
+      toast.success(merchandise ? 'Pesanan merchandise disetujui.' : 'Pesanan disetujui, sertifikat aktif.');
       router.refresh();
     });
   }
@@ -65,8 +65,9 @@ export function UpgradeRowActions({ orderId }: { orderId: number }) {
           <AlertDialogHeader>
             <AlertDialogTitle>Setujui pesanan ini?</AlertDialogTitle>
             <AlertDialogDescription>
-              Sertifikat free_track akan diterbitkan dan QR-nya langsung aktif. Tindakan ini tidak
-              bisa dibatalkan.
+              {merchandise
+                ? 'Pembayaran merchandise disetujui. Sertifikat yang sudah ada tidak berubah. Tindakan ini tidak bisa dibatalkan.'
+                : 'Sertifikat free_track akan diterbitkan dan QR-nya langsung aktif. Tindakan ini tidak bisa dibatalkan.'}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

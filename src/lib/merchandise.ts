@@ -3,8 +3,15 @@ import { createClient } from '@/lib/supabase/server';
 
 export type ProdukMerchandise = { id: number; nama: string; harga: number; thumbnail_url: string | null };
 
-export function pecahOrderMerch<T extends { status: string }>(orders: T[]) {
-  return { utama: orders[0] ?? null, riwayat: orders.slice(1) };
+export function pisahOrderMerch<T extends { status: string; status_pengiriman: string }>(orders: T[]) {
+  const selesai = (order: T) =>
+    (order.status === 'disetujui' && order.status_pengiriman === 'diterima') || order.status === 'ditolak';
+  const lain = orders.slice(1);
+  return {
+    utama: orders[0] ?? null,
+    berjalan: lain.filter((order) => !selesai(order)),
+    selesai: lain.filter(selesai),
+  };
 }
 
 export async function getKategoriMerchandiseId(): Promise<string | null> {
@@ -35,13 +42,15 @@ export async function getProdukMerchandiseAktif(): Promise<ProdukMerchandise[]> 
   );
 }
 
-export async function ringkasItemOrder(orderIds: number[]) {
-  const hasil = new Map<number, string>();
+export type ItemOrderMerch = { nama: string; qty: number; harga: number };
+
+export async function itemOrderMerch(orderIds: number[]) {
+  const hasil = new Map<number, ItemOrderMerch[]>();
   if (orderIds.length === 0) return hasil;
   const supabase = await createClient();
   const { data: items } = await supabase
     .from('certificate_order_items')
-    .select('order_id, qty, product_id')
+    .select('order_id, qty, harga_satuan, product_id')
     .in('order_id', orderIds);
   const productIds = [...new Set((items ?? []).map((item) => item.product_id))];
   const { data: products } =
@@ -50,9 +59,9 @@ export async function ringkasItemOrder(orderIds: number[]) {
       : { data: [] };
   const nama = new Map((products ?? []).flatMap((p) => (p.id != null ? [[p.id, p.nama_id ?? 'Produk'] as const] : [])));
   for (const item of items ?? []) {
-    const baris = `${nama.get(item.product_id) ?? 'Produk'} × ${item.qty}`;
-    const ada = hasil.get(item.order_id);
-    hasil.set(item.order_id, ada ? `${ada}, ${baris}` : baris);
+    const baris = hasil.get(item.order_id) ?? [];
+    baris.push({ nama: nama.get(item.product_id) ?? 'Produk', qty: item.qty, harga: item.harga_satuan });
+    hasil.set(item.order_id, baris);
   }
   return hasil;
 }

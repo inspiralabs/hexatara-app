@@ -21,16 +21,19 @@ function isSort(value: string | undefined): value is PelatihanSort {
   return SORT_VALUES.includes(value as PelatihanSort);
 }
 
-function sudahPaketTertinggi(opts: {
+function modeBanner(opts: {
+  adaMateri: boolean;
+  lulus: boolean;
   pesananUtama: { paket: string; status: string } | null;
-  pesananMerch: { status: string } | null;
+  adaMerchDisetujui: boolean;
 }) {
-  const { pesananUtama, pesananMerch } = opts;
-  if (pesananUtama?.paket === 'cert_merch' && pesananUtama.status === 'disetujui') return true;
-  if (pesananUtama?.paket === 'cert_only' && pesananUtama.status === 'disetujui' && pesananMerch?.status === 'disetujui') {
-    return true;
-  }
-  return false;
+  if (!opts.adaMateri) return null;
+  if (!opts.lulus) return 'lms' as const;
+  const disetujui = opts.pesananUtama?.status === 'disetujui';
+  const sertifikatAktif = disetujui && (opts.pesananUtama?.paket === 'cert_only' || opts.pesananUtama?.paket === 'cert_merch');
+  if (!sertifikatAktif) return 'upgrade' as const;
+  if (opts.pesananUtama?.paket === 'cert_merch' || opts.adaMerchDisetujui) return null;
+  return 'merchandise' as const;
 }
 
 // Sama seperti (public)/pelatihan/page.tsx — sengaja diduplikasi query-nya,
@@ -106,14 +109,12 @@ export default async function DashboardPelatihanPage({
   }));
 
   const lulusGratis = profile?.free_track_selesai_at != null;
-  const paketTertinggi = sudahPaketTertinggi({
+  const banner = modeBanner({
+    adaMateri: materiHref != null,
+    lulus: lulusGratis,
     pesananUtama: pesananUtama ?? null,
-    pesananMerch: pesananMerch ?? null,
+    adaMerchDisetujui: pesananMerch != null,
   });
-
-  // Banner: LMS jika belum lulus; Upgrade jika lulus tapi belum paket tertinggi; hilang jika sudah.
-  const tampilkanBanner = materiHref != null && !paketTertinggi;
-  const bannerUpgrade = lulusGratis;
 
   return (
     <div className="flex flex-col gap-6">
@@ -122,21 +123,31 @@ export default async function DashboardPelatihanPage({
         <p className="mt-1 text-base text-muted-foreground">Semua pelatihan Hexatara, termasuk yang gratis.</p>
       </div>
 
-      {tampilkanBanner && (
+      {banner && (
         <div className="rounded-xl border border-border bg-muted/40 p-5">
           <p className="font-semibold text-foreground">
-            {bannerUpgrade ? tDash('upgradeSekarang') : t('freemiumHeroTitle')}
+            {banner === 'lms'
+              ? t('freemiumHeroTitle')
+              : banner === 'merchandise'
+                ? tDash('dapatkanMerchandise')
+                : tDash('upgradeSekarang')}
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
-            {bannerUpgrade
-              ? 'Kamu sudah menyelesaikan pelatihan gratis. Ajukan upgrade untuk mengaktifkan QR sertifikat resmi.'
-              : t('freemiumHeroDesc')}
+            {banner === 'lms'
+              ? t('freemiumHeroDesc')
+              : banner === 'merchandise'
+                ? tDash('dapatkanMerchandiseDesc')
+                : 'Kamu sudah menyelesaikan pelatihan gratis. Ajukan upgrade untuk mengaktifkan QR sertifikat resmi.'}
           </p>
           <Link
-            href={bannerUpgrade ? '/dashboard/transaksi' : materiHref!}
+            href={banner === 'lms' ? materiHref! : banner === 'merchandise' ? '/dashboard/merchandise' : '/dashboard/transaksi'}
             className={cn(buttonVariants(), 'mt-3 h-11 px-6')}
           >
-            {bannerUpgrade ? tDash('upgradeSekarang') : t('freemiumHeroCta')}
+            {banner === 'lms'
+              ? t('freemiumHeroCta')
+              : banner === 'merchandise'
+                ? tDash('dapatkanMerchandiseCta')
+                : tDash('upgradeSekarang')}
           </Link>
         </div>
       )}

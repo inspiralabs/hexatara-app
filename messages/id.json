@@ -395,6 +395,9 @@
     "statusPembayaran": "Status Pembayaran",
     "belumUpgrade": "Belum mengajukan upgrade sertifikat.",
     "upgradeSekarang": "Upgrade sekarang",
+    "dapatkanMerchandise": "Dapatkan Merchandise",
+    "dapatkanMerchandiseDesc": "Sertifikat Anda sudah aktif. Tambah merchandise resmi kalau Anda mau.",
+    "dapatkanMerchandiseCta": "Dapatkan Merchandise",
     "pesananMerchTambahan": "Pesanan Merchandise Tambahan",
     "riwayatAktivitas": "Riwayat Aktivitas",
     "belumAdaAktivitas": "Belum ada aktivitas."

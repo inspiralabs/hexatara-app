@@ -525,3 +525,43 @@ Satu nomor untuk chat dan kurir. Label di form dashboard, form beli publik, dan 
 Judul Pesanan Merchandise dan Pesanan Publik berada di atas kotak cari. Filter dan Ekspor tetap sebaris dengan pencarian.
 
 Status: **menunggu uji Alif**. F13.4 tetap TODO. Registry belum diperbarui.
+
+---
+
+## F13.4 — banner pelatihan dan toast pesanan (1 Oktober 2026)
+
+`/dashboard/pelatihan`: belum lulus tetap ajakan kursus. Sudah lulus tapi sertifikat belum disetujui tetap “Upgrade sekarang” ke Transaksi. Sertifikat disetujui tanpa merchandise disetujui menjadi “Dapatkan Merchandise” ke `/dashboard/merchandise`. Banner hilang jika paket `cert_merch` disetujui, atau ada minimal satu `merch_addon` disetujui. Toast submit: sertifikat saja, sertifikat + merchandise, atau merchandise saja (sertifikat tidak berubah).
+
+Tidak ada SQL. Status: **menunggu uji Alif**. F13.4 tetap TODO.
+
+Uji:
+
+1. Belum pernah order → banner “Upgrade sekarang”.
+2. `cert_only` disetujui, merchandise belum → banner “Dapatkan Merchandise”, tombol ke `/dashboard/merchandise`.
+3. `cert_only` dan `merch_addon` keduanya disetujui → banner hilang.
+4. `cert_merch` disetujui → banner hilang.
+5. Submit `cert_only` → toast sertifikat.
+6. Submit `merch_addon` → toast merchandise, sertifikat tidak berubah.
+7. Submit `cert_merch` → toast sertifikat + merchandise.
+
+**Pesan commit yang disarankan**
+
+```
+fix(dashboard-user): banner pelatihan 3-kondisi + toast pesan sesuai paket
+
+- /dashboard/pelatihan: banner upgrade sekarang tidak lagi nyangkut setelah
+  sertifikat disetujui — sekarang ganti ajakan "Dapatkan Merchandise" kalau
+  merchandise belum diambil
+- Toast sukses submit pesanan dibedakan teksnya per paket (cert_only/cert_merch/
+  merch_addon), tidak generik lagi
+
+Ref: ADR-026, F13.4 (temuan UAT)
+```
+
+---
+
+## F13.4 — antrean merchandise dan kartu yang masih berjalan (1 Oktober 2026)
+
+Merchandise tambahan diverifikasi di menu Merchandise, bukan di Sertifikat. Sertifikat hanya mengantre paket sertifikat. Bukti transfer dibuka di popup. Di dashboard, pesanan yang belum diterima tetap kartu sendiri, dengan tombol Detail (barang, qty, harga, stepper). “Pesanan selesai” hanya untuk yang sudah diterima, atau ditolak yang sudah diganti pesanan baru.
+
+Tidak ada SQL. Status: **menunggu uji Alif**. F13.4 tetap TODO.

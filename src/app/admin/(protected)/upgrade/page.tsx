@@ -15,11 +15,13 @@ export default async function AdminUpgradePage() {
     supabase
       .from('certificate_orders')
       .select('id, user_id, paket, nominal, bukti_url, alamat_pengiriman')
+      .in('paket', ['cert_only', 'cert_merch'])
       .eq('status', 'menunggu_verifikasi')
       .order('created_at', { ascending: true }),
     supabase
       .from('certificate_orders')
       .select('id, user_id, paket, alasan_tolak, created_at')
+      .in('paket', ['cert_only', 'cert_merch'])
       .eq('status', 'ditolak')
       .order('created_at', { ascending: false }),
   ]);

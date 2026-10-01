@@ -79,7 +79,13 @@ export function PesananUpgradeForm({
       toast.error(hasil.pesan);
       return;
     }
-    toast.success('Pesanan berhasil dibuat. Silakan unggah bukti transfer.');
+    toast.success(
+      data.paket === 'merch_addon'
+        ? 'Pesanan merchandise berhasil dibuat. Silakan unggah bukti transfer. Sertifikat Anda tidak berubah.'
+        : data.paket === 'cert_merch'
+          ? 'Pesanan sertifikat + merchandise berhasil dibuat. Silakan unggah bukti transfer.'
+          : 'Pesanan sertifikat berhasil dibuat. Silakan unggah bukti transfer.',
+    );
     // Pastikan RSC Transaksi memuat ulang order baru → UI ganti ke unggah bukti
     // tanpa butuh hard refresh (revalidatePath di action + refresh di sini).
     router.refresh();

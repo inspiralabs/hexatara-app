@@ -395,6 +395,9 @@
     "statusPembayaran": "Payment Status",
     "belumUpgrade": "You haven't applied for a certificate upgrade yet.",
     "upgradeSekarang": "Upgrade now",
+    "dapatkanMerchandise": "Get merchandise",
+    "dapatkanMerchandiseDesc": "Your certificate is already active. Add official merchandise if you want it.",
+    "dapatkanMerchandiseCta": "Get merchandise",
     "pesananMerchTambahan": "Additional Merchandise Order",
     "riwayatAktivitas": "Activity History",
     "belumAdaAktivitas": "No activity yet."

@@ -1,10 +1,13 @@
 import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
+import { createAdminClient } from '@/lib/supabase/admin';
 import { PesananMerchandiseTable, type PesananMerchandiseRow } from './pesanan-merchandise-table';
+import { AntreanTable, SertifikatDitolakTable } from '../../upgrade/upgrade-tables';
 
 export default async function AdminMerchandisePesananPage() {
   await requireAdmin();
   const supabase = await createClient();
+  const supabaseAdmin = createAdminClient();
   const { data: orders, error } = await supabase
     .from('certificate_orders')
     .select('id, user_id, paket, alamat_pengiriman, status_pengiriman, created_at')
@@ -59,15 +62,72 @@ export default async function AdminMerchandisePesananPage() {
     };
   });
 
+  const { data: antrean } = await supabase
+    .from('certificate_orders')
+    .select('id, user_id, paket, nominal, bukti_url, alamat_pengiriman')
+    .eq('paket', 'merch_addon')
+    .eq('status', 'menunggu_verifikasi')
+    .order('created_at', { ascending: true });
+  const { data: ditolak } = await supabase
+    .from('certificate_orders')
+    .select('id, user_id, paket, alasan_tolak, created_at, alamat_pengiriman')
+    .eq('paket', 'merch_addon')
+    .eq('status', 'ditolak')
+    .order('created_at', { ascending: false });
+  const tambahan = [...(antrean ?? []), ...(ditolak ?? [])].map((order) => order.user_id).filter((id) => !namaUser.has(id));
+  if (tambahan.length > 0) {
+    const { data: profilTambahan } = await supabase.from('profiles').select('id, nama_lengkap').in('id', tambahan);
+    for (const profil of profilTambahan ?? []) namaUser.set(profil.id, profil.nama_lengkap);
+  }
+  const antreanSiap = await Promise.all(
+    (antrean ?? []).map(async (order) => {
+      let buktiUrl: string | null = null;
+      if (order.bukti_url) {
+        const { data: signed } = await supabaseAdmin.storage.from('payment-proofs').createSignedUrl(order.bukti_url, 300);
+        buktiUrl = signed?.signedUrl ?? null;
+      }
+      const alamat = order.alamat_pengiriman as { nama_penerima?: string; kota?: string } | null;
+      return {
+        ...order,
+        buktiUrl,
+        nama: namaUser.get(order.user_id) ?? '—',
+        merchandise: '',
+        alamat_pengiriman: alamat,
+      };
+    }),
+  );
+  const ditolakRows = (ditolak ?? []).map((order) => {
+    const alamat = order.alamat_pengiriman as { telepon?: string } | null;
+    return {
+      id: order.id,
+      nama: namaUser.get(order.user_id) ?? '—',
+      paket: order.paket,
+      alasan_tolak: order.alasan_tolak,
+      created_at: order.created_at,
+      whatsapp: alamat?.telepon ?? null,
+    };
+  });
+
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-8">
       <div>
         <h1 className="text-xl font-bold text-foreground">Pesanan Merchandise</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Order disetujui. Verifikasi pembayaran tetap di Sertifikat.
+          Merchandise tambahan diverifikasi di sini. Sertifikat tetap di menu Sertifikat.
         </p>
       </div>
-      <PesananMerchandiseTable rows={rows} />
+      <section className="flex flex-col gap-4">
+        <h2 className="text-base font-semibold text-foreground">Menunggu verifikasi</h2>
+        <AntreanTable antrean={antreanSiap} merchandise />
+      </section>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-base font-semibold text-foreground">Ditolak</h2>
+        <SertifikatDitolakTable rows={ditolakRows} emptyMessage="Tidak ada pesanan merchandise yang ditolak." tanpaFilter />
+      </section>
+      <section className="flex flex-col gap-4">
+        <h2 className="text-base font-semibold text-foreground">Sudah disetujui</h2>
+        <PesananMerchandiseTable rows={rows} />
+      </section>
     </div>
   );
 }

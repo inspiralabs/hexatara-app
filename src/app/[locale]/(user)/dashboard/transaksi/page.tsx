@@ -2,8 +2,9 @@ import { requireUser } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { PesananStatusSection } from '../../pesanan-status-section';
 import { getHargaUpgrade } from '@/lib/site-settings';
-import { getProdukMerchandiseAktif, pecahOrderMerch, ringkasItemOrder } from '@/lib/merchandise';
-import { RiwayatPesananMerchandise, type RiwayatMerch } from '../../riwayat-pesanan-merchandise';
+import { getProdukMerchandiseAktif, itemOrderMerch, pisahOrderMerch } from '@/lib/merchandise';
+import { DetailPesananMerch, KartuPesananBerjalan, type KartuMerch } from '../../kartu-pesanan-merch';
+import { PesananSelesai } from '../../riwayat-pesanan-merchandise';
 import type { Database } from '@/types/database';
 
 type Paket = Database['public']['Enums']['paket_upgrade'];
@@ -37,19 +38,26 @@ export default async function TransaksiSayaPage() {
 
   const { data: semuaMerch } = await supabase
     .from('certificate_orders')
-    .select('id, paket, status, alasan_tolak, status_pengiriman, created_at, updated_at')
+    .select('id, paket, status, alasan_tolak, status_pengiriman, alamat_pengiriman, created_at, updated_at')
     .eq('user_id', claims.sub)
     .eq('paket', 'merch_addon')
     .order('created_at', { ascending: false });
 
-  const { utama: pesananMerch, riwayat } = pecahOrderMerch(semuaMerch ?? []);
-  const ringkas = await ringkasItemOrder(riwayat.map((order) => order.id));
-  const barisRiwayat: RiwayatMerch[] = riwayat.map((order) => ({
-    id: order.id,
-    tanggal: formatTanggal(order.created_at),
-    status: order.status,
-    produk: ringkas.get(order.id) ?? '',
-  }));
+  const daftarMerch = semuaMerch ?? [];
+  const { utama: pesananMerch, berjalan, selesai } = pisahOrderMerch(daftarMerch);
+  const items = await itemOrderMerch(daftarMerch.map((order) => order.id));
+  const kartu = (order: (typeof daftarMerch)[number]): KartuMerch => {
+    const alamat = order.alamat_pengiriman as { alamat_lengkap?: string; kota?: string; kode_pos?: string } | null;
+    return {
+      id: order.id,
+      tanggal: formatTanggal(order.created_at),
+      status: order.status,
+      statusPengiriman: order.status_pengiriman,
+      alasan: order.alasan_tolak,
+      items: items.get(order.id) ?? [],
+      alamat: [alamat?.alamat_lengkap, alamat?.kota, alamat?.kode_pos].filter(Boolean).join(', '),
+    };
+  };
 
   const { data: rekeningSetting } = await supabase
     .from('site_settings')
@@ -122,7 +130,15 @@ export default async function TransaksiSayaPage() {
                 merchandise={merchandise}
                 bolehUlang
               />
-              <RiwayatPesananMerchandise rows={barisRiwayat} />
+              {pesananMerch ? (
+                <div className="mt-3 flex justify-end">
+                  <DetailPesananMerch row={kartu(pesananMerch)} />
+                </div>
+              ) : null}
+              {berjalan.map((order) => (
+                <KartuPesananBerjalan key={order.id} row={kartu(order)} />
+              ))}
+              <PesananSelesai rows={selesai.map(kartu)} />
             </div>
           </div>
         )}
