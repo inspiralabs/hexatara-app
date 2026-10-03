@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { PesananStatusSection } from '../../pesanan-status-section';
 import { DetailPesananMerch, KartuPesananBerjalan, type KartuMerch } from '../../kartu-pesanan-merch';
 import { PesananSelesai } from '../../riwayat-pesanan-merchandise';
+import { MerchPageShell } from '../../merch-addon-shell';
 import { getHargaUpgrade } from '@/lib/site-settings';
 import { getProdukMerchandiseAktif, itemOrderMerch, pisahOrderMerch } from '@/lib/merchandise';
 
@@ -68,30 +69,28 @@ export default async function MerchandisePage() {
 
   const harga = await getHargaUpgrade();
   const merchandise = await getProdukMerchandiseAktif();
+  const bisaPesanLagi = utama?.status === 'disetujui';
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
-      <h1 className="text-2xl font-bold text-warna-teks sm:text-3xl">Tambah Merchandise</h1>
-      <div className="mt-6">
-        <PesananStatusSection
-          order={utama}
-          rekening={rekening}
-          paketOptions={['merch_addon']}
-          harga={harga}
-          paket="merch_addon"
-          merchandise={merchandise}
-          bolehUlang
-        />
-        {utama ? (
-          <div className="mt-3 flex justify-end">
-            <DetailPesananMerch row={kartu(utama)} />
-          </div>
-        ) : null}
-        {berjalan.map((order) => (
-          <KartuPesananBerjalan key={order.id} row={kartu(order)} />
-        ))}
-        <PesananSelesai rows={selesai.map(kartu)} />
-      </div>
-    </div>
+    <MerchPageShell bisaPesanLagi={bisaPesanLagi} harga={harga} merchandise={merchandise}>
+      <PesananStatusSection
+        order={utama}
+        rekening={rekening}
+        paketOptions={['merch_addon']}
+        harga={harga}
+        paket="merch_addon"
+        merchandise={merchandise}
+        bolehUlang
+      />
+      {utama ? (
+        <div className="mt-3 flex justify-end">
+          <DetailPesananMerch row={kartu(utama)} />
+        </div>
+      ) : null}
+      {berjalan.map((order) => (
+        <KartuPesananBerjalan key={order.id} row={kartu(order)} />
+      ))}
+      <PesananSelesai rows={selesai.map(kartu)} />
+    </MerchPageShell>
   );
 }

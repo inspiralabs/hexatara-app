@@ -1362,7 +1362,7 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 ---
 
 ### ADR-026 — Modul 13: Permintaan Abi Langsung saat UAT (Navbar, Kartu Ajakan, Session Timeout Admin, Merchandise jadi Produk, Pendaftaran Perusahaan)
-**2026-09-30 · Diperluas 2026-09-30 (F13.1–F13.3, lalu F13.4 dashboard) · Berlaku — sebagian, F13.5 dan etalase publik menyusul**
+**2026-09-30 · Diperluas 2026-10-03 · Berlaku — F13.1–F13.4 DONE; F13.5 menyusul**
 
 **Konteks.** Pada UAT bersama klien 30 September 2026, Abi menyampaikan lima permintaan. Ini terpisah dari ADR-025 (gladi resik internal InspiraLabs).
 
@@ -1382,9 +1382,9 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 - **F13.4 pesan ulang (1 Okt, belum diuji):** `merch_addon` boleh dipesan lagi setelah pesanan terakhir `disetujui` (tanpa menunggu barang diterima) atau `ditolak` (unggah ulang bukti atau pesanan baru). `menunggu_bukti` / `menunggu_verifikasi` tetap mengunci. Riwayat order lama tetap tampil. `cert_only` dan `cert_merch` tetap satu pesanan. Form menampilkan `thumbnail_url`. Status kirim disetujui menjadi stepper 4 langkah. Merchandise sekarang produk sungguhan, jadi dibeli berkali-kali — permintaan UAT Abi/Alif, tanpa perubahan skema.
 - **F13.4 banner dan toast (1 Okt, belum diuji):** di `/dashboard/pelatihan`, sertifikat yang sudah disetujui tidak lagi menampilkan “Upgrade sekarang”. Kalau merchandise belum pernah disetujui, bannernya jadi “Dapatkan Merchandise” ke `/dashboard/merchandise`. Banner hilang jika `cert_merch` disetujui atau ada minimal satu `merch_addon` disetujui. Toast submit dibedakan untuk sertifikat saja, sertifikat + merchandise, dan tambah merchandise.
 
-- **F13.4 antrean dan kartu berjalan (1 Okt, belum diuji):** verifikasi `merch_addon` pindah ke menu Merchandise (Setujui/Tolak dan bukti di popup). Menu Sertifikat hanya `cert_only` dan `cert_merch`. Di dashboard, pesanan yang belum diterima tetap kartu sendiri dengan Detail (qty, harga, stepper). “Pesanan selesai” hanya untuk yang sudah diterima atau ditolak yang sudah diganti.
+- **F13.4 antrean dan kartu berjalan (1–3 Okt):** verifikasi `merch_addon` di menu Merchandise (Setujui/Tolak, bukti di popup, tab Menunggu/Ditolak/Disetujui). Menu Sertifikat hanya `cert_only` dan `cert_merch`. Di dashboard, pesanan yang belum diterima tetap kartu dengan Detail; tombol “Pesan Merchandise Lagi” di pojok kanan judul kartu. Alif konfirmasi F13.4 DONE 3 Okt 2026.
 
-**Konsekuensi.** F13.4 menambah tabel `certificate_order_items` (Alif jalankan SQL dulu). Tanpa kategori Merchandise di UI, form menampilkan pesan kosong. Pembelian merchandise dari katalog publik dan F13.5 masih menyusul. ADR ini akan diperluas lagi.
+**Konsekuensi.** F13.4 menambah tabel `certificate_order_items`. F13.5 (pendaftaran perusahaan) masih menyusul.
 
 ---
 
@@ -1436,3 +1436,4 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-10-01 | **ADR-026 diperluas.** Detail pesanan Admin dikonfirmasi Alif. `merch_addon` tidak lagi satu pesanan seumur hidup: order baru boleh setelah yang terakhir disetujui atau ditolak; yang menunggu tetap mengunci; riwayat tetap ada. Form tampilkan gambar. Status kirim jadi stepper. Tanpa SQL. Menunggu uji Alif. F13.4 tetap TODO. |
 | 2026-10-01 | **ADR-026 diperluas.** Banner `/dashboard/pelatihan` tiga kondisi: upgrade, ajakan merchandise, atau hilang setelah merchandise disetujui. Toast submit dibedakan per paket. Tanpa SQL. Menunggu uji Alif. F13.4 tetap TODO. |
 | 2026-10-01 | **ADR-026 diperluas.** Verifikasi `merch_addon` pindah ke menu Merchandise. Bukti transfer dibuka di popup. Pesanan yang belum diterima tetap kartu, bukan arsip. Menunggu uji Alif. F13.4 tetap TODO. |
+| 2026-10-03 | **F13.4 DONE** setelah uji Alif. Tab Menunggu/Ditolak/Disetujui di `/admin/merchandise/pesanan`. Tombol pesan lagi di header kartu dashboard. |

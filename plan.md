@@ -564,4 +564,12 @@ Ref: ADR-026, F13.4 (temuan UAT)
 
 Merchandise tambahan diverifikasi di menu Merchandise, bukan di Sertifikat. Sertifikat hanya mengantre paket sertifikat. Bukti transfer dibuka di popup. Di dashboard, pesanan yang belum diterima tetap kartu sendiri, dengan tombol Detail (barang, qty, harga, stepper). “Pesanan selesai” hanya untuk yang sudah diterima, atau ditolak yang sudah diganti pesanan baru.
 
-Tidak ada SQL. Status: **menunggu uji Alif**. F13.4 tetap TODO.
+Tidak ada SQL. Status: **dikonfirmasi Alif 3 Okt 2026.** F13.4 DONE.
+
+---
+
+## F13.4 — tab admin pesanan + tombol header (3 Oktober 2026)
+
+`/admin/merchandise/pesanan` memakai tab Menunggu verifikasi / Ditolak / Sudah disetujui. Di dashboard user, tombol “Pesan Merchandise Lagi” sejajar judul kartu; teks Diajukan/Diperbarui dihapus dari kartu merchandise.
+
+Status: **dikonfirmasi Alif 3 Okt 2026.** F13.4 DONE.

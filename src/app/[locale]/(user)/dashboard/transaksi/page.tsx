@@ -5,6 +5,7 @@ import { getHargaUpgrade } from '@/lib/site-settings';
 import { getProdukMerchandiseAktif, itemOrderMerch, pisahOrderMerch } from '@/lib/merchandise';
 import { DetailPesananMerch, KartuPesananBerjalan, type KartuMerch } from '../../kartu-pesanan-merch';
 import { PesananSelesai } from '../../riwayat-pesanan-merchandise';
+import { MerchAddonShell } from '../../merch-addon-shell';
 import type { Database } from '@/types/database';
 
 type Paket = Database['public']['Enums']['paket_upgrade'];
@@ -110,37 +111,31 @@ export default async function TransaksiSayaPage() {
 
       {bisaUpgrade &&
         ((pesananUtama?.status === 'disetujui' && pesananUtama.paket === 'cert_only') || pesananMerch) && (
-          <div className="rounded-xl border border-border bg-card p-5">
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h2 className="text-base font-semibold text-foreground">{LABEL_PAKET.merch_addon}</h2>
-              {pesananMerch && (
-                <p className="text-sm text-muted-foreground">
-                  Diajukan {formatTanggal(pesananMerch.created_at)} · Diperbarui{' '}
-                  {formatTanggal(pesananMerch.updated_at)}
-                </p>
-              )}
-            </div>
-            <div className="mt-3">
-              <PesananStatusSection
-                order={pesananMerch ?? null}
-                rekening={rekening}
-                paketOptions={['merch_addon']}
-                harga={harga}
-                paket="merch_addon"
-                merchandise={merchandise}
-                bolehUlang
-              />
-              {pesananMerch ? (
-                <div className="mt-3 flex justify-end">
-                  <DetailPesananMerch row={kartu(pesananMerch)} />
-                </div>
-              ) : null}
-              {berjalan.map((order) => (
-                <KartuPesananBerjalan key={order.id} row={kartu(order)} />
-              ))}
-              <PesananSelesai rows={selesai.map(kartu)} />
-            </div>
-          </div>
+          <MerchAddonShell
+            judul={LABEL_PAKET.merch_addon}
+            bisaPesanLagi={pesananMerch?.status === 'disetujui'}
+            harga={harga}
+            merchandise={merchandise}
+          >
+            <PesananStatusSection
+              order={pesananMerch ?? null}
+              rekening={rekening}
+              paketOptions={['merch_addon']}
+              harga={harga}
+              paket="merch_addon"
+              merchandise={merchandise}
+              bolehUlang
+            />
+            {pesananMerch ? (
+              <div className="mt-3 flex justify-end">
+                <DetailPesananMerch row={kartu(pesananMerch)} />
+              </div>
+            ) : null}
+            {berjalan.map((order) => (
+              <KartuPesananBerjalan key={order.id} row={kartu(order)} />
+            ))}
+            <PesananSelesai rows={selesai.map(kartu)} />
+          </MerchAddonShell>
         )}
     </div>
   );

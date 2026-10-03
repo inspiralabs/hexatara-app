@@ -2,7 +2,7 @@ import { CheckCircle2Icon, ClockIcon } from 'lucide-react';
 import { PesananUpgradeForm, type ProdukMerchandiseForm } from './pesanan-upgrade-form';
 import type { HargaUpgrade } from '@/lib/site-settings';
 import { BuktiTransferUpload } from './bukti-transfer-upload';
-import { PilihanOrderDitolak, PesanMerchandiseLagi } from './merch-lanjutan';
+import { PilihanOrderDitolak } from './merch-lanjutan';
 import { StatusPengirimanStepper } from './status-pengiriman-stepper';
 import type { Database } from '@/types/database';
 
@@ -80,11 +80,6 @@ export function PesananStatusSection({
           )}
           {adaKiriman ? <StatusPengirimanStepper status={order.status_pengiriman} /> : null}
         </div>
-        {bolehUlang && paket === 'merch_addon' ? (
-          <PesanMerchandiseLagi>
-            <PesananUpgradeForm paketOptions={paketOptions} harga={harga} merchandise={merchandise} />
-          </PesanMerchandiseLagi>
-        ) : null}
       </div>
     );
   }

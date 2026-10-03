@@ -3,18 +3,6 @@
 import { useState, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 
-export function PesanMerchandiseLagi({ children }: { children: ReactNode }) {
-  const [buka, setBuka] = useState(false);
-  if (!buka) {
-    return (
-      <Button type="button" className="h-11 px-5" onClick={() => setBuka(true)}>
-        Pesan Merchandise Lagi
-      </Button>
-    );
-  }
-  return children;
-}
-
 export function PilihanOrderDitolak({ unggah, form }: { unggah: ReactNode; form: ReactNode }) {
   const [mode, setMode] = useState<'unggah' | 'baru' | null>(null);
   return (
