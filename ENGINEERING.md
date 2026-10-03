@@ -1362,7 +1362,7 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 ---
 
 ### ADR-026 — Modul 13: Permintaan Abi Langsung saat UAT (Navbar, Kartu Ajakan, Session Timeout Admin, Merchandise jadi Produk, Pendaftaran Perusahaan)
-**2026-09-30 · Diperluas 2026-10-03 · Berlaku — F13.1–F13.4 DONE; F13.5 menyusul**
+**2026-09-30 · Diperluas 2026-10-03 · Berlaku — F13.1–F13.5 DONE**
 
 **Konteks.** Pada UAT bersama klien 30 September 2026, Abi menyampaikan lima permintaan. Ini terpisah dari ADR-025 (gladi resik internal InspiraLabs).
 
@@ -1384,7 +1384,11 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 
 - **F13.4 antrean dan kartu berjalan (1–3 Okt):** verifikasi `merch_addon` di menu Merchandise (Setujui/Tolak, bukti di popup, tab Menunggu/Ditolak/Disetujui). Menu Sertifikat hanya `cert_only` dan `cert_merch`. Di dashboard, pesanan yang belum diterima tetap kartu dengan Detail; tombol “Pesan Merchandise Lagi” di pojok kanan judul kartu. Alif konfirmasi F13.4 DONE 3 Okt 2026.
 
-**Konsekuensi.** F13.4 menambah tabel `certificate_order_items`. F13.5 (pendaftaran perusahaan) masih menyusul.
+**Diperluas 2026-10-03 — F13.5a form publik pendaftaran perusahaan.** PIC mendaftar tanpa login dari `/pelatihan/[slug]` lewat Dialog (sejajar tombol individu). Field PIC + unduh template Excel client-side (`xlsx`) + upload daftar peserta (kolom Nama Lengkap / WhatsApp / Email). Validasi Excel all-or-nothing; insert lewat `createAdminClient` ke `company_registrations` + `company_registration_participants`; file asli di bucket privat `company-registrations`. Email Admin jenis `pendaftaran_perusahaan`. Nominal harga tidak di form publik (isi Admin di 3b). Form publik diuji Alif OK.
+
+**Diperluas 2026-10-03 — F13.5b Admin.** Menu Leads → Pendaftaran Perusahaan: DataTable + filter status + export Excel; detail dengan daftar peserta, signed URL Excel, ubah status (`alasan_tolak` wajib jika ditolak), isi `nominal` (satu angka total), `catatan_admin`. **F13.5 (5 dari 5 permintaan Abi) LENGKAP.** Alif konfirmasi DONE 3 Okt 2026 (3a publik + 3b Admin).
+
+**Konsekuensi.** F13.4 menambah tabel `certificate_order_items`. F13.5 menambah `company_registrations` + `company_registration_participants` + menu Admin. ADR-026 (lima permintaan Abi) selesai.
 
 ---
 
@@ -1437,3 +1441,7 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-10-01 | **ADR-026 diperluas.** Banner `/dashboard/pelatihan` tiga kondisi: upgrade, ajakan merchandise, atau hilang setelah merchandise disetujui. Toast submit dibedakan per paket. Tanpa SQL. Menunggu uji Alif. F13.4 tetap TODO. |
 | 2026-10-01 | **ADR-026 diperluas.** Verifikasi `merch_addon` pindah ke menu Merchandise. Bukti transfer dibuka di popup. Pesanan yang belum diterima tetap kartu, bukan arsip. Menunggu uji Alif. F13.4 tetap TODO. |
 | 2026-10-03 | **F13.4 DONE** setelah uji Alif. Tab Menunggu/Ditolak/Disetujui di `/admin/merchandise/pesanan`. Tombol pesan lagi di header kartu dashboard. |
+| 2026-10-03 | **ADR-026 diperluas — F13.5a form publik.** Dialog daftar perusahaan/komunitas di detail pelatihan: PIC tanpa login, Excel peserta all-or-nothing, email `pendaftaran_perusahaan`, bucket `company-registrations`. SQL sudah dijalankan Alif. Menu Admin (3b) belum. F13.5 tetap TODO. |
+| 2026-10-03 | **F13.5a diuji Alif OK.** Form publik dikonfirmasi. F13.5 tetap TODO sampai Admin (3b) selesai diuji. |
+| 2026-10-03 | **ADR-026 diperluas — F13.5b Admin.** Menu Leads Pendaftaran Perusahaan: tabel, export, detail peserta + signed URL Excel, status/nominal/catatan. F13.5 lengkap dikodekan (3a+3b); registry tetap TODO sampai uji Alif. |
+| 2026-10-03 | **F13.5 DONE** setelah uji Alif (3a publik + 3b Admin). ADR-026 — lima permintaan Abi — selesai. |

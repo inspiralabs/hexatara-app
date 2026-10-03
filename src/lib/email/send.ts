@@ -80,7 +80,7 @@ export async function kirimEmailPembayaranDitolak(
 // baru (batch_registrations). Saat itu pertimbangkan jenis baru (mis. pendaftaran_batch)
 // daripada menghidupkan label "minat". Jalur hidup sekarang hanya 'penawaran' (F04.5).
 export async function kirimEmailLeadBaru(params: {
-  jenis: 'minat_batch' | 'penawaran';
+  jenis: 'minat_batch' | 'penawaran' | 'pendaftaran_perusahaan';
   nama: string;
   kontak: string;
   detail: string;

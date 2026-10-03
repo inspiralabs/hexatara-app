@@ -573,3 +573,68 @@ Tidak ada SQL. Status: **dikonfirmasi Alif 3 Okt 2026.** F13.4 DONE.
 `/admin/merchandise/pesanan` memakai tab Menunggu verifikasi / Ditolak / Sudah disetujui. Di dashboard user, tombol “Pesan Merchandise Lagi” sejajar judul kartu; teks Diajukan/Diperbarui dihapus dari kartu merchandise.
 
 Status: **dikonfirmasi Alif 3 Okt 2026.** F13.4 DONE.
+
+---
+
+## F13.5a — Form publik pendaftaran perusahaan/komunitas (3 Oktober 2026)
+
+**Keputusan UI:** Dialog (bukan halaman terpisah) — sejajar `DaftarBatchDialog`, form panjang sudah terbukti nyaman di dialog yang sama. `daftar-batch-dialog.tsx` tidak diubah.
+
+**Di luar cakupan:** menu Admin approve/isi nominal (Prompt 3b).
+
+SQL: `usulan-sql-pendaftaran-perusahaan.sql` sudah dijalankan Alif. Types `company_registrations` / `company_registration_participants` ditambah di `database.ts`.
+
+| File | Perubahan |
+|---|---|
+| `src/lib/validations/company-registration.ts` | Skema PIC + baris Excel |
+| `src/lib/company-registration/import.ts` | `parsePesertaPerusahaan` (all-or-nothing) |
+| `pelatihan/[slug]/daftar-perusahaan-dialog.tsx` | Form publik + unduh template client-side |
+| `pelatihan/[slug]/daftar-perusahaan-actions.ts` | Upload + insert + email + WA link |
+| `pelatihan/[slug]/page.tsx` | Tombol perusahaan di samping individu |
+| `src/lib/email/send.ts` + `templates.ts` | Jenis `pendaftaran_perusahaan` |
+
+Status: **dikonfirmasi Alif OK** (uji form publik). F13.5 DONE bersama 3b (lihat bawah).
+
+**Pesan commit yang disarankan**
+
+```
+feat(pendaftaran-perusahaan): form publik daftar grup via Excel (F13.5a)
+
+- Tabel baru company_registrations + company_registration_participants
+  (usulan SQL, sudah dijalankan Alif), bucket privat company-registrations
+- Form publik di /pelatihan/[slug]: PIC tanpa login, upload Excel peserta
+  (nama/WA/email), validasi all-or-nothing, template Excel diunduh di browser
+- Email notifikasi Admin + WA klik-to-chat setelah submit
+
+Ref: ADR-026, F13.5
+```
+
+---
+
+## F13.5b — Admin pendaftaran perusahaan (3 Oktober 2026)
+
+**F13.5 SELESAI DIKODEKAN SELURUHNYA (3a+3b).**
+
+Menu Leads → Pendaftaran Perusahaan. DataTable + filter status + export Excel. Detail: PIC, peserta, signed URL Excel (`company-registrations`), form status (+ alasan wajib jika ditolak), nominal total, catatan Admin. Polish UI: tombol unduh Excel, badge Disetujui hijau; init form detail via `onOpenChange` (bukan `useEffect`).
+
+| File | Perubahan |
+|---|---|
+| `src/components/shell/admin-shell.tsx` | Item menu Leads |
+| `admin/pendaftaran-perusahaan/page.tsx` | Query + signed URL |
+| `admin/pendaftaran-perusahaan/pendaftaran-perusahaan-table.tsx` | Tabel + dialog detail/aksi |
+| `admin/pendaftaran-perusahaan/pendaftaran-perusahaan-export.ts` | Export xlsx |
+| `admin/pendaftaran-perusahaan/actions.ts` | Update status/nominal/catatan |
+
+Status: **dikonfirmasi Alif 3 Okt 2026.** F13.5 DONE.
+
+**Pesan commit yang disarankan**
+
+```
+feat(admin-pendaftaran-perusahaan): menu lihat/verifikasi/export (F13.5b)
+
+- Menu baru di section Leads: tabel pendaftaran perusahaan + export Excel
+- Detail: daftar peserta, link unduh Excel asli, ubah status, isi nominal
+  (satu angka total), catatan Admin
+
+Ref: ADR-026, F13.5 (lengkap — 3a publik + 3b admin)
+```

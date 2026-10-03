@@ -204,7 +204,7 @@ export function templatePembayaranDitolak(
 /** Cabang `minat_batch` ditahan untuk Fase 2 (email pendaftaran batch) — lihat komentar di `send.ts`. */
 export function templateLeadBaru(
   params: {
-    jenis: 'minat_batch' | 'penawaran';
+    jenis: 'minat_batch' | 'penawaran' | 'pendaftaran_perusahaan';
     nama: string;
     kontak: string;
     detail: string;
@@ -218,7 +218,9 @@ export function templateLeadBaru(
   const judul =
     params.jenis === 'minat_batch'
       ? 'Pendaftaran minat batch baru'
-      : 'Permintaan penawaran produk baru';
+      : params.jenis === 'pendaftaran_perusahaan'
+        ? 'Pendaftaran perusahaan/komunitas baru'
+        : 'Permintaan penawaran produk baru';
   return {
     subject: `Lead baru: ${judul}`,
     html: baseLayout(

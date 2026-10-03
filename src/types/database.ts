@@ -681,6 +681,103 @@ export type Database = {
         }
         Relationships: []
       }
+      company_registration_participants: {
+        Row: {
+          created_at: string
+          email: string
+          id: number
+          nama: string
+          registration_id: number
+          whatsapp: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: number
+          nama: string
+          registration_id: number
+          whatsapp: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: number
+          nama?: string
+          registration_id?: number
+          whatsapp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_registration_participants_registration_id_fkey"
+            columns: ["registration_id"]
+            isOneToOne: false
+            referencedRelation: "company_registrations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      company_registrations: {
+        Row: {
+          alasan_tolak: string | null
+          batch_id: number
+          catatan: string | null
+          catatan_admin: string | null
+          created_at: string
+          email_pic: string
+          file_excel_url: string
+          id: number
+          jumlah_peserta: number
+          nama_perusahaan: string
+          nama_pic: string
+          nominal: number | null
+          status: Database["public"]["Enums"]["status_registrasi_batch"]
+          updated_at: string
+          whatsapp_pic: string
+        }
+        Insert: {
+          alasan_tolak?: string | null
+          batch_id: number
+          catatan?: string | null
+          catatan_admin?: string | null
+          created_at?: string
+          email_pic: string
+          file_excel_url: string
+          id?: number
+          jumlah_peserta: number
+          nama_perusahaan: string
+          nama_pic: string
+          nominal?: number | null
+          status?: Database["public"]["Enums"]["status_registrasi_batch"]
+          updated_at?: string
+          whatsapp_pic: string
+        }
+        Update: {
+          alasan_tolak?: string | null
+          batch_id?: number
+          catatan?: string | null
+          catatan_admin?: string | null
+          created_at?: string
+          email_pic?: string
+          file_excel_url?: string
+          id?: number
+          jumlah_peserta?: number
+          nama_perusahaan?: string
+          nama_pic?: string
+          nominal?: number | null
+          status?: Database["public"]["Enums"]["status_registrasi_batch"]
+          updated_at?: string
+          whatsapp_pic?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "company_registrations_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hero_slides: {
         Row: {
           cta_teks_en: string | null

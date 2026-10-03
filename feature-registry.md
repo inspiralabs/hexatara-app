@@ -240,7 +240,7 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 ## Sprint 12 — Modul 13: Permintaan Abi Langsung saat UAT
 
-> Lima permintaan Abi, 30 September 2026. F13.1 dan F13.2 sudah dikodekan (tetap TODO sampai uji Alif). F13.3–F13.5 menyusul.
+> Lima permintaan Abi, 30 September 2026. F13.1–F13.5 DONE setelah uji Alif.
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
 |---|---|---|---|---|---|
@@ -248,7 +248,7 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 | F13.2 | Kartu Sertifikat: ajakan upgrade bila belum pernah ada `certificate_orders` | DONE | `src/app/[locale]/(user)/dashboard/sertifikat/page.tsx`; `prompt-navbar-dan-kartu-sertifikat.md` | 2026-09-30 | Alif konfirmasi DONE. Kartu hanya untuk user yang belum pernah ajukan pesanan. |
 | F13.3 | Session timeout Admin, idle 30 menit | DONE | `src/components/shell/admin-idle-timeout.tsx`; `prompt-session-timeout-admin.md` | 2026-09-30 | Alif uji browser: hasil OKE. |
 | F13.4 | Merchandise jadi produk: bundling sertifikat (dashboard) dan beli dari katalog (publik, per produk) | DONE | `usulan-sql-merchandise-jadi-produk.sql`, `usulan-sql-merchandise-publik.sql`, `src/lib/merchandise.ts`, `pesanan-upgrade-form.tsx`, `katalog/[slug]/beli-merchandise-dialog.tsx`, `katalog/[slug]/actions.ts`, `admin/merchandise/**` | 2026-10-03 | Alif konfirmasi DONE 3 Okt 2026 setelah uji lanjutan UAT: pesan ulang, stepper, nomor telepon (WhatsApp), banner pelatihan, toast per paket, antrean Merchandise terpisah, kartu berjalan, tab admin, tombol pesan lagi di header. |
-| F13.5 | Pendaftaran perusahaan/komunitas (Excel, harga negosiasi) | TODO | | | Menyusul, prompt terpisah belum dikirim. |
+| F13.5 | Pendaftaran perusahaan/komunitas (Excel, harga negosiasi) | DONE | `usulan-sql-pendaftaran-perusahaan.sql`; `src/lib/validations/company-registration.ts`; `src/lib/company-registration/import.ts`; `pelatihan/[slug]/daftar-perusahaan-*.tsx`; `src/lib/email/{send,templates}.ts`; `admin/pendaftaran-perusahaan/**`; `admin-shell.tsx` | 2026-10-03 | Alif konfirmasi DONE 3 Okt 2026: form publik (3a) + Admin lihat/verifikasi/export/nominal (3b). |
 
 ---
 
@@ -398,6 +398,10 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 2026-09-25  (UAT internal, pintu materi) Alif mengonfirmasi SQL `usulan-sql-nonaktifkan-materi-lama.sql` sudah dijalankan: `/materi/1` dan `/materi/2` (uji_materi_ppt / uji_materi_pdf, is_active false) tampil 404; `/materi/3` (course resmi) tetap jalan. Pintu dari UI memakai `/materi/get-free-certificate-rpc` (`getMateriHeroHref`), bukan angka id. Status F06.2 dan F06.11 tetap DONE; Bukti keduanya dilengkapi untuk kondisi ini. Listing+toggle semua materials di Admin belum dibuat (usulan terpisah di plan.md).
 2026-09-30  F12.1/F12.2  Alif mengunci DONE: tiga temuan UAT internal (kartu upgrade/merchandise, tombol WA pelatihan, WA dari Pengaturan) dan persetujuan merch_addon (SQL sudah jalan, uji normal). F12.3 tetap DONE dari 25 Sep. F13.x tetap TODO.
 2026-10-03  F13.4  Alif mengunci DONE setelah uji lanjutan UAT: merchandise sebagai produk, pesan ulang, stepper, nomor telepon (WhatsApp), banner pelatihan, toast per paket, antrean Merchandise terpisah, kartu berjalan, tab admin pesanan, tombol pesan lagi di header kartu.
+2026-10-03  F13.5a Form publik pendaftaran perusahaan/komunitas dikodekan (Dialog di /pelatihan/[slug], Excel all-or-nothing, email jenis baru). SQL sudah dijalankan Alif. Status F13.5 tetap TODO — menunggu uji Alif; menu Admin Prompt 3b belum.
+2026-10-03  F13.5a Alif konfirmasi uji form publik OK. F13.5 tetap TODO sampai Prompt 3b (Admin) dikodekan dan diuji.
+2026-10-03  F13.5b Admin dikodekan (menu Leads, tabel, export, detail status/nominal). 3a+3b lengkap di kode; F13.5 tetap TODO sampai Alif uji Admin.
+2026-10-03  F13.5  Alif mengunci DONE setelah uji Admin (3b) + form publik (3a) sebelumnya. Lima permintaan Abi ADR-026 selesai.
 ```
 
 ---
