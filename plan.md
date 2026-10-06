@@ -638,3 +638,24 @@ feat(admin-pendaftaran-perusahaan): menu lihat/verifikasi/export (F13.5b)
 
 Ref: ADR-026, F13.5 (lengkap — 3a publik + 3b admin)
 ```
+
+---
+
+## F14.1 — Badge Autel Authorized Dealer di hero (6 Oktober 2026)
+
+Pill di bawah judul kartu retail hero (`offerRetailTitle`): ikon `BadgeCheck` + teks resmi “Autel Robotics Authorized Dealer” (ID = EN lewat next-intl). Gaya reuse badge publik existing. Tanpa SQL. Elemen hero lain tidak diubah.
+
+| File | Perubahan |
+|---|---|
+| `src/components/hero-section.tsx` | Pill di bawah judul retail |
+| `messages/id.json` / `messages/en.json` | `landing.offerRetailAuthorizedDealer` |
+
+Status: **menunggu uji Alif.** F14.1 tetap TODO.
+
+**Pesan commit yang disarankan**
+
+```
+feat(hero): badge Autel Robotics Authorized Dealer di kartu retail (F14.1)
+
+Ref: ADR-027
+```

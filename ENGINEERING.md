@@ -1392,6 +1392,25 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 
 ---
 
+### ADR-027 — Tambahan Hexatara hasil meeting 4 Okt 2026
+**2026-10-06 · Berlaku — F14.1 dikodekan (menunggu uji); F14.2–F14.6 belum**
+
+**Konteks.** Meeting Hexatara 4 Oktober 2026 menghasilkan enam permintaan tambahan setelah Modul 13 (ADR-026) selesai. Tanpa SQL untuk F14.1. Detail F14.2–F14.6 menyusul lewat prompt terpisah.
+
+1. **F14.1 — Badge Authorized Dealer di hero.** Frasa resmi “Autel Robotics Authorized Dealer” sebagai pill di bawah judul kartu retail “Jual Drone Profesional Autel” / “Professional Autel Drones”.
+2. **F14.2** — (detail menyusul prompt terpisah)
+3. **F14.3** — (detail menyusul prompt terpisah)
+4. **F14.4** — (detail menyusul prompt terpisah)
+5. **F14.5** — (detail menyusul prompt terpisah)
+6. **F14.6** — (detail menyusul prompt terpisah)
+
+**Keputusan.**
+- **F14.1:** pill di `hero-section.tsx` tepat di bawah `offerRetailTitle`; ikon `BadgeCheck` (lucide); teks lewat `landing.offerRetailAuthorizedDealer` (ID = EN, nama resmi); gaya reuse pola badge publik existing (`rounded-full` + `border-border` + `bg-card` + `text-foreground`, ikon `text-primary`); boleh wrap di kartu sempit (390px). Elemen hero lain tidak diubah. Tanpa SQL.
+
+**Konsekuensi.** Empat kartu/grid hero retail sedikit lebih tinggi di mobile karena pill. Registry Sprint 13 / F14.x. Status F14.1 TODO sampai uji Alif.
+
+---
+
 ### Template ADR baru
 
 ```
@@ -1445,3 +1464,4 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-10-03 | **F13.5a diuji Alif OK.** Form publik dikonfirmasi. F13.5 tetap TODO sampai Admin (3b) selesai diuji. |
 | 2026-10-03 | **ADR-026 diperluas — F13.5b Admin.** Menu Leads Pendaftaran Perusahaan: tabel, export, detail peserta + signed URL Excel, status/nominal/catatan. F13.5 lengkap dikodekan (3a+3b); registry tetap TODO sampai uji Alif. |
 | 2026-10-03 | **F13.5 DONE** setelah uji Alif (3a publik + 3b Admin). ADR-026 — lima permintaan Abi — selesai. |
+| 2026-10-06 | **ADR-027 dibuka** (meeting Hexatara 4 Okt 2026, enam permintaan). **F14.1** badge Autel Robotics Authorized Dealer di hero retail dikodekan; menunggu uji Alif. F14.2–F14.6 belum. |

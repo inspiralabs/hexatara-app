@@ -252,6 +252,21 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 ---
 
+## Sprint 13 — Modul 14: Tambahan Hexatara (meeting 4 Okt 2026)
+
+> Enam permintaan meeting 4 Oktober 2026 (ADR-027). F14.1 dikodekan; F14.2–F14.6 menunggu prompt.
+
+| Kode | Fitur | Status | Berkas | Diuji | Bukti |
+|---|---|---|---|---|---|
+| F14.1 | Hero: badge Autel Robotics Authorized Dealer di bawah judul retail | TODO | `src/components/hero-section.tsx`; `messages/id.json`; `messages/en.json` | | selesai dikodekan, menunggu uji Alif. |
+| F14.2 | (meeting 4 Okt #2 — detail menyusul) | TODO | | | belum dikerjakan |
+| F14.3 | (meeting 4 Okt #3 — detail menyusul) | TODO | | | belum dikerjakan |
+| F14.4 | (meeting 4 Okt #4 — detail menyusul) | TODO | | | belum dikerjakan |
+| F14.5 | (meeting 4 Okt #5 — detail menyusul) | TODO | | | belum dikerjakan |
+| F14.6 | (meeting 4 Okt #6 — detail menyusul) | TODO | | | belum dikerjakan |
+
+---
+
 ## Sprint 5 — Hardening & Deploy
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
@@ -402,6 +417,7 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 2026-10-03  F13.5a Alif konfirmasi uji form publik OK. F13.5 tetap TODO sampai Prompt 3b (Admin) dikodekan dan diuji.
 2026-10-03  F13.5b Admin dikodekan (menu Leads, tabel, export, detail status/nominal). 3a+3b lengkap di kode; F13.5 tetap TODO sampai Alif uji Admin.
 2026-10-03  F13.5  Alif mengunci DONE setelah uji Admin (3b) + form publik (3a) sebelumnya. Lima permintaan Abi ADR-026 selesai.
+2026-10-06  F14.1  Badge Autel Robotics Authorized Dealer di hero retail dikodekan (ADR-027). Status TODO — menunggu uji Alif. F14.2–F14.6 belum.
 ```
 
 ---

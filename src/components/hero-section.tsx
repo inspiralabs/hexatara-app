@@ -1,4 +1,4 @@
-import { GraduationCap, ShoppingBag } from "lucide-react";
+import { BadgeCheck, GraduationCap, ShoppingBag } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -9,6 +9,10 @@ import { PublicHeroMist } from "@/components/public-hero-mist";
 import { publicCtaPrimary, publicCtaSecondary } from "@/lib/public-ui";
 
 const cardCtaClass = `${publicCtaPrimary} mt-auto w-full px-3 text-sm sm:px-5 sm:text-base`;
+
+/** Pola badge publik; ukuran ikut lebar kartu (@container) agar frasa resmi selalu 1 baris. */
+const authorizedDealerPillClass =
+  "inline-flex w-fit max-w-full items-center gap-1 rounded-full border border-border bg-card px-1.5 py-0.5 text-[clamp(0.5rem,5.6cqi,0.75rem)] font-medium leading-none tracking-tight whitespace-nowrap text-foreground";
 
 export async function HeroSection() {
   const supabase = await createClient();
@@ -50,11 +54,15 @@ export async function HeroSection() {
                 </Link>
               </div>
 
-              <div className="flex flex-col gap-2 rounded-xl border border-border bg-card/90 p-4 shadow-none backdrop-blur-sm">
+              <div className="@container flex flex-col gap-2 rounded-xl border border-border bg-card/90 p-4 shadow-none backdrop-blur-sm">
                 <ShoppingBag className="size-6 text-primary" aria-hidden="true" />
                 <h2 className="font-heading text-base font-semibold leading-tight text-foreground">
                   {t("offerRetailTitle")}
                 </h2>
+                <span className={authorizedDealerPillClass}>
+                  <BadgeCheck className="size-[1.1em] shrink-0 text-primary" aria-hidden="true" />
+                  {t("offerRetailAuthorizedDealer")}
+                </span>
                 <p className="hidden text-sm text-muted-foreground sm:block">{t("offerRetailDesc")}</p>
                 <Link href="/katalog" className={cardCtaClass}>
                   {t("offerRetailCta")}
