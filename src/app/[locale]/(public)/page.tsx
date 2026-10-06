@@ -8,6 +8,7 @@ import { ProdukSection } from "@/components/produk-section";
 import { VerifyCtaSection } from "@/components/verify-cta-section";
 import { CompanyProfileSection } from "@/components/company-profile-section";
 import { InstrukturSection } from "@/components/instruktur-section";
+import { PartnerSection } from "@/components/partner-section";
 import { TestimoniSection } from "@/components/testimoni-section";
 import { FaqSection } from "@/components/faq-section";
 import { pageMetadata } from "@/lib/seo/page-metadata";
@@ -47,6 +48,7 @@ export default function Home() {
       <VerifyCtaSection />
       <CompanyProfileSection />
       <InstrukturSection />
+      <PartnerSection />
       <TestimoniSection />
       <FaqSection />
     </>

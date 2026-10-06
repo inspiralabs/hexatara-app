@@ -254,14 +254,14 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 ## Sprint 13 — Modul 14: Tambahan Hexatara (meeting 4 Okt 2026)
 
-> Enam permintaan meeting 4 Oktober 2026 (ADR-027). F14.1–F14.2 DONE; F14.3 dikodekan (menunggu uji); F14.4–F14.6 menunggu prompt.
+> Enam permintaan meeting 4 Oktober 2026 (ADR-027). F14.1–F14.3 DONE; F14.4 dikodekan (menunggu uji); F14.5–F14.6 menunggu prompt.
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
 |---|---|---|---|---|---|
 | F14.1 | Hero: badge Autel Robotics Authorized Dealer di bawah judul retail | DONE | `src/components/hero-section.tsx`; `messages/id.json`; `messages/en.json` | 2026-10-06 | Alif konfirmasi DONE 6 Okt 2026. |
 | F14.2 | Relabel Pendaftaran Kelompok + minimal 3 peserta (label saja; rute/tabel company_* tetap) | DONE | `messages/{id,en}.json` (`batch.registerCompany`); `daftar-perusahaan-dialog.tsx`; `daftar-perusahaan-actions.ts`; `validations/company-registration.ts`; `admin/pendaftaran-perusahaan/*`; `admin-shell.tsx`; `email/templates.ts` | 2026-10-06 | Alif konfirmasi DONE 6 Okt 2026 (uji minimal 2 peserta ditolak). |
-| F14.3 | Instruktur: foto portrait 4:5, bio→Catatan internal, dialog Detail Admin | TODO | `instruktur-section.tsx`; `image-upload-field.tsx`; `instructor-form-dialog.tsx`; `instructor-list.tsx`; `instructor-detail-dialog.tsx`; `instructor-portrait-badge.tsx`; `instructor-actions.ts`; `validations/instructor-admin.ts` | | menunggu uji Alif. |
-| F14.4 | (meeting 4 Okt #4 — detail menyusul) | TODO | | | belum dikerjakan |
+| F14.3 | Instruktur: foto portrait 4:5, bio→Catatan internal, dialog Detail Admin | DONE | `instruktur-section.tsx`; `image-upload-field.tsx`; `instructor-form-dialog.tsx`; `instructor-list.tsx`; `instructor-detail-dialog.tsx`; `instructor-portrait-badge.tsx`; `instructor-actions.ts`; `validations/instructor-admin.ts` | 2026-10-06 | Alif konfirmasi DONE 6 Okt 2026. |
+| F14.4 | Partner Kami: CRUD Admin + section publik di bawah Instruktur | TODO | `partner-section.tsx`; `messages/{id,en}.json`; `admin/konten/partner/page.tsx`; `partner-list.tsx`; `partner-form-dialog.tsx`; `partner-actions.ts`; `partner-row-actions.tsx`; `partner-active-switch.tsx`; `validations/partner-admin.ts`; `admin-shell.tsx`; `image-upload-field.tsx` | | menunggu uji Alif. |
 | F14.5 | (meeting 4 Okt #5 — detail menyusul) | TODO | | | belum dikerjakan |
 | F14.6 | (meeting 4 Okt #6 — detail menyusul) | TODO | | | belum dikerjakan |
 
@@ -420,6 +420,7 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 2026-10-06  F14.1  Badge Autel Robotics Authorized Dealer di hero retail dikodekan (ADR-027). Status TODO — menunggu uji Alif. F14.2–F14.6 belum.
 2026-10-06  F14.1  Alif mengunci DONE. F14.2 dikodekan: label Kelompok + MIN_PESERTA_KELOMPOK=3; rute/tabel tetap. F14.2 TODO sampai uji Alif.
 2026-10-06  F14.2  Alif mengunci DONE (uji Excel 2 peserta ditolak). F14.3 dikodekan: portrait 4:5, Catatan internal, Detail Admin; kolom bio_* tetap. F14.3 TODO sampai uji Alif.
+2026-10-06  F14.3  Alif mengunci DONE. F14.4 dikodekan: tabel partners, Admin Partner Kami, section publik; bucket content/partners/. F14.4 TODO sampai uji Alif.
 ```
 
 ---

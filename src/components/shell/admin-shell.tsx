@@ -77,6 +77,7 @@ const MENU_ADMIN: MenuSection[] = [
       { href: "/admin/konten/banner", label: "Banner" },
       { href: "/admin/konten/hero", label: "Hero" },
       { href: "/admin/konten/instruktur", label: "Instruktur" },
+      { href: "/admin/konten/partner", label: "Partner Kami" },
       { href: "/admin/konten/company", label: "Company Profile" },
       { href: "/admin/konten/testimoni", label: "Testimoni" },
     ],

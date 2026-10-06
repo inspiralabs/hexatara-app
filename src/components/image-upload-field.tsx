@@ -24,7 +24,7 @@ const FORMAT_LABEL = 'JPG, PNG, atau WebP';
 const UKURAN_MAKS = 5 * 1024 * 1024; // 5MB sebelum kompresi (ENGINEERING §5.3)
 
 /** Default: foto/kartu biasa. `poster`: popup promo & gambar detail pelatihan (tipografi padat, retina). */
-export type ImageCompressionPreset = 'default' | 'poster' | 'portrait';
+export type ImageCompressionPreset = 'default' | 'poster' | 'portrait' | 'logo';
 
 const COMPRESSION: Record<
   ImageCompressionPreset,
@@ -35,6 +35,8 @@ const COMPRESSION: Record<
   poster: { maxSizeMB: 1.5, maxWidthOrHeight: 2048, initialQuality: 0.9 },
   // Portrait instruktur: sisi terpanjang tetap ≥1000px setelah kompresi.
   portrait: { maxSizeMB: 0.5, maxWidthOrHeight: 1600, initialQuality: 0.9 },
+  // Logo partner: pertahankan alpha PNG/WebP (fileType di-set saat kompres).
+  logo: { maxSizeMB: 0.5, maxWidthOrHeight: 1200, initialQuality: 0.9 },
 };
 
 function formatMB(bytes: number) {
@@ -88,7 +90,11 @@ export function ImageUploadField({
   const compressOpts = COMPRESSION[compression];
 
   async function kompresLaluUpload(file: File, namaFile: string) {
-    const compressed = await imageCompression(file, compressOpts);
+    const opts =
+      compression === 'logo' && (file.type === 'image/png' || file.type === 'image/webp')
+        ? { ...compressOpts, fileType: file.type }
+        : compressOpts;
+    const compressed = await imageCompression(file, opts);
     const keluar = new File([compressed], namaFile, { type: compressed.type || file.type });
     try {
       return await onUpload(keluar);
@@ -123,7 +129,11 @@ export function ImageUploadField({
   function handleFile(file: File | undefined) {
     if (!file) return;
     if (!FORMAT_DIIZINKAN.includes(file.type)) {
-      toast.error(`Format berkas tidak didukung. Gunakan ${FORMAT_LABEL}.`);
+      toast.error(
+        file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg')
+          ? 'SVG tidak diizinkan. Gunakan JPG, PNG, atau WebP.'
+          : `Format berkas tidak didukung. Gunakan ${FORMAT_LABEL}.`,
+      );
       return;
     }
     if (file.size > UKURAN_MAKS) {

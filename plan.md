@@ -691,4 +691,21 @@ Publik & Admin foto `aspect-[4/5]` + `object-top`. Form: label “Catatan” (in
 | `instructor-list.tsx` + `instructor-detail-dialog.tsx` + `instructor-portrait-badge.tsx` | Tabel + Detail + badge |
 | `instructor-actions.ts` / `instructor-admin.ts` | Tanpa bio_en di payload |
 
-Status: **menunggu uji Alif.** F14.3 tetap TODO.
+Status: **dikonfirmasi Alif 6 Okt 2026.** F14.3 DONE.
+
+---
+
+## F14.4 — Partner Kami (6 Oktober 2026)
+
+Tabel `partners` (SQL blok B sudah jalan). Admin Konten → Partner Kami: CRUD logo ke bucket `content/partners/`. Publik: section di bawah Instruktur Kami; kosong = tidak render. `revalidatePath('/')` + `('/en')`.
+
+| File | Perubahan |
+|---|---|
+| `partner-section.tsx`, `page.tsx` (beranda) | Section publik |
+| `messages/{id,en}.json` | `landing.partnersHeading` |
+| `admin/konten/partner/*`, `partner-*.tsx`, `partner-actions.ts` | CRUD Admin |
+| `admin-shell.tsx` | Menu Partner Kami |
+| `image-upload-field.tsx` | preset `logo` (alpha PNG/WebP) |
+| `validations/partner-admin.ts`, `types/database.ts` | Schema + tipe |
+
+Status: **menunggu uji Alif.** F14.4 tetap TODO.

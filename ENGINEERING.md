@@ -1393,23 +1393,24 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 ---
 
 ### ADR-027 — Tambahan Hexatara hasil meeting 4 Okt 2026
-**2026-10-06 · Diperluas 2026-10-06 · Berlaku — F14.1–F14.2 DONE; F14.3 dikodekan (menunggu uji); F14.4–F14.6 belum**
+**2026-10-06 · Diperluas 2026-10-06 · Berlaku — F14.1–F14.3 DONE; F14.4 dikodekan (menunggu uji); F14.5–F14.6 belum**
 
-**Konteks.** Meeting Hexatara 4 Oktober 2026 menghasilkan enam permintaan tambahan setelah Modul 13 (ADR-026) selesai. Tanpa SQL untuk F14.1–F14.3. Detail F14.4–F14.6 menyusul lewat prompt terpisah.
+**Konteks.** Meeting Hexatara 4 Oktober 2026 menghasilkan enam permintaan tambahan setelah Modul 13 (ADR-026) selesai. F14.1–F14.3 tanpa SQL baru di app; F14.4 memakai tabel `partners` (SQL Bagian 0 blok B, sudah dijalankan Alif). Detail F14.5–F14.6 menyusul lewat prompt terpisah.
 
 1. **F14.1 — Badge Authorized Dealer di hero.** Frasa resmi “Autel Robotics Authorized Dealer” sebagai pill di bawah judul kartu retail “Jual Drone Profesional Autel” / “Professional Autel Drones”.
 2. **F14.2 — Relabel “Pendaftaran Kelompok” + minimal 3 peserta.** Istilah tampil “Perusahaan/Komunitas” diganti “Kelompok”; syarat minimal 3 peserta di Excel.
 3. **F14.3 — Instruktur portrait + Catatan internal + Detail Admin.** Foto publik/admin 4:5; bio jadi label “Catatan” (internal); dialog Detail di Admin.
-4. **F14.4** — (detail menyusul prompt terpisah)
+4. **F14.4 — Partner Kami.** CRUD Admin + section publik di bawah Instruktur Kami.
 5. **F14.5** — (detail menyusul prompt terpisah)
 6. **F14.6** — (detail menyusul prompt terpisah)
 
 **Keputusan.**
 - **F14.1:** pill di `hero-section.tsx` tepat di bawah `offerRetailTitle`; ikon `BadgeCheck` (lucide); teks lewat `landing.offerRetailAuthorizedDealer` (ID = EN, nama resmi); gaya reuse pola badge publik; font di-clamp agar satu baris. Alif konfirmasi DONE 6 Okt 2026.
 - **F14.2 (label saja, infrastruktur tetap):** teks UI/toast/email/WA/export/menu jadi “Kelompok”. **Tidak diubah:** tabel `company_registrations` / `company_registration_participants`, kolom `nama_perusahaan`, rute `/admin/pendaftaran-perusahaan`, nama file sumber, jenis email `'pendaftaran_perusahaan'`. `MIN_PESERTA_KELOMPOK = 3` di validations; penegakan di server action setelah Excel valid. Alif konfirmasi DONE 6 Okt 2026.
-- **F14.3 (label saja, kolom tidak diubah):** publik `aspect-[4/5]` + `object-cover object-top` (sudah tidak render bio). Admin: crop/preview 4:5, hint portrait, preset kompresi `portrait` (`maxWidthOrHeight: 1600` ≥ 1000). Label form “Catatan” → kolom `bio_id`; `bio_en` dihapus dari form/schema; update **tidak** mengirim `bio_en` (tidak menimpa null). Dialog Detail read-only. Badge “Perlu foto portrait” jika natural width ≥ height. Tanpa SQL; kolom `bio_id`/`bio_en` tetap di DB.
+- **F14.3 (label saja, kolom tidak diubah):** publik `aspect-[4/5]` + `object-cover object-top` (sudah tidak render bio). Admin: crop/preview 4:5, hint portrait, preset kompresi `portrait` (`maxWidthOrHeight: 1600` ≥ 1000). Label form “Catatan” → kolom `bio_id`; `bio_en` dihapus dari form/schema; update **tidak** mengirim `bio_en` (tidak menimpa null). Dialog Detail read-only. Badge “Perlu foto portrait” jika natural width ≥ height. Tanpa SQL; kolom `bio_id`/`bio_en` tetap di DB. Alif konfirmasi DONE 6 Okt 2026.
+- **F14.4 — tabel `partners`, reuse bucket `content`:** kolom `nama`, `logo_url`, `urutan`, `is_active` (+ timestamps). Upload Admin ke folder `partners/` (JPG/PNG/WebP, bukan SVG; preset kompresi `logo` pertahankan alpha). Hapus baris → hapus file storage. Publik: logo `object-contain` + `quality={90}`, kotak `bg-white` (logo gelap terbaca di dark mode); section hilang jika tidak ada aktif. `revalidatePath('/')` dan `revalidatePath('/en')` pada create/update/delete/toggle.
 
-**Konsekuensi.** F13.5 tetap DONE (istilah Kelompok). Registry F14.3 TODO sampai uji Alif.
+**Konsekuensi.** Registry F14.4 TODO sampai uji Alif. Bucket storage `content` tidak diganti — hanya folder baru.
 
 ---
 
@@ -1469,3 +1470,4 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-10-06 | **ADR-027 dibuka** (meeting Hexatara 4 Okt 2026, enam permintaan). **F14.1** badge Autel Robotics Authorized Dealer di hero retail dikodekan; menunggu uji Alif. F14.2–F14.6 belum. |
 | 2026-10-06 | **F14.1 DONE** setelah uji Alif. **ADR-027 diperluas — F14.2:** label “Pendaftaran Kelompok” + `MIN_PESERTA_KELOMPOK=3` (app saja); rute/tabel/`pendaftaran_perusahaan` tetap. Menunggu uji Alif. |
 | 2026-10-06 | **F14.2 DONE** setelah uji Alif. **ADR-027 diperluas — F14.3:** instruktur portrait 4:5, bio→Catatan (label saja, kolom `bio_*` tetap), Detail Admin. Menunggu uji Alif. |
+| 2026-10-06 | **F14.3 DONE** setelah uji Alif. **ADR-027 diperluas — F14.4:** tabel `partners`, Admin Partner Kami, section publik di bawah Instruktur; logo di bucket `content/partners/`. Menunggu uji Alif. |

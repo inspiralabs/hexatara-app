@@ -1033,6 +1033,36 @@ export type Database = {
         }
         Relationships: []
       }
+      partners: {
+        Row: {
+          created_at: string
+          id: number
+          is_active: boolean
+          logo_url: string
+          nama: string
+          updated_at: string
+          urutan: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          is_active?: boolean
+          logo_url: string
+          nama: string
+          updated_at?: string
+          urutan?: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          is_active?: boolean
+          logo_url?: string
+          nama?: string
+          updated_at?: string
+          urutan?: number
+        }
+        Relationships: []
+      }
       popups: {
         Row: {
           created_at: string
