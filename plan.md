@@ -675,4 +675,20 @@ Label tampil “Perusahaan/Komunitas” → “Kelompok” (ID+EN). Rute `/admin
 | `admin/pendaftaran-perusahaan/*`, `admin-shell.tsx` | Label Admin/export |
 | `email/templates.ts` | Judul “Pendaftaran kelompok baru” |
 
-Status: **menunggu uji Alif.** F14.2 tetap TODO.
+Status: **dikonfirmasi Alif 6 Okt 2026.** F14.2 DONE.
+
+---
+
+## F14.3 — Instruktur portrait + Catatan + Detail (6 Oktober 2026)
+
+Publik & Admin foto `aspect-[4/5]` + `object-top`. Form: label “Catatan” (internal, `bio_id`); `bio_en` tidak di form/update. Detail dialog Admin. Badge “Perlu foto portrait” untuk foto non-portrait. Kolom DB `bio_*` **tidak** diubah/dihapus. Tanpa SQL.
+
+| File | Perubahan |
+|---|---|
+| `instruktur-section.tsx` | Kontainer foto 4:5 |
+| `image-upload-field.tsx` | previewAspectClass, suggestedNote, preset `portrait` |
+| `instructor-form-dialog.tsx` | Catatan, crop 4:5 |
+| `instructor-list.tsx` + `instructor-detail-dialog.tsx` + `instructor-portrait-badge.tsx` | Tabel + Detail + badge |
+| `instructor-actions.ts` / `instructor-admin.ts` | Tanpa bio_en di payload |
+
+Status: **menunggu uji Alif.** F14.3 tetap TODO.

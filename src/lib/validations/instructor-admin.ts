@@ -11,8 +11,8 @@ export const InstructorFormSchema = z.object({
   nama: teksWajib,
   jabatan_id: teksOpsional,
   jabatan_en: teksOpsional,
+  // Catatan internal (kolom DB tetap bio_id). bio_en tidak di form — jangan dikirim saat update.
   bio_id: teksOpsional,
-  bio_en: teksOpsional,
   foto_url: teksOpsional,
   urutan: angkaOpsional,
   is_active: z.boolean(),

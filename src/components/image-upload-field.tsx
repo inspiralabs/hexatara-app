@@ -24,7 +24,7 @@ const FORMAT_LABEL = 'JPG, PNG, atau WebP';
 const UKURAN_MAKS = 5 * 1024 * 1024; // 5MB sebelum kompresi (ENGINEERING §5.3)
 
 /** Default: foto/kartu biasa. `poster`: popup promo & gambar detail pelatihan (tipografi padat, retina). */
-export type ImageCompressionPreset = 'default' | 'poster';
+export type ImageCompressionPreset = 'default' | 'poster' | 'portrait';
 
 const COMPRESSION: Record<
   ImageCompressionPreset,
@@ -33,6 +33,8 @@ const COMPRESSION: Record<
   default: { maxSizeMB: 0.5, maxWidthOrHeight: 1920 },
   // 2048 ≈ tampil popup xl/detail ×2 (retina); 1.5 MB + q0.9 supaya PNG tidak dipaksa shrink dimensi.
   poster: { maxSizeMB: 1.5, maxWidthOrHeight: 2048, initialQuality: 0.9 },
+  // Portrait instruktur: sisi terpanjang tetap ≥1000px setelah kompresi.
+  portrait: { maxSizeMB: 0.5, maxWidthOrHeight: 1600, initialQuality: 0.9 },
 };
 
 function formatMB(bytes: number) {
@@ -50,6 +52,8 @@ export function ImageUploadField({
   suggestedPx,
   skipCrop = false,
   previewFit = 'cover',
+  previewAspectClass = 'aspect-video',
+  suggestedNote,
   lockSize = false,
   compression = 'default',
 }: {
@@ -61,13 +65,17 @@ export function ImageUploadField({
   aspectRatio?: number;
   /** Contoh: "1920×1080px" — ditampilkan sebagai saran, bukan validasi keras. */
   suggestedPx?: string;
+  /** Mengganti kalimat "Disarankan sekitar …" bila diisi (tetap setelah teks format/ukuran). */
+  suggestedNote?: string;
   /** Lewati dialog crop — kompres file asli lalu upload (poster/infografis). */
   skipCrop?: boolean;
-  /** Preview di form: cover (default, aspect-video) atau contain (tinggi menyesuaikan). */
+  /** Preview di form: cover (default) atau contain (tinggi menyesuaikan). */
   previewFit?: 'cover' | 'contain';
+  /** Kelas aspect untuk pratinjau cover, mis. aspect-[4/5]. Default aspect-video. */
+  previewAspectClass?: string;
   /** Ukuran kotak crop tetap — hanya boleh digeser (thumbnail kartu / hero slide). */
   lockSize?: boolean;
-  /** Preset kompresi. Default = upload biasa; poster = popup/gambar detail (resolusi+budget lebih tinggi). */
+  /** Preset kompresi. Default = upload biasa; poster = popup/gambar detail; portrait = foto instruktur. */
   compression?: ImageCompressionPreset;
 }) {
   const inputId = useId();
@@ -197,8 +205,10 @@ export function ImageUploadField({
             </Button>
           </div>
         ) : (
-          <div className="relative aspect-video w-full max-w-xs overflow-hidden rounded-lg border border-border">
-            <Image src={value} alt="" fill className="object-cover" sizes="320px" />
+          <div
+            className={`relative w-full max-w-xs overflow-hidden rounded-lg border border-border ${previewAspectClass}`}
+          >
+            <Image src={value} alt="" fill className="object-cover object-top" sizes="320px" />
             <Button
               type="button"
               variant="secondary"
@@ -234,7 +244,11 @@ export function ImageUploadField({
           </label>
           <p className="text-xs text-muted-foreground">
             Format {FORMAT_LABEL}, maksimal {formatMB(UKURAN_MAKS)} sebelum kompresi.
-            {suggestedPx && <> Disarankan sekitar {suggestedPx}.</>}
+            {suggestedNote
+              ? <> {suggestedNote}</>
+              : suggestedPx
+                ? <> Disarankan sekitar {suggestedPx}.</>
+                : null}
           </p>
         </div>
       )}

@@ -14,12 +14,12 @@ export async function simpanInstructorAction(instructorId: number | null, input:
   }
 
   const p = parsed.data;
+  // Tanpa bio_en — update tidak boleh menimpa kolom tersembunyi dengan null.
   const instructor = {
     nama: p.nama,
     jabatan_id: teks(p.jabatan_id),
     jabatan_en: teks(p.jabatan_en),
     bio_id: teks(p.bio_id),
-    bio_en: teks(p.bio_en),
     foto_url: teks(p.foto_url),
     urutan: angka(p.urutan) ?? 0,
     is_active: p.is_active,

@@ -1,12 +1,15 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { PlusIcon } from 'lucide-react';
 import { DataTable, SortableHeader, createDataTableColumnHelper } from '@/components/data-table';
 import { Button } from '@/components/ui/button';
 import { InstructorRowActions } from './instructor-row-actions';
 import { InstructorActiveSwitch } from './instructor-active-switch';
 import { InstructorFormDialog } from './instructor-form-dialog';
+import { InstructorDetailDialog } from './instructor-detail-dialog';
+import { InstructorPortraitBadge } from './instructor-portrait-badge';
 import type { InstructorFormInput } from '@/lib/validations/instructor-admin';
 import type { Database } from '@/types/database';
 
@@ -18,11 +21,17 @@ function keDefaultValues(i: Instructor): InstructorFormInput {
     jabatan_id: i.jabatan_id ?? '',
     jabatan_en: i.jabatan_en ?? '',
     bio_id: i.bio_id ?? '',
-    bio_en: i.bio_en ?? '',
     foto_url: i.foto_url ?? '',
     urutan: i.urutan,
     is_active: i.is_active,
   };
+}
+
+function potong(teks: string | null, maks = 48) {
+  if (!teks) return '—';
+  const t = teks.trim();
+  if (t.length <= maks) return t;
+  return `${t.slice(0, maks - 1)}…`;
 }
 
 const columnHelper = createDataTableColumnHelper<Instructor>();
@@ -48,9 +57,35 @@ export function InstructorList({
   }
 
   const columns = [
+    columnHelper.display({
+      id: 'foto',
+      header: 'Foto',
+      cell: ({ row }) => {
+        const url = row.original.foto_url;
+        return (
+          <div className="flex items-center gap-2">
+            <div className="relative aspect-[4/5] h-14 shrink-0 overflow-hidden rounded-md border border-border bg-muted">
+              {url ? (
+                <Image src={url} alt="" fill className="object-cover object-top" sizes="56px" />
+              ) : null}
+            </div>
+            {url ? <InstructorPortraitBadge key={url} src={url} /> : null}
+          </div>
+        );
+      },
+    }),
     columnHelper.accessor('nama', {
       header: (ctx) => <SortableHeader column={ctx.column} label="Nama" />,
       cell: (info) => <span className="font-medium text-foreground">{info.getValue()}</span>,
+    }),
+    columnHelper.accessor((row) => row.bio_id ?? '', {
+      id: 'catatan',
+      header: 'Catatan',
+      cell: (info) => (
+        <span className="block max-w-[14rem] truncate text-sm text-muted-foreground" title={info.getValue()}>
+          {potong(info.getValue())}
+        </span>
+      ),
     }),
     columnHelper.accessor('urutan', {
       header: (ctx) => <SortableHeader column={ctx.column} label="Urutan" />,
@@ -66,7 +101,8 @@ export function InstructorList({
       id: 'aksi',
       header: () => <span className="sr-only">Aksi</span>,
       cell: ({ row }) => (
-        <div className="flex justify-end">
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <InstructorDetailDialog instructor={row.original} />
           <InstructorRowActions
             instructorId={row.original.id}
             nama={row.original.nama}

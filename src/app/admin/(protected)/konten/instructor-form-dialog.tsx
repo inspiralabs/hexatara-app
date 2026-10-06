@@ -26,7 +26,6 @@ const DEFAULT_VALUES: InstructorFormInput = {
   jabatan_id: '',
   jabatan_en: '',
   bio_id: '',
-  bio_en: '',
   foto_url: '',
   urutan: 0,
   is_active: true,
@@ -84,7 +83,6 @@ export function InstructorFormDialog({
 
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
-
             <FormField
               control={control}
               name="nama"
@@ -126,34 +124,24 @@ export function InstructorFormDialog({
                   </FormItem>
                 )}
               />
-
-              <FormField
-                control={control}
-                name="bio_id"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Bio (Indonesia)</FormLabel>
-                    <FormControl>
-                      <Textarea rows={3} {...field} value={field.value ?? ''} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={control}
-                name="bio_en"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Bio (Inggris)</FormLabel>
-                    <FormControl>
-                      <Textarea rows={3} {...field} value={field.value ?? ''} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
+
+            <FormField
+              control={control}
+              name="bio_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Catatan</FormLabel>
+                  <FormControl>
+                    <Textarea rows={3} {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormDescription>
+                    Catatan internal tim Hexatara, tidak tampil di website.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={control}
@@ -191,8 +179,10 @@ export function InstructorFormDialog({
                   <FormControl>
                     <ImageUploadField
                       label="Foto"
-                      aspectRatio={1}
-                      suggestedPx="800×800px"
+                      aspectRatio={4 / 5}
+                      previewAspectClass="aspect-[4/5]"
+                      suggestedNote="Disarankan rasio portrait 4:5 (sekitar 800×1000px)."
+                      compression="portrait"
                       value={field.value ?? null}
                       onChange={field.onChange}
                       onUpload={async (file) => {
