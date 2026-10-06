@@ -10,7 +10,7 @@ const LABEL_STATUS: Record<PendaftaranPerusahaanRow['status'], string> = {
 export async function eksporPendaftaranPerusahaanXlsx(rows: PendaftaranPerusahaanRow[]) {
   const XLSX = await import('xlsx');
   const sheet = rows.map((r) => ({
-    'Nama Perusahaan': r.nama_perusahaan,
+    'Nama Kelompok': r.nama_perusahaan,
     PIC: r.nama_pic,
     'WhatsApp PIC': r.whatsapp_pic,
     'Email PIC': r.email_pic,
@@ -23,6 +23,6 @@ export async function eksporPendaftaranPerusahaanXlsx(rows: PendaftaranPerusahaa
 
   const ws = XLSX.utils.json_to_sheet(sheet);
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Pendaftaran Perusahaan');
-  XLSX.writeFile(wb, `pendaftaran-perusahaan-${format(new Date(), 'yyyy-MM-dd')}.xlsx`);
+  XLSX.utils.book_append_sheet(wb, ws, 'Pendaftaran Kelompok');
+  XLSX.writeFile(wb, `pendaftaran-kelompok-${format(new Date(), 'yyyy-MM-dd')}.xlsx`);
 }

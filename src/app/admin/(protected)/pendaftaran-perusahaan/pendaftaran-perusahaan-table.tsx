@@ -110,7 +110,7 @@ function DetailDialog({ row }: { row: PendaftaranPerusahaanRow }) {
         toast.error(hasil.pesan);
         return;
       }
-      toast.success('Pendaftaran perusahaan disimpan.');
+      toast.success('Pendaftaran kelompok disimpan.');
       setOpen(false);
       router.refresh();
     });
@@ -133,11 +133,11 @@ function DetailDialog({ row }: { row: PendaftaranPerusahaanRow }) {
       <DialogContent className="flex max-h-[90vh] flex-col gap-0 overflow-hidden sm:max-w-2xl">
         <div className="flex flex-col gap-4 overflow-y-auto p-1">
           <DialogHeader>
-            <DialogTitle>Detail pendaftaran perusahaan</DialogTitle>
+            <DialogTitle>Detail pendaftaran kelompok</DialogTitle>
           </DialogHeader>
 
           <dl>
-            <BarisDetail label="Perusahaan" value={row.nama_perusahaan} />
+            <BarisDetail label="Kelompok" value={row.nama_perusahaan} />
             <BarisDetail label="PIC" value={row.nama_pic} />
             <BarisDetail label="WhatsApp PIC" value={row.whatsapp_pic} />
             <BarisDetail label="Email PIC" value={row.email_pic} />
@@ -260,7 +260,7 @@ const columnHelper = createDataTableColumnHelper<PendaftaranPerusahaanRow>();
 const columns = [
   columnHelper.accessor('nama_perusahaan', {
     id: 'nama',
-    header: (ctx) => <SortableHeader column={ctx.column} label="Nama Perusahaan" />,
+    header: (ctx) => <SortableHeader column={ctx.column} label="Nama Kelompok" />,
     cell: (info) => <span className="font-medium text-foreground">{info.getValue()}</span>,
   }),
   columnHelper.accessor((row) => `${row.nama_pic} · ${row.whatsapp_pic}`, {
@@ -316,9 +316,9 @@ export function PendaftaranPerusahaanTable({ rows }: { rows: PendaftaranPerusaha
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-xl font-bold text-foreground">Pendaftaran Perusahaan</h1>
+          <h1 className="text-xl font-bold text-foreground">Pendaftaran Kelompok</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Verifikasi grup, isi nominal setelah nego WA, unduh Excel asli PIC.
+            Verifikasi kelompok, isi nominal setelah nego WA, unduh Excel asli PIC.
           </p>
         </div>
         <Button
@@ -336,8 +336,8 @@ export function PendaftaranPerusahaanTable({ rows }: { rows: PendaftaranPerusaha
         data={rows}
         getRowId={(row) => String(row.id)}
         searchColumnId="nama"
-        searchPlaceholder="Cari nama perusahaan..."
-        emptyMessage="Belum ada pendaftaran perusahaan/komunitas."
+        searchPlaceholder="Cari nama kelompok..."
+        emptyMessage="Belum ada pendaftaran kelompok."
         columnFilters={[
           {
             id: 'status',

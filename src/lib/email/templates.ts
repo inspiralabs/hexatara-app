@@ -219,7 +219,7 @@ export function templateLeadBaru(
     params.jenis === 'minat_batch'
       ? 'Pendaftaran minat batch baru'
       : params.jenis === 'pendaftaran_perusahaan'
-        ? 'Pendaftaran perusahaan/komunitas baru'
+        ? 'Pendaftaran kelompok baru'
         : 'Permintaan penawaran produk baru';
   return {
     subject: `Lead baru: ${judul}`,

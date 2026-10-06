@@ -1393,21 +1393,22 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 ---
 
 ### ADR-027 — Tambahan Hexatara hasil meeting 4 Okt 2026
-**2026-10-06 · Berlaku — F14.1 dikodekan (menunggu uji); F14.2–F14.6 belum**
+**2026-10-06 · Diperluas 2026-10-06 · Berlaku — F14.1 DONE; F14.2 dikodekan (menunggu uji); F14.3–F14.6 belum**
 
-**Konteks.** Meeting Hexatara 4 Oktober 2026 menghasilkan enam permintaan tambahan setelah Modul 13 (ADR-026) selesai. Tanpa SQL untuk F14.1. Detail F14.2–F14.6 menyusul lewat prompt terpisah.
+**Konteks.** Meeting Hexatara 4 Oktober 2026 menghasilkan enam permintaan tambahan setelah Modul 13 (ADR-026) selesai. Tanpa SQL untuk F14.1–F14.2. Detail F14.3–F14.6 menyusul lewat prompt terpisah.
 
 1. **F14.1 — Badge Authorized Dealer di hero.** Frasa resmi “Autel Robotics Authorized Dealer” sebagai pill di bawah judul kartu retail “Jual Drone Profesional Autel” / “Professional Autel Drones”.
-2. **F14.2** — (detail menyusul prompt terpisah)
+2. **F14.2 — Relabel “Pendaftaran Kelompok” + minimal 3 peserta.** Istilah tampil “Perusahaan/Komunitas” diganti “Kelompok”; syarat minimal 3 peserta di Excel.
 3. **F14.3** — (detail menyusul prompt terpisah)
 4. **F14.4** — (detail menyusul prompt terpisah)
 5. **F14.5** — (detail menyusul prompt terpisah)
 6. **F14.6** — (detail menyusul prompt terpisah)
 
 **Keputusan.**
-- **F14.1:** pill di `hero-section.tsx` tepat di bawah `offerRetailTitle`; ikon `BadgeCheck` (lucide); teks lewat `landing.offerRetailAuthorizedDealer` (ID = EN, nama resmi); gaya reuse pola badge publik existing (`rounded-full` + `border-border` + `bg-card` + `text-foreground`, ikon `text-primary`); boleh wrap di kartu sempit (390px). Elemen hero lain tidak diubah. Tanpa SQL.
+- **F14.1:** pill di `hero-section.tsx` tepat di bawah `offerRetailTitle`; ikon `BadgeCheck` (lucide); teks lewat `landing.offerRetailAuthorizedDealer` (ID = EN, nama resmi); gaya reuse pola badge publik; font di-clamp agar satu baris. Alif konfirmasi DONE 6 Okt 2026.
+- **F14.2 (label saja, infrastruktur tetap):** teks UI/toast/email/WA/export/menu jadi “Kelompok”. **Tidak diubah:** tabel `company_registrations` / `company_registration_participants`, kolom `nama_perusahaan`, rute `/admin/pendaftaran-perusahaan`, nama file sumber, jenis email `'pendaftaran_perusahaan'` — mengubahnya berisiko dan tidak terlihat user. `MIN_PESERTA_KELOMPOK = 3` di `src/lib/validations/company-registration.ts`; penegakan di `daftarPerusahaanAction` **setelah** parse Excel all-or-nothing lolos (bukan constraint DB). Template Excel unduhan: header saja. Tanpa SQL.
 
-**Konsekuensi.** Empat kartu/grid hero retail sedikit lebih tinggi di mobile karena pill. Registry Sprint 13 / F14.x. Status F14.1 TODO sampai uji Alif.
+**Konsekuensi.** F13.5 tetap DONE; istilah user-facing kini “Pendaftaran Kelompok”. Registry F14.2 TODO sampai uji Alif.
 
 ---
 
@@ -1465,3 +1466,4 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-10-03 | **ADR-026 diperluas — F13.5b Admin.** Menu Leads Pendaftaran Perusahaan: tabel, export, detail peserta + signed URL Excel, status/nominal/catatan. F13.5 lengkap dikodekan (3a+3b); registry tetap TODO sampai uji Alif. |
 | 2026-10-03 | **F13.5 DONE** setelah uji Alif (3a publik + 3b Admin). ADR-026 — lima permintaan Abi — selesai. |
 | 2026-10-06 | **ADR-027 dibuka** (meeting Hexatara 4 Okt 2026, enam permintaan). **F14.1** badge Autel Robotics Authorized Dealer di hero retail dikodekan; menunggu uji Alif. F14.2–F14.6 belum. |
+| 2026-10-06 | **F14.1 DONE** setelah uji Alif. **ADR-027 diperluas — F14.2:** label “Pendaftaran Kelompok” + `MIN_PESERTA_KELOMPOK=3` (app saja); rute/tabel/`pendaftaran_perusahaan` tetap. Menunggu uji Alif. |

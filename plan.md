@@ -650,7 +650,7 @@ Pill di bawah judul kartu retail hero (`offerRetailTitle`): ikon `BadgeCheck` + 
 | `src/components/hero-section.tsx` | Pill di bawah judul retail |
 | `messages/id.json` / `messages/en.json` | `landing.offerRetailAuthorizedDealer` |
 
-Status: **menunggu uji Alif.** F14.1 tetap TODO.
+Status: **dikonfirmasi Alif 6 Okt 2026.** F14.1 DONE.
 
 **Pesan commit yang disarankan**
 
@@ -659,3 +659,20 @@ feat(hero): badge Autel Robotics Authorized Dealer di kartu retail (F14.1)
 
 Ref: ADR-027
 ```
+
+---
+
+## F14.2 — Pendaftaran Kelompok + minimal 3 peserta (6 Oktober 2026)
+
+Label tampil “Perusahaan/Komunitas” → “Kelompok” (ID+EN). Rute `/admin/pendaftaran-perusahaan`, tabel `company_*`, jenis email `pendaftaran_perusahaan` **tidak diubah**. `MIN_PESERTA_KELOMPOK = 3` di validations; cek di server action setelah Excel all-or-nothing lolos. Template unduhan: header saja.
+
+| File | Perubahan |
+|---|---|
+| `messages/{id,en}.json` | Copy `registerCompany` |
+| `daftar-perusahaan-dialog.tsx` | Label, template header-only, error minimal |
+| `daftar-perusahaan-actions.ts` | Guard minimal 3 + WA “kelompok” |
+| `validations/company-registration.ts` | Konstanta + pesan error nama kelompok |
+| `admin/pendaftaran-perusahaan/*`, `admin-shell.tsx` | Label Admin/export |
+| `email/templates.ts` | Judul “Pendaftaran kelompok baru” |
+
+Status: **menunggu uji Alif.** F14.2 tetap TODO.

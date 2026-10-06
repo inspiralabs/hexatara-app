@@ -248,18 +248,18 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 | F13.2 | Kartu Sertifikat: ajakan upgrade bila belum pernah ada `certificate_orders` | DONE | `src/app/[locale]/(user)/dashboard/sertifikat/page.tsx`; `prompt-navbar-dan-kartu-sertifikat.md` | 2026-09-30 | Alif konfirmasi DONE. Kartu hanya untuk user yang belum pernah ajukan pesanan. |
 | F13.3 | Session timeout Admin, idle 30 menit | DONE | `src/components/shell/admin-idle-timeout.tsx`; `prompt-session-timeout-admin.md` | 2026-09-30 | Alif uji browser: hasil OKE. |
 | F13.4 | Merchandise jadi produk: bundling sertifikat (dashboard) dan beli dari katalog (publik, per produk) | DONE | `usulan-sql-merchandise-jadi-produk.sql`, `usulan-sql-merchandise-publik.sql`, `src/lib/merchandise.ts`, `pesanan-upgrade-form.tsx`, `katalog/[slug]/beli-merchandise-dialog.tsx`, `katalog/[slug]/actions.ts`, `admin/merchandise/**` | 2026-10-03 | Alif konfirmasi DONE 3 Okt 2026 setelah uji lanjutan UAT: pesan ulang, stepper, nomor telepon (WhatsApp), banner pelatihan, toast per paket, antrean Merchandise terpisah, kartu berjalan, tab admin, tombol pesan lagi di header. |
-| F13.5 | Pendaftaran perusahaan/komunitas (Excel, harga negosiasi) | DONE | `usulan-sql-pendaftaran-perusahaan.sql`; `src/lib/validations/company-registration.ts`; `src/lib/company-registration/import.ts`; `pelatihan/[slug]/daftar-perusahaan-*.tsx`; `src/lib/email/{send,templates}.ts`; `admin/pendaftaran-perusahaan/**`; `admin-shell.tsx` | 2026-10-03 | Alif konfirmasi DONE 3 Okt 2026: form publik (3a) + Admin lihat/verifikasi/export/nominal (3b). |
+| F13.5 | Pendaftaran perusahaan/komunitas (Excel, harga negosiasi) | DONE | `usulan-sql-pendaftaran-perusahaan.sql`; `src/lib/validations/company-registration.ts`; `src/lib/company-registration/import.ts`; `pelatihan/[slug]/daftar-perusahaan-*.tsx`; `src/lib/email/{send,templates}.ts`; `admin/pendaftaran-perusahaan/**`; `admin-shell.tsx` | 2026-10-03 | Alif konfirmasi DONE 3 Okt 2026: form publik (3a) + Admin lihat/verifikasi/export/nominal (3b). Istilah tampil kini “Pendaftaran Kelompok” (F14.2); status F13.5 tidak diubah. |
 
 ---
 
 ## Sprint 13 — Modul 14: Tambahan Hexatara (meeting 4 Okt 2026)
 
-> Enam permintaan meeting 4 Oktober 2026 (ADR-027). F14.1 dikodekan; F14.2–F14.6 menunggu prompt.
+> Enam permintaan meeting 4 Oktober 2026 (ADR-027). F14.1 DONE; F14.2 dikodekan (menunggu uji); F14.3–F14.6 menunggu prompt.
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
 |---|---|---|---|---|---|
-| F14.1 | Hero: badge Autel Robotics Authorized Dealer di bawah judul retail | TODO | `src/components/hero-section.tsx`; `messages/id.json`; `messages/en.json` | | selesai dikodekan, menunggu uji Alif. |
-| F14.2 | (meeting 4 Okt #2 — detail menyusul) | TODO | | | belum dikerjakan |
+| F14.1 | Hero: badge Autel Robotics Authorized Dealer di bawah judul retail | DONE | `src/components/hero-section.tsx`; `messages/id.json`; `messages/en.json` | 2026-10-06 | Alif konfirmasi DONE 6 Okt 2026. |
+| F14.2 | Relabel Pendaftaran Kelompok + minimal 3 peserta (label saja; rute/tabel company_* tetap) | TODO | `messages/{id,en}.json` (`batch.registerCompany`); `daftar-perusahaan-dialog.tsx`; `daftar-perusahaan-actions.ts`; `validations/company-registration.ts`; `admin/pendaftaran-perusahaan/*`; `admin-shell.tsx`; `email/templates.ts` | | selesai dikodekan, menunggu uji Alif. |
 | F14.3 | (meeting 4 Okt #3 — detail menyusul) | TODO | | | belum dikerjakan |
 | F14.4 | (meeting 4 Okt #4 — detail menyusul) | TODO | | | belum dikerjakan |
 | F14.5 | (meeting 4 Okt #5 — detail menyusul) | TODO | | | belum dikerjakan |
@@ -418,6 +418,7 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 2026-10-03  F13.5b Admin dikodekan (menu Leads, tabel, export, detail status/nominal). 3a+3b lengkap di kode; F13.5 tetap TODO sampai Alif uji Admin.
 2026-10-03  F13.5  Alif mengunci DONE setelah uji Admin (3b) + form publik (3a) sebelumnya. Lima permintaan Abi ADR-026 selesai.
 2026-10-06  F14.1  Badge Autel Robotics Authorized Dealer di hero retail dikodekan (ADR-027). Status TODO — menunggu uji Alif. F14.2–F14.6 belum.
+2026-10-06  F14.1  Alif mengunci DONE. F14.2 dikodekan: label Kelompok + MIN_PESERTA_KELOMPOK=3; rute/tabel tetap. F14.2 TODO sampai uji Alif.
 ```
 
 ---

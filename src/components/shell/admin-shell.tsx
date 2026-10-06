@@ -88,7 +88,7 @@ const MENU_ADMIN: MenuSection[] = [
       { href: "/admin/leads/penawaran", label: "Permintaan Penawaran" },
       { href: "/admin/pendaftaran-batch", label: "Pendaftaran Batch" },
       { href: "/admin/peserta-pendaftaran", label: "Peserta Pendaftaran" },
-      { href: "/admin/pendaftaran-perusahaan", label: "Pendaftaran Perusahaan" },
+      { href: "/admin/pendaftaran-perusahaan", label: "Pendaftaran Kelompok" },
     ],
   },
   {

@@ -36,13 +36,8 @@ const EMPTY_FORM: CompanyRegistrationFormInput = {
 
 async function unduhTemplate() {
   const XLSX = await import('xlsx');
-  const ws = XLSX.utils.json_to_sheet([
-    {
-      'Nama Lengkap': 'Contoh: Budi Santoso',
-      WhatsApp: '08123456789',
-      Email: 'budi@contoh.com',
-    },
-  ]);
+  // Header saja — tanpa baris contoh (F14.2).
+  const ws = XLSX.utils.aoa_to_sheet([['Nama Lengkap', 'WhatsApp', 'Email']]);
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, 'Peserta');
   XLSX.writeFile(wb, 'template-peserta-pelatihan.xlsx');
@@ -60,6 +55,7 @@ export function DaftarPerusahaanDialog({
   const [view, setView] = useState<'form' | 'sukses'>('form');
   const [file, setFile] = useState<File | null>(null);
   const [gagal, setGagal] = useState<BarisGagal[]>([]);
+  const [pesanError, setPesanError] = useState<string | null>(null);
   const [waLink, setWaLink] = useState<string | null>(null);
   const [jumlahPeserta, setJumlahPeserta] = useState(0);
 
@@ -79,6 +75,7 @@ export function DaftarPerusahaanDialog({
       setView('form');
       setFile(null);
       setGagal([]);
+      setPesanError(null);
       setWaLink(null);
       setJumlahPeserta(0);
       reset(EMPTY_FORM);
@@ -91,6 +88,7 @@ export function DaftarPerusahaanDialog({
       return;
     }
     setGagal([]);
+    setPesanError(null);
     const hasil = await daftarPerusahaanAction(batchId, data, file);
     if (!hasil.ok) {
       if (hasil.gagal && hasil.gagal.length > 0) {
@@ -98,6 +96,7 @@ export function DaftarPerusahaanDialog({
         toast.error(hasil.pesan);
         return;
       }
+      setPesanError(hasil.pesan);
       toast.error(hasil.pesan);
       return;
     }
@@ -172,6 +171,7 @@ export function DaftarPerusahaanDialog({
               <div className="space-y-1.5">
                 <Label htmlFor="nama_perusahaan">{t('companyLabel')}</Label>
                 <Input id="nama_perusahaan" {...register('nama_perusahaan')} />
+                <p className="text-sm text-muted-foreground">{t('companyHint')}</p>
                 {errors.nama_perusahaan && (
                   <p className="text-sm text-destructive">{errors.nama_perusahaan.message}</p>
                 )}
@@ -184,6 +184,7 @@ export function DaftarPerusahaanDialog({
               <div className="space-y-2 rounded-lg border border-border bg-muted/30 p-3">
                 <p className="text-sm font-medium text-foreground">{t('excelHeading')}</p>
                 <p className="text-sm text-muted-foreground">{t('excelHint')}</p>
+                <p className="text-sm font-medium text-foreground">{t('minPesertaHint')}</p>
                 <button
                   type="button"
                   className={cn(publicCtaSecondary, 'w-full')}
@@ -191,6 +192,7 @@ export function DaftarPerusahaanDialog({
                 >
                   {t('downloadTemplate')}
                 </button>
+                <p className="text-sm text-muted-foreground">{t('downloadHint')}</p>
                 <FileUploadField
                   label={t('uploadLabel')}
                   accept=".xlsx,.xls,.csv"
@@ -199,23 +201,30 @@ export function DaftarPerusahaanDialog({
                   onFile={(f) => {
                     setFile(f);
                     setGagal([]);
+                    setPesanError(null);
                   }}
                 />
               </div>
 
-              {gagal.length > 0 && (
+              {(gagal.length > 0 || pesanError) && (
                 <div
                   role="alert"
                   className="rounded-lg border border-destructive/40 bg-destructive/5 p-3 text-sm"
                 >
-                  <p className="font-medium text-destructive">{t('errorListHeading')}</p>
-                  <ul className="mt-2 list-disc space-y-1 pl-5 text-destructive">
-                    {gagal.map((g) => (
-                      <li key={`${g.baris}-${g.alasan}`}>
-                        {t('errorRow', { baris: g.baris, alasan: g.alasan })}
-                      </li>
-                    ))}
-                  </ul>
+                  {gagal.length > 0 ? (
+                    <>
+                      <p className="font-medium text-destructive">{t('errorListHeading')}</p>
+                      <ul className="mt-2 list-disc space-y-1 pl-5 text-destructive">
+                        {gagal.map((g) => (
+                          <li key={`${g.baris}-${g.alasan}`}>
+                            {t('errorRow', { baris: g.baris, alasan: g.alasan })}
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  ) : (
+                    <p className="font-medium text-destructive">{pesanError}</p>
+                  )}
                 </div>
               )}
             </div>

@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import * as XLSX from 'xlsx';
+import {
+  MIN_PESERTA_KELOMPOK,
+  pesanMinimalPesertaKelompok,
+} from '@/lib/validations/company-registration';
 import { parsePesertaPerusahaan } from './import';
 
 function excelFile(rows: Record<string, string>[], nama = 'peserta.xlsx') {
@@ -38,5 +42,13 @@ describe('parsePesertaPerusahaan', () => {
     const hasil = await parsePesertaPerusahaan(file);
     expect(hasil.ok).toBe(false);
     expect(!hasil.ok && hasil.pesan).toMatch(/Format berkas/);
+  });
+});
+
+describe('MIN_PESERTA_KELOMPOK', () => {
+  it('pesan minimal menyebut jumlah terbaca dan konstanta 3', () => {
+    expect(MIN_PESERTA_KELOMPOK).toBe(3);
+    expect(pesanMinimalPesertaKelompok(2)).toMatch(/minimal 3 peserta/);
+    expect(pesanMinimalPesertaKelompok(2)).toMatch(/Terbaca: 2 peserta/);
   });
 });

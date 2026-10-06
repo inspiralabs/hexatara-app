@@ -6,7 +6,11 @@ import { createClient } from '@/lib/supabase/server';
 import { parsePesertaPerusahaan, type BarisGagal } from '@/lib/company-registration/import';
 import { kirimEmailLeadBaru } from '@/lib/email/send';
 import { getWhatsappAdmin } from '@/lib/site-settings';
-import { CompanyRegistrationFormSchema } from '@/lib/validations/company-registration';
+import {
+  CompanyRegistrationFormSchema,
+  MIN_PESERTA_KELOMPOK,
+  pesanMinimalPesertaKelompok,
+} from '@/lib/validations/company-registration';
 
 const BatchIdSchema = z.number().int().positive();
 
@@ -40,6 +44,13 @@ export async function daftarPerusahaanAction(
         parsedExcel.pesan ??
         `Ada ${parsedExcel.gagal.length} baris gagal. Perbaiki berkas lalu unggah ulang — tidak ada data yang disimpan.`,
       gagal: parsedExcel.gagal,
+    };
+  }
+
+  if (parsedExcel.peserta.length < MIN_PESERTA_KELOMPOK) {
+    return {
+      ok: false,
+      pesan: pesanMinimalPesertaKelompok(parsedExcel.peserta.length),
     };
   }
 
@@ -118,7 +129,7 @@ export async function daftarPerusahaanAction(
 
   const nomorAdmin = await getWhatsappAdmin();
   const pesanWa =
-    `Halo Admin Hexatara, saya ${form.nama_pic} dari ${form.nama_perusahaan} ` +
+    `Halo Admin Hexatara, saya ${form.nama_pic} dari kelompok ${form.nama_perusahaan} ` +
     `sudah mendaftarkan ${peserta.length} peserta untuk pelatihan "${batch.judul_id}".`;
   const waLink = nomorAdmin
     ? `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesanWa)}`
