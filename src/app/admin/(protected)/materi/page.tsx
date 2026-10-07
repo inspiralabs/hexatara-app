@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getMateriId } from '@/lib/materi/singleton';
 import { MateriForm } from './materi-form';
 import { BabList } from './bab-list';
+import { MateriPreviewButton } from './materi-preview-button';
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from '@/components/ui/accordion';
 import type { MateriFormInput } from '@/lib/validations/materi-admin';
 
@@ -58,7 +59,10 @@ export default async function AdminMateriPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-semibold text-foreground">Materi</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-xl font-semibold text-foreground">Materi</h1>
+        <MateriPreviewButton />
+      </div>
 
       <Accordion defaultValue={[]}>
         <AccordionItem value="pengaturan" className="rounded-lg border border-border px-4">

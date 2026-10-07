@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { SoalList } from './soal-list';
+import { MateriPreviewButton } from '../materi-preview-button';
 
 export default async function AdminSoalPage() {
   // Layout sudah memanggil requireAdmin(), tapi Server Component ini memanggil
@@ -23,6 +24,7 @@ export default async function AdminSoalPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-xl font-semibold text-foreground">Kuis</h1>
         <div className="flex flex-wrap gap-2">
+          <MateriPreviewButton />
           <Link href="/admin/materi/soal/impor" className={cn(buttonVariants({ variant: 'outline' }), 'h-11 px-5')}>
             Impor Excel
           </Link>

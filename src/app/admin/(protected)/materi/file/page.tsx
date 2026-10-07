@@ -3,6 +3,7 @@ import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { getMateriId } from '@/lib/materi/singleton';
 import { LampiranList } from './lampiran-list';
+import { MateriPreviewButton } from '../materi-preview-button';
 
 export default async function AdminFilePage() {
   await requireAdmin();
@@ -41,7 +42,10 @@ export default async function AdminFilePage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-semibold text-foreground">File</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-xl font-semibold text-foreground">File</h1>
+        <MateriPreviewButton />
+      </div>
       <p className="text-sm text-muted-foreground">
         File dikelompokkan per Materi — tombol Tambah pada tiap kelompok otomatis mengaitkan file ke Materi itu.
       </p>
