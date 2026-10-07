@@ -315,6 +315,18 @@ Bucket storage baru: `identity-documents` (privat, pola sama `certificates`/`pay
 
 Dashboard Admin (F11.2), Login Admin (F11.3), status penawaran (F11.4), kategori batch (F11.5), polish i18n (F11.6), dan polish UI F11.7 (filter lebar, jam operasional EN, `FileUploadField`) **TIDAK butuh tabel/kolom/view baru** — F11.7 menambah field opsional `jam_operasional_en` di value JSON key `kontak` (`site_settings`), pola key-value yang sama (bukan DDL).
 
+### 5.1h Tabel/kolom tambahan — Modul 14 (ADR-027)
+
+| Tabel / kolom | Ditambahkan oleh | Kegunaan |
+|---|---|---|
+| `partners` | ADR-027 F14.4 | Logo partner di beranda |
+| `batch_categories.butuh_lokasi_praktek`, `butuh_ukuran_baju` | ADR-027 F14.6 | Flag program (bukan hardcode slug SiDOPI) |
+| `practice_locations` | ADR-027 F14.6 | Daftar kota praktek global (unique `lower(nama_kota)`) |
+| `batch_registrations.practice_location_id`, `ukuran_baju` | ADR-027 F14.6 | Dipakai form daftar (6B); FK ke `practice_locations` |
+| `company_registration_participants.practice_location_id`, `ukuran_baju` | ADR-027 F14.6 | Sama untuk peserta kelompok |
+
+`site_settings` key `freemium_lms_open` (F14.5) — tanpa kolom baru (key-value).
+
 ### 5.2 View publik — WAJIB untuk akses anonim
 
 | View | Kenapa ada |
@@ -668,6 +680,8 @@ State kuis ada di React, **tidak di database.** Kuis boleh dikerjakan tanpa logi
 Penanda selesai adalah satu kolom, `profiles.free_track_selesai_at`, diisi setelah pengguna menyelesaikan kuis dan mendaftar. Nilai itu berasal dari klaim sisi klien — **dan itu memang tidak apa-apa**, karena semua orang dijamin berakhir di 100%. Tidak ada yang bisa dicurangi ketika tidak ada kegagalan yang mungkin. Menambahkan verifikasi sisi server untuk ini adalah kerumitan tanpa ancaman nyata.
 
 **Saklar Freemium (F14.5 / ADR-027).** Akses publik ke materi dan kuis dapat ditutup sementara lewat `site_settings.freemium_lms_open` (fail-closed: hanya `'true'` = terbuka). Saat tertutup, gerbang server menolak halaman/action LMS; klaim `kuisSelesai` di `daftarAction` diabaikan agar `free_track_selesai_at` tidak terisi. Admin tetap bisa pratinjau. Sertifikat, upgrade, transaksi, dan merchandise tetap berjalan untuk pengguna yang sudah berhak.
+
+**Program kategori & lokasi praktek (F14.6 / ADR-027).** Program RPC, Advanced, dan SiDOPI memakai `batch_categories` yang sudah ada. Perilaku khusus (lokasi praktek, ukuran baju) dikendalikan flag kategori (`butuh_lokasi_praktek`, `butuh_ukuran_baju`), bukan hardcode slug. Daftar kota praktek global di `practice_locations`. Filter publik `/pelatihan?kategori=<slug>` (slug dari nama kategori di aplikasi).
 
 ### 8.6 F03.4 — sertifikat preview
 

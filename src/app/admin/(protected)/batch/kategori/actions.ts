@@ -3,17 +3,25 @@
 import { requireAdmin } from '@/lib/auth/guard';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { teks } from '@/lib/validations/batch-admin';
-import { KategoriFormSchema, type KategoriFormInput } from '@/lib/validations/kategori-admin';
+import {
+  BatchKategoriFormSchema,
+  type BatchKategoriFormInput,
+} from '@/lib/validations/kategori-admin';
 
-export async function simpanKategoriBatchAction(id: string | null, input: KategoriFormInput) {
+export async function simpanKategoriBatchAction(id: string | null, input: BatchKategoriFormInput) {
   await requireAdmin();
 
-  const parsed = KategoriFormSchema.safeParse(input);
+  const parsed = BatchKategoriFormSchema.safeParse(input);
   if (!parsed.success) {
     return { ok: false as const, pesan: 'Data yang diisi belum valid. Periksa kembali formnya.' };
   }
 
-  const kategori = { nama_id: parsed.data.nama_id, nama_en: teks(parsed.data.nama_en) };
+  const kategori = {
+    nama_id: parsed.data.nama_id,
+    nama_en: teks(parsed.data.nama_en),
+    butuh_lokasi_praktek: parsed.data.butuh_lokasi_praktek,
+    butuh_ukuran_baju: parsed.data.butuh_ukuran_baju,
+  };
   const supabaseAdmin = createAdminClient();
 
   if (id == null) {

@@ -254,7 +254,7 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 ## Sprint 13 — Modul 14: Tambahan Hexatara (meeting 4 Okt 2026)
 
-> Enam permintaan meeting 4 Oktober 2026 (ADR-027). F14.1–F14.4 DONE; F14.5 dikodekan (menunggu uji); F14.6 menunggu prompt.
+> Enam permintaan meeting 4 Oktober 2026 (ADR-027). F14.1–F14.5 DONE; F14.6 dikodekan sebagian (6A).
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
 |---|---|---|---|---|---|
@@ -262,8 +262,8 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 | F14.2 | Relabel Pendaftaran Kelompok + minimal 3 peserta (label saja; rute/tabel company_* tetap) | DONE | `messages/{id,en}.json` (`batch.registerCompany`); `daftar-perusahaan-dialog.tsx`; `daftar-perusahaan-actions.ts`; `validations/company-registration.ts`; `admin/pendaftaran-perusahaan/*`; `admin-shell.tsx`; `email/templates.ts` | 2026-10-06 | Alif konfirmasi DONE 6 Okt 2026 (uji minimal 2 peserta ditolak). |
 | F14.3 | Instruktur: foto portrait 4:5, bio→Catatan internal, dialog Detail Admin | DONE | `instruktur-section.tsx`; `image-upload-field.tsx`; `instructor-form-dialog.tsx`; `instructor-list.tsx`; `instructor-detail-dialog.tsx`; `instructor-portrait-badge.tsx`; `instructor-actions.ts`; `validations/instructor-admin.ts` | 2026-10-06 | Alif konfirmasi DONE 6 Okt 2026. |
 | F14.4 | Partner Kami: CRUD Admin + section publik di bawah Instruktur | DONE | `partner-section.tsx`; `messages/{id,en}.json`; `admin/konten/partner/page.tsx`; `partner-list.tsx`; `partner-form-dialog.tsx`; `partner-actions.ts`; `partner-row-actions.tsx`; `partner-active-switch.tsx`; `validations/partner-admin.ts`; `admin-shell.tsx`; `image-upload-field.tsx` | 2026-10-06 | Alif konfirmasi DONE 6 Okt 2026. |
-| F14.5 | Saklar tutup LMS Freemium (server gate + UI + Admin) | TODO | `site-settings.ts`; `lms-closed-page.tsx`; `lms-admin-preview-strip.tsx`; `materi/**/page.tsx`; `kuis/page.tsx`; `materi/[id]/actions.ts`; `kuis/actions.ts`; `daftar/actions.ts`; `pelatihan/page.tsx`; `dashboard/{pelatihan,kursus,upgrade}/page.tsx`; `pengaturan/freemium-lms-card.tsx`; `sitemap.ts`; `messages/{id,en}.json` | | menunggu uji Alif. |
-| F14.6 | (meeting 4 Okt #6 — detail menyusul) | TODO | | | belum dikerjakan |
+| F14.5 | Saklar tutup LMS Freemium (server gate + UI + Admin) | DONE | `site-settings.ts`; `lms-closed-page.tsx`; `lms-admin-preview-strip.tsx`; `materi-preview-button.tsx`; `materi/**/page.tsx`; `kuis/page.tsx`; `materi/[id]/actions.ts`; `kuis/actions.ts`; `daftar/actions.ts`; `pelatihan/page.tsx`; `dashboard/{pelatihan,kursus,upgrade}/page.tsx`; `pengaturan/freemium-lms-card.tsx`; `sitemap.ts`; `messages/{id,en}.json` | 2026-10-07 | Alif konfirmasi DONE 7 Okt 2026: saklar off dari pengaturan + sudut pandang user + tombol Pratinjau Materi. |
+| F14.6 | Program kategori (flag SiDOPI) + Lokasi Praktek + filter `?kategori=slug` | TODO | `kategori-manager.tsx`; `batch/kategori/*`; `batch/lokasi-praktek/*`; `practice-location-admin.ts`; `kategori-admin.ts`; `slugify.ts`; `pelatihan/page.tsx`; `dashboard/pelatihan/page.tsx`; `admin-shell.tsx`; `types/database.ts` | | 6A selesai dikodekan. Menunggu uji Alif; 6B (field form daftar) belum. |
 
 ---
 
@@ -423,6 +423,7 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 2026-10-06  F14.3  Alif mengunci DONE. F14.4 dikodekan: tabel partners, Admin Partner Kami, section publik; bucket content/partners/. F14.4 TODO sampai uji Alif.
 2026-10-06  F14.4  Alif mengunci DONE. F14.5 diagnosis saklar LMS Freemium dicatat di plan.md — menunggu OK Alif sebelum kode.
 2026-10-07  F14.5  Diagnosis disetujui; dikodekan (gerbang page+action, saklar Admin, fail-closed). F14.5 TODO sampai uji Alif.
+2026-10-07  F14.5  Alif mengunci DONE (saklar + pratinjau + tombol Pratinjau Materi). F14.6a dikodekan: flag kategori, CRUD lokasi praktek, filter ?kategori=slug. F14.6 TODO — Bukti: 6A selesai dikodekan.
 ```
 
 ---

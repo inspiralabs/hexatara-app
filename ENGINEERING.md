@@ -1393,24 +1393,29 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 ---
 
 ### ADR-027 — Tambahan Hexatara hasil meeting 4 Okt 2026
-**2026-10-06 · Diperluas 2026-10-07 · Berlaku — F14.1–F14.4 DONE; F14.5 dikodekan (menunggu uji); F14.6 belum**
+**2026-10-06 · Diperluas 2026-10-07 · Berlaku — F14.1–F14.5 DONE; F14.6a dikodekan (menunggu uji); 6B belum**
 
-**Konteks.** Meeting Hexatara 4 Oktober 2026 menghasilkan enam permintaan tambahan setelah Modul 13 (ADR-026) selesai. F14.4: tabel `partners`. F14.5: saklar tutup LMS Freemium via `site_settings` key `freemium_lms_open` (SQL blok A opsional; kode fail-closed).
+**Konteks.** Meeting Hexatara 4 Oktober 2026 menghasilkan enam permintaan tambahan setelah Modul 13 (ADR-026) selesai. F14.4: tabel `partners`. F14.5: saklar tutup LMS Freemium via `site_settings` key `freemium_lms_open` (SQL blok A opsional; kode fail-closed). F14.6: program RPC/Advanced/SiDOPI via `batch_categories` + `practice_locations` (SQL Bagian 0 blok C+D).
 
 1. **F14.1–F14.4** — DONE (badge Autel, label Kelompok, instruktur portrait/Catatan, Partner Kami).
-5. **F14.5 — Saklar LMS Freemium.** Tutup akses publik ke materi/kuis di server; Admin tetap pratinjau.
-6. **F14.6** — (detail menyusul prompt terpisah)
+5. **F14.5 — Saklar LMS Freemium.** DONE (uji Alif 7 Okt 2026).
+6. **F14.6** — Flag kategori + Lokasi Praktek + filter slug (6A); field form daftar (6B) menyusul.
 
 **Keputusan F14.5 — arsitektur 3 lapis.**
 1. **UI:** sembunyikan CTA/banner LMS (hero freemium `/pelatihan` disembunyikan utuh; dashboard teks pelan; sitemap tanpa `/kuis`).
 2. **Gerbang server (utama):** cek di **page.tsx** `/materi/get-free-certificate-rpc`, `/materi/[id]`, `/kuis` — bukan hanya layout `(kelas)` (layout tidak re-render antar anak). `!allowed` → halaman “Materi sedang disiapkan”, `robots: noindex`.
 3. **Server action:** `selesaikanBabAction` / `selesaikanKuisLoginAction` menolak saat tertutup. `daftarAction` mengabaikan klaim `kuisSelesai` saat tertutup (klaim klien bisa mengisi `free_track_selesai_at` lewat trigger).
 
-**Fail-closed.** `isFreemiumLmsOpen()`: hanya nilai JSON string `'true'` = terbuka; baris hilang / error / nilai lain = tertutup. `getFreemiumLmsAccess()` → `{ open, isAdminPreview, allowed }` dengan `cache()` per-request (bukan lintas request). Admin: `profiles.role === 'admin'` via cookie Supabase yang sama. Strip pratinjau di `/materi/[id]` dan `/kuis`. Saklar Admin: `updateFreemiumLmsOpenAction` + `revalidatePath('/', 'layout')`.
+**Fail-closed.** `isFreemiumLmsOpen()`: hanya nilai JSON string `'true'` = terbuka; baris hilang / error / nilai lain = tertutup. `getFreemiumLmsAccess()` → `{ open, isAdminPreview, allowed }` dengan `cache()` per-request (bukan lintas request). Admin: `profiles.role === 'admin'` via cookie Supabase yang sama. Strip pratinjau di `/materi/[id]` dan `/kuis`. Saklar Admin: `updateFreemiumLmsOpenAction` + `revalidatePath('/', 'layout')`. Tombol Admin `MateriPreviewButton` → `getMateriHeroHref()` / pintu RPC.
 
-**Peluang lanjutan.** Saklar per-course (bukan global) — YAGNI sekarang. **Batas diketahui:** bucket `materials` publik — URL file langsung tidak ikut saklar.
+**Keputusan F14.6a.**
+1. **Flag kategori, bukan hardcode slug.** Perilaku SiDOPI dikendalikan `batch_categories.butuh_lokasi_praktek` / `butuh_ukuran_baju`. Tidak ada `if (slug === 'sidopi')`. Agent tidak seed kategori — Admin membuat RPC / Advanced / SiDOPI lewat UI.
+2. **Daftar kota global.** Tabel `practice_locations` (bukan per-batch). Unique `lower(nama_kota)`. Hapus: cek pemakaian di `batch_registrations` + `company_registration_participants`, tolak ramah; FK 23503 sebagai pengaman.
+3. **Filter via URL.** `/pelatihan?kategori=<slug>` — slug diturunkan di kode dari `nama_id` (tanpa kolom `slug` di DB). Param tidak valid diabaikan.
 
-**Konsekuensi.** Registry F14.5 TODO sampai uji Alif.
+**Peluang lanjutan.** Saklar per-course (bukan global) — YAGNI. Field lokasi/ukuran di form pendaftaran = 6B. **Batas diketahui:** bucket `materials` publik — URL file langsung tidak ikut saklar F14.5.
+
+**Konsekuensi.** Registry F14.5 DONE; F14.6 TODO sampai uji 6A + 6B.
 
 ---
 
@@ -1473,3 +1478,4 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-10-06 | **F14.3 DONE** setelah uji Alif. **ADR-027 diperluas — F14.4:** tabel `partners`, Admin Partner Kami, section publik di bawah Instruktur; logo di bucket `content/partners/`. Menunggu uji Alif. |
 | 2026-10-06 | **F14.4 DONE** setelah uji Alif. **F14.5 diagnosis** saklar LMS Freemium dicatat di `plan.md` (rute/action/CTA/cache/admin cookie/bucket); menunggu OK Alif sebelum kode. |
 | 2026-10-07 | **F14.5 dikodekan** setelah diagnosis disetujui: gerbang page+action, saklar `freemium_lms_open`, Admin pratinjau, fail-closed. Menunggu uji Alif. |
+| 2026-10-07 | **F14.5 DONE** setelah uji Alif (saklar + pratinjau + tombol Pratinjau Materi). **ADR-027 diperluas — F14.6a:** flag `butuh_*` di `batch_categories` (bukan hardcode slug), CRUD `practice_locations`, filter `/pelatihan?kategori=<slug>` dari `nama_id`. Menunggu uji; 6B belum. |

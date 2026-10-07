@@ -6,15 +6,28 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, MoreVerticalIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import { KategoriFormSchema, type KategoriFormInput } from '@/lib/validations/kategori-admin';
+import {
+  BatchKategoriFormSchema,
+  type BatchKategoriFormInput,
+} from '@/lib/validations/kategori-admin';
 import { moveItem } from '@/lib/reorder';
 import { ReorderButtons } from '@/components/admin/reorder-buttons';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import {
   AlertDialog,
@@ -33,14 +46,27 @@ export type KategoriRow = {
   nama_en: string | null;
   urutan: number;
   is_active: boolean;
+  butuh_lokasi_praktek?: boolean;
+  butuh_ukuran_baju?: boolean;
 };
 
+type FormValues = BatchKategoriFormInput;
 type ActionResult = { ok: boolean; pesan?: string };
 
-const DEFAULT_VALUES: KategoriFormInput = { nama_id: '', nama_en: '' };
+const DEFAULT_VALUES: FormValues = {
+  nama_id: '',
+  nama_en: '',
+  butuh_lokasi_praktek: false,
+  butuh_ukuran_baju: false,
+};
 
-function keDefaultValues(k: KategoriRow): KategoriFormInput {
-  return { nama_id: k.nama_id, nama_en: k.nama_en ?? '' };
+function keDefaultValues(k: KategoriRow): FormValues {
+  return {
+    nama_id: k.nama_id,
+    nama_en: k.nama_en ?? '',
+    butuh_lokasi_praktek: k.butuh_lokasi_praktek ?? false,
+    butuh_ukuran_baju: k.butuh_ukuran_baju ?? false,
+  };
 }
 
 export function KategoriManager({
@@ -50,19 +76,19 @@ export function KategoriManager({
   hapusAction,
   reorderAction,
   toggleAktifAction,
+  programFlags = false,
 }: {
   judul: string;
   items: KategoriRow[];
-  simpanAction: (id: string | null, input: KategoriFormInput) => Promise<ActionResult>;
+  simpanAction: (id: string | null, input: FormValues) => Promise<ActionResult>;
   hapusAction: (id: string) => Promise<ActionResult>;
   reorderAction: (ids: string[]) => Promise<ActionResult>;
   toggleAktifAction: (id: string, next: boolean) => Promise<ActionResult>;
+  /** Batch: tampilkan checkbox flag program + badge di tabel. */
+  programFlags?: boolean;
 }) {
   const router = useRouter();
   const [daftar, setDaftar] = useState(items);
-  // Setelah router.refresh(), Server Component ini re-fetch dan mengirim `items`
-  // baru sebagai prop — tapi useState hanya memakai initial value SEKALI saat
-  // mount, jadi tanpa efek ini daftar lokal tetap basi sampai reload manual.
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setDaftar(items);
@@ -169,7 +195,17 @@ export function KategoriManager({
                       onDown={() => pindah(index, 'down')}
                     />
                   </TableCell>
-                  <TableCell className="font-medium text-foreground">{k.nama_id}</TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <span className="font-medium text-foreground">{k.nama_id}</span>
+                      {programFlags && k.butuh_lokasi_praktek ? (
+                        <Badge variant="secondary">Lokasi praktek</Badge>
+                      ) : null}
+                      {programFlags && k.butuh_ukuran_baju ? (
+                        <Badge variant="secondary">Ukuran baju</Badge>
+                      ) : null}
+                    </div>
+                  </TableCell>
                   <TableCell>
                     <Switch
                       checked={k.is_active}
@@ -185,7 +221,9 @@ export function KategoriManager({
                         <MoreVerticalIcon />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem variant="edit" onClick={() => bukaUbah(k)}>Ubah</DropdownMenuItem>
+                        <DropdownMenuItem variant="edit" onClick={() => bukaUbah(k)}>
+                          Ubah
+                        </DropdownMenuItem>
                         <DropdownMenuItem
                           variant="destructive"
                           onClick={() => {
@@ -210,6 +248,7 @@ export function KategoriManager({
         editingId={editing?.id ?? null}
         defaultValues={editing ? keDefaultValues(editing) : null}
         simpanAction={simpanAction}
+        programFlags={programFlags}
         onSaved={() => router.refresh()}
       />
 
@@ -240,17 +279,20 @@ function KategoriFormDialog({
   editingId,
   defaultValues,
   simpanAction,
+  programFlags,
   onSaved,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   editingId: string | null;
-  defaultValues: KategoriFormInput | null;
-  simpanAction: (id: string | null, input: KategoriFormInput) => Promise<ActionResult>;
+  defaultValues: FormValues | null;
+  simpanAction: (id: string | null, input: FormValues) => Promise<ActionResult>;
+  programFlags: boolean;
   onSaved: () => void;
 }) {
-  const form = useForm<KategoriFormInput>({
-    resolver: zodResolver(KategoriFormSchema),
+  // BatchKategoriFormSchema selalu — flag default false; product action abaikan lewat KategoriFormSchema.
+  const form = useForm<FormValues>({
+    resolver: zodResolver(BatchKategoriFormSchema),
     defaultValues: defaultValues ?? DEFAULT_VALUES,
   });
   const {
@@ -267,7 +309,7 @@ function KategoriFormDialog({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, editingId]);
 
-  async function onSubmit(data: KategoriFormInput) {
+  async function onSubmit(data: FormValues) {
     const hasil = await simpanAction(editingId, data);
     if (!hasil.ok) {
       const pesan = hasil.pesan ?? 'Gagal menyimpan kategori. Coba lagi.';
@@ -288,7 +330,6 @@ function KategoriFormDialog({
 
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
-
             <FormField
               control={control}
               name="nama_id"
@@ -315,6 +356,55 @@ function KategoriFormDialog({
                 </FormItem>
               )}
             />
+
+            {programFlags ? (
+              <>
+                <FormField
+                  control={control}
+                  name="butuh_lokasi_praktek"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex items-start gap-3">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value === true}
+                            onCheckedChange={(v) => field.onChange(v === true)}
+                          />
+                        </FormControl>
+                        <div className="space-y-1">
+                          <FormLabel className="font-normal">Perlu Lokasi Praktek</FormLabel>
+                          <FormDescription>
+                            Centang untuk program seperti SiDOPI: form pendaftaran akan menanyakan kota praktek.
+                          </FormDescription>
+                        </div>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name="butuh_ukuran_baju"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex items-start gap-3">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value === true}
+                            onCheckedChange={(v) => field.onChange(v === true)}
+                          />
+                        </FormControl>
+                        <div className="space-y-1">
+                          <FormLabel className="font-normal">Perlu Ukuran Baju</FormLabel>
+                          <FormDescription>
+                            Centang bila form pendaftaran perlu menanyakan ukuran baju peserta.
+                          </FormDescription>
+                        </div>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </>
+            ) : null}
 
             <div className="flex gap-3 pt-2">
               <Button type="submit" disabled={isSubmitting} className="h-11 px-6">

@@ -14,7 +14,7 @@ export default async function AdminKategoriBatchPage() {
   const supabaseAdmin = createAdminClient();
   const { data, error } = await supabaseAdmin
     .from('batch_categories')
-    .select('id, nama_id, nama_en, urutan, is_active')
+    .select('id, nama_id, nama_en, urutan, is_active, butuh_lokasi_praktek, butuh_ukuran_baju')
     .order('urutan', { ascending: true });
 
   if (error) console.error('[admin-kategori-batch] gagal memuat kategori:', error);
@@ -27,6 +27,7 @@ export default async function AdminKategoriBatchPage() {
       hapusAction={hapusKategoriBatchAction}
       reorderAction={reorderKategoriBatchAction}
       toggleAktifAction={toggleAktifKategoriBatchAction}
+      programFlags
     />
   );
 }

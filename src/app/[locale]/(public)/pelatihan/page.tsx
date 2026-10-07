@@ -8,6 +8,7 @@ import { getFreemiumLmsAccess, getWhatsappAdmin } from "@/lib/site-settings";
 import { PublicHeroMist } from "@/components/public-hero-mist";
 import { publicCtaPrimary, publicSectionHeading } from "@/lib/public-ui";
 import { pageMetadata } from "@/lib/seo/page-metadata";
+import { slugify } from "@/lib/slugify";
 import { PelatihanCard } from "./pelatihan-card";
 import { FilterBar } from "./filter-bar";
 import { SORT_VALUES, type PelatihanSort } from "./sort-options";
@@ -49,7 +50,6 @@ export default async function PelatihanPage({
   searchParams: Promise<{ kategori?: string; status?: string; sort?: string }>;
 }) {
   const { kategori, status, sort } = await searchParams;
-  const kategoriId = kategori;
   const statusFilter = isStatusFilter(status) ? status : undefined;
   const sortValue = isSort(sort) ? sort : "tanggalTerdekat";
 
@@ -65,6 +65,12 @@ export default async function PelatihanPage({
     .order("urutan", { ascending: true });
 
   if (kategoriError) console.error("[pelatihan] gagal memuat kategori:", kategoriError);
+
+  // slug dari nama_id (tanpa kolom DB); param tidak valid → abaikan (tampil semua)
+  const kategoriSlug = kategori ? slugify(kategori) : "";
+  const kategoriMatch = (kategoriList ?? []).find((k) => slugify(k.nama_id) === kategoriSlug);
+  const kategoriId = kategoriMatch?.id;
+  const kategoriValue = kategoriMatch ? slugify(kategoriMatch.nama_id) : undefined;
 
   let query = supabase
     .from("batches")
@@ -97,7 +103,7 @@ export default async function PelatihanPage({
   // saat tertutup sembunyikan seluruh blok (bukan CTA "Lihat Pelatihan").
   const tampilkanHeroFreemium = lmsOpen && materiHref != null;
   const kategoriOptions = (kategoriList ?? []).map((k) => ({
-    value: k.id,
+    value: slugify(k.nama_id),
     label: pick(k.nama_id, k.nama_en, locale) ?? k.nama_id,
   }));
 
@@ -122,7 +128,7 @@ export default async function PelatihanPage({
         <div className="mt-6">
           <FilterBar
             kategoriOptions={kategoriOptions}
-            kategoriValue={kategoriId}
+            kategoriValue={kategoriValue}
             statusValue={statusFilter}
             sortValue={sortValue}
           />

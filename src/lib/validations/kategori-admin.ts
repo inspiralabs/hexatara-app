@@ -12,5 +12,12 @@ export const KategoriFormSchema = z.object({
   nama_en: teksOpsional,
 });
 
+/** Batch saja — flag program (SiDOPI dkk), bukan product_categories. */
+export const BatchKategoriFormSchema = KategoriFormSchema.extend({
+  butuh_lokasi_praktek: z.boolean(),
+  butuh_ukuran_baju: z.boolean(),
+});
+
 export type KategoriFormInput = z.input<typeof KategoriFormSchema>;
 export type KategoriFormOutput = z.output<typeof KategoriFormSchema>;
+export type BatchKategoriFormInput = z.input<typeof BatchKategoriFormSchema>;

@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { pick } from '@/lib/i18n/pick';
 import { getMateriHeroHref } from '@/lib/materi';
 import { getFreemiumLmsAccess } from '@/lib/site-settings';
+import { slugify } from '@/lib/slugify';
 import { PelatihanCard } from '@/app/[locale]/(public)/pelatihan/pelatihan-card';
 import { FilterBar } from '@/app/[locale]/(public)/pelatihan/filter-bar';
 import { SORT_VALUES, type PelatihanSort } from '@/app/[locale]/(public)/pelatihan/sort-options';
@@ -47,7 +48,6 @@ export default async function DashboardPelatihanPage({
 }) {
   const claims = await requireUser();
   const { kategori, status, sort } = await searchParams;
-  const kategoriId = kategori;
   const statusFilter = isStatusFilter(status) ? status : undefined;
   const sortValue = isSort(sort) ? sort : 'tanggalTerdekat';
 
@@ -81,6 +81,11 @@ export default async function DashboardPelatihanPage({
         .maybeSingle(),
     ]);
 
+  const kategoriSlug = kategori ? slugify(kategori) : '';
+  const kategoriMatch = (kategoriList ?? []).find((k) => slugify(k.nama_id) === kategoriSlug);
+  const kategoriId = kategoriMatch?.id;
+  const kategoriValue = kategoriMatch ? slugify(kategoriMatch.nama_id) : undefined;
+
   let query = supabase
     .from('batches')
     .select(
@@ -107,7 +112,7 @@ export default async function DashboardPelatihanPage({
   const { open: lmsOpen } = await getFreemiumLmsAccess();
   const tClosed = await getTranslations('lmsClosed');
   const kategoriOptions = (kategoriList ?? []).map((k) => ({
-    value: k.id,
+    value: slugify(k.nama_id),
     label: pick(k.nama_id, k.nama_en, locale) ?? k.nama_id,
   }));
 
@@ -170,7 +175,7 @@ export default async function DashboardPelatihanPage({
         </div>
       )}
 
-      <FilterBar kategoriOptions={kategoriOptions} kategoriValue={kategoriId} statusValue={statusFilter} sortValue={sortValue} />
+      <FilterBar kategoriOptions={kategoriOptions} kategoriValue={kategoriValue} statusValue={statusFilter} sortValue={sortValue} />
 
       {!data || data.length === 0 ? (
         <p className="rounded-xl border border-border bg-muted/40 p-5 text-sm text-muted-foreground">{t('kosong')}</p>

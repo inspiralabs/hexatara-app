@@ -794,4 +794,34 @@ Helper: `src/lib/materi.ts` — `MATERI_PATH`, `getMateriAktifId()`, `getMateriH
 | `sitemap.ts` | Tanpa `/kuis` saat tertutup |
 | `messages/{id,en}.json` | `lmsClosed.*` |
 
-Status: **menunggu uji Alif.** F14.5 tetap TODO.
+Status: **dikonfirmasi Alif 7 Okt 2026** (saklar + pratinjau Admin + tombol Pratinjau Materi). F14.5 DONE.
+
+---
+
+## F14.6a — Flag kategori + Lokasi Praktek + filter slug (7 Oktober 2026)
+
+**Status:** dikodekan — **menunggu uji Alif.** SQL Bagian 0 blok C+D sudah dijalankan.
+
+### Keputusan
+
+| Topik | Keputusan |
+|---|---|
+| Program RPC / Advanced / SiDOPI | REUSE `batch_categories` — tanpa entitas baru; Admin buat 3 kategori lewat UI |
+| Perilaku SiDOPI | Flag `butuh_lokasi_praktek` + `butuh_ukuran_baju` di kategori — **bukan** `if slug === 'sidopi'` |
+| Slug filter | Tidak ada kolom `slug` di `batch_categories`; diturunkan di kode dari `nama_id` (`slugify`) |
+| Kota praktek | Tabel global `practice_locations`; unique `lower(nama_kota)` |
+| Filter `/pelatihan` | `?kategori=<slug>` di server `searchParams`; invalid → tampil semua |
+
+### Berkas utama
+
+| File | Peran |
+|---|---|
+| `kategori-manager.tsx`, `kategori/actions.ts`, `kategori-admin.ts` | Checkbox flag + badge tabel (batch only via `programFlags`) |
+| `batch/lokasi-praktek/*`, `practice-location-admin.ts` | CRUD Lokasi Praktek |
+| `admin-shell.tsx` | Menu di bawah Kategori Pelatihan |
+| `pelatihan/page.tsx`, `dashboard/pelatihan/page.tsx`, `slugify.ts` | Filter `?kategori=slug` |
+| `types/database.ts` | Flags, `practice_locations`, FK registration |
+
+**Belum di 6A:** field lokasi/ukuran di form pendaftaran (6B). Agent tidak seed kategori.
+
+Status: **menunggu uji Alif.** F14.6 tetap TODO (bukti: 6A selesai dikodekan).

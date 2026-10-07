@@ -75,6 +75,8 @@ export type Database = {
       }
       batch_categories: {
         Row: {
+          butuh_lokasi_praktek: boolean
+          butuh_ukuran_baju: boolean
           created_at: string
           id: string
           is_active: boolean
@@ -84,6 +86,8 @@ export type Database = {
           urutan: number
         }
         Insert: {
+          butuh_lokasi_praktek?: boolean
+          butuh_ukuran_baju?: boolean
           created_at?: string
           id?: string
           is_active?: boolean
@@ -93,6 +97,8 @@ export type Database = {
           urutan?: number
         }
         Update: {
+          butuh_lokasi_praktek?: boolean
+          butuh_ukuran_baju?: boolean
           created_at?: string
           id?: string
           is_active?: boolean
@@ -267,10 +273,12 @@ export type Database = {
           nama_lengkap: string | null
           nomor_ktp: string | null
           pas_foto_url: string | null
+          practice_location_id: number | null
           status: Database["public"]["Enums"]["status_registrasi_batch"]
           sumber_info: string | null
           tanggal_lahir: string | null
           tempat_lahir: string | null
+          ukuran_baju: string | null
           updated_at: string
           user_id: string | null
           verified_at: string | null
@@ -291,10 +299,12 @@ export type Database = {
           nama_lengkap?: string | null
           nomor_ktp?: string | null
           pas_foto_url?: string | null
+          practice_location_id?: number | null
           status?: Database["public"]["Enums"]["status_registrasi_batch"]
           sumber_info?: string | null
           tanggal_lahir?: string | null
           tempat_lahir?: string | null
+          ukuran_baju?: string | null
           updated_at?: string
           user_id?: string | null
           verified_at?: string | null
@@ -315,10 +325,12 @@ export type Database = {
           nama_lengkap?: string | null
           nomor_ktp?: string | null
           pas_foto_url?: string | null
+          practice_location_id?: number | null
           status?: Database["public"]["Enums"]["status_registrasi_batch"]
           sumber_info?: string | null
           tanggal_lahir?: string | null
           tempat_lahir?: string | null
+          ukuran_baju?: string | null
           updated_at?: string
           user_id?: string | null
           verified_at?: string | null
@@ -331,6 +343,13 @@ export type Database = {
             columns: ["batch_id"]
             isOneToOne: false
             referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "batch_registrations_practice_location_id_fkey"
+            columns: ["practice_location_id"]
+            isOneToOne: false
+            referencedRelation: "practice_locations"
             referencedColumns: ["id"]
           },
         ]
@@ -687,7 +706,9 @@ export type Database = {
           email: string
           id: number
           nama: string
+          practice_location_id: number | null
           registration_id: number
+          ukuran_baju: string | null
           whatsapp: string
         }
         Insert: {
@@ -695,7 +716,9 @@ export type Database = {
           email: string
           id?: number
           nama: string
+          practice_location_id?: number | null
           registration_id: number
+          ukuran_baju?: string | null
           whatsapp: string
         }
         Update: {
@@ -703,10 +726,19 @@ export type Database = {
           email?: string
           id?: number
           nama?: string
+          practice_location_id?: number | null
           registration_id?: number
+          ukuran_baju?: string | null
           whatsapp?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "company_registration_participants_practice_location_id_fkey"
+            columns: ["practice_location_id"]
+            isOneToOne: false
+            referencedRelation: "practice_locations"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "company_registration_participants_registration_id_fkey"
             columns: ["registration_id"]
@@ -1028,6 +1060,33 @@ export type Database = {
           judul_en?: string | null
           judul_id?: string
           poster_url?: string | null
+          updated_at?: string
+          urutan?: number
+        }
+        Relationships: []
+      }
+      practice_locations: {
+        Row: {
+          created_at: string
+          id: number
+          is_active: boolean
+          nama_kota: string
+          updated_at: string
+          urutan: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          is_active?: boolean
+          nama_kota: string
+          updated_at?: string
+          urutan?: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          is_active?: boolean
+          nama_kota?: string
           updated_at?: string
           urutan?: number
         }
