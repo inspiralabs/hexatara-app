@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { getOptionalUser } from "@/lib/auth/guard";
+import { getFreemiumLmsAccess } from "@/lib/site-settings";
 import { pick } from "@/lib/i18n/pick";
 import { pageMetadata } from "@/lib/seo/page-metadata";
+import { LmsClosedPage, lmsClosedMetadata } from "@/components/lms-closed-page";
+import { LmsAdminPreviewStrip } from "@/components/lms-admin-preview-strip";
 import { QuizEngine, type QuizQuestion } from "./quiz-engine";
 
 export async function generateMetadata({
@@ -12,6 +15,8 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
+  const { allowed } = await getFreemiumLmsAccess();
+  if (!allowed) return lmsClosedMetadata(locale);
   const t = await getTranslations({ locale, namespace: "seo" });
   return pageMetadata({
     locale,
@@ -22,6 +27,9 @@ export async function generateMetadata({
 }
 
 export default async function KuisPage() {
+  const { allowed } = await getFreemiumLmsAccess();
+  if (!allowed) return <LmsClosedPage />;
+
   const supabase = await createClient();
   const locale = await getLocale();
   const t = await getTranslations("quiz");
@@ -37,11 +45,6 @@ export default async function KuisPage() {
     sudahPunyaSertifikat = profile?.free_track_selesai_at != null;
   }
 
-  // Dua query paralel (bukan nested embed PostgREST) — pola yang sama dipakai
-  // halaman detail batch. is_correct & penjelasan opsi SENGAJA publik (lihat
-  // PANDUAN.md §3.3.10): kuis correctable tanpa kegagalan, tidak ada yang bisa
-  // dicurangi, jadi seluruh data soal aman diberikan sekali di sini — logika
-  // cek-jawaban berjalan penuh di client, tanpa Server Action per klik.
   const [{ data: soal, error: errSoal }, { data: opsi, error: errOpsi }] = await Promise.all([
     supabase
       .from("quiz_questions")
@@ -71,21 +74,24 @@ export default async function KuisPage() {
   }));
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10">
-      <h1 className="text-2xl font-semibold text-foreground sm:text-3xl">{t("pageTitle")}</h1>
-      <p className="mt-2 text-base text-muted-foreground">{t("pageSubtitle")}</p>
+    <>
+      <LmsAdminPreviewStrip />
+      <div className="mx-auto max-w-2xl px-4 py-10">
+        <h1 className="text-2xl font-semibold text-foreground sm:text-3xl">{t("pageTitle")}</h1>
+        <p className="mt-2 text-base text-muted-foreground">{t("pageSubtitle")}</p>
 
-      {questions.length === 0 ? (
-        <p className="mt-6 rounded-xl border border-border bg-muted/40 p-5 text-sm text-muted-foreground">
-          {t("kosong")}
-        </p>
-      ) : (
-        <QuizEngine
-          questions={questions}
-          sudahLogin={claims != null}
-          sudahPunyaSertifikat={sudahPunyaSertifikat}
-        />
-      )}
-    </div>
+        {questions.length === 0 ? (
+          <p className="mt-6 rounded-xl border border-border bg-muted/40 p-5 text-sm text-muted-foreground">
+            {t("kosong")}
+          </p>
+        ) : (
+          <QuizEngine
+            questions={questions}
+            sudahLogin={claims != null}
+            sudahPunyaSertifikat={sudahPunyaSertifikat}
+          />
+        )}
+      </div>
+    </>
   );
 }

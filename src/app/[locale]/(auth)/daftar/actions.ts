@@ -6,6 +6,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { kirimEmailVerifikasi } from '@/lib/email/send';
 import type { MateriSessionProgress } from '@/lib/materi/session-progress';
 import { setPendingVerifyEmailCookie } from '@/lib/auth/pending-verify-email';
+import { getFreemiumLmsAccess } from '@/lib/site-settings';
 
 export async function daftarAction(
   input: unknown,
@@ -22,10 +23,12 @@ export async function daftarAction(
   const supabase = await createClient();
 
   // kuisSelesai murni klaim sisi klien (F03.2/PRD §8.5) — dibaca trigger
-  // handle_new_user() (docs/sql/13_...) untuk mengisi profiles.free_track_selesai_at
-  // tepat saat baris profil dibuat. Tidak diverifikasi server: semua orang
-  // dijamin berakhir 100% di kuis, tidak ada yang bisa dicurangi.
-  //
+  // handle_new_user() untuk mengisi profiles.free_track_selesai_at.
+  // F14.5: saat LMS tertutup (dan bukan admin pratinjau), abaikan klaim ini
+  // supaya free_track_selesai_at tidak terisi lewat DevTools/daftar palsu.
+  const { allowed } = await getFreemiumLmsAccess();
+  const kuisSelesaiEfektif = allowed ? kuisSelesai : false;
+
   // generateLink(type: 'signup') membuat user + hashed_token TANPA mengirim
   // email. Link → /auth/confirm (OTP); F10.6 confirm mengarah ke
   // /verifikasi-berhasil (tanpa sesi di device pengklik).
@@ -41,7 +44,7 @@ export async function daftarAction(
       data: {
         nama_lengkap,
         consent_at: new Date().toISOString(),
-        kuis_selesai: kuisSelesai ? 'true' : undefined,
+        kuis_selesai: kuisSelesaiEfektif ? 'true' : undefined,
         chapters_selesai:
           chapterProgress && chapterProgress.chapterIds.length > 0
             ? JSON.stringify(chapterProgress.chapterIds)

@@ -189,6 +189,13 @@
       "continueWhatsapp": "Continue to WhatsApp"
     }
   },
+  "lmsClosed": {
+    "title": "Materials are being prepared",
+    "description": "Free materials and quizzes are being refined by the Hexatara team. Please check back later, or browse paid training schedules.",
+    "backCta": "Back to Training",
+    "adminPreviewStrip": "Admin preview mode: Freemium LMS is currently closed to the public.",
+    "softClosed": "Free materials are being prepared."
+  },
   "kelas": {
     "tidakDitemukan": "Material not found.",
     "kosongBab": "This material doesn't have any chapters yet. Please check back later.",

@@ -1,7 +1,9 @@
 import 'server-only';
 
+import { cache } from 'react';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { getOptionalUser } from '@/lib/auth/guard';
 import {
   HARGA_CERT_ONLY,
   HARGA_CERT_MERCH,
@@ -109,3 +111,39 @@ export async function upsertSiteSetting(key: string, value: unknown) {
   });
   return error;
 }
+
+const KEY_FREEMIUM_LMS_OPEN = 'freemium_lms_open';
+
+/** Fail-closed: hanya string JSON `'true'` = terbuka. Tanpa baris / error / nilai lain = tertutup. */
+export const isFreemiumLmsOpen = cache(async (): Promise<boolean> => {
+  try {
+    const value = await bacaSetting(KEY_FREEMIUM_LMS_OPEN);
+    return value === 'true';
+  } catch (err) {
+    console.error('[site-settings] freemium_lms_open:', err);
+    return false;
+  }
+});
+
+export type FreemiumLmsAccess = {
+  open: boolean;
+  isAdminPreview: boolean;
+  allowed: boolean;
+};
+
+/** Per-request (React cache). Admin login lewat cookie Supabase yang sama bisa pratinjau. */
+export const getFreemiumLmsAccess = cache(async (): Promise<FreemiumLmsAccess> => {
+  const open = await isFreemiumLmsOpen();
+  const claims = await getOptionalUser();
+  let isAdminPreview = false;
+  if (claims?.sub) {
+    const supabase = await createClient();
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', claims.sub)
+      .maybeSingle();
+    isAdminPreview = profile?.role === 'admin';
+  }
+  return { open, isAdminPreview, allowed: open || isAdminPreview };
+});

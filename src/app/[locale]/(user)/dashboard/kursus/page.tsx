@@ -1,8 +1,10 @@
 import { CheckCircle2Icon, CircleIcon, LockIcon } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { requireUser } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { getFreemiumLmsAccess } from '@/lib/site-settings';
 import { ContentCard } from '@/components/content-card';
 import { StatusBadge } from '@/components/status-badge';
 import { formatTanggalBatch } from '@/lib/batch';
@@ -22,6 +24,8 @@ const LABEL_STATUS_REG = {
 export default async function KursusPage() {
   const claims = await requireUser();
   const supabase = await createClient();
+  const { open: lmsOpen } = await getFreemiumLmsAccess();
+  const tClosed = await getTranslations('lmsClosed');
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -130,13 +134,16 @@ export default async function KursusPage() {
               Kuis {kuisSelesai ? 'sudah selesai' : 'belum dikerjakan'}
             </div>
 
-            {!kuisSelesai && (
+            {!kuisSelesai && lmsOpen && (
               <Link
                 href="/materi/get-free-certificate-rpc"
                 className="mt-4 inline-flex h-11 items-center justify-center rounded-lg bg-warna-aksen px-6 text-base font-semibold text-warna-teks"
               >
                 {babSelesai === 0 ? 'Mulai Belajar' : 'Lanjutkan Belajar'}
               </Link>
+            )}
+            {!kuisSelesai && !lmsOpen && (
+              <p className="mt-4 text-sm text-warna-teks-2">{tClosed('softClosed')}</p>
             )}
           </div>
         )}

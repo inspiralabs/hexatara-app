@@ -667,6 +667,8 @@ State kuis ada di React, **tidak di database.** Kuis boleh dikerjakan tanpa logi
 
 Penanda selesai adalah satu kolom, `profiles.free_track_selesai_at`, diisi setelah pengguna menyelesaikan kuis dan mendaftar. Nilai itu berasal dari klaim sisi klien — **dan itu memang tidak apa-apa**, karena semua orang dijamin berakhir di 100%. Tidak ada yang bisa dicurangi ketika tidak ada kegagalan yang mungkin. Menambahkan verifikasi sisi server untuk ini adalah kerumitan tanpa ancaman nyata.
 
+**Saklar Freemium (F14.5 / ADR-027).** Akses publik ke materi dan kuis dapat ditutup sementara lewat `site_settings.freemium_lms_open` (fail-closed: hanya `'true'` = terbuka). Saat tertutup, gerbang server menolak halaman/action LMS; klaim `kuisSelesai` di `daftarAction` diabaikan agar `free_track_selesai_at` tidak terisi. Admin tetap bisa pratinjau. Sertifikat, upgrade, transaksi, dan merchandise tetap berjalan untuk pengguna yang sudah berhak.
+
 ### 8.6 F03.4 — sertifikat preview
 
 ```

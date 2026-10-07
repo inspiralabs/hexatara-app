@@ -4,15 +4,32 @@ import { Link, redirect } from "@/i18n/navigation";
 import { getMateriAktifId, MATERI_PATH } from "@/lib/materi";
 import { createClient } from "@/lib/supabase/server";
 import { getOptionalUser } from "@/lib/auth/guard";
+import { getFreemiumLmsAccess } from "@/lib/site-settings";
 import { pick } from "@/lib/i18n/pick";
 import { BrandLogo } from "@/components/brand-logo";
+import { LmsClosedPage, lmsClosedMetadata } from "@/components/lms-closed-page";
+import { LmsAdminPreviewStrip } from "@/components/lms-admin-preview-strip";
 import { CourseReader } from "./course-reader";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; id: string }>;
+}) {
+  const { locale } = await params;
+  const { allowed } = await getFreemiumLmsAccess();
+  if (!allowed) return lmsClosedMetadata(locale);
+  return { robots: { index: false, follow: false } };
+}
 
 export default async function MateriCoursePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const { allowed } = await getFreemiumLmsAccess();
+  if (!allowed) return <LmsClosedPage />;
+
   const { id } = await params;
   const materialId = Number(id);
   if (!Number.isInteger(materialId)) notFound();
@@ -131,6 +148,7 @@ export default async function MateriCoursePage({
 
   return (
     <div className="flex min-h-full flex-1 flex-col bg-background">
+      <LmsAdminPreviewStrip />
       <div className="flex items-center gap-3 border-b border-border bg-primary px-4 py-3 text-primary-foreground">
         <Link href="/" className="flex shrink-0 items-center gap-2 text-base font-bold">
           <BrandLogo variant="mono" size={28} priority />

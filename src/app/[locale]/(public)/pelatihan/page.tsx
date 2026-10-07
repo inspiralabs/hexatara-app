@@ -4,7 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { pick } from "@/lib/i18n/pick";
 import { getMateriHeroHref } from "@/lib/materi";
-import { getWhatsappAdmin } from "@/lib/site-settings";
+import { getFreemiumLmsAccess, getWhatsappAdmin } from "@/lib/site-settings";
 import { PublicHeroMist } from "@/components/public-hero-mist";
 import { publicCtaPrimary, publicSectionHeading } from "@/lib/public-ui";
 import { pageMetadata } from "@/lib/seo/page-metadata";
@@ -92,6 +92,10 @@ export default async function PelatihanPage({
 
   const waCustomLink = buildWaCustomLink((await getWhatsappAdmin()) ?? undefined, t("waCustom"));
   const materiHref = await getMateriHeroHref();
+  const { open: lmsOpen } = await getFreemiumLmsAccess();
+  // F14.5: blok freemium berdiri sendiri di atas judul "Jadwal Pelatihan" —
+  // saat tertutup sembunyikan seluruh blok (bukan CTA "Lihat Pelatihan").
+  const tampilkanHeroFreemium = lmsOpen && materiHref != null;
   const kategoriOptions = (kategoriList ?? []).map((k) => ({
     value: k.id,
     label: pick(k.nama_id, k.nama_en, locale) ?? k.nama_id,
@@ -99,18 +103,17 @@ export default async function PelatihanPage({
 
   return (
     <div className="bg-background pb-16">
-      {/* Hero freemium */}
-      <PublicHeroMist className="border-b border-border">
-        <div className="mx-auto max-w-4xl px-4 py-12 text-center md:py-16">
-          <h1 className={publicSectionHeading}>{t("freemiumHeroTitle")}</h1>
-          <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground">{t("freemiumHeroDesc")}</p>
-          {materiHref && (
+      {tampilkanHeroFreemium && (
+        <PublicHeroMist className="border-b border-border">
+          <div className="mx-auto max-w-4xl px-4 py-12 text-center md:py-16">
+            <h1 className={publicSectionHeading}>{t("freemiumHeroTitle")}</h1>
+            <p className="mx-auto mt-3 max-w-xl text-base text-muted-foreground">{t("freemiumHeroDesc")}</p>
             <Link href={materiHref} className={`mt-6 ${publicCtaPrimary}`}>
               {t("freemiumHeroCta")}
             </Link>
-          )}
-        </div>
-      </PublicHeroMist>
+          </div>
+        </PublicHeroMist>
+      )}
 
       <div className="mx-auto max-w-6xl px-4 py-10 md:py-16">
         <h2 className={publicSectionHeading}>{t("pageTitle")}</h2>

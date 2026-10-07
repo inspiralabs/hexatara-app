@@ -3,6 +3,7 @@ import { requireUser } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { pick } from '@/lib/i18n/pick';
 import { getMateriHeroHref } from '@/lib/materi';
+import { getFreemiumLmsAccess } from '@/lib/site-settings';
 import { PelatihanCard } from '@/app/[locale]/(public)/pelatihan/pelatihan-card';
 import { FilterBar } from '@/app/[locale]/(public)/pelatihan/filter-bar';
 import { SORT_VALUES, type PelatihanSort } from '@/app/[locale]/(public)/pelatihan/sort-options';
@@ -103,6 +104,8 @@ export default async function DashboardPelatihanPage({
   const { data } = await query;
 
   const materiHref = await getMateriHeroHref();
+  const { open: lmsOpen } = await getFreemiumLmsAccess();
+  const tClosed = await getTranslations('lmsClosed');
   const kategoriOptions = (kategoriList ?? []).map((k) => ({
     value: k.id,
     label: pick(k.nama_id, k.nama_en, locale) ?? k.nama_id,
@@ -115,6 +118,9 @@ export default async function DashboardPelatihanPage({
     pesananUtama: pesananUtama ?? null,
     adaMerchDisetujui: pesananMerch != null,
   });
+  // Saat LMS tertutup: jangan tampilkan CTA LMS; teks pelan jika itu satu-satunya banner.
+  const bannerTampil = banner === 'lms' && !lmsOpen ? null : banner;
+  const tampilkanTeksLmsTutup = banner === 'lms' && !lmsOpen;
 
   return (
     <div className="flex flex-col gap-6">
@@ -123,29 +129,41 @@ export default async function DashboardPelatihanPage({
         <p className="mt-1 text-base text-muted-foreground">Semua pelatihan Hexatara, termasuk yang gratis.</p>
       </div>
 
-      {banner && (
+      {tampilkanTeksLmsTutup && (
+        <p className="rounded-xl border border-border bg-muted/40 p-5 text-sm text-muted-foreground">
+          {tClosed('softClosed')}
+        </p>
+      )}
+
+      {bannerTampil && (
         <div className="rounded-xl border border-border bg-muted/40 p-5">
           <p className="font-semibold text-foreground">
-            {banner === 'lms'
+            {bannerTampil === 'lms'
               ? t('freemiumHeroTitle')
-              : banner === 'merchandise'
+              : bannerTampil === 'merchandise'
                 ? tDash('dapatkanMerchandise')
                 : tDash('upgradeSekarang')}
           </p>
           <p className="mt-1 text-sm text-muted-foreground">
-            {banner === 'lms'
+            {bannerTampil === 'lms'
               ? t('freemiumHeroDesc')
-              : banner === 'merchandise'
+              : bannerTampil === 'merchandise'
                 ? tDash('dapatkanMerchandiseDesc')
                 : 'Kamu sudah menyelesaikan pelatihan gratis. Ajukan upgrade untuk mengaktifkan QR sertifikat resmi.'}
           </p>
           <Link
-            href={banner === 'lms' ? materiHref! : banner === 'merchandise' ? '/dashboard/merchandise' : '/dashboard/transaksi'}
+            href={
+              bannerTampil === 'lms'
+                ? materiHref!
+                : bannerTampil === 'merchandise'
+                  ? '/dashboard/merchandise'
+                  : '/dashboard/transaksi'
+            }
             className={cn(buttonVariants(), 'mt-3 h-11 px-6')}
           >
-            {banner === 'lms'
+            {bannerTampil === 'lms'
               ? t('freemiumHeroCta')
-              : banner === 'merchandise'
+              : bannerTampil === 'merchandise'
                 ? tDash('dapatkanMerchandiseCta')
                 : tDash('upgradeSekarang')}
           </Link>

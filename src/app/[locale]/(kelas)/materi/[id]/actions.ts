@@ -2,12 +2,22 @@
 
 import { requireUser } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
+import { getFreemiumLmsAccess } from '@/lib/site-settings';
+
+const LMS_DITUTUP = {
+  ok: false as const,
+  error: 'lms_ditutup' as const,
+  pesan: 'Materi sedang disiapkan.',
+};
 
 // Dipanggil user yang SUDAH LOGIN saat klik "Lanjut ke Bab Berikutnya" (§12.5.3).
 // Validasi urutan dilakukan di server, bukan dipercaya dari client — mencegah
 // akal-akalan DevTools memanggil action ini langsung untuk bab ke-N tanpa
 // melewati bab 1..N-1.
 export async function selesaikanBabAction(materialId: number, chapterId: number) {
+  const { allowed } = await getFreemiumLmsAccess();
+  if (!allowed) return LMS_DITUTUP;
+
   const claims = await requireUser();
   const supabase = await createClient();
 

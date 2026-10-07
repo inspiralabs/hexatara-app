@@ -708,4 +708,90 @@ Tabel `partners` (SQL blok B sudah jalan). Admin Konten → Partner Kami: CRUD l
 | `image-upload-field.tsx` | preset `logo` (alpha PNG/WebP) |
 | `validations/partner-admin.ts`, `types/database.ts` | Schema + tipe |
 
-Status: **menunggu uji Alif.** F14.4 tetap TODO.
+Status: **dikonfirmasi Alif 6 Okt 2026.** F14.4 DONE.
+
+---
+
+## F14.5 — Saklar LMS Freemium (6–7 Oktober 2026)
+
+**Status:** dikodekan — **menunggu uji Alif.** Diagnosis disetujui Alif 7 Okt 2026.
+
+### Keputusan implementasi (pasca-persetujuan)
+
+| Topik | Keputusan |
+|---|---|
+| Banner | = hero freemium di `/pelatihan` (bukan `[slug]`) |
+| `/kuis` | digerbang penuh bersama LMS |
+| Gerbang | di **page.tsx** tiap rute (`get-free-certificate-rpc`, `/materi/[id]`, `/kuis`) — bukan hanya layout `(kelas)` |
+| Hero `/pelatihan` saat tertutup | **Sembunyikan seluruh blok** `PublicHeroMist` freemium (berdiri sendiri di atas judul “Jadwal Pelatihan”). Bukan CTA “Lihat Pelatihan”. |
+| `daftarAction` / `kuisSelesai` | **Ya**, klaim klien `kuis_selesai` mengisi `free_track_selesai_at` lewat trigger `handle_new_user`. Saat LMS tertutup (`!allowed`), klaim diabaikan (`kuisSelesaiEfektif = false`). |
+| Batas | Bucket `materials` **publik** — URL file langsung tidak ikut saklar. Kuis/tab yang sedang berjalan di tab lama hilang akses setelah refresh saat ditutup. |
+
+### Diagnosis (arsip)
+
+### 1. Rute LMS (publik / kelas)
+
+| Path | File | Catatan |
+|---|---|---|
+| `/materi/get-free-certificate-rpc` | `src/app/[locale]/(kelas)/materi/get-free-certificate-rpc/page.tsx` | Pintu bernama → redirect ke `/materi/{id}` atau `/pelatihan` |
+| `/materi/[id]` | `src/app/[locale]/(kelas)/materi/[id]/page.tsx` | Course reader + tab kuis embedded |
+| Layout route group `(kelas)` | `src/app/[locale]/(kelas)/layout.tsx` | Hanya `ForceLightDocument` — **kandidat gerbang layout** |
+| `/kuis` | `src/app/[locale]/(public)/kuis/page.tsx` | Mesin kuis publik (F03.2); **bukan** di dalam `(kelas)` |
+
+**Tidak ada** `src/app/api/**` untuk materi/PDF/PPT/video. File dilayani lewat URL publik bucket (lihat batas di bawah). Admin `/admin/materi/**` **bukan** LMS publik — jangan digerbang saklar freemium.
+
+### 2. Server Action LMS vs non-LMS
+
+| Action | Path | Gerbang? |
+|---|---|---|
+| `selesaikanBabAction` | `(kelas)/materi/[id]/actions.ts` | **Ya** (progres bab) |
+| `selesaikanKuisLoginAction` | `(public)/kuis/actions.ts` | **Ya** (tandai `free_track_selesai_at`) |
+| Admin materi/bab/soal/lampiran | `admin/(protected)/materi/**/actions.ts` | **Tidak** |
+| Sertifikat / upgrade / transaksi / merchandise / daftar batch / perusahaan | dashboard & publik terkait | **Tidak** |
+| `daftarAction` (+ klaim `kuisSelesai`) | `(auth)/daftar/actions.ts` | **Tidak** (registrasi akun, bukan LMS) |
+
+Progress anonim: `src/lib/materi/session-progress.ts` (sessionStorage client) — tertutup otomatis jika halaman LMS tidak bisa dibuka.
+
+### 3. Tautan / CTA ke LMS
+
+| Lokasi | Path | Perilaku saat ini |
+|---|---|---|
+| Hero freemium “Mulai Sekarang” | `pelatihan/page.tsx` via `getMateriHeroHref()` → `MATERI_PATH` | CTA ke pintu LMS |
+| Banner LMS di dashboard | `dashboard/pelatihan/page.tsx` | Mode `lms` → `materiHref` |
+| Kartu / CTA kursus | `dashboard/kursus/page.tsx` | Link `/materi/get-free-certificate-rpc` |
+| Upgrade (belum kuis) | `dashboard/upgrade/page.tsx` | Link ke `/kuis` (tetap perlu digerbang halaman `/kuis`) |
+| Sertifikat kosong | `dashboard/sertifikat/page.tsx` | Teks + link `/dashboard/kursus` (bukan langsung LMS) |
+| Landing hero (`hero-section.tsx`) | — | **Tidak** ada CTA LMS |
+| Navbar / footer publik | — | **Tidak** ada link `/materi` atau `/kuis` |
+| `/pelatihan/[slug]` | `pelatihan/[slug]/page.tsx` | **Tidak ada** banner/CTA freemium di kode saat ini (spesifikasi menyebut banner di sini — **tidak ditemukan**; yang ada hero freemium di `/pelatihan` list) |
+| Sitemap | `src/app/sitemap.ts` | Memuat `/kuis`; **tidak** memuat `/materi…` |
+
+Helper: `src/lib/materi.ts` — `MATERI_PATH`, `getMateriAktifId()`, `getMateriHeroHref()`.
+
+### 4. Cache / ISR & bucket
+
+- Beranda: `export const dynamic = "force-dynamic"`.
+- `/pelatihan`, `/materi/*`, `/kuis`: tidak set `revalidate`/ISR eksplisit; memakai `cookies()` via Supabase → rendering dinamis.
+- `revalidatePath('/', 'layout')` tetap berguna agar saklar Admin langsung menyentuh tree layout.
+- **Bucket `materials`:** `public: true` (dicek Storage API live). Link file langsung (PDF/PPT/video URL) **tidak** ikut tertutup saklar — batas yang diketahui.
+
+### 5. Cek admin & cookie
+
+- `requireAdmin()` / pola: `profiles.role === 'admin'` (`src/lib/auth/guard.ts`).
+- Login Admin (`/admin/login`) memakai `createClient()` yang sama (`@/lib/supabase/server`) → **cookie Supabase sama** di rute publik; `getOptionalUser()` + baca `profiles.role` bisa mendeteksi admin untuk pratinjau.
+
+### Berkas utama
+
+| File | Peran |
+|---|---|
+| `site-settings.ts` | `isFreemiumLmsOpen` / `getFreemiumLmsAccess` (fail-closed, `cache()`) |
+| `lms-closed-page.tsx`, `lms-admin-preview-strip.tsx` | Halaman tutup + strip admin |
+| `materi/.../page.tsx`, `get-free-certificate-rpc/page.tsx`, `kuis/page.tsx` | Gerbang server |
+| `materi/[id]/actions.ts`, `kuis/actions.ts` | Gerbang action |
+| `daftar/actions.ts` | Abaikan `kuisSelesai` saat tertutup |
+| `pelatihan/page.tsx`, dashboard pelatihan/kursus/upgrade | UI tanpa CTA LMS |
+| `pengaturan/freemium-lms-card.tsx` + action | Saklar Admin |
+| `sitemap.ts` | Tanpa `/kuis` saat tertutup |
+| `messages/{id,en}.json` | `lmsClosed.*` |
+
+Status: **menunggu uji Alif.** F14.5 tetap TODO.

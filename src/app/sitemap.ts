@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 import { localizedPath, siteOrigin } from "@/lib/seo/page-metadata";
+import { isFreemiumLmsOpen } from "@/lib/site-settings";
 
 /** Path publik statis saja — slug dinamis batch/produk ditunda (plan F05.4). */
 const STATIC_PUBLIC_PATHS = [
@@ -16,11 +17,13 @@ const STATIC_PUBLIC_PATHS = [
   "/ketentuan-layanan",
 ] as const;
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const origin = siteOrigin();
+  const lmsOpen = await isFreemiumLmsOpen();
   const entries: MetadataRoute.Sitemap = [];
 
   for (const path of STATIC_PUBLIC_PATHS) {
+    if (path === "/kuis" && !lmsOpen) continue;
     for (const locale of routing.locales) {
       entries.push({
         url: `${origin}${localizedPath(locale, path)}`,

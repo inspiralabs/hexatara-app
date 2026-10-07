@@ -123,3 +123,15 @@ export async function ubahPasswordAdminAction(input: unknown) {
   if (error) return { ok: false as const, pesan: 'Gagal mengubah kata sandi.' };
   return { ok: true as const };
 }
+
+export async function updateFreemiumLmsOpenAction(open: boolean) {
+  await requireAdmin();
+  const error = await upsertSiteSetting('freemium_lms_open', open ? 'true' : 'false');
+  if (error) {
+    console.error('[pengaturan] freemium_lms_open:', error);
+    return { ok: false as const, pesan: 'Gagal menyimpan status LMS Freemium.' };
+  }
+  revalidatePath('/admin/pengaturan');
+  revalidatePath('/', 'layout');
+  return { ok: true as const };
+}

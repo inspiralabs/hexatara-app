@@ -189,6 +189,13 @@
       "continueWhatsapp": "Lanjut ke WhatsApp"
     }
   },
+  "lmsClosed": {
+    "title": "Materi sedang disiapkan",
+    "description": "Materi dan kuis gratis sedang disempurnakan oleh tim Hexatara. Silakan cek kembali nanti, atau jelajahi jadwal pelatihan berbayar.",
+    "backCta": "Kembali ke Pelatihan",
+    "adminPreviewStrip": "Mode pratinjau admin: LMS Freemium sedang ditutup untuk publik.",
+    "softClosed": "Materi gratis sedang disiapkan."
+  },
   "kelas": {
     "tidakDitemukan": "Materi tidak ditemukan.",
     "kosongBab": "Materi ini belum punya bab. Silakan cek kembali nanti.",

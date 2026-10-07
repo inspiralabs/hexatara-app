@@ -1393,24 +1393,24 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 ---
 
 ### ADR-027 — Tambahan Hexatara hasil meeting 4 Okt 2026
-**2026-10-06 · Diperluas 2026-10-06 · Berlaku — F14.1–F14.3 DONE; F14.4 dikodekan (menunggu uji); F14.5–F14.6 belum**
+**2026-10-06 · Diperluas 2026-10-07 · Berlaku — F14.1–F14.4 DONE; F14.5 dikodekan (menunggu uji); F14.6 belum**
 
-**Konteks.** Meeting Hexatara 4 Oktober 2026 menghasilkan enam permintaan tambahan setelah Modul 13 (ADR-026) selesai. F14.1–F14.3 tanpa SQL baru di app; F14.4 memakai tabel `partners` (SQL Bagian 0 blok B, sudah dijalankan Alif). Detail F14.5–F14.6 menyusul lewat prompt terpisah.
+**Konteks.** Meeting Hexatara 4 Oktober 2026 menghasilkan enam permintaan tambahan setelah Modul 13 (ADR-026) selesai. F14.4: tabel `partners`. F14.5: saklar tutup LMS Freemium via `site_settings` key `freemium_lms_open` (SQL blok A opsional; kode fail-closed).
 
-1. **F14.1 — Badge Authorized Dealer di hero.** Frasa resmi “Autel Robotics Authorized Dealer” sebagai pill di bawah judul kartu retail “Jual Drone Profesional Autel” / “Professional Autel Drones”.
-2. **F14.2 — Relabel “Pendaftaran Kelompok” + minimal 3 peserta.** Istilah tampil “Perusahaan/Komunitas” diganti “Kelompok”; syarat minimal 3 peserta di Excel.
-3. **F14.3 — Instruktur portrait + Catatan internal + Detail Admin.** Foto publik/admin 4:5; bio jadi label “Catatan” (internal); dialog Detail di Admin.
-4. **F14.4 — Partner Kami.** CRUD Admin + section publik di bawah Instruktur Kami.
-5. **F14.5** — (detail menyusul prompt terpisah)
+1. **F14.1–F14.4** — DONE (badge Autel, label Kelompok, instruktur portrait/Catatan, Partner Kami).
+5. **F14.5 — Saklar LMS Freemium.** Tutup akses publik ke materi/kuis di server; Admin tetap pratinjau.
 6. **F14.6** — (detail menyusul prompt terpisah)
 
-**Keputusan.**
-- **F14.1:** pill di `hero-section.tsx` tepat di bawah `offerRetailTitle`; ikon `BadgeCheck` (lucide); teks lewat `landing.offerRetailAuthorizedDealer` (ID = EN, nama resmi); gaya reuse pola badge publik; font di-clamp agar satu baris. Alif konfirmasi DONE 6 Okt 2026.
-- **F14.2 (label saja, infrastruktur tetap):** teks UI/toast/email/WA/export/menu jadi “Kelompok”. **Tidak diubah:** tabel `company_registrations` / `company_registration_participants`, kolom `nama_perusahaan`, rute `/admin/pendaftaran-perusahaan`, nama file sumber, jenis email `'pendaftaran_perusahaan'`. `MIN_PESERTA_KELOMPOK = 3` di validations; penegakan di server action setelah Excel valid. Alif konfirmasi DONE 6 Okt 2026.
-- **F14.3 (label saja, kolom tidak diubah):** publik `aspect-[4/5]` + `object-cover object-top` (sudah tidak render bio). Admin: crop/preview 4:5, hint portrait, preset kompresi `portrait` (`maxWidthOrHeight: 1600` ≥ 1000). Label form “Catatan” → kolom `bio_id`; `bio_en` dihapus dari form/schema; update **tidak** mengirim `bio_en` (tidak menimpa null). Dialog Detail read-only. Badge “Perlu foto portrait” jika natural width ≥ height. Tanpa SQL; kolom `bio_id`/`bio_en` tetap di DB. Alif konfirmasi DONE 6 Okt 2026.
-- **F14.4 — tabel `partners`, reuse bucket `content`:** kolom `nama`, `logo_url`, `urutan`, `is_active` (+ timestamps). Upload Admin ke folder `partners/` (JPG/PNG/WebP, bukan SVG; preset kompresi `logo` pertahankan alpha). Hapus baris → hapus file storage. Publik: logo `object-contain` + `quality={90}`, kotak `bg-white` (logo gelap terbaca di dark mode); section hilang jika tidak ada aktif. `revalidatePath('/')` dan `revalidatePath('/en')` pada create/update/delete/toggle.
+**Keputusan F14.5 — arsitektur 3 lapis.**
+1. **UI:** sembunyikan CTA/banner LMS (hero freemium `/pelatihan` disembunyikan utuh; dashboard teks pelan; sitemap tanpa `/kuis`).
+2. **Gerbang server (utama):** cek di **page.tsx** `/materi/get-free-certificate-rpc`, `/materi/[id]`, `/kuis` — bukan hanya layout `(kelas)` (layout tidak re-render antar anak). `!allowed` → halaman “Materi sedang disiapkan”, `robots: noindex`.
+3. **Server action:** `selesaikanBabAction` / `selesaikanKuisLoginAction` menolak saat tertutup. `daftarAction` mengabaikan klaim `kuisSelesai` saat tertutup (klaim klien bisa mengisi `free_track_selesai_at` lewat trigger).
 
-**Konsekuensi.** Registry F14.4 TODO sampai uji Alif. Bucket storage `content` tidak diganti — hanya folder baru.
+**Fail-closed.** `isFreemiumLmsOpen()`: hanya nilai JSON string `'true'` = terbuka; baris hilang / error / nilai lain = tertutup. `getFreemiumLmsAccess()` → `{ open, isAdminPreview, allowed }` dengan `cache()` per-request (bukan lintas request). Admin: `profiles.role === 'admin'` via cookie Supabase yang sama. Strip pratinjau di `/materi/[id]` dan `/kuis`. Saklar Admin: `updateFreemiumLmsOpenAction` + `revalidatePath('/', 'layout')`.
+
+**Peluang lanjutan.** Saklar per-course (bukan global) — YAGNI sekarang. **Batas diketahui:** bucket `materials` publik — URL file langsung tidak ikut saklar.
+
+**Konsekuensi.** Registry F14.5 TODO sampai uji Alif.
 
 ---
 
@@ -1471,3 +1471,5 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-10-06 | **F14.1 DONE** setelah uji Alif. **ADR-027 diperluas — F14.2:** label “Pendaftaran Kelompok” + `MIN_PESERTA_KELOMPOK=3` (app saja); rute/tabel/`pendaftaran_perusahaan` tetap. Menunggu uji Alif. |
 | 2026-10-06 | **F14.2 DONE** setelah uji Alif. **ADR-027 diperluas — F14.3:** instruktur portrait 4:5, bio→Catatan (label saja, kolom `bio_*` tetap), Detail Admin. Menunggu uji Alif. |
 | 2026-10-06 | **F14.3 DONE** setelah uji Alif. **ADR-027 diperluas — F14.4:** tabel `partners`, Admin Partner Kami, section publik di bawah Instruktur; logo di bucket `content/partners/`. Menunggu uji Alif. |
+| 2026-10-06 | **F14.4 DONE** setelah uji Alif. **F14.5 diagnosis** saklar LMS Freemium dicatat di `plan.md` (rute/action/CTA/cache/admin cookie/bucket); menunggu OK Alif sebelum kode. |
+| 2026-10-07 | **F14.5 dikodekan** setelah diagnosis disetujui: gerbang page+action, saklar `freemium_lms_open`, Admin pratinjau, fail-closed. Menunggu uji Alif. |
