@@ -44,6 +44,8 @@ Ini tambahan khusus untuk sesi malam ini karena mengetes di **production**, buka
 |---|---|---|---|
 | 1.1 | Buka landing page, tunjukkan pop-up (kalau aktif) | ☐ | |
 | 1.2 | Tunjukkan hero, jadwal batch, section produk, instruktur, testimoni, FAQ | ☐ | |
+| 1.5 | Tunjukkan lencana “Autel Robotics Authorized Dealer” di kartu jual drone | ☐ | |
+| 1.6 | Tunjukkan Partner Kami di bawah instruktur (kalau ada data). Foto instruktur tegak; catatan internal tidak tampil | ☐ | |
 | 1.3 | Klik tombol WhatsApp melayang → pastikan membuka ke nomor yang benar | ☐ | |
 | 1.4 | Ganti bahasa ID ⇄ EN, pastikan tidak ada teks yang "bocor" masih Bahasa Indonesia padahal sudah pilih Inggris (atau sebaliknya) | ☐ | |
 
@@ -55,6 +57,9 @@ Ini tambahan khusus untuk sesi malam ini karena mengetes di **production**, buka
 | 2.2 | Tunjukkan 7 elemen konten batch (benefit, syarat, silabus, peralatan, FAQ, galeri) — pastikan tidak ada bagian kosong yang tampil janggal | ☐ | |
 | 2.3 | Isi form pendaftaran lengkap sampai submit | ☐ | |
 | 2.4 | **Siapkan penjelasan:** tidak ada email otomatis ke Admin untuk pendaftaran ini (ditahan Fase 2) — pastikan Haikal tahu ini bukan bug supaya tidak "kaget" saat demo ke Abi nanti | ☐ | |
+| 2.5 | Buka tautan filter program (`/pelatihan?kategori=` + nama program). Nama acak menampilkan semua | ☐ | |
+| 2.6 | Pada program yang dicentang lokasi/ukuran, isi kedua field. Pada program lain, kedua field tidak ada | ☐ | |
+| 2.7 | Pendaftaran Kelompok: Excel kurang dari 3 peserta ditolak; 3 peserta diterima. Template ikut kolom lokasi/ukuran hanya bila program memintanya | ☐ | |
 
 ### 3. Publik — Verifikasi Sertifikat
 
@@ -85,6 +90,7 @@ Ini tambahan khusus untuk sesi malam ini karena mengetes di **production**, buka
 | 5.3 | Selesaikan semua bab, buka kuis | ☐ | |
 | 5.4 | Jawab salah satu soal salah dulu → tunjukkan penjelasan opsi salah muncul | ☐ | |
 | 5.5 | Selesaikan kuis, klik "Dapatkan Sertifikat" | ☐ | |
+| 5.6 | Matikan Akses LMS Freemium, buka materi sebagai pengunjung (bukan Admin): halaman “sedang disiapkan”. Nyalakan lagi sebelum demo lanjut | ☐ | |
 
 ### 6. User — Daftar Akun & Dashboard
 
@@ -117,7 +123,9 @@ Ini tambahan khusus untuk sesi malam ini karena mengetes di **production**, buka
 | 8.5 | Produk & Kategori — tunjukkan CRUD singkat | ☐ | |
 | 8.6 | Leads → Penawaran — tunjukkan daftar masuk + ubah status + ekspor Excel | ☐ | |
 | 8.7 | Peserta Pendaftaran — tunjukkan data dari langkah 2.3 muncul di sini | ☐ | |
-| 8.8 | Pengaturan — tunjukkan semua field yang sudah diisi | ☐ | |
+| 8.8 | Pengaturan — tunjukkan semua field yang sudah diisi, termasuk saklar Akses LMS Freemium | ☐ | |
+| 8.9 | Kategori Pelatihan: dua centang lokasi/ukuran. Lokasi Praktek: tambah kota | ☐ | |
+| 8.10 | Pendaftaran individu dan Pendaftaran Kelompok: lokasi dan ukuran tampil (atau tanda hubung bila kosong) | ☐ | |
 
 ---
 

@@ -65,6 +65,12 @@ Setiap skenario diberi nomor (mengikuti nomor fitur di `feature-registry.md`) su
 | A1.5 Tombol WhatsApp melayang | Klik ikon WA melayang | Membuka WhatsApp ke nomor Admin (dari Pengaturan) — tautan langsung, bukan chatbot otomatis | ☐ |
 | A1.6 Ganti bahasa | Klik pemilih bahasa | Situs berganti ke Bahasa Inggris/Indonesia; kalau konten Inggris kosong, otomatis tampil Bahasa Indonesia | ☐ |
 | A1.7 Menu ke halaman pelatihan | Klik "Lihat Jadwal" | Menuju daftar pelatihan `/pelatihan` | ☐ |
+| A1.8 Lencana dealer Autel | Lihat kartu jual drone di hero | Di bawah judul ada lencana “Autel Robotics Authorized Dealer” (teks sama saat bahasa Inggris) | ☐ |
+| A1.9 Partner Kami | Scroll melewati foto instruktur | Kalau Admin sudah mengisi partner aktif, muncul bagian Partner Kami berisi logo. Kalau belum ada partner, bagian itu tidak tampil | ☐ |
+| A1.10 Foto instruktur | Lihat foto instruktur di beranda | Foto tegak (portrait). Catatan internal di Admin tidak muncul di situs | ☐ |
+| A1.8 Lencana dealer Autel | Lihat kartu jual drone di hero | Di bawah judul ada lencana “Autel Robotics Authorized Dealer” (teks sama saat bahasa Inggris) | ☐ |
+| A1.9 Partner Kami | Scroll melewati foto instruktur | Kalau Admin sudah mengisi partner aktif, muncul bagian Partner Kami berisi logo. Kalau belum ada partner, bagian itu tidak tampil | ☐ |
+| A1.10 Foto instruktur | Lihat foto instruktur di beranda | Foto tegak (portrait). Catatan internal di Admin tidak muncul di situs | ☐ |
 
 ### A2. Halaman Pelatihan & Pendaftaran (Modul 1 + Modul 8)
 
@@ -75,6 +81,12 @@ Setiap skenario diberi nomor (mengikuti nomor fitur di `feature-registry.md`) su
 | A2.3 Kontak pelatihan tampil benar | Cek detail batch reguler vs private/inhouse | Nomor WA yang tampil sesuai jenisnya (Reguler → WA Batch Reguler; Private/Inhouse → WA Private & Inhouse Abiyyi) | ☐ |
 | A2.4 Isi form pendaftaran | Klik daftar, isi formulir lengkap (identitas, dokumen) | Data tersimpan; **tidak** langsung diarahkan ke WhatsApp otomatis (ini beda dari sistem lama) | ☐ |
 | A2.5 URL lama redirect | Buka URL lama `/batch/[slug]` (kalau tahu contohnya) | Otomatis dialihkan ke `/pelatihan/[slug]` | ☐ |
+| A2.6 Filter program lewat tautan | Buka `/pelatihan?kategori=` diikuti nama program yang sudah ada (huruf kecil, spasi jadi tanda hubung, misalnya `sidopi`) | Hanya jadwal program itu yang tampil, dan filter di halaman ikut terpilih. Tautan dengan nama acak menampilkan semua jadwal | ☐ |
+| A2.7 Lokasi praktek dan ukuran baju | Daftar individu pada jadwal yang programnya meminta lokasi dan ukuran (contoh SiDOPI bila kedua centang di Admin aktif). Lalu coba jadwal program lain | Field Lokasi Praktek dan Ukuran Baju wajib diisi hanya pada program yang dicentang. Program lain tidak menampilkan kedua field itu | ☐ |
+| A2.8 Pendaftaran kelompok | Di jadwal yang sama, unduh template Excel kelompok, isi kurang dari 3 peserta, lalu isi minimal 3 | Kurang dari 3 peserta ditolak. Minimal 3 diterima. Kalau program meminta lokasi/ukuran, kolom itu ada di template dan harus valid; program lain tetap tiga kolom nama, WhatsApp, email | ☐ |
+| A2.6 Filter program lewat tautan | Buka `/pelatihan?kategori=` diikuti nama program yang sudah ada (huruf kecil, spasi jadi tanda hubung, misalnya `sidopi`) | Hanya jadwal program itu yang tampil, dan filter di halaman ikut terpilih. Tautan dengan nama acak menampilkan semua jadwal | ☐ |
+| A2.7 Lokasi praktek dan ukuran baju | Daftar individu pada jadwal yang programnya meminta lokasi dan ukuran (contoh SiDOPI bila kedua centang di Admin aktif). Lalu coba jadwal program lain | Field Lokasi Praktek dan Ukuran Baju wajib diisi hanya pada program yang dicentang. Program lain tidak menampilkan kedua field itu | ☐ |
+| A2.8 Pendaftaran kelompok | Di jadwal yang sama, unduh template Excel kelompok, isi kurang dari 3 peserta, lalu isi minimal 3 | Kurang dari 3 peserta ditolak. Minimal 3 diterima. Kalau program meminta lokasi/ukuran, kolom itu ada di template dan harus valid; program lain tetap tiga kolom nama, WhatsApp, email | ☐ |
 
 ### A3. Verifikasi Sertifikat (Modul 2)
 
@@ -110,6 +122,8 @@ Setiap skenario diberi nomor (mengikuti nomor fitur di `feature-registry.md`) su
 | A5.3 Kuis terkunci | Coba buka tab kuis sebelum semua bab selesai | Tab kuis terkunci sampai seluruh bab tuntas | ☐ |
 | A5.4 Jawab kuis salah | Pilih jawaban salah | Muncul penjelasan kenapa jawaban itu salah; boleh ganti jawaban, tidak ada status "gagal" | ☐ |
 | A5.5 Selesai kuis, belum punya akun | Klik "Dapatkan Sertifikat" setelah kuis selesai (belum login) | Diarahkan ke halaman daftar akun (data kuis yang sudah dikerjakan tidak hilang) | ☐ |
+| A5.6 Materi ditutup sementara | Admin mematikan “Akses LMS Freemium” di Pengaturan, lalu buka materi sebagai pengunjung (bukan akun Admin) | Pengunjung melihat halaman bahwa materi sedang disiapkan, bukan isi bab. Akun Admin tetap bisa membuka materi untuk pratinjau. Nyalakan kembali saklar supaya pengunjung bisa masuk lagi | ☐ |
+| A5.6 Materi ditutup sementara | Admin mematikan “Akses LMS Freemium” di Pengaturan, lalu buka materi sebagai pengunjung (bukan akun Admin) | Pengunjung melihat halaman bahwa materi sedang disiapkan, bukan isi bab. Akun Admin tetap bisa membuka materi untuk pratinjau. Nyalakan kembali saklar supaya pengunjung bisa masuk lagi | ☐ |
 
 ---
 
@@ -157,6 +171,15 @@ Setiap skenario diberi nomor (mengikuti nomor fitur di `feature-registry.md`) su
 | C1.4 CRUD batch pelatihan | Admin → Batch: tambah batch baru lengkap (benefit, silabus, peralatan, FAQ, galeri) | Batch baru muncul di listing publik `/pelatihan` | ☐ |
 | C1.5 Salin dari batch lain | Admin → Batch → buat baru → gunakan opsi "salin dari batch" | Data batch lama tersalin ke form batch baru, tinggal disesuaikan | ☐ |
 | C1.6 CRUD kategori batch | Admin → Batch → Kategori | Kategori baru bisa dipakai untuk filter di halaman publik | ☐ |
+| C1.7 Partner Kami | Admin → Konten → Partner Kami: tambah logo, simpan, lihat beranda | Logo tampil di bagian Partner Kami, di bawah instruktur. Nonaktifkan: logo hilang dari beranda | ☐ |
+| C1.8 Lokasi praktek | Admin → Batch → Lokasi Praktek (tepat di bawah Kategori Pelatihan): tambah kota | Kota tampil di daftar. Kota yang sama (beda huruf besar/kecil) ditolak dengan pesan “Kota sudah ada” | ☐ |
+| C1.9 Centang program | Admin → Kategori Pelatihan: pada satu kategori centang “Perlu Lokasi Praktek” dan “Perlu Ukuran Baju” | Kedua centang tersimpan. Tabel Admin menandai kategori itu. Jadwal yang memakai kategori itu meminta lokasi dan ukuran saat daftar | ☐ |
+| C1.7 Partner Kami | Admin → Konten → Partner Kami: tambah logo, simpan, lihat beranda | Logo tampil di bagian Partner Kami, di bawah instruktur. Nonaktifkan: logo hilang dari beranda | ☐ |
+| C1.8 Lokasi praktek | Admin → Batch → Lokasi Praktek (tepat di bawah Kategori Pelatihan): tambah kota | Kota tampil di daftar. Kota yang sama (beda huruf besar/kecil) ditolak dengan pesan “Kota sudah ada” | ☐ |
+| C1.9 Centang program | Admin → Kategori Pelatihan: pada satu kategori centang “Perlu Lokasi Praktek” dan “Perlu Ukuran Baju” | Kedua centang tersimpan. Tabel Admin menandai kategori itu. Jadwal yang memakai kategori itu meminta lokasi dan ukuran saat daftar | ☐ |
+| C1.7 Partner Kami | Admin → Konten → Partner Kami: tambah logo, simpan, lihat beranda | Logo tampil di bagian Partner Kami, di bawah instruktur. Nonaktifkan: logo hilang dari beranda | ☐ |
+| C1.8 Lokasi praktek | Admin → Batch → Lokasi Praktek (tepat di bawah Kategori Pelatihan): tambah kota | Kota tampil di daftar. Kota yang sama (beda huruf besar/kecil) ditolak dengan pesan “Kota sudah ada” | ☐ |
+| C1.9 Centang program | Admin → Kategori Pelatihan: pada satu kategori centang “Perlu Lokasi Praktek” dan “Perlu Ukuran Baju” | Kedua centang tersimpan. Tabel Admin menandai kategori itu. Jadwal yang memakai kategori itu meminta lokasi dan ukuran saat daftar | ☐ |
 
 ### C2. Sertifikat (Modul 2 & 3)
 
@@ -196,6 +219,10 @@ Setiap skenario diberi nomor (mengikuti nomor fitur di `feature-registry.md`) su
 | C5.1 Lihat peserta pendaftaran | Admin → Peserta Pendaftaran | Semua pendaftar batch (dari form lengkap A2.4) tampil di sini | ☐ |
 | C5.2 Filter per batch | Admin → Pendaftaran Batch: filter berdasarkan batch tertentu | Daftar tersaring sesuai batch yang dipilih | ☐ |
 | C5.3 Lihat detail pendaftar | Admin → Peserta Pendaftaran: buka detail salah satu pendaftar | Data lengkap identitas & dokumen pendaftar tampil | ☐ |
+| C5.4 Lokasi dan ukuran di pendaftaran individu | Buka Pendaftaran Batch dan Peserta Pendaftaran untuk pendaftar yang mengisi lokasi/ukuran, lalu unduh Excel | Kolom Lokasi Praktek (nama kota) dan Ukuran Baju tampil di tabel, di detail, dan di file Excel. Kalau kosong, tertulis tanda hubung | ☐ |
+| C5.5 Pendaftaran kelompok | Admin → Leads → Pendaftaran Kelompok: buka detail satu pengajuan | Daftar peserta menampilkan Lokasi Praktek dan Ukuran Baju bila diisi, atau tanda hubung bila kosong | ☐ |
+| C5.4 Lokasi dan ukuran di pendaftaran individu | Buka Pendaftaran Batch dan Peserta Pendaftaran untuk pendaftar yang mengisi lokasi/ukuran, lalu unduh Excel | Kolom Lokasi Praktek (nama kota) dan Ukuran Baju tampil di tabel, di detail, dan di file Excel. Kalau kosong, tertulis tanda hubung | ☐ |
+| C5.5 Pendaftaran kelompok | Admin → Leads → Pendaftaran Kelompok: buka detail satu pengajuan | Daftar peserta menampilkan Lokasi Praktek dan Ukuran Baju bila diisi, atau tanda hubung bila kosong | ☐ |
 
 ### C6. Pengaturan
 
@@ -204,6 +231,8 @@ Setiap skenario diberi nomor (mengikuti nomor fitur di `feature-registry.md`) su
 | C6.1 Ubah kontak & rekening | Admin → Pengaturan: ubah salah satu data (mis. nomor WA) | Perubahan langsung berlaku di halaman publik terkait | ☐ |
 | C6.2 Ubah harga upgrade | Admin → Pengaturan → Harga upgrade: ubah nominal | Nominal baru langsung dipakai saat peserta mengajukan upgrade selanjutnya | ☐ |
 | C6.3 Ubah email notifikasi Admin | Admin → Pengaturan: ganti alamat email notifikasi | Permintaan penawaran berikutnya terkirim ke alamat baru | ☐ |
+| C6.4 Saklar materi gratis | Admin → Pengaturan → Akses LMS Freemium: matikan, cek sebagai pengunjung, nyalakan lagi | Saat mati, pengunjung tidak masuk materi/kuis. Admin tetap bisa pratinjau. Saat hidup, pengunjung bisa masuk lagi. Kalau pengaturan ini belum pernah disimpan “terbuka”, materi dianggap tertutup | ☐ |
+| C6.4 Saklar materi gratis | Admin → Pengaturan → Akses LMS Freemium: matikan, cek sebagai pengunjung, nyalakan lagi | Saat mati, pengunjung tidak masuk materi/kuis. Admin tetap bisa pratinjau. Saat hidup, pengunjung bisa masuk lagi. Kalau pengaturan ini belum pernah disimpan “terbuka”, materi dianggap tertutup | ☐ |
 
 ### C7. Login & Akun Admin
 

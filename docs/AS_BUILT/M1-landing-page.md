@@ -75,7 +75,10 @@ Jalur yang **ada di repo sekarang** (path registry F01 sering masih menyebut `sr
 | `src/components/hero-section.tsx`, `hero-carousel.tsx` | Hero + carousel |
 | `src/components/jadwal-batch-section.tsx` | Kartu jadwal di landing |
 | `src/components/produk-section.tsx`, `verify-cta-section.tsx`, `faq-section.tsx` | Section tambahan redesign |
-| `src/components/instruktur-section.tsx`, `company-profile-section.tsx`, `testimoni-section.tsx` | Konten bawah landing |
+| `src/components/instruktur-section.tsx`, `partner-section.tsx`, `company-profile-section.tsx`, `testimoni-section.tsx` | Konten bawah landing (instruktur portrait, Partner Kami) |
+| `src/app/admin/(protected)/konten/partner/**` | CRUD Partner Kami |
+| `src/app/admin/(protected)/batch/lokasi-praktek/**` | CRUD kota praktek |
+| `src/app/admin/(protected)/pendaftaran-perusahaan/**` | Admin Pendaftaran Kelompok (rute lama) |
 | `src/components/floating-whatsapp.tsx` | Tombol WA melayang |
 | `src/app/[locale]/(public)/pelatihan/page.tsx`, `pelatihan/[slug]/page.tsx` | Listing + detail batch (pengganti `/batch`) |
 | `src/app/[locale]/(public)/batch/[slug]/page.tsx` | Redirect ke `/pelatihan/[slug]` |
@@ -96,7 +99,11 @@ Jalur yang **ada di repo sekarang** (path registry F01 sering masih menyebut `sr
 7. **Floating WA hanya `wa.me`.** Bukti F01.9: tanpa API gateway.
 8. **Email notifikasi Admin.** Jalur minat F01.6 publik sudah tidak ada (F10.1). Jalur hidup: permintaan penawaran (F04.5) → `kirimEmailLeadBaru({ jenis: 'penawaran' })` → `getAdminNotifyEmail()` (**DB-first** `site_settings.admin_notify_email`, fallback env). **Bukti e2e 2026-09-24:** submit ~15:05 WIB di `/katalog/evo-ii-pro-enterprise-v3`; email masuk ke alamat Pengaturan; latensi minim. Catatan terbuka F01.6 ditutup.
 9. **Redesign beranda (F06.10).** Urutan section dan footer/halaman statis berubah dari layout Sprint 1; Bukti F06.10: tampilan sesuai list uji Alif (kurang detail per section dibanding F01.x).
-10. **Cabang email `minat_batch` ditahan (2026-09-24).** Bukan dead code untuk dibersihkan knip; menunggu Fase 2 email notifikasi pendaftaran batch. Lihat PRD.md §15.
+10. **Cabang email `minat_batch` ditahan (2026-09-24).** Bukan dead code untuk dibersihkan knip; menunggu Fase 2 email notifikasi pendaftaran batch. Lihat PRD.md §15. Modul 14 tidak mengaktifkannya.
+11. **Badge dealer (F14.1).** Pil di kartu retail `hero-section.tsx`, teks `offerRetailAuthorizedDealer` sama untuk ID dan EN.
+12. **Instruktur (F14.3).** `instruktur-section.tsx` memakai `aspect-[4/5]`. Label Admin “Catatan”; kolom tetap `bio_id` / `bio_en`; tidak dirender di situs.
+13. **Partner Kami (F14.4).** `partner-section.tsx` di bawah instruktur. Tanpa baris aktif, section tidak dirender. Logo di bucket `content/partners/`.
+14. **Program, lokasi, kelompok (F14.2, F14.6).** Menu tampil “Pendaftaran Kelompok”; minimal 3 peserta di `MIN_PESERTA_KELOMPOK`. Rute admin tetap `/admin/pendaftaran-perusahaan`. Flag `butuh_lokasi_praktek` / `butuh_ukuran_baju` di kategori, bukan hardcode nama SiDOPI. Kota di `practice_locations`. Filter `/pelatihan?kategori=<slug>` dari `nama_id` lewat `slugify`. Form individu dan Excel kelompok menyimpan `practice_location_id` dan `ukuran_baju` hanya bila flag aktif.
 
 ## Yang sengaja TIDAK dibangun
 
@@ -122,7 +129,11 @@ Jalur yang **ada di repo sekarang** (path registry F01 sering masih menyebut `sr
 
 ## Untuk manual book Hexatara
 
-- Halaman depan menampilkan pelatihan dan penjualan drone. Isi yang berubah-ubah (pengumuman, banner, foto hero, jadwal, instruktur, cerita perusahaan, testimoni) diganti dari menu Admin Konten / Batch — tidak perlu programmer.
+- Halaman depan menampilkan pelatihan dan penjualan drone. Isi yang berubah-ubah (pengumuman, banner, foto hero, jadwal, instruktur, partner, cerita perusahaan, testimoni) diganti dari menu Admin Konten / Batch — tidak perlu programmer.
+- Kartu jual drone memuat lencana Autel Robotics Authorized Dealer.
+- Foto instruktur tegak. Catatan di form Admin tidak tampil di situs.
+- Partner Kami tampil di bawah instruktur hanya bila ada partner aktif.
+- Pendaftaran kelompok minimal 3 peserta. Lokasi praktek dan ukuran baju hanya untuk kategori yang dicentang di Admin.
 - Banner promo bisa dimatikan kapan saja dari Admin; perubahan langsung terlihat di situs.
 - Jadwal yang statusnya ditutup tidak menampilkan tombol daftar.
 - Pendaftaran ke pelatihan sekarang lewat formulir lengkap di halaman detail pelatihan (identitas, dokumen). Itu bukan “sekadar minat” singkat seperti dulu.

@@ -625,7 +625,7 @@ Menu Leads → Pendaftaran Perusahaan. DataTable + filter status + export Excel.
 | `admin/pendaftaran-perusahaan/pendaftaran-perusahaan-export.ts` | Export xlsx |
 | `admin/pendaftaran-perusahaan/actions.ts` | Update status/nominal/catatan |
 
-Status: **dikonfirmasi Alif 3 Okt 2026.** F13.5 DONE.
+Status: **dikonfirmasi Alif 3 Okt 2026.** F13.5 DONE. Label menu kemudian “Pendaftaran Kelompok” (F14.2); berkas dan rute di tabel ini tetap. Label menu kemudian “Pendaftaran Kelompok” (F14.2); berkas dan rute di tabel ini tetap.
 
 **Pesan commit yang disarankan**
 
@@ -830,7 +830,7 @@ Status: **dikonfirmasi Alif 7 Okt 2026** (kategori SiDOPI + flag + kota aktif). 
 
 ## F14.6b — Form daftar + Admin leads (7 Oktober 2026)
 
-**Status:** dikodekan — **menunggu uji Alif.**
+**Status:** dikonfirmasi Alif 8 Oktober 2026.
 
 ### Keputusan
 
@@ -847,7 +847,7 @@ Status: **dikonfirmasi Alif 8 Okt 2026.** 6B selesai.
 
 ## F14.6c — Excel kelompok (8 Oktober 2026)
 
-**Status:** dikodekan — **menunggu uji Alif.** F14.6 selesai dikodekan (6A+6B+6C).
+**Status:** dikonfirmasi Alif 8 Oktober 2026. F14.6 selesai (6A+6B+6C).
 
 ### Keputusan
 
@@ -858,4 +858,14 @@ Status: **dikonfirmasi Alif 8 Okt 2026.** 6B selesai.
 | Flag off | Kolom tambahan diabaikan; `practice_location_id` / `ukuran_baju` = null |
 | Admin | Detail peserta kelompok: dua kolom, "—" bila kosong. Tanpa export peserta baru |
 
-Status: **menunggu uji Alif.** F14.6 tetap TODO.
+Status: **dikonfirmasi Alif 8 Okt 2026.** F14.6 DONE.
+
+---
+
+## Penutup batch Modul 14 (8 Oktober 2026)
+
+Enam permintaan meeting 4 Oktober 2026 sudah dikodekan dan dikonfirmasi Alif (F14.1–F14.6, ADR-027).
+
+Yang berjalan di kode: badge Autel di kartu retail; menu dan salinan “Pendaftaran Kelompok” dengan minimal 3 peserta; foto instruktur 4:5 dan label Catatan (kolom `bio_*` tetap); section Partner Kami; saklar LMS Freemium yang tertutup kecuali nilai `'true'`, dengan pratinjau Admin; program lewat flag kategori (bukan hardcode SiDOPI), kota praktek global, filter `?kategori=`, field lokasi/ukuran di daftar individu dan Excel kelompok.
+
+Yang sengaja tidak diganti: rute `/admin/pendaftaran-perusahaan`, tabel `company_*`, kolom `bio_*`. Email `minat_batch` tetap ditahan Fase 2. Export Excel per peserta kelompok tidak dibuat. Teks 25 larangan PRD §13 tidak diubah.

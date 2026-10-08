@@ -17,7 +17,9 @@ Halaman pertama yang dilihat pengunjung saat membuka website Hexatara. Isinya me
 Ini "etalase" utama — tempat pengunjung pertama kali menilai Hexatara sebelum memutuskan mendaftar pelatihan atau membeli produk.
 
 **Bagaimana cara pakainya?**
-Hexatara tidak perlu programmer untuk mengubah isinya. Semua bagian yang berubah-ubah — pengumuman (pop-up), banner promo, foto besar di atas (hero), jadwal pelatihan, profil instruktur, cerita perusahaan, testimoni pelanggan — semuanya diatur dari menu Admin. Begitu disimpan di Admin, perubahan langsung tampil di situs, tanpa perlu "upload ulang" atau menunggu.
+Hexatara tidak perlu programmer untuk mengubah isinya. Semua bagian yang berubah-ubah — pengumuman (pop-up), banner promo, foto besar di atas (hero), jadwal pelatihan, profil instruktur, cerita perusahaan, testimoni pelanggan, dan logo partner — semuanya diatur dari menu Admin. Begitu disimpan di Admin, perubahan langsung tampil di situs, tanpa perlu "upload ulang" atau menunggu.
+
+Di kartu penjualan drone ada lencana “Autel Robotics Authorized Dealer”. Foto instruktur di beranda tegak (portrait). Catatan yang diisi di form instruktur hanya untuk tim internal; pengunjung tidak melihatnya. Bagian Partner Kami muncul di bawah instruktur hanya kalau ada partner yang diaktifkan.
 
 **Apa batasannya?**
 Banner promo hanya berupa tulisan yang bisa dinyalakan/dimatikan — **tidak** bisa dibuat jadi mesin diskon otomatis, kupon, harga dicoret, atau hitung mundur waktu. Kalau nanti butuh itu, itu pengembangan tambahan di luar yang sudah dibangun sekarang.
@@ -37,6 +39,12 @@ Ini pengganti cara lama yang tadinya hanya menangkap "minat" (nama + WhatsApp sa
 
 **Bagaimana cara pakainya?**
 Calon peserta memilih jadwal, membaca detailnya, lalu mengisi formulir pendaftaran lengkap. Data tersimpan otomatis ke sistem — Admin bisa melihatnya di menu "Peserta Pendaftaran". Setelah itu, komunikasi lanjutan (konfirmasi, pembayaran pelatihan, dsb.) tetap dilakukan manual oleh Admin lewat WhatsApp, karena ini bukan sistem pembayaran online.
+
+Daftar jadwal bisa disaring menurut program. Tautan seperti `/pelatihan?kategori=sidopi` bisa dibagikan; nama yang tidak dikenal menampilkan semua jadwal.
+
+Untuk program yang di Admin dicentang “perlu lokasi praktek” dan/atau “perlu ukuran baju” (dipakai untuk RPC, Advanced, atau SiDOPI sesuai centangan, bukan karena namanya), formulir individu menampilkan pilihan kota dan ukuran S sampai XXL. Program yang tidak dicentang tidak menampilkan field itu.
+
+Pendaftaran kelompok memakai menu yang sama di situs, dengan nama “Pendaftaran Kelompok”. Minimal tiga peserta. Template Excel menyesuaikan: kalau program butuh lokasi atau ukuran, kolom itu ikut terunduh beserta lembar daftar pilihan. Kurang dari tiga peserta ditolak.
 
 **Apa batasannya?**
 Setelah peserta mengisi formulir, sistem **tidak** otomatis membuka WhatsApp atau mengirim pesan apa pun ke peserta. Itu langkah manual yang dilakukan Admin. Juga, sistem **belum** mengirim email otomatis ke Admin setiap ada pendaftaran baru masuk (ini yang ditahan untuk Fase 2 — lihat penjelasan di bagian D).
@@ -97,6 +105,8 @@ Pengunjung membaca bab demi bab secara berurutan — bab berikutnya baru terbuka
 
 **Apa batasannya?**
 Tidak ada batas waktu pengerjaan kuis, tidak ada nilai minimum kelulusan, dan sistem tidak menyimpan riwayat berapa kali seseorang mencoba. Materi ini juga khusus untuk jalur Sertifikat Gratis — bukan materi pelatihan berbayar (pelatihan reguler/private tetap dengan metode tatap muka/WhatsApp Group + Zoom seperti biasa, tidak lewat sistem belajar online ini).
+
+Admin bisa menutup sementara akses publik lewat Pengaturan → Akses LMS Freemium. Selama tertutup, pengunjung melihat bahwa materi sedang disiapkan. Akun Admin tetap bisa membuka materi untuk mengecek isi. Kalau saklar belum pernah disetel terbuka, materi dianggap tertutup. Menyalakan saklar mengembalikan akses pengunjung. File yang alamatnya sudah diketahui langsung tidak ikut tertutup oleh saklar ini.
 
 **Apa syaratnya?**
 Materi (bab-bab) dan soal kuis (lengkap dengan penjelasan tiap pilihan jawaban, bukan cuma kunci jawaban) harus disiapkan oleh Hexatara — ini bagian konten yang paling perlu segera dilengkapi karena tanpa ini, jalur Sertifikat Gratis tidak bisa diuji sama sekali.
@@ -175,6 +185,8 @@ Supaya Hexatara mandiri mengelola kontennya sendiri sehari-hari, tanpa harus sel
 **Bagaimana cara pakainya?**
 Semua menu di Admin memakai formulir isi-simpan yang sama sederhananya dengan mengisi Google Form. Ada fitur "salin dari batch" untuk membuat jadwal baru dengan cepat berdasarkan jadwal yang sudah ada, tinggal ubah tanggal dan detail yang berbeda.
 
+Logo partner diisi di Konten → Partner Kami. Kota praktek diisi di Batch → Lokasi Praktek. Pada kategori pelatihan ada dua centang: perlu lokasi praktek, dan perlu ukuran baju. Centang itu yang menentukan field di formulir, bukan nama programnya.
+
 **Apa batasannya?**
 Perubahan yang dilakukan di Admin langsung tayang ke publik — tidak ada mode "draft" yang perlu di-publish terpisah. Jadi perlu hati-hati sebelum menyimpan perubahan besar saat jam sibuk.
 
@@ -249,7 +261,7 @@ Menu untuk melihat siapa saja yang mendaftar tiap jadwal pelatihan, lengkap deng
 Menggantikan cara lama mencatat pendaftar manual dari chat WhatsApp satu-satu — sekarang semua data pendaftar rapi dalam satu tempat, bisa difilter per jadwal.
 
 **Bagaimana cara pakainya?**
-Admin membuka daftar pendaftar, bisa menyaring berdasarkan jadwal pelatihan tertentu, dan membuka detail tiap pendaftar untuk melihat kelengkapan datanya.
+Admin membuka daftar pendaftar, bisa menyaring berdasarkan jadwal pelatihan tertentu, dan membuka detail tiap pendaftar untuk melihat kelengkapan datanya. Lokasi praktek dan ukuran baju, kalau diisi peserta, tampil di daftar, di detail, dan di unduhan Excel pendaftaran individu. Pengajuan kelompok ada di menu Pendaftaran Kelompok; detail pesertanya juga menampilkan kedua kolom itu bila ada.
 
 **Apa batasannya?**
 Saat ini, sistem **belum** mengirim email otomatis ke Admin setiap kali ada pendaftar baru masuk — Admin perlu membuka menu ini secara berkala untuk mengecek pendaftar terbaru. Notifikasi email otomatis untuk pendaftaran ini sudah direncanakan tapi **ditahan untuk Fase 2** (sudah dipersiapkan di dalam kode, tinggal diaktifkan nanti).
@@ -271,7 +283,7 @@ Supaya Admin tidak perlu mengubah data yang sama di banyak tempat berbeda — cu
 Admin membuka menu Pengaturan, mengisi/mengubah data di form yang tersedia, lalu simpan. Perubahan langsung berlaku ke seluruh sistem — tidak perlu restart atau proses tambahan apa pun.
 
 **Apa batasannya?**
-Ini bukan tempat untuk mengubah desain atau layout situs — hanya data/isi (rekening, kontak, harga, jam operasional).
+Ini bukan tempat untuk mengubah desain atau layout situs — hanya data/isi (rekening, kontak, harga, jam operasional) plus saklar buka/tutup materi gratis. Saklar itu tidak mengubah harga, sertifikat, atau pelatihan berbayar.
 
 **Apa syaratnya?**
 Inilah halaman yang **paling wajib diisi lengkap dan benar sebelum UAT dimulai** — lihat dokumen `01-persiapan-hexatara.md`.

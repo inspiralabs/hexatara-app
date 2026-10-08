@@ -85,6 +85,7 @@ Seperti yang berjalan di sistem final (bukan hanya cerita PRD §8.3 “materi �
 6. **F06.3:** user login tidak diminta daftar ulang di akhir kuis.
 7. **F06.17:** Transaksi Saya = hub tunggal upgrade/bukti.
 8. **F06.11:** hero pelatihan deep-link ke LMS.
+9. **Saklar Freemium (F14.5).** `isFreemiumLmsOpen()` hanya menganggap terbuka bila `site_settings.freemium_lms_open` bernilai string `'true'`. Tanpa baris, error, atau nilai lain = tertutup. Halaman materi/kuis dan action terkait menolak pengunjung. Admin (`profiles.role === 'admin'`) tetap bisa pratinjau. `daftarAction` mengabaikan klaim selesai kuis saat tertutup. Saklar di Admin → Pengaturan → Akses LMS Freemium.
 
 ## Yang sengaja TIDAK dibangun
 
@@ -103,11 +104,12 @@ Seperti yang berjalan di sistem final (bukan hanya cerita PRD §8.3 “materi �
 | `/kuis` tanpa wajib bab LMS | Dua jalur selesai kuis | Keputusan produk; dokumentasikan |
 | Path registry F03.1/preview card | Menunjuk file lama yang sudah diganti | Path as-built di atas yang berlaku |
 | Warning console di `/dashboard` | Bukan bug Modul 3 | `00-KNOWN-WARNINGS.md` |
+| Bucket `materials` publik | URL file yang sudah diketahui tidak ikut saklar F14.5 | Batas yang diketahui; gerbang hanya halaman dan action |
 
 ## Untuk manual book Hexatara
 
 - Isi materi, bab, lampiran, dan soal di Admin Materi; soal aktif muncul di kuis.
-- Harga upgrade dan rekening transfer diatur di Admin → Pengaturan.
+- Harga upgrade dan rekening transfer diatur di Admin → Pengaturan. Saklar “Akses LMS Freemium” di halaman yang sama menutup atau membuka materi gratis untuk pengunjung. Saat tertutup, pengunjung melihat materi sedang disiapkan; Admin tetap bisa pratinjau.
 - Peserta: Mulai Sekarang di pelatihan → baca semua bab → kuis → daftar → dashboard → Transaksi Saya → unggah bukti.
 - Admin Upgrade: setujui/tolak; setujui menerbitkan sertifikat resmi + email; atur pengiriman untuk paket yang ada merchandise.
 - Pratinjau sertifikat belum resmi sampai upgrade disetujui; cek publik hanya setelah itu.

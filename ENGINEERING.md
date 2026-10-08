@@ -221,6 +221,21 @@ Kalau kamu menemukan alasan nyata bahwa constraint-nya yang keliru, katakan — 
 | `status_sertifikat(tanggal)` | sudah menjadi kolom `status` di `certificates_public` | Jangan menghitung ulang di TypeScript — nanti dua sumber kebenaran |
 | `is_admin()` | policy RLS | Bukan dipanggil dari TypeScript. Untuk kode pakai `requireAdmin()` |
 
+### 3.7 Skema tambahan Modul 14
+
+Inventaris kolom ada di PRD §5.1h. Yang dipakai kode:
+
+| Objek | Catatan |
+|---|---|
+| `partners` | Logo Partner Kami; berkas di bucket `content/partners/` |
+| `practice_locations` | Kota global: `nama_kota`, `urutan`, `is_active`; unik `lower(nama_kota)` |
+| `batch_categories.butuh_lokasi_praktek`, `butuh_ukuran_baju` | Boolean. Tidak ada kolom slug. Flag mati → field tidak tampil dan kolom pendaftaran null |
+| `batch_registrations.practice_location_id`, `ukuran_baju` | Null bila flag kategori mati |
+| `company_registration_participants.practice_location_id`, `ukuran_baju` | Sama untuk peserta kelompok |
+| `site_settings` key `freemium_lms_open` | Bukan kolom baru. Hanya string `'true'` = terbuka |
+
+Nama tabel `company_*` dan kolom `instructors.bio_*` tidak diganti.
+
 ---
 
 ## 4. AUTH & OTORISASI
@@ -1386,20 +1401,20 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 
 **Diperluas 2026-10-03 — F13.5a form publik pendaftaran perusahaan.** PIC mendaftar tanpa login dari `/pelatihan/[slug]` lewat Dialog (sejajar tombol individu). Field PIC + unduh template Excel client-side (`xlsx`) + upload daftar peserta (kolom Nama Lengkap / WhatsApp / Email). Validasi Excel all-or-nothing; insert lewat `createAdminClient` ke `company_registrations` + `company_registration_participants`; file asli di bucket privat `company-registrations`. Email Admin jenis `pendaftaran_perusahaan`. Nominal harga tidak di form publik (isi Admin di 3b). Form publik diuji Alif OK.
 
-**Diperluas 2026-10-03 — F13.5b Admin.** Menu Leads → Pendaftaran Perusahaan: DataTable + filter status + export Excel; detail dengan daftar peserta, signed URL Excel, ubah status (`alasan_tolak` wajib jika ditolak), isi `nominal` (satu angka total), `catatan_admin`. **F13.5 (5 dari 5 permintaan Abi) LENGKAP.** Alif konfirmasi DONE 3 Okt 2026 (3a publik + 3b Admin).
+**Diperluas 2026-10-03 — F13.5b Admin.** Menu Leads (saat itu berlabel Pendaftaran Perusahaan): DataTable + filter status + export Excel; detail dengan daftar peserta, signed URL Excel, ubah status (`alasan_tolak` wajib jika ditolak), isi `nominal` (satu angka total), `catatan_admin`. **F13.5 (5 dari 5 permintaan Abi) LENGKAP.** Alif konfirmasi DONE 3 Okt 2026 (3a publik + 3b Admin). Label menu kemudian menjadi “Pendaftaran Kelompok” (F14.2); rute `/admin/pendaftaran-perusahaan` dan tabel `company_*` tetap.
 
 **Konsekuensi.** F13.4 menambah tabel `certificate_order_items`. F13.5 menambah `company_registrations` + `company_registration_participants` + menu Admin. ADR-026 (lima permintaan Abi) selesai.
 
 ---
 
 ### ADR-027 — Tambahan Hexatara hasil meeting 4 Okt 2026
-**2026-10-06 · Diperluas 2026-10-07 · Berlaku — F14.1–F14.5 DONE; F14.6a dikodekan (menunggu uji); 6B belum**
+**2026-10-06 · Diperluas sampai 2026-10-08 · Berlaku — F14.1–F14.6 DONE (Alif)**
 
-**Konteks.** Meeting Hexatara 4 Oktober 2026 menghasilkan enam permintaan tambahan setelah Modul 13 (ADR-026) selesai. F14.4: tabel `partners`. F14.5: saklar tutup LMS Freemium via `site_settings` key `freemium_lms_open` (SQL blok A opsional; kode fail-closed). F14.6: program RPC/Advanced/SiDOPI via `batch_categories` + `practice_locations` (SQL Bagian 0 blok C+D).
+**Konteks.** Meeting Hexatara 4 Oktober 2026 menghasilkan enam permintaan tambahan setelah Modul 13 (ADR-026) selesai. F14.4: tabel `partners`. F14.5: saklar tutup LMS Freemium via `site_settings` key `freemium_lms_open` (kode fail-closed). F14.6: program RPC/Advanced/SiDOPI via flag `batch_categories` + `practice_locations` (SQL Bagian 0 blok C+D sudah dijalankan sebelum kode).
 
 1. **F14.1–F14.4** — DONE (badge Autel, label Kelompok, instruktur portrait/Catatan, Partner Kami).
 5. **F14.5 — Saklar LMS Freemium.** DONE (uji Alif 7 Okt 2026).
-6. **F14.6** — Flag kategori + Lokasi Praktek + filter slug (6A); field form daftar (6B) menyusul.
+6. **F14.6** — DONE (6A 7 Okt, 6B dan 6C 8 Okt 2026): flag kategori, CRUD kota, filter slug, form individu, Excel kelompok.
 
 **Keputusan F14.5 — arsitektur 3 lapis.**
 1. **UI:** sembunyikan CTA/banner LMS (hero freemium `/pelatihan` disembunyikan utuh; dashboard teks pelan; sitemap tanpa `/kuis`).
@@ -1423,9 +1438,22 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 2. **Daftar kota diambil server.** `daftarPerusahaanAction` baca kota aktif dari DB by `batch_id` sebelum parse. Cocokkan nama ternormalisasi (trim, huruf kecil, spasi ganda). Ukuran uppercase ∈ S–XXL. All-or-nothing + minimal 3 setelah baris valid.
 3. **Sheet Daftar Pilihan.** Template klien menambah sheet itu hanya bila flag terkait aktif. xlsx komunitas tidak menulis data validation.
 
-**Peluang lanjutan.** Saklar per-course (bukan global) — YAGNI. Export peserta kelompok — tidak diminta. **Batas diketahui:** bucket `materials` publik — URL file langsung tidak ikut saklar F14.5.
+**Alternatif yang ditolak.**
 
-**Konsekuensi.** Registry F14.5 DONE; F14.6 TODO sampai uji 6C.
+- Hardcode `slug === 'sidopi'` atau kolom `slug` di `batch_categories`. Perilaku mengikuti dua boolean; slug filter diturunkan di aplikasi dari `nama_id`.
+- Entitas program baru di luar `batch_categories`. RPC, Advanced, dan SiDOPI adalah baris kategori yang dibuat Admin, bukan seed agent.
+- Daftar kota per batch. `practice_locations` global.
+- Data validation Excel. Pustaka `xlsx` komunitas tidak menulisnya; sheet “Daftar Pilihan” hanya daftar teks.
+- Mengganti nama tabel `company_*`, rute `/admin/pendaftaran-perusahaan`, atau kolom `instructors.bio_*`. Yang berubah hanya label tampilan.
+- Membuka LMS bila key `freemium_lms_open` hilang atau gagal dibaca. Hanya string `'true'` = terbuka.
+
+**Skema yang dipakai ADR ini** (rincian kolom di PRD §5.1h): `partners`; `practice_locations` (`nama_kota`, `urutan`, `is_active`, unique `lower(nama_kota)`); `batch_categories.butuh_lokasi_praktek`, `butuh_ukuran_baju`; `batch_registrations` dan `company_registration_participants` masing-masing `practice_location_id` + `ukuran_baju`; key `site_settings.freemium_lms_open`.
+
+**Catatan teknis yang tetap.** Rute dan tabel `company_*` tidak diganti. Kolom `bio_id` / `bio_en` tidak diganti. Saklar freemium fail-closed. Flag kategori, bukan nama program di kode.
+
+**Peluang lanjutan.** Saklar per-course (bukan global) — tidak dibuat. Export baris peserta kelompok — tidak diminta, tidak dibuat. **Batas diketahui:** bucket `materials` publik — URL file langsung tidak ikut saklar F14.5.
+
+**Konsekuensi.** F14.1–F14.6 DONE setelah uji Alif. Larangan PRD §13 tidak diubah (lihat catatan di PRD §13.6).
 
 ---
 
@@ -1491,3 +1519,4 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-10-07 | **F14.5 DONE** setelah uji Alif (saklar + pratinjau + tombol Pratinjau Materi). **ADR-027 diperluas — F14.6a:** flag `butuh_*` di `batch_categories` (bukan hardcode slug), CRUD `practice_locations`, filter `/pelatihan?kategori=<slug>` dari `nama_id`. Menunggu uji; 6B belum. |
 | 2026-10-07 | **F14.6a diuji Alif** (kategori SiDOPI + kota). **F14.6b dikodekan:** form daftar + validasi flag dari DB + Admin leads/export. Menunggu uji. |
 | 2026-10-08 | **F14.6b DONE** setelah uji Alif. **F14.6c dikodekan:** template Excel dinamis, parser flag, kota dari server, detail Admin kelompok. Menunggu uji. |
+| 2026-10-08 | **F14.6c DONE** setelah uji Alif. ADR-027 lengkap (F14.1–F14.6). Audit dokumen menyelaraskan PRD, registry, AS_BUILT, dan UAT ke kode. Teks larangan PRD §13 tidak diubah. |

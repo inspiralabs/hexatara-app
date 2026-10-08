@@ -254,7 +254,7 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 ## Sprint 13 — Modul 14: Tambahan Hexatara (meeting 4 Okt 2026)
 
-> Enam permintaan meeting 4 Oktober 2026 (ADR-027). F14.1–F14.5 DONE; F14.6 6A+6B diuji; 6C dikodekan (menunggu uji).
+> Enam permintaan meeting 4 Oktober 2026 (ADR-027). F14.1–F14.6 DONE setelah uji Alif.
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
 |---|---|---|---|---|---|
@@ -263,7 +263,7 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 | F14.3 | Instruktur: foto portrait 4:5, bio→Catatan internal, dialog Detail Admin | DONE | `instruktur-section.tsx`; `image-upload-field.tsx`; `instructor-form-dialog.tsx`; `instructor-list.tsx`; `instructor-detail-dialog.tsx`; `instructor-portrait-badge.tsx`; `instructor-actions.ts`; `validations/instructor-admin.ts` | 2026-10-06 | Alif konfirmasi DONE 6 Okt 2026. |
 | F14.4 | Partner Kami: CRUD Admin + section publik di bawah Instruktur | DONE | `partner-section.tsx`; `messages/{id,en}.json`; `admin/konten/partner/page.tsx`; `partner-list.tsx`; `partner-form-dialog.tsx`; `partner-actions.ts`; `partner-row-actions.tsx`; `partner-active-switch.tsx`; `validations/partner-admin.ts`; `admin-shell.tsx`; `image-upload-field.tsx` | 2026-10-06 | Alif konfirmasi DONE 6 Okt 2026. |
 | F14.5 | Saklar tutup LMS Freemium (server gate + UI + Admin) | DONE | `site-settings.ts`; `lms-closed-page.tsx`; `lms-admin-preview-strip.tsx`; `materi-preview-button.tsx`; `materi/**/page.tsx`; `kuis/page.tsx`; `materi/[id]/actions.ts`; `kuis/actions.ts`; `daftar/actions.ts`; `pelatihan/page.tsx`; `dashboard/{pelatihan,kursus,upgrade}/page.tsx`; `pengaturan/freemium-lms-card.tsx`; `sitemap.ts`; `messages/{id,en}.json` | 2026-10-07 | Alif konfirmasi DONE 7 Okt 2026: saklar off dari pengaturan + sudut pandang user + tombol Pratinjau Materi. |
-| F14.6 | Program kategori (flag) + Lokasi Praktek + filter slug + form individu + Excel kelompok | TODO | `kategori-manager.tsx`; `batch/lokasi-praktek/*`; `slugify.ts`; `pelatihan/[slug]/{page,daftar-batch-*,daftar-perusahaan-*}.tsx`; `company-registration/import.ts`; `pendaftaran-batch/*`; `peserta-pendaftaran/*`; `pendaftaran-perusahaan/*` | | 6A, 6B, 6C selesai dikodekan, menunggu uji Alif. |
+| F14.6 | Program kategori (flag) + Lokasi Praktek + filter slug + form individu + Excel kelompok | DONE | `kategori-manager.tsx`; `batch/kategori/*`; `batch/lokasi-praktek/*`; `slugify.ts`; `pelatihan/page.tsx`; `dashboard/pelatihan/page.tsx`; `pelatihan/[slug]/{page,daftar-batch-*,daftar-perusahaan-*}.tsx`; `company-registration/import.ts`; `pendaftaran-batch/*`; `peserta-pendaftaran/*`; `pendaftaran-perusahaan/*` | 2026-10-08 | Alif konfirmasi DONE 8 Okt 2026: 6A (7 Okt, SiDOPI + flag + kota), 6B (form individu + Admin/export), 6C (Excel kelompok + detail peserta). |
 
 ---
 
@@ -426,6 +426,7 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 2026-10-07  F14.5  Alif mengunci DONE (saklar + pratinjau + tombol Pratinjau Materi). F14.6a dikodekan: flag kategori, CRUD lokasi praktek, filter ?kategori=slug. F14.6 TODO — Bukti: 6A selesai dikodekan.
 2026-10-07  F14.6a Alif mengunci 6A (kategori SiDOPI + flag + kota). F14.6b dikodekan: form daftar + Admin leads. F14.6 tetap TODO.
 2026-10-08  F14.6b Alif mengunci DONE. F14.6c dikodekan: template Excel dinamis + parser flag + detail kelompok. F14.6 tetap TODO — Bukti: 6A, 6B, 6C selesai dikodekan, menunggu uji Alif.
+2026-10-08  F14.6c Alif mengunci DONE. F14.6 DONE. Audit dokumen (kode tidak diubah).
 ```
 
 ---

@@ -325,7 +325,16 @@ Dashboard Admin (F11.2), Login Admin (F11.3), status penawaran (F11.4), kategori
 | `batch_registrations.practice_location_id`, `ukuran_baju` | ADR-027 F14.6 | Dipakai form daftar (6B); FK ke `practice_locations` |
 | `company_registration_participants.practice_location_id`, `ukuran_baju` | ADR-027 F14.6 | Sama untuk peserta kelompok |
 
-`site_settings` key `freemium_lms_open` (F14.5) — tanpa kolom baru (key-value).
+`site_settings` key `freemium_lms_open` (F14.5) — tanpa kolom baru (key-value). Hanya string JSON `'true'` membuka akses. Tanpa baris, error baca, atau nilai lain = tertutup (fail-closed).
+
+**Perilaku Modul 14 yang sudah ada di kode (8 Oktober 2026).** Bukan rencana.
+
+- **Badge dealer.** Kartu hero retail menampilkan pil “Autel Robotics Authorized Dealer” (teks sama di Indonesia dan Inggris), di bawah judul jual drone.
+- **Partner Kami.** Section publik di bawah galeri instruktur. Kosong = section tidak dirender. Logo di bucket `content/partners/`. Menu Admin Konten → Partner Kami.
+- **Instruktur.** Foto publik rasio portrait 4:5. Kolom database tetap `bio_id` / `bio_en`. Label Admin “Catatan”, bantuan: catatan internal tim, tidak tampil di website.
+- **Pendaftaran Kelompok.** Label menu dan salinan publik. Minimal 3 peserta (`MIN_PESERTA_KELOMPOK` di aplikasi, bukan constraint database). Rute `/admin/pendaftaran-perusahaan`, tabel `company_*`, dan jenis email `pendaftaran_perusahaan` tidak diganti namanya.
+- **Program & field praktek.** RPC, Advanced, dan SiDOPI adalah baris `batch_categories` yang dibuat Admin. Lokasi praktek dan ukuran baju (S, M, L, XL, XXL) hanya muncul bila flag kategori aktif. Kota dari `practice_locations` yang aktif. Filter publik `/pelatihan?kategori=<slug>` memakai slug dari `nama_id` di kode; parameter tidak dikenal diabaikan (tampil semua).
+- **Saklar LMS Freemium.** Default perilaku: tertutup sampai Admin menyimpan `'true'`. Saat tertutup, halaman dan action materi/kuis menolak pengunjung; Admin yang login tetap bisa pratinjau. Klaim selesai kuis pada pendaftaran akun diabaikan agar `free_track_selesai_at` tidak terisi. URL file langsung di bucket `materials` tidak ikut gerbang ini.
 
 ### 5.2 View publik — WAJIB untuk akses anonim
 
@@ -1407,6 +1416,13 @@ Daftar lengkap 25 larangan ada di bagian ini sendiri (di bawah). Ini yang paling
 ### 13.6 Kalau merasa salah satu larangan ini keliru
 
 **Katakan.** Jangan diam-diam melanggarnya, dan jangan juga diam-diam mematuhinya kalau menurutmu ada masalah nyata. Larangan ini keputusan bisnis yang bisa ditinjau ulang — tapi peninjauannya lewat percakapan dan dicatat sebagai ADR baru, bukan lewat kode yang sudah terlanjur ditulis.
+
+**Catatan untuk Alif (audit 8 Oktober 2026).** Teks 25 larangan di atas **tidak diubah** oleh Modul 14. Tidak ada larangan yang ditabrak lalu dilunakkan diam-diam.
+
+- Larangan 1 tetap: tabel/kolom baru Modul 14 sudah tercantum di Bagian 5.1h sebelum dipakai.
+- Larangan 21 tetap: pendaftaran individu dan kelompok bukan checkout.
+- Larangan 24 tetap: email `minat_batch` tidak ditambahkan; masih ditahan Fase 2.
+- Larangan 25 tetap: saklar F14.5 hanya membuka/menutup LMS Freemium yang sudah ada. Tidak menambah LMS untuk batch berbayar, absensi, atau peran instruktur.
 
 ---
 
