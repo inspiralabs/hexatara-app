@@ -283,7 +283,13 @@ export default async function BatchDetailPage({
                   />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <DaftarPerusahaanDialog batchId={batch.id} judulBatch={judul} />
+                  <DaftarPerusahaanDialog
+                    batchId={batch.id}
+                    judulBatch={judul}
+                    butuhLokasiPraktek={butuhLokasiPraktek}
+                    butuhUkuranBaju={butuhUkuranBaju}
+                    lokasiPraktekOptions={lokasiPraktek ?? []}
+                  />
                 </div>
               </div>
             )}

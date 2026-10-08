@@ -1418,9 +1418,14 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 2. **Relasi.** `batches.category_id` → `batch_categories.id`. Admin leads join `practice_locations` untuk nama kota.
 3. **WA prefilled** boleh tambah lokasi/ukuran. Email `minat_batch` tidak disentuh (Fase 2).
 
-**Peluang lanjutan.** Saklar per-course (bukan global) — YAGNI. Form kelompok (company) lokasi/ukuran — YAGNI sampai diminta. **Batas diketahui:** bucket `materials` publik — URL file langsung tidak ikut saklar F14.5.
+**Keputusan F14.6c.**
+1. **Parser berbasis flag.** `parsePesertaPerusahaan(file, { butuhLokasi, butuhUkuran, lokasiAktif })`. Header tetap lowercase+trim lewat `parseSpreadsheet`. Flag on → kolom tambahan wajib; hilang → pesan "Unduh template terbaru". Flag off → kolom tambahan diabaikan.
+2. **Daftar kota diambil server.** `daftarPerusahaanAction` baca kota aktif dari DB by `batch_id` sebelum parse. Cocokkan nama ternormalisasi (trim, huruf kecil, spasi ganda). Ukuran uppercase ∈ S–XXL. All-or-nothing + minimal 3 setelah baris valid.
+3. **Sheet Daftar Pilihan.** Template klien menambah sheet itu hanya bila flag terkait aktif. xlsx komunitas tidak menulis data validation.
 
-**Konsekuensi.** Registry F14.5 DONE; F14.6 TODO sampai uji 6B.
+**Peluang lanjutan.** Saklar per-course (bukan global) — YAGNI. Export peserta kelompok — tidak diminta. **Batas diketahui:** bucket `materials` publik — URL file langsung tidak ikut saklar F14.5.
+
+**Konsekuensi.** Registry F14.5 DONE; F14.6 TODO sampai uji 6C.
 
 ---
 
@@ -1485,3 +1490,4 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-10-07 | **F14.5 dikodekan** setelah diagnosis disetujui: gerbang page+action, saklar `freemium_lms_open`, Admin pratinjau, fail-closed. Menunggu uji Alif. |
 | 2026-10-07 | **F14.5 DONE** setelah uji Alif (saklar + pratinjau + tombol Pratinjau Materi). **ADR-027 diperluas — F14.6a:** flag `butuh_*` di `batch_categories` (bukan hardcode slug), CRUD `practice_locations`, filter `/pelatihan?kategori=<slug>` dari `nama_id`. Menunggu uji; 6B belum. |
 | 2026-10-07 | **F14.6a diuji Alif** (kategori SiDOPI + kota). **F14.6b dikodekan:** form daftar + validasi flag dari DB + Admin leads/export. Menunggu uji. |
+| 2026-10-08 | **F14.6b DONE** setelah uji Alif. **F14.6c dikodekan:** template Excel dinamis, parser flag, kota dari server, detail Admin kelompok. Menunggu uji. |

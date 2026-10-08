@@ -26,4 +26,7 @@ export const PesertaExcelSchema = z.object({
   email: z.email(),
 });
 
-export type PesertaExcel = z.infer<typeof PesertaExcelSchema>;
+export type PesertaExcel = z.infer<typeof PesertaExcelSchema> & {
+  practice_location_id: number | null;
+  ukuran_baju: string | null;
+};

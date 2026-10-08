@@ -841,4 +841,21 @@ Status: **dikonfirmasi Alif 7 Okt 2026** (kategori SiDOPI + flag + kota aktif). 
 | Admin | Kolom Lokasi Praktek + Ukuran Baju di tabel, detail, export (individu) |
 | Relasi | `batches.category_id` → `batch_categories.id` |
 
+Status: **dikonfirmasi Alif 8 Okt 2026.** 6B selesai.
+
+---
+
+## F14.6c — Excel kelompok (8 Oktober 2026)
+
+**Status:** dikodekan — **menunggu uji Alif.** F14.6 selesai dikodekan (6A+6B+6C).
+
+### Keputusan
+
+| Topik | Keputusan |
+|---|---|
+| Template | Klien, `xlsx` dynamic import. Sheet Peserta + sheet Daftar Pilihan hanya bila flag aktif |
+| Parser | `parsePesertaPerusahaan` di server. Kota aktif diambil action dari DB by `batch_id`, bukan dari klien |
+| Flag off | Kolom tambahan diabaikan; `practice_location_id` / `ukuran_baju` = null |
+| Admin | Detail peserta kelompok: dua kolom, "—" bila kosong. Tanpa export peserta baru |
+
 Status: **menunggu uji Alif.** F14.6 tetap TODO.

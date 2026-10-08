@@ -2,7 +2,6 @@
 
 import { z } from 'zod';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { createClient } from '@/lib/supabase/server';
 import { parsePesertaPerusahaan, type BarisGagal } from '@/lib/company-registration/import';
 import { kirimEmailLeadBaru } from '@/lib/email/send';
 import { getWhatsappAdmin } from '@/lib/site-settings';
@@ -36,7 +35,38 @@ export async function daftarPerusahaanAction(
     return { ok: false, pesan: 'Unggah berkas Excel peserta terlebih dahulu.' };
   }
 
-  const parsedExcel = await parsePesertaPerusahaan(file);
+  const admin = createAdminClient();
+  const { data: batch } = await admin
+    .from('batches')
+    .select(
+      'id, judul_id, is_active, status, batch_categories(butuh_lokasi_praktek, butuh_ukuran_baju)',
+    )
+    .eq('id', parsedBatchId.data)
+    .eq('is_active', true)
+    .maybeSingle();
+
+  if (!batch || batch.status === 'closed') {
+    return { ok: false, pesan: 'Batch tidak tersedia untuk pendaftaran saat ini.' };
+  }
+
+  const kategori = batch.batch_categories as {
+    butuh_lokasi_praktek: boolean;
+    butuh_ukuran_baju: boolean;
+  } | null;
+  const butuhLokasi = kategori?.butuh_lokasi_praktek === true;
+  const butuhUkuran = kategori?.butuh_ukuran_baju === true;
+
+  let lokasiAktif: { id: number; nama: string }[] = [];
+  if (butuhLokasi) {
+    const { data: kota } = await admin
+      .from('practice_locations')
+      .select('id, nama_kota')
+      .eq('is_active', true)
+      .order('urutan', { ascending: true });
+    lokasiAktif = (kota ?? []).map((k) => ({ id: k.id, nama: k.nama_kota }));
+  }
+
+  const parsedExcel = await parsePesertaPerusahaan(file, { butuhLokasi, butuhUkuran, lokasiAktif });
   if (!parsedExcel.ok) {
     return {
       ok: false,
@@ -53,20 +83,6 @@ export async function daftarPerusahaanAction(
       pesan: pesanMinimalPesertaKelompok(parsedExcel.peserta.length),
     };
   }
-
-  const supabase = await createClient();
-  const { data: batch } = await supabase
-    .from('batches')
-    .select('id, judul_id, is_active, status')
-    .eq('id', parsedBatchId.data)
-    .eq('is_active', true)
-    .maybeSingle();
-
-  if (!batch || batch.status === 'closed') {
-    return { ok: false, pesan: 'Batch tidak tersedia untuk pendaftaran saat ini.' };
-  }
-
-  const admin = createAdminClient();
   const form = parsedForm.data;
   const peserta = parsedExcel.peserta;
   const path = `${parsedBatchId.data}/${Date.now()}-${namaAman(file.name)}`;
@@ -110,6 +126,8 @@ export async function daftarPerusahaanAction(
       nama: p.nama,
       whatsapp: p.whatsapp,
       email: p.email,
+      practice_location_id: butuhLokasi ? p.practice_location_id : null,
+      ukuran_baju: butuhUkuran ? p.ukuran_baju : null,
     })),
   );
 

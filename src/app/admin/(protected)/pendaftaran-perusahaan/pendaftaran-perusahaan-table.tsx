@@ -49,7 +49,14 @@ export type PendaftaranPerusahaanRow = {
   created_at: string;
   batchJudul: string;
   excelSignedUrl: string | null;
-  peserta: { id: number; nama: string; whatsapp: string; email: string }[];
+  peserta: {
+    id: number;
+    nama: string;
+    whatsapp: string;
+    email: string;
+    lokasiPraktek: string | null;
+    ukuranBaju: string | null;
+  }[];
 };
 
 const LABEL_STATUS: Record<StatusRegistrasi, string> = {
@@ -179,6 +186,8 @@ function DetailDialog({ row }: { row: PendaftaranPerusahaanRow }) {
                     <th className="px-3 py-2 font-medium">Nama</th>
                     <th className="px-3 py-2 font-medium">WhatsApp</th>
                     <th className="px-3 py-2 font-medium">Email</th>
+                    <th className="px-3 py-2 font-medium">Lokasi Praktek</th>
+                    <th className="px-3 py-2 font-medium">Ukuran Baju</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -187,6 +196,8 @@ function DetailDialog({ row }: { row: PendaftaranPerusahaanRow }) {
                       <td className="px-3 py-2 text-foreground">{p.nama}</td>
                       <td className="px-3 py-2 text-foreground">{p.whatsapp}</td>
                       <td className="px-3 py-2 text-foreground">{p.email}</td>
+                      <td className="px-3 py-2 text-foreground">{p.lokasiPraktek ?? '—'}</td>
+                      <td className="px-3 py-2 text-foreground">{p.ukuranBaju ?? '—'}</td>
                     </tr>
                   ))}
                 </tbody>

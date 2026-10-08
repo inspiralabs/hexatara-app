@@ -166,6 +166,7 @@
       "notesLabel": "Notes (optional)",
       "excelHeading": "Participant list (Excel)",
       "excelHint": "Required columns: Nama Lengkap, WhatsApp, Email. Every row must be valid — if any fail, the whole file is rejected. Minimum 3 participants.",
+      "excelHintPilihan": "Required columns: Nama Lengkap, WhatsApp, Email, plus Lokasi Praktek and/or Ukuran Baju. Copy values exactly from the \"Daftar Pilihan\" sheet. Every row must be valid — if any fail, the whole file is rejected. Minimum 3 participants.",
       "downloadTemplate": "Download Excel template",
       "downloadHint": "Enter one participant per row, starting from the second row.",
       "minPesertaHint": "Minimum 3 participants.",

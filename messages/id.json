@@ -166,6 +166,7 @@
       "notesLabel": "Catatan (opsional)",
       "excelHeading": "Daftar peserta (Excel)",
       "excelHint": "Kolom wajib: Nama Lengkap, WhatsApp, Email. Semua baris harus valid — kalau ada yang gagal, seluruh berkas ditolak. Minimal 3 peserta.",
+      "excelHintPilihan": "Kolom wajib: Nama Lengkap, WhatsApp, Email, plus Lokasi Praktek dan/atau Ukuran Baju. Isi keduanya persis seperti sheet \"Daftar Pilihan\". Semua baris harus valid — kalau ada yang gagal, seluruh berkas ditolak. Minimal 3 peserta.",
       "downloadTemplate": "Unduh Template Excel",
       "downloadHint": "Isi satu peserta per baris, mulai dari baris kedua.",
       "minPesertaHint": "Minimal 3 peserta.",

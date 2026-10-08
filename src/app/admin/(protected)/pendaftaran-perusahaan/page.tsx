@@ -30,7 +30,7 @@ export default async function AdminPendaftaranPerusahaanPage() {
       catatan_admin,
       created_at,
       batches ( judul_id ),
-      company_registration_participants ( id, nama, whatsapp, email )
+      company_registration_participants ( id, nama, whatsapp, email, ukuran_baju, practice_locations ( nama_kota ) )
     `,
     )
     .order('created_at', { ascending: false });
@@ -55,6 +55,8 @@ export default async function AdminPendaftaranPerusahaanPage() {
         nama: string;
         whatsapp: string;
         email: string;
+        ukuran_baju: string | null;
+        practice_locations: { nama_kota: string } | null;
       }[];
 
       return {
@@ -72,7 +74,14 @@ export default async function AdminPendaftaranPerusahaanPage() {
         created_at: row.created_at,
         batchJudul: batchRel?.judul_id ?? '—',
         excelSignedUrl,
-        peserta,
+        peserta: peserta.map((p) => ({
+          id: p.id,
+          nama: p.nama,
+          whatsapp: p.whatsapp,
+          email: p.email,
+          lokasiPraktek: p.practice_locations?.nama_kota ?? null,
+          ukuranBaju: p.ukuran_baju,
+        })),
       };
     }),
   );

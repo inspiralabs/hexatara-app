@@ -43,6 +43,50 @@ describe('parsePesertaPerusahaan', () => {
     expect(hasil.ok).toBe(false);
     expect(!hasil.ok && hasil.pesan).toMatch(/Format berkas/);
   });
+
+  it('flag aktif: kota/ukuran dinormalisasi; salah ketik dan kolom hilang ditolak', async () => {
+    const opsi = {
+      butuhLokasi: true,
+      butuhUkuran: true,
+      lokasiAktif: [{ id: 7, nama: 'Bogor' }],
+    };
+    const ok = await parsePesertaPerusahaan(
+      excelFile([
+        {
+          'Nama Lengkap': 'Budi',
+          WhatsApp: '081',
+          Email: 'budi@contoh.com',
+          'Lokasi Praktek': ' bogor ',
+          'Ukuran Baju': 'xl',
+        },
+      ]),
+      opsi,
+    );
+    expect(ok.ok && ok.peserta[0]).toMatchObject({ practice_location_id: 7, ukuran_baju: 'XL' });
+
+    const salah = await parsePesertaPerusahaan(
+      excelFile([
+        {
+          'Nama Lengkap': 'Budi',
+          WhatsApp: '081',
+          Email: 'budi@contoh.com',
+          'Lokasi Praktek': 'Bogorr',
+          'Ukuran Baju': 'XL',
+        },
+      ]),
+      opsi,
+    );
+    expect(salah.ok).toBe(false);
+    expect(!salah.ok && salah.gagal[0]?.alasan).toMatch(/Bogorr/);
+    expect(!salah.ok && salah.gagal[0]?.alasan).toMatch(/Bogor/);
+
+    const lama = await parsePesertaPerusahaan(
+      excelFile([{ 'Nama Lengkap': 'Budi', WhatsApp: '081', Email: 'budi@contoh.com' }]),
+      opsi,
+    );
+    expect(lama.ok).toBe(false);
+    expect(!lama.ok && lama.pesan).toMatch(/Lokasi Praktek/);
+  });
 });
 
 describe('MIN_PESERTA_KELOMPOK', () => {

@@ -11,6 +11,7 @@ import {
   type CompanyRegistrationFormInput,
 } from '@/lib/validations/company-registration';
 import type { BarisGagal } from '@/lib/company-registration/import';
+import { UKURAN_BAJU } from '@/lib/validations/pendaftaran-batch';
 import { FileUploadField } from '@/components/file-upload-field';
 import {
   Dialog,
@@ -34,21 +35,46 @@ const EMPTY_FORM: CompanyRegistrationFormInput = {
   catatan: '',
 };
 
-async function unduhTemplate() {
+async function unduhTemplate(opts: {
+  butuhLokasi: boolean;
+  butuhUkuran: boolean;
+  kota: string[];
+}) {
   const XLSX = await import('xlsx');
-  // Header saja — tanpa baris contoh (F14.2).
-  const ws = XLSX.utils.aoa_to_sheet([['Nama Lengkap', 'WhatsApp', 'Email']]);
+  const header = ['Nama Lengkap', 'WhatsApp', 'Email'];
+  if (opts.butuhLokasi) header.push('Lokasi Praktek');
+  if (opts.butuhUkuran) header.push('Ukuran Baju');
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Peserta');
+  XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([header]), 'Peserta');
+  if (opts.butuhLokasi || opts.butuhUkuran) {
+    const head: string[] = [];
+    if (opts.butuhLokasi) head.push('Lokasi Praktek');
+    if (opts.butuhUkuran) head.push('Ukuran Baju');
+    const n = Math.max(opts.butuhLokasi ? opts.kota.length : 0, opts.butuhUkuran ? UKURAN_BAJU.length : 0);
+    const rows: string[][] = [head];
+    for (let i = 0; i < n; i++) {
+      const row: string[] = [];
+      if (opts.butuhLokasi) row.push(opts.kota[i] ?? '');
+      if (opts.butuhUkuran) row.push(UKURAN_BAJU[i] ?? '');
+      rows.push(row);
+    }
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(rows), 'Daftar Pilihan');
+  }
   XLSX.writeFile(wb, 'template-peserta-pelatihan.xlsx');
 }
 
 export function DaftarPerusahaanDialog({
   batchId,
   judulBatch,
+  butuhLokasiPraktek = false,
+  butuhUkuranBaju = false,
+  lokasiPraktekOptions = [],
 }: {
   batchId: number;
   judulBatch: string;
+  butuhLokasiPraktek?: boolean;
+  butuhUkuranBaju?: boolean;
+  lokasiPraktekOptions?: { id: number; nama_kota: string }[];
 }) {
   const t = useTranslations('batch.registerCompany');
   const [open, setOpen] = useState(false);
@@ -183,12 +209,20 @@ export function DaftarPerusahaanDialog({
 
               <div className="space-y-2 rounded-lg border border-border bg-muted/30 p-3">
                 <p className="text-sm font-medium text-foreground">{t('excelHeading')}</p>
-                <p className="text-sm text-muted-foreground">{t('excelHint')}</p>
+                <p className="text-sm text-muted-foreground">
+                  {butuhLokasiPraktek || butuhUkuranBaju ? t('excelHintPilihan') : t('excelHint')}
+                </p>
                 <p className="text-sm font-medium text-foreground">{t('minPesertaHint')}</p>
                 <button
                   type="button"
                   className={cn(publicCtaSecondary, 'w-full')}
-                  onClick={() => void unduhTemplate()}
+                  onClick={() =>
+                    void unduhTemplate({
+                      butuhLokasi: butuhLokasiPraktek,
+                      butuhUkuran: butuhUkuranBaju,
+                      kota: lokasiPraktekOptions.map((k) => k.nama_kota),
+                    })
+                  }
                 >
                   {t('downloadTemplate')}
                 </button>
