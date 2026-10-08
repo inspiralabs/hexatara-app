@@ -45,11 +45,13 @@ export default async function AdminPendaftaranBatchPage({
       kategori_peserta,
       sumber_info,
       kode_referral,
+      ukuran_baju,
       foto_ktp_url,
       pas_foto_url,
       user_id,
       created_at,
-      batches ( judul_id )
+      batches ( judul_id ),
+      practice_locations ( nama_kota )
     `
     )
     .eq('status', 'menunggu_verifikasi')
@@ -83,6 +85,7 @@ export default async function AdminPendaftaranBatchPage({
       }
 
       const batchRel = row.batches as { judul_id: string } | null;
+      const lokasiRel = row.practice_locations as { nama_kota: string } | null;
 
       return {
         id: row.id,
@@ -99,6 +102,8 @@ export default async function AdminPendaftaranBatchPage({
         user_id: row.user_id,
         created_at: row.created_at,
         batchJudul: batchRel?.judul_id ?? '—',
+        lokasiPraktek: lokasiRel?.nama_kota ?? null,
+        ukuranBaju: row.ukuran_baju,
         fotoKtpUrl,
         pasFotoUrl,
       };

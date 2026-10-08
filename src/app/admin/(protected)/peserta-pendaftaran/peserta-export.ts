@@ -15,6 +15,8 @@ export async function eksporPesertaPendaftaranXlsx(rows: PesertaPendaftaranRow[]
     WhatsApp: row.whatsapp ?? '',
     Batch: row.batchJudul,
     'Kategori Peserta': LABEL_KATEGORI[row.kategori_peserta],
+    'Lokasi Praktek': row.lokasiPraktek ?? '',
+    'Ukuran Baju': row.ukuranBaju ?? '',
     Akun: row.user_id ? 'Login' : 'Tanpa akun',
     'Nomor KTP': row.nomor_ktp ?? '',
     'Tempat Lahir': row.tempat_lahir ?? '',

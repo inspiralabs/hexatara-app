@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import imageCompression from 'browser-image-compression';
@@ -9,8 +9,9 @@ import { toast } from 'sonner';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import {
-  PendaftaranBatchSchema,
-  type PendaftaranBatchInput,
+  UKURAN_BAJU,
+  makePendaftaranBatchFormSchema,
+  type PendaftaranBatchFormInput,
 } from '@/lib/validations/pendaftaran-batch';
 import { DatePickerField } from '@/components/admin/date-picker-field';
 import { FileUploadField } from '@/components/file-upload-field';
@@ -45,7 +46,7 @@ const SUMBER_OPSI = [
   { value: 'Lainnya', labelKey: 'sumberLainnya' },
 ] as const;
 
-const EMPTY_FORM: PendaftaranBatchInput = {
+const EMPTY_FORM: PendaftaranBatchFormInput = {
   nama_lengkap: '',
   email: '',
   whatsapp: '',
@@ -56,6 +57,8 @@ const EMPTY_FORM: PendaftaranBatchInput = {
   kategori_peserta: 'penerbitan_baru',
   sumber_info: '',
   kode_referral: '',
+  practice_location_id: undefined,
+  ukuran_baju: undefined,
 };
 
 type Prefill = {
@@ -103,11 +106,17 @@ export function DaftarBatchDialog({
   slug,
   loggedIn,
   prefill,
+  butuhLokasiPraktek = false,
+  butuhUkuranBaju = false,
+  lokasiPraktekOptions = [],
 }: {
   batchId: number;
   slug: string;
   loggedIn: boolean;
   prefill: Prefill | null;
+  butuhLokasiPraktek?: boolean;
+  butuhUkuranBaju?: boolean;
+  lokasiPraktekOptions?: { id: number; nama_kota: string }[];
 }) {
   const t = useTranslations('batch.register');
   const locale = useLocale();
@@ -125,20 +134,30 @@ export function DaftarBatchDialog({
     pakaiProfil && prefill?.foto_ktp_url && prefill?.pas_foto_url,
   );
 
+  const formSchema = useMemo(
+    () =>
+      makePendaftaranBatchFormSchema({
+        butuhLokasi: butuhLokasiPraktek,
+        butuhUkuran: butuhUkuranBaju,
+      }),
+    [butuhLokasiPraktek, butuhUkuranBaju],
+  );
+
   const {
     register,
     handleSubmit,
     control,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<PendaftaranBatchInput>({
-    resolver: zodResolver(PendaftaranBatchSchema),
+  } = useForm<PendaftaranBatchFormInput>({
+    resolver: zodResolver(formSchema),
     defaultValues: EMPTY_FORM,
   });
 
   useEffect(() => {
     if (!open || sebagaiTamu || !prefill) return;
     reset({
+      ...EMPTY_FORM,
       nama_lengkap: prefill.nama_lengkap,
       email: prefill.email,
       whatsapp: prefill.whatsapp,
@@ -146,9 +165,6 @@ export function DaftarBatchDialog({
       tempat_lahir: prefill.tempat_lahir,
       tanggal_lahir: prefill.tanggal_lahir,
       alamat_lengkap: prefill.alamat_lengkap,
-      kategori_peserta: 'penerbitan_baru',
-      sumber_info: '',
-      kode_referral: '',
     });
   }, [open, sebagaiTamu, prefill, reset]);
 
@@ -173,6 +189,7 @@ export function DaftarBatchDialog({
     setFilePas(null);
     if (prefill) {
       reset({
+        ...EMPTY_FORM,
         nama_lengkap: prefill.nama_lengkap,
         email: prefill.email,
         whatsapp: prefill.whatsapp,
@@ -180,9 +197,6 @@ export function DaftarBatchDialog({
         tempat_lahir: prefill.tempat_lahir,
         tanggal_lahir: prefill.tanggal_lahir,
         alamat_lengkap: prefill.alamat_lengkap,
-        kategori_peserta: 'penerbitan_baru',
-        sumber_info: '',
-        kode_referral: '',
       });
     } else {
       reset(EMPTY_FORM);
@@ -198,7 +212,7 @@ export function DaftarBatchDialog({
     setView('form');
   }
 
-  async function onSubmit(data: PendaftaranBatchInput) {
+  async function onSubmit(data: PendaftaranBatchFormInput) {
     if (!fileKtp && !punyaFotoProfil) {
       toast.error(t('errFotoKtp'));
       return;
@@ -424,6 +438,67 @@ export function DaftarBatchDialog({
                 <p className="text-sm text-destructive">{errors.alamat_lengkap.message}</p>
               )}
             </div>
+
+            {butuhLokasiPraktek ? (
+              <Controller
+                name="practice_location_id"
+                control={control}
+                render={({ field }) => (
+                  <div className="flex flex-col gap-1.5">
+                    <Label>{t('lokasiPraktekLabel')}</Label>
+                    <Select
+                      value={field.value != null ? String(field.value) : null}
+                      onValueChange={(v) => field.onChange(v ? Number(v) : undefined)}
+                    >
+                      <SelectTrigger className="h-11 w-full">
+                        <SelectValue placeholder={t('lokasiPraktekPlaceholder')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {lokasiPraktekOptions.map((kota) => (
+                          <SelectItem key={kota.id} value={String(kota.id)}>
+                            {kota.nama_kota}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-sm text-muted-foreground">{t('lokasiPraktekHelper')}</p>
+                    {errors.practice_location_id && (
+                      <p className="text-sm text-destructive">{errors.practice_location_id.message}</p>
+                    )}
+                  </div>
+                )}
+              />
+            ) : null}
+
+            {butuhUkuranBaju ? (
+              <Controller
+                name="ukuran_baju"
+                control={control}
+                render={({ field }) => (
+                  <div className="flex flex-col gap-1.5">
+                    <Label>{t('ukuranBajuLabel')}</Label>
+                    <Select
+                      value={field.value || null}
+                      onValueChange={(v) => field.onChange(v ?? undefined)}
+                    >
+                      <SelectTrigger className="h-11 w-full">
+                        <SelectValue placeholder={t('ukuranBajuPlaceholder')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {UKURAN_BAJU.map((u) => (
+                          <SelectItem key={u} value={u}>
+                            {u}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {errors.ukuran_baju && (
+                      <p className="text-sm text-destructive">{errors.ukuran_baju.message}</p>
+                    )}
+                  </div>
+                )}
+              />
+            ) : null}
 
             <div className="grid gap-3 sm:grid-cols-2">
               <FotoPicker

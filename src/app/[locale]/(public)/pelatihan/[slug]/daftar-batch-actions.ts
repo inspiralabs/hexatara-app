@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { getOptionalUser } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { PendaftaranBatchSchema } from '@/lib/validations/pendaftaran-batch';
+import { PendaftaranBatchSchema, UKURAN_BAJU } from '@/lib/validations/pendaftaran-batch';
 import { getWhatsappAdmin } from '@/lib/site-settings';
 
 const BatchIdSchema = z.number().int().positive();
@@ -142,9 +142,12 @@ export async function daftarBatchAction(batchId: unknown, formData: FormData) {
     };
   }
 
-  const { data: batch } = await supabase
+  // Flag dari DB (bukan klien) — batches.category_id → batch_categories
+  const { data: batch } = await admin
     .from('batches')
-    .select('id, judul_id, is_active, status')
+    .select(
+      'id, judul_id, is_active, status, batch_categories(butuh_lokasi_praktek, butuh_ukuran_baju)',
+    )
     .eq('id', parsedBatchId.data)
     .eq('is_active', true)
     .maybeSingle();
@@ -152,6 +155,43 @@ export async function daftarBatchAction(batchId: unknown, formData: FormData) {
   if (!batch || batch.status === 'closed') {
     return { ok: false as const, pesan: 'Batch tidak tersedia untuk pendaftaran saat ini.' };
   }
+
+  const kategori = batch.batch_categories as {
+    butuh_lokasi_praktek: boolean;
+    butuh_ukuran_baju: boolean;
+  } | null;
+  const butuhLokasi = kategori?.butuh_lokasi_praktek === true;
+  const butuhUkuran = kategori?.butuh_ukuran_baju === true;
+
+  let practiceLocationId: number | null = null;
+  let ukuranBaju: string | null = null;
+  let namaKotaWa: string | null = null;
+
+  if (butuhLokasi) {
+    const rawLoc = Number(formData.get('practice_location_id'));
+    if (!Number.isInteger(rawLoc) || rawLoc <= 0) {
+      return { ok: false as const, pesan: 'Lokasi praktek wajib dipilih.' };
+    }
+    const { data: kota } = await admin
+      .from('practice_locations')
+      .select('id, nama_kota, is_active')
+      .eq('id', rawLoc)
+      .maybeSingle();
+    if (!kota || !kota.is_active) {
+      return { ok: false as const, pesan: 'Lokasi praktek tidak valid atau sudah nonaktif.' };
+    }
+    practiceLocationId = kota.id;
+    namaKotaWa = kota.nama_kota;
+  }
+
+  if (butuhUkuran) {
+    const rawUkuran = String(formData.get('ukuran_baju') ?? '');
+    if (!(UKURAN_BAJU as readonly string[]).includes(rawUkuran)) {
+      return { ok: false as const, pesan: 'Ukuran baju wajib dipilih.' };
+    }
+    ukuranBaju = rawUkuran;
+  }
+  // Flag off: abaikan nilai klien → null
 
   // 1) Insert tanpa path foto dulu — dapat id untuk path anon `registrasi/<id>/…`
   const { data: inserted, error: insertError } = await admin
@@ -169,6 +209,8 @@ export async function daftarBatchAction(batchId: unknown, formData: FormData) {
       kategori_peserta: data.kategori_peserta,
       sumber_info: data.sumber_info ?? null,
       kode_referral: data.kode_referral ?? null,
+      practice_location_id: practiceLocationId,
+      ukuran_baju: ukuranBaju,
       foto_ktp_url: null,
       pas_foto_url: null,
       status: 'menunggu_verifikasi',
@@ -254,7 +296,9 @@ export async function daftarBatchAction(batchId: unknown, formData: FormData) {
     }
 
     const nomorAdmin = await getWhatsappAdmin();
-    const pesanWa = `Halo Admin Hexatara, saya ${data.nama_lengkap} sudah mendaftar pelatihan "${batch.judul_id}".\nEmail: ${data.email}\nWhatsApp: ${data.whatsapp}`;
+    let pesanWa = `Halo Admin Hexatara, saya ${data.nama_lengkap} sudah mendaftar pelatihan "${batch.judul_id}".\nEmail: ${data.email}\nWhatsApp: ${data.whatsapp}`;
+    if (namaKotaWa) pesanWa += `\nLokasi praktek: ${namaKotaWa}`;
+    if (ukuranBaju) pesanWa += `\nUkuran baju: ${ukuranBaju}`;
     const waLink = nomorAdmin
       ? `https://wa.me/${nomorAdmin}?text=${encodeURIComponent(pesanWa)}`
       : null;

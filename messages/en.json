@@ -147,7 +147,12 @@
       "close": "Close",
       "errFotoKtp": "ID card photo is required.",
       "errPasFoto": "Passport photo is required.",
-      "errGambar": "Could not process the image. Try another file."
+      "errGambar": "Could not process the image. Try another file.",
+      "lokasiPraktekLabel": "Practice location",
+      "lokasiPraktekPlaceholder": "Select practice city",
+      "lokasiPraktekHelper": "Theory materials are the same; practice takes place in your chosen city",
+      "ukuranBajuLabel": "Shirt size",
+      "ukuranBajuPlaceholder": "Select size"
     },
     "registerCompany": {
       "trigger": "Register as a Group",

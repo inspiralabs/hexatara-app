@@ -25,6 +25,14 @@ const columns = [
     id: 'batch',
     header: (ctx) => <SortableHeader column={ctx.column} label="Batch" />,
   }),
+  columnHelper.accessor((row) => row.lokasiPraktek ?? '—', {
+    id: 'lokasi',
+    header: 'Lokasi Praktek',
+  }),
+  columnHelper.accessor((row) => row.ukuranBaju ?? '—', {
+    id: 'ukuran',
+    header: 'Ukuran Baju',
+  }),
   columnHelper.accessor('verified_at', {
     header: (ctx) => <SortableHeader column={ctx.column} label="Disetujui" />,
     cell: (info) => {

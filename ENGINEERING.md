@@ -1413,9 +1413,14 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 2. **Daftar kota global.** Tabel `practice_locations` (bukan per-batch). Unique `lower(nama_kota)`. Hapus: cek pemakaian di `batch_registrations` + `company_registration_participants`, tolak ramah; FK 23503 sebagai pengaman.
 3. **Filter via URL.** `/pelatihan?kategori=<slug>` — slug diturunkan di kode dari `nama_id` (tanpa kolom `slug` di DB). Param tidak valid diabaikan.
 
-**Peluang lanjutan.** Saklar per-course (bukan global) — YAGNI. Field lokasi/ukuran di form pendaftaran = 6B. **Batas diketahui:** bucket `materials` publik — URL file langsung tidak ikut saklar F14.5.
+**Keputusan F14.6b.**
+1. **Validasi berbasis flag dari database.** `daftarBatchAction` baca `batches` → `batch_categories` by `batch_id` (bukan percaya FormData untuk flag). Flag on → wajib lokasi aktif + ukuran ∈ {S,M,L,XL,XXL}. Flag off → abaikan input klien, simpan `practice_location_id` / `ukuran_baju` = null.
+2. **Relasi.** `batches.category_id` → `batch_categories.id`. Admin leads join `practice_locations` untuk nama kota.
+3. **WA prefilled** boleh tambah lokasi/ukuran. Email `minat_batch` tidak disentuh (Fase 2).
 
-**Konsekuensi.** Registry F14.5 DONE; F14.6 TODO sampai uji 6A + 6B.
+**Peluang lanjutan.** Saklar per-course (bukan global) — YAGNI. Form kelompok (company) lokasi/ukuran — YAGNI sampai diminta. **Batas diketahui:** bucket `materials` publik — URL file langsung tidak ikut saklar F14.5.
+
+**Konsekuensi.** Registry F14.5 DONE; F14.6 TODO sampai uji 6B.
 
 ---
 
@@ -1479,3 +1484,4 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-10-06 | **F14.4 DONE** setelah uji Alif. **F14.5 diagnosis** saklar LMS Freemium dicatat di `plan.md` (rute/action/CTA/cache/admin cookie/bucket); menunggu OK Alif sebelum kode. |
 | 2026-10-07 | **F14.5 dikodekan** setelah diagnosis disetujui: gerbang page+action, saklar `freemium_lms_open`, Admin pratinjau, fail-closed. Menunggu uji Alif. |
 | 2026-10-07 | **F14.5 DONE** setelah uji Alif (saklar + pratinjau + tombol Pratinjau Materi). **ADR-027 diperluas — F14.6a:** flag `butuh_*` di `batch_categories` (bukan hardcode slug), CRUD `practice_locations`, filter `/pelatihan?kategori=<slug>` dari `nama_id`. Menunggu uji; 6B belum. |
+| 2026-10-07 | **F14.6a diuji Alif** (kategori SiDOPI + kota). **F14.6b dikodekan:** form daftar + validasi flag dari DB + Admin leads/export. Menunggu uji. |

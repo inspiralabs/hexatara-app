@@ -4,8 +4,11 @@ import { format } from 'date-fns';
 import { id as localeId } from 'date-fns/locale';
 import { DataTable, SortableHeader, createDataTableColumnHelper } from '@/components/data-table';
 import { Badge } from '@/components/ui/badge';
+import { DownloadIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { PendaftaranBatchDetail } from './pendaftaran-batch-detail';
 import { PendaftaranBatchRowActions } from './pendaftaran-batch-row-actions';
+import { eksporPendaftaranBatchXlsx } from './pendaftaran-batch-export';
 import type { Database } from '@/types/database';
 
 export type PendaftaranBatchRow = {
@@ -23,6 +26,8 @@ export type PendaftaranBatchRow = {
   user_id: string | null;
   created_at: string;
   batchJudul: string;
+  lokasiPraktek: string | null;
+  ukuranBaju: string | null;
   fotoKtpUrl: string | null;
   pasFotoUrl: string | null;
 };
@@ -58,6 +63,14 @@ const columns = [
     filterFn: 'equalsString',
     cell: (info) => LABEL_KATEGORI[info.getValue()],
   }),
+  columnHelper.accessor((row) => row.lokasiPraktek ?? '—', {
+    id: 'lokasi',
+    header: 'Lokasi Praktek',
+  }),
+  columnHelper.accessor((row) => row.ukuranBaju ?? '—', {
+    id: 'ukuran',
+    header: 'Ukuran Baju',
+  }),
   columnHelper.accessor('created_at', {
     header: (ctx) => <SortableHeader column={ctx.column} label="Diajukan" />,
     cell: (info) => format(new Date(info.getValue()), 'd MMM yyyy', { locale: localeId }),
@@ -83,6 +96,16 @@ export function PendaftaranBatchTable({ rows }: { rows: PendaftaranBatchRow[] })
       searchColumnId="nama"
       searchPlaceholder="Cari nama..."
       emptyMessage="Tidak ada pendaftaran menunggu verifikasi."
+      toolbarEnd={
+        <Button
+          type="button"
+          onClick={() => eksporPendaftaranBatchXlsx(rows)}
+          disabled={rows.length === 0}
+          className="h-11 w-full shrink-0 gap-1.5 px-5 sm:w-auto"
+        >
+          <DownloadIcon className="size-4" /> Ekspor Excel
+        </Button>
+      }
       columnFilters={[
         {
           id: 'kategori',

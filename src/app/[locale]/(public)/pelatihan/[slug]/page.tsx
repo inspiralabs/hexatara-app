@@ -95,7 +95,7 @@ export default async function BatchDetailPage({
   const { data: batch, error: batchError } = await supabase
     .from("batches")
     .select(
-      "id, slug, judul_id, judul_en, category_id, lokasi_id, lokasi_en, alamat, harga, status, tanggal_mulai, tanggal_selesai, deskripsi_id, deskripsi_en, silabus_id, silabus_en, hero_gambar_url, gambar_detail_url, rating, batch_categories(nama_id, nama_en)"
+      "id, slug, judul_id, judul_en, category_id, lokasi_id, lokasi_en, alamat, harga, status, tanggal_mulai, tanggal_selesai, deskripsi_id, deskripsi_en, silabus_id, silabus_en, hero_gambar_url, gambar_detail_url, rating, batch_categories(nama_id, nama_en, butuh_lokasi_praktek, butuh_ukuran_baju)"
     )
     .eq("slug", slug)
     .eq("is_active", true)
@@ -104,12 +104,16 @@ export default async function BatchDetailPage({
   if (batchError) console.error("[batch-detail] gagal memuat batch:", batchError);
   if (!batch) notFound();
 
+  const butuhLokasiPraktek = batch.batch_categories?.butuh_lokasi_praktek === true;
+  const butuhUkuranBaju = batch.batch_categories?.butuh_ukuran_baju === true;
+
   const [
     { data: benefits },
     { data: requirements },
     { data: equipment },
     { data: faqs },
     { data: gallery },
+    { data: lokasiPraktek },
   ] = await Promise.all([
     supabase.from("batch_benefits").select("id, ikon, teks_id, teks_en").eq("batch_id", batch.id).order("urutan"),
     supabase
@@ -120,6 +124,13 @@ export default async function BatchDetailPage({
     supabase.from("batch_equipment").select("id, teks_id, teks_en").eq("batch_id", batch.id).order("urutan"),
     supabase.from("batch_faqs").select("id, tanya_id, tanya_en, jawab_id, jawab_en").eq("batch_id", batch.id).order("urutan"),
     supabase.from("batch_gallery").select("id, gambar_url, caption_id, caption_en").eq("batch_id", batch.id).order("urutan"),
+    butuhLokasiPraktek
+      ? supabase
+          .from("practice_locations")
+          .select("id, nama_kota")
+          .eq("is_active", true)
+          .order("urutan", { ascending: true })
+      : Promise.resolve({ data: [] as { id: number; nama_kota: string }[] }),
   ]);
 
   // Suggest: lewat category_id saja; sembunyikan jika kosong (bukan acak).
@@ -266,6 +277,9 @@ export default async function BatchDetailPage({
                     slug={slug}
                     loggedIn={pendaftaran.loggedIn}
                     prefill={pendaftaran.prefill}
+                    butuhLokasiPraktek={butuhLokasiPraktek}
+                    butuhUkuranBaju={butuhUkuranBaju}
+                    lokasiPraktekOptions={lokasiPraktek ?? []}
                   />
                 </div>
                 <div className="min-w-0 flex-1">

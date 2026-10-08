@@ -15,6 +15,8 @@ export type PesertaPendaftaranRow = {
   user_id: string | null;
   verified_at: string | null;
   batchJudul: string;
+  lokasiPraktek: string | null;
+  ukuranBaju: string | null;
   fotoKtpUrl: string | null;
   pasFotoUrl: string | null;
   buktiUrl: string | null;

@@ -119,6 +119,8 @@ export function PesertaPendaftaranDetail({ row }: { row: PesertaPendaftaranRow }
             <Baris label="WhatsApp" value={row.whatsapp ?? ''} />
             <Baris label="Batch" value={row.batchJudul} />
             <Baris label="Kategori" value={LABEL_KATEGORI[row.kategori_peserta]} />
+            <Baris label="Lokasi Praktek" value={row.lokasiPraktek ?? ''} />
+            <Baris label="Ukuran Baju" value={row.ukuranBaju ?? ''} />
             <Baris label="Akun" value={row.user_id ? 'Login' : 'Tanpa akun'} />
             <Baris label="Nomor KTP" value={row.nomor_ktp ?? ''} />
             <Baris label="Tempat lahir" value={row.tempat_lahir ?? ''} />

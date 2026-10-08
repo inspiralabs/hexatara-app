@@ -824,4 +824,21 @@ Status: **dikonfirmasi Alif 7 Okt 2026** (saklar + pratinjau Admin + tombol Prat
 
 **Belum di 6A:** field lokasi/ukuran di form pendaftaran (6B). Agent tidak seed kategori.
 
-Status: **menunggu uji Alif.** F14.6 tetap TODO (bukti: 6A selesai dikodekan).
+Status: **dikonfirmasi Alif 7 Okt 2026** (kategori SiDOPI + flag + kota aktif). 6A selesai.
+
+---
+
+## F14.6b — Form daftar + Admin leads (7 Oktober 2026)
+
+**Status:** dikodekan — **menunggu uji Alif.**
+
+### Keputusan
+
+| Topik | Keputusan |
+|---|---|
+| Validasi | Server ambil flag kategori dari DB via `batch_id` → `category_id` → `batch_categories`; jangan percaya klien |
+| Non-SiDOPI | Field tidak tampil; nilai klien diabaikan; simpan `practice_location_id` / `ukuran_baju` = null |
+| Admin | Kolom Lokasi Praktek + Ukuran Baju di tabel, detail, export (individu) |
+| Relasi | `batches.category_id` → `batch_categories.id` |
+
+Status: **menunggu uji Alif.** F14.6 tetap TODO.

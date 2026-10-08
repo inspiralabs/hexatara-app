@@ -147,7 +147,12 @@
       "close": "Tutup",
       "errFotoKtp": "Foto KTP wajib diunggah.",
       "errPasFoto": "Pas foto wajib diunggah.",
-      "errGambar": "Gagal memproses gambar. Coba berkas lain."
+      "errGambar": "Gagal memproses gambar. Coba berkas lain.",
+      "lokasiPraktekLabel": "Lokasi Praktek",
+      "lokasiPraktekPlaceholder": "Pilih kota praktek",
+      "lokasiPraktekHelper": "Materi teori seragam; praktek dilaksanakan di kota pilihan Anda",
+      "ukuranBajuLabel": "Ukuran Baju",
+      "ukuranBajuPlaceholder": "Pilih ukuran"
     },
     "registerCompany": {
       "trigger": "Daftar sebagai Kelompok",
