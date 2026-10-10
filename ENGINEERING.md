@@ -77,11 +77,14 @@ Stack lengkap ada di `PRD.md` Bagian 2. Yang perlu ditegaskan di sisi teknis:
 
 | Layer | Versi | Catatan implementasi |
 |---|---|---|
-| Next.js | 15.x App Router | Bukan Pages Router. `use context7` saat menyentuh API-nya |
+| Next.js | 16.3.4 App Router (`package.json`) | Bukan Pages Router. Routing i18n di `src/proxy.ts` |
 | TypeScript | 5.x, `strict: true` | `any` dilarang. Kalau tipenya sulit, `unknown` lalu persempit |
 | Tailwind | 4.x | Konfigurasi lewat CSS, bukan `tailwind.config.ts` gaya v3 |
 | shadcn/ui | terbaru | Komponen di `src/components/ui/` — **jangan diedit manual** |
-| next-intl | 4.x | Aktif sejak Fase 9. Routing digabung ke `src/proxy.ts` (bukan `middleware.ts` terpisah — Next.js 16 memakai konvensi `proxy.ts`) |
+| next-intl | 4.x (`package.json` ^4.14.2) | Routing digabung ke `src/proxy.ts` (bukan `middleware.ts` terpisah) |
+| React | 19.2.8 | Sesuai `package.json` |
+
+**Dikoreksi 2026-10-08.** Tabel ini sebelumnya menulis Next.js 15.x. Yang terpasang di `package.json` adalah Next.js 16.3.4, React 19.2.8, next-intl ^4.14.2. PRD §2 masih menyimpan kunci 5 September 2026 (Next 15, next-intl 3.x) plus catatan koreksi yang sama.
 
 ### 2.2 Yang dilarang dipasang
 
@@ -96,6 +99,8 @@ Stack lengkap ada di `PRD.md` Bagian 2. Yang perlu ditegaskan di sisi teknis:
 | Library chart | Tidak ada dashboard analitik di Fase 1 |
 | `next-themes` | Tidak ada dark mode. Design token hanya mode terang |
 | `xlsx` dari npm | CVE-2023-30533. Pasang dari `cdn.sheetjs.com` — lihat `PANDUAN.md` Fase 2.2 |
+
+**Dikecualikan 2026-10-08.** Grafik operasional di Admin Overview (ADR-019) dan mode gelap via next-themes diizinkan; grafik analitik di sisi publik/user tetap dilarang. Teks dua baris di atas tidak diubah. Keputusan Alif (opsi 2) tercatat di `plan.md`, bagian «Audit dokumen inti 2026-10-08».
 
 Daftar paket yang **terpasang** beserta alasan tiap paket ada: `PANDUAN.md` Fase 2.7.
 
@@ -236,6 +241,8 @@ Inventaris kolom ada di PRD §5.1h. Yang dipakai kode:
 
 Nama tabel `company_*` dan kolom `instructors.bio_*` tidak diganti.
 
+**Dikoreksi 2026-10-08.** Fungsi di `src/types/database.ts` yang tidak ada di tabel §3.6: `aktivasi_sertifikat_free_track`, `profil_identitas_lengkap`, `reorder_batch_categories`, `reorder_material_chapters`, `reorder_material_chapter_files`, `reorder_product_categories`, `reorder_quiz_questions`. `prevent_role_self_escalation` juga tidak ada di tipe generated; itu fungsi trigger, bukan bukti ia hilang. Kontrolnya ada di §4.4.
+
 ---
 
 ## 4. AUTH & OTORISASI
@@ -274,6 +281,14 @@ export async function hapusBatch(id: number) {
 `defaultChecked` **dilarang di seluruh proyek ini.** Kotak centang persetujuan wajib tidak tercentang saat halaman dibuka, dan itu diuji di acceptance criteria.
 
 Simpan waktunya ke kolom `consent_at`, bukan boolean. Boolean `true` tidak memberi tahu kapan persetujuan diberikan.
+
+### 4.4 Kontrol keamanan database — role profil
+
+Trigger `trg_prevent_role_self_escalation` pada `public.profiles` (BEFORE UPDATE, tiap baris) memanggil `prevent_role_self_escalation()`. Fungsi itu `SECURITY INVOKER` dan memakai `session_user`, bukan `current_user`. Role hanya boleh berubah bila JWT `role` = `service_role`, atau `session_user` adalah `postgres` / `supabase_admin` (SQL Editor). Perubahan kolom lain (misalnya nama) tetap lewat. Panel Admin tidak punya fitur ubah role.
+
+Asal SQL: `usulan-sql-profiles-lock-role-opsi-a.sql`. Salinan juga ada di dump 23 September 2026. Generator `src/types/database.ts` tidak memuat fungsi trigger, jadi ketiadaan nama itu di file tipe bukan bukti triggernya hilang.
+
+Verifikasi ulang: dari root `hexatara`, jalankan `scripts/test-role-escalation.mjs` dengan akun yang `role`-nya user (kredensial tidak ditulis di dokumen). Hasil terakhir, 8 Oktober 2026, lulus: user biasa ditolak mengubah role (42501, role tetap user), user biasa boleh mengubah nama, service role boleh mengubah role lalu di-rollback.
 
 ---
 
@@ -1408,13 +1423,15 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 ---
 
 ### ADR-027 — Tambahan Hexatara hasil meeting 4 Okt 2026
-**2026-10-06 · Diperluas sampai 2026-10-08 · Berlaku — F14.1–F14.6 DONE (Alif)**
+**2026-10-06 · Diperluas sampai 2026-10-08 · Berlaku**
+
+**Dikoreksi 2026-10-08.** Status aktif di `feature-registry.md`: F14.1–F14.6 = TODO, bukti “Selesai dikodekan, menunggu uji ulang Alif”. Kalimat uji sebelumnya di bawah ini adalah riwayat, bukan status serah-terima.
 
 **Konteks.** Meeting Hexatara 4 Oktober 2026 menghasilkan enam permintaan tambahan setelah Modul 13 (ADR-026) selesai. F14.4: tabel `partners`. F14.5: saklar tutup LMS Freemium via `site_settings` key `freemium_lms_open` (kode fail-closed). F14.6: program RPC/Advanced/SiDOPI via flag `batch_categories` + `practice_locations` (SQL Bagian 0 blok C+D sudah dijalankan sebelum kode).
 
-1. **F14.1–F14.4** — DONE (badge Autel, label Kelompok, instruktur portrait/Catatan, Partner Kami).
-5. **F14.5 — Saklar LMS Freemium.** DONE (uji Alif 7 Okt 2026).
-6. **F14.6** — DONE (6A 7 Okt, 6B dan 6C 8 Okt 2026): flag kategori, CRUD kota, filter slug, form individu, Excel kelompok.
+1. **F14.1–F14.4** — dikodekan (badge Autel, label Kelompok, instruktur portrait/Catatan, Partner Kami). Uji ulang: TODO.
+5. **F14.5 — Saklar LMS Freemium.** Dikodekan. Uji ulang: TODO.
+6. **F14.6** — Dikodekan (6A flag+kota+filter, 6B form individu, 6C Excel kelompok). Uji ulang: TODO.
 
 **Keputusan F14.5 — arsitektur 3 lapis.**
 1. **UI:** sembunyikan CTA/banner LMS (hero freemium `/pelatihan` disembunyikan utuh; dashboard teks pelan; sitemap tanpa `/kuis`).
@@ -1453,7 +1470,7 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 
 **Peluang lanjutan.** Saklar per-course (bukan global) — tidak dibuat. Export baris peserta kelompok — tidak diminta, tidak dibuat. **Batas diketahui:** bucket `materials` publik — URL file langsung tidak ikut saklar F14.5.
 
-**Konsekuensi.** F14.1–F14.6 DONE setelah uji Alif. Larangan PRD §13 tidak diubah (lihat catatan di PRD §13.6).
+**Konsekuensi.** F14.1–F14.6 dikodekan. **Dikoreksi 2026-10-08:** status registry = TODO sampai Alif menguji ulang. Larangan PRD §13 tidak diubah (lihat catatan di PRD §13.6).
 
 ---
 
@@ -1511,12 +1528,19 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-10-03 | **ADR-026 diperluas — F13.5b Admin.** Menu Leads Pendaftaran Perusahaan: tabel, export, detail peserta + signed URL Excel, status/nominal/catatan. F13.5 lengkap dikodekan (3a+3b); registry tetap TODO sampai uji Alif. |
 | 2026-10-03 | **F13.5 DONE** setelah uji Alif (3a publik + 3b Admin). ADR-026 — lima permintaan Abi — selesai. |
 | 2026-10-06 | **ADR-027 dibuka** (meeting Hexatara 4 Okt 2026, enam permintaan). **F14.1** badge Autel Robotics Authorized Dealer di hero retail dikodekan; menunggu uji Alif. F14.2–F14.6 belum. |
-| 2026-10-06 | **F14.1 DONE** setelah uji Alif. **ADR-027 diperluas — F14.2:** label “Pendaftaran Kelompok” + `MIN_PESERTA_KELOMPOK=3` (app saja); rute/tabel/`pendaftaran_perusahaan` tetap. Menunggu uji Alif. |
-| 2026-10-06 | **F14.2 DONE** setelah uji Alif. **ADR-027 diperluas — F14.3:** instruktur portrait 4:5, bio→Catatan (label saja, kolom `bio_*` tetap), Detail Admin. Menunggu uji Alif. |
-| 2026-10-06 | **F14.3 DONE** setelah uji Alif. **ADR-027 diperluas — F14.4:** tabel `partners`, Admin Partner Kami, section publik di bawah Instruktur; logo di bucket `content/partners/`. Menunggu uji Alif. |
-| 2026-10-06 | **F14.4 DONE** setelah uji Alif. **F14.5 diagnosis** saklar LMS Freemium dicatat di `plan.md` (rute/action/CTA/cache/admin cookie/bucket); menunggu OK Alif sebelum kode. |
+| 2026-10-06 | **F14.1 diuji Alif (riwayat)** setelah uji Alif. **ADR-027 diperluas — F14.2:** label “Pendaftaran Kelompok” + `MIN_PESERTA_KELOMPOK=3` (app saja); rute/tabel/`pendaftaran_perusahaan` tetap. Menunggu uji Alif. |
+| 2026-10-06 | **F14.2 diuji Alif (riwayat)** setelah uji Alif. **ADR-027 diperluas — F14.3:** instruktur portrait 4:5, bio→Catatan (label saja, kolom `bio_*` tetap), Detail Admin. Menunggu uji Alif. |
+| 2026-10-06 | **F14.3 diuji Alif (riwayat)** setelah uji Alif. **ADR-027 diperluas — F14.4:** tabel `partners`, Admin Partner Kami, section publik di bawah Instruktur; logo di bucket `content/partners/`. Menunggu uji Alif. |
+| 2026-10-06 | **F14.4 diuji Alif (riwayat)** setelah uji Alif. **F14.5 diagnosis** saklar LMS Freemium dicatat di `plan.md` (rute/action/CTA/cache/admin cookie/bucket); menunggu OK Alif sebelum kode. |
 | 2026-10-07 | **F14.5 dikodekan** setelah diagnosis disetujui: gerbang page+action, saklar `freemium_lms_open`, Admin pratinjau, fail-closed. Menunggu uji Alif. |
-| 2026-10-07 | **F14.5 DONE** setelah uji Alif (saklar + pratinjau + tombol Pratinjau Materi). **ADR-027 diperluas — F14.6a:** flag `butuh_*` di `batch_categories` (bukan hardcode slug), CRUD `practice_locations`, filter `/pelatihan?kategori=<slug>` dari `nama_id`. Menunggu uji; 6B belum. |
+| 2026-10-07 | **F14.5 diuji Alif (riwayat)** setelah uji Alif (saklar + pratinjau + tombol Pratinjau Materi). **ADR-027 diperluas — F14.6a:** flag `butuh_*` di `batch_categories` (bukan hardcode slug), CRUD `practice_locations`, filter `/pelatihan?kategori=<slug>` dari `nama_id`. Menunggu uji; 6B belum. |
 | 2026-10-07 | **F14.6a diuji Alif** (kategori SiDOPI + kota). **F14.6b dikodekan:** form daftar + validasi flag dari DB + Admin leads/export. Menunggu uji. |
-| 2026-10-08 | **F14.6b DONE** setelah uji Alif. **F14.6c dikodekan:** template Excel dinamis, parser flag, kota dari server, detail Admin kelompok. Menunggu uji. |
-| 2026-10-08 | **F14.6c DONE** setelah uji Alif. ADR-027 lengkap (F14.1–F14.6). Audit dokumen menyelaraskan PRD, registry, AS_BUILT, dan UAT ke kode. Teks larangan PRD §13 tidak diubah. |
+| 2026-10-08 | **F14.6b diuji Alif (riwayat)** setelah uji Alif. **F14.6c dikodekan:** template Excel dinamis, parser flag, kota dari server, detail Admin kelompok. Menunggu uji. |
+| 2026-10-08 | **F14.6c diuji Alif** (riwayat). ADR-027 lengkap di kode. Audit dokumen menyelaraskan PRD, registry, AS_BUILT, dan UAT. Teks larangan PRD §13 tidak diubah. |
+| 2026-10-08 | **Dikoreksi.** Status aktif registry F14.1–F14.6 dikembalikan ke TODO untuk uji ulang Alif. Riwayat uji di baris di atas tidak dihapus. Versi Next di §2.1 diselaraskan ke `package.json` (16.3.4). |
+| 2026-10-08 | **F08.1–F08.4 DONE** dicatat susulan. Alif menguji sendiri di browser 24 September 2026 (ADR-021): Peserta Pendaftaran, filter batch verifikasi, syarat/fasilitas/dua WA, salin batch. |
+| 2026-10-08 | **Dikecualikan** chart Overview Admin dan `next-themes` (teks larangan §2.2 dan PRD §13 butir 25 tidak diubah). Trigger `prevent_role_self_escalation` diverifikasi Alif di database; dicatat di §4.4. |
+| 2026-10-09 | **F00.9 dan F05.5 DONE.** Alif uji browser: helper email Resend dan Sentry. Checklist `plan.md` bagian «Audit dokumen inti 2026-10-08» ayat 7(d). |
+| 2026-10-09 | **F09.1–F09.4 DONE** (ADR-022 / ADR-022b). Gambar detail pelatihan, galeri + thumbnail, crop hero 4:3, lightbox publik. |
+| 2026-10-09 | **F10.3–F10.6 DONE** (ADR-023). Kuis LMS, bukti bayar pendaftaran, email Resend, verifikasi lintas perangkat. F10.2 tidak diubah. |
+| 2026-10-09 | **F11.1–F11.3 DONE** (ADR-024). Kategori produk dari relasi, ringkasan Leads di Overview, logo di login Admin. |

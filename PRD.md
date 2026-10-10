@@ -27,7 +27,7 @@ BRD-HXT-002 v1.1        ← menang atas segalanya. Dokumen kesepakatan dengan kl
             └─ PANDUAN.md Fase 7-13     ← prompt pelaksana. Tidak pernah menang atas apa pun
 ```
 
-Kalau kamu menemukan pertentangan, **berhenti dan katakan.** Jangan pilih salah satu diam-diam. Dokumen yang kalah harus diperbaiki, dan perbaikannya dicatat di `ENGINEERING.md` Bagian 12 sebagai ADR baru.
+Kalau kamu menemukan pertentangan, **berhenti dan katakan.** Jangan pilih salah satu diam-diam. Dokumen yang kalah harus diperbaiki, dan perbaikannya dicatat di `ENGINEERING.md` Bagian 10 sebagai ADR baru.
 
 ### Berkas pendamping
 
@@ -100,7 +100,7 @@ Modul 5 dan 6 bukan tambahan scope. Tanpa keduanya, Modul 1–4 tidak dapat diop
 
 ## 2. TECH STACK — TERKUNCI
 
-Dikunci 5 September 2026 sesuai BRD Bagian 13.4. Mengubah baris mana pun butuh izin eksplisit dan ADR baru di `ENGINEERING.md` Bagian 12.
+Dikunci 5 September 2026 sesuai BRD Bagian 13.4. Mengubah baris mana pun butuh izin eksplisit dan ADR baru di `ENGINEERING.md` Bagian 10.
 
 | Layer | Teknologi |
 |---|---|
@@ -119,6 +119,8 @@ Dikunci 5 September 2026 sesuai BRD Bagian 13.4. Mengubah baris mana pun butuh i
 | Import/ekspor data | xlsx dari cdn.sheetjs.com (Excel/XLSX) — seluruh titik ekspor dan import, ADR-016. `papaparse` (CSV) dipakai di awal, digantikan XLSX sepenuhnya 2026-09-09 |
 | Rate limit | @upstash/ratelimit — di balik feature flag |
 | Hosting | Vercel → Hostinger VPS setelah stabil |
+
+**Dikoreksi 2026-10-08.** Kunci 5 September 2026 di tabel di atas menulis Next.js 15 dan next-intl 3.x. Yang terpasang di `package.json` sekarang: Next.js 16.3.4, React 19.2.8, next-intl ^4.14.2. ADR ada di `ENGINEERING.md` Bagian 10 (bukan Bagian 12; Bagian 12 lama dialihkan, lihat tabel pengalihan di awal ENGINEERING).
 
 **Arsitektur: monolit tertata.** Bukan microservice, bukan arsitektur berlapis. Satu developer, trafik rendah, delapan minggu. ADR-001.
 
@@ -326,6 +328,8 @@ Dashboard Admin (F11.2), Login Admin (F11.3), status penawaran (F11.4), kategori
 | `company_registration_participants.practice_location_id`, `ukuran_baju` | ADR-027 F14.6 | Sama untuk peserta kelompok |
 
 `site_settings` key `freemium_lms_open` (F14.5) — tanpa kolom baru (key-value). Hanya string JSON `'true'` membuka akses. Tanpa baris, error baca, atau nilai lain = tertutup (fail-closed).
+
+**Dikoreksi 2026-10-08 — tabel di `src/types/database.ts` yang belum disebut sebagai tabel di §5.1–5.1g:** `material_chapter_files` (ADR-018), `certificate_order_items` (ADR-026 F13.4), `merchandise_public_orders` (ADR-026), `company_registrations`, `company_registration_participants` (ADR-026 F13.5). Kolom peserta kelompok di baris atas mengandaikan tabel itu ada. Jumlah tabel di `database.ts`: 37 tabel + 2 view (`certificates_public`, `products_public`). Angka “24 tabel inti” di pembuka §5 adalah hitungan Fase 1, bukan inventaris hari ini.
 
 **Perilaku Modul 14 yang sudah ada di kode (8 Oktober 2026).** Bukan rencana.
 
@@ -1115,7 +1119,7 @@ Perbaikan pengalaman upload gambar Admin dan tampilan publik, supaya poster pela
 
 ### 9d.8 Selesai bila
 
-- [ ] Seluruh F09.1 s/d F09.4 berstatus DONE di `feature-registry.md` dengan bukti uji manual di browser (Definition of Done Bagian 14, butir 5 tetap wajib Alif)
+- [x] Seluruh F09.1 s/d F09.4 berstatus DONE di `feature-registry.md` dengan bukti uji manual di browser (Definition of Done Bagian 14, butir 5 tetap wajib Alif). Dikonfirmasi Alif 9 Okt 2026 (checklist plan.md, Audit dokumen inti 2026-10-08, ayat 7(d)). Butir perilaku di bawah tidak dicentang ulang di sini.
 - [ ] Form Admin Batch punya dua field gambar terpisah (Gambar Hero/thumbnail dan Gambar Detail) — field Gambar Detail tidak memunculkan dialog crop sama sekali
 - [ ] Halaman detail batch publik menampilkan `gambar_detail_url` secara utuh (`object-contain`), fallback ke `hero_gambar_url` kalau kosong, diuji dengan poster berbagai rasio (memanjang dan melebar)
 - [ ] Form Admin Produk: dialog crop tetap muncul tapi tidak lagi terkunci rasio 1:1, ada teks keterangan soal latar putih
@@ -1190,7 +1194,7 @@ Memperbaiki bug nyata yang ditemukan Alif di lingkungan production (bukan lagi l
 
 ### 9e.10 Selesai bila
 
-- [ ] Seluruh F10.1 s/d F10.6 berstatus DONE di `feature-registry.md` dengan bukti uji manual (Definisi Selesai Bagian 14)
+- [ ] Seluruh F10.1 s/d F10.6 berstatus DONE di `feature-registry.md` dengan bukti uji manual (Definisi Selesai Bagian 14). Dikoreksi 9 Okt 2026: F10.1 sudah DONE; F10.3–F10.6 DONE (dikonfirmasi Alif 9 Okt 2026). F10.2 tetap `SKIP (bukan bug)/PERLU DICEK ALIF`, jadi rentang ini belum seluruhnya DONE.
 - [ ] Menu Admin: Pendaftaran Batch/Peserta Pendaftaran ada di section Leads, tombol edit/hapus/setujui berwarna konsisten dan jelas di dark mode
 - [ ] Kuis LMS: mencoba submit dengan jawaban salah menampilkan "Ulangi Ujian", materi yang sudah dibaca tidak ikut ter-reset, submit hanya berhasil kalau semua jawaban benar
 - [ ] Approve pendaftaran batch meminta bukti pembayaran dulu, bukti tampil di detail Peserta Pendaftaran
@@ -1262,7 +1266,7 @@ Menghilangkan ambiguitas field kategori Produk/Batch, melengkapi dashboard Admin
 
 ### 9f.7 Selesai bila
 
-- [x] Seluruh F11.1 s/d F11.7 berstatus DONE di `feature-registry.md` dengan bukti uji manual (Definisi Selesai Bagian 14)
+- [x] Seluruh F11.1 s/d F11.7 berstatus DONE di `feature-registry.md` dengan bukti uji manual (Definisi Selesai Bagian 14). Dikoreksi 9 Okt 2026: di registry hanya ada F11.1–F11.3, ketiganya DONE (dikonfirmasi Alif 9 Okt 2026). F11.4–F11.7 tidak punya baris registry; centang ini merujuk cakupan PRD §9f / ADR-024, bukan baris registry.
 - [x] Form Produk hanya punya satu field kategori (combobox), badge kategori publik tetap tampil benar untuk produk yang sudah punya `category_id` terisi
 - [x] `select harga from products_public where tampilkan_harga = false;` masih mengembalikan semua NULL setelah view diubah (regresi keamanan harga TIDAK terjadi)
 - [x] Dashboard Admin menampilkan ringkasan Leads per sumber, grafik tren 2 garis, pie chart status Leads, bar chart Sertifikat, dan angka stat card yang lebih besar
@@ -1424,6 +1428,8 @@ Daftar lengkap 25 larangan ada di bagian ini sendiri (di bawah). Ini yang paling
 - Larangan 24 tetap: email `minat_batch` tidak ditambahkan; masih ditahan Fase 2.
 - Larangan 25 tetap: saklar F14.5 hanya membuka/menutup LMS Freemium yang sudah ada. Tidak menambah LMS untuk batch berbayar, absensi, atau peran instruktur.
 
+**Dikecualikan 2026-10-08.** Grafik operasional di Admin Overview (ADR-019) dan mode gelap via next-themes diizinkan; grafik analitik di sisi publik/user tetap dilarang. Butir 25 di atas tidak diubah. Tercatat di `plan.md`, bagian «Audit dokumen inti 2026-10-08».
+
 ---
 
 ## 14. DEFINITION OF DONE
@@ -1453,7 +1459,7 @@ Penambahan salah satu butir ini merupakan **perubahan scope yang memerlukan kese
 
 | Butir | Rencana |
 |---|---|
-| Email notifikasi Admin untuk **pendaftaran batch baru** (`batch_registrations`) | Fase 2. Di Fase 1, `kirimEmailLeadBaru` hanya dipanggil untuk penawaran produk (`jenis: 'penawaran'`). Cabang tipe `minat_batch` di `send.ts`/`templates.ts` **sengaja ditahan** (keputusan Alif 2026-09-24) sebagai placeholder — jangan dihapus sebagai dead code knip; saat dibangun, pertimbangkan jenis baru (mis. `pendaftaran_batch`) daripada menghidupkan label “minat” (UI F01.6 sudah dihapus F10.1) |
+| Email notifikasi Admin untuk **pendaftaran batch baru** (`batch_registrations`) | Fase 2. **Dikoreksi 2026-10-08:** `kirimEmailLeadBaru` dipanggil untuk `jenis: 'penawaran'` (`katalog/[slug]/actions.ts`) dan `jenis: 'pendaftaran_perusahaan'` (`daftar-perusahaan-actions.ts`). Cabang `minat_batch` di `send.ts`/`templates.ts` **tetap tidak dipanggil dari UI** (keputusan Alif 2026-09-24) |
 | LMS Advance — materi mitra ("Uncle Sam"/Emergent) | Fase 3, menunggu MOU |
 | LMS Basic untuk batch RPC | Fase 2. Delivery tetap manual lewat WhatsApp Group + Zoom |
 | Payment gateway otomatis | Fase 2 |

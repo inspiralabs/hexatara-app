@@ -82,7 +82,7 @@ Katalog Hexatara menampilkan drone Autel sebagai etalase dan penangkap minat pem
 |---|---|---|
 | UAT Hexatara Modul 4 kosong | Belum tanda tangan klien | Isi saat UAT |
 | Bukti F04.6 “CSV” vs kode XLSX | Format unduhan = Excel | Manual book: Excel |
-| F11.1 (dual kategori) masih TODO di registry | Form sudah satu field relasi | Selesaikan F11.1 / SQL view bila masih terbuka |
+| F11.1 (dual kategori) DONE 9 Okt 2026 di registry | Form satu field relasi | Ditutup. Alif uji browser; checklist plan.md Audit dokumen inti 2026-10-08 |
 | Hydration mismatch `/katalog/[slug]` (2026-09-09) | Investigasi = HMR basi, bukan bug prod | Jangan buka ulang tanpa bukti baru |
 | Warning console Server Action / next-themes | Bukan bug Modul 4 | `00-KNOWN-WARNINGS.md` |
 

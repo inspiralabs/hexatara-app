@@ -29,6 +29,8 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 **Status:** `TODO` · `WIP` · `DONE` · `SKIP` · `BLOCKED`
 
+**Dikoreksi 2026-10-08 (path).** Banyak baris Sprint 0–1 menulis `src/app/(public)` atau `src/app/(auth)`. Di repo sekarang rute itu ada di `src/app/[locale]/(public)` dan `src/app/[locale]/(auth)`. `src/components/admin/admin-sidebar.tsx` tidak ada; shell Admin adalah `src/components/shell/admin-shell.tsx`. `src/components/admin/image-upload-field.tsx` tidak ada; yang ada `src/components/image-upload-field.tsx`. `src/app/layout.tsx` tidak ada; layout root lokal adalah `src/app/[locale]/layout.tsx` dan `src/app/admin/layout.tsx`. UI minat (`daftar-minat-dialog`, `leads-table`) sudah dihapus F10.1; tabel `batch_leads` tetap. Status DONE baris lama tidak diturunkan; path historis itu tidak dipakai sebagai peta file hidup.
+
 ---
 
 ## Sprint 0 — Fondasi
@@ -43,7 +45,7 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 | F00.6 | Auth: daftar, login, verifikasi email, reset sandi | DONE | `src/app/(auth)/` | 2026-09-06; AC script 2026-09-23 | Alif menguji sendiri di browser: daftar akun baru + email verifikasi masuk + klik link → login berhasil; lupa sandi sampai tuntas (link reset masuk, sandi baru berhasil dipakai login); login dengan sandi salah/akun belum verifikasi ditolak dengan pesan error yang sesuai. **AC PRD §6.5 (2026-09-23):** script autentikasi dimuat sekali per halaman — tidak ada error deklarasi ganda di console — LOLOS. |
 | F00.7 | Login Admin terpisah + `requireAdmin()` | DONE | `src/lib/auth/guard.ts` | 2026-09-06 | Alif menguji sendiri di browser: login admin berhasil, sidebar 9 menu (PRD §4) tampil; akses /admin tanpa login → redirect ke halaman login; akses /admin pakai akun non-admin → ditolak |
 | F00.8 | Kerangka Admin Panel | DONE | `src/app/admin/(protected)/layout.tsx`, `src/components/admin/admin-sidebar.tsx`, `src/components/admin/admin-stub-page.tsx`, `src/app/admin/(protected)/{batch,konten,leads,sertifikat,upgrade,materi,produk,pengaturan}/page.tsx` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; sudah berganti font dan sudah berubah menjadi hamburger ketika resize |
-| F00.9 | Helper Resend + template email | TODO | `src/lib/email/` |  | |
+| F00.9 | Helper Resend + template email | DONE | `src/lib/email/` | 2026-10-09 | Dikonfirmasi Alif 9 Okt 2026 (diuji sendiri di browser; checklist plan.md Audit dokumen inti 2026-10-08) |
 | F00.10 | Design tokens | DONE | `src/app/globals.css`, `src/app/layout.tsx` | 2026-09-06 | Alif menguji sendiri, hasil sesuai; sudah berganti font dan sudah berubah menjadi hamburger ketika resize |
 
 ## Sprint 1 — Modul 1: Landing Page
@@ -179,10 +181,10 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
 |---|---|---|---|---|---|
-| F08.1 | Halaman Admin baru "Peserta Pendaftaran" — daftar peserta disetujui, filter per batch, export XLSX mengikuti filter aktif | TODO | | | |
-| F08.2 | Filter batch di panel verifikasi `admin/pendaftaran-batch` (F07.5) yang sudah ada | TODO | | | |
-| F08.3 | Card baru di halaman detail batch publik: syarat peserta (tabel baru `batch_requirements`), fasilitas (REUSE `batch_benefits`), dua kontak WhatsApp (key baru `kontak_pelatihan` di `site_settings`) | TODO | | | |
-| F08.4 | Tombol "Salin dari Batch Lain" di form Tambah Batch Admin — menyalin konten + 5 tabel terkait dari batch sumber | TODO | | | |
+| F08.1 | Halaman Admin baru "Peserta Pendaftaran" — daftar peserta disetujui, filter per batch, export XLSX mengikuti filter aktif | DONE | `src/app/admin/(protected)/peserta-pendaftaran/` | 2026-09-24 | Dikonfirmasi Alif 24 Sep 2026 (diuji sendiri di browser) |
+| F08.2 | Filter batch di panel verifikasi `admin/pendaftaran-batch` (F07.5) yang sudah ada | DONE | `src/app/admin/(protected)/pendaftaran-batch/` | 2026-09-24 | Dikonfirmasi Alif 24 Sep 2026 (diuji sendiri di browser) |
+| F08.3 | Card baru di halaman detail batch publik: syarat peserta (tabel baru `batch_requirements`), fasilitas (REUSE `batch_benefits`), dua kontak WhatsApp (key baru `kontak_pelatihan` di `site_settings`) | DONE | `src/app/[locale]/(public)/pelatihan/[slug]/page.tsx` | 2026-09-24 | Dikonfirmasi Alif 24 Sep 2026 (diuji sendiri di browser) |
+| F08.4 | Tombol "Salin dari Batch Lain" di form Tambah Batch Admin — menyalin konten + 5 tabel terkait dari batch sumber | DONE | `src/app/admin/(protected)/batch/batch-form.tsx` | 2026-09-24 | Dikonfirmasi Alif 24 Sep 2026 (diuji sendiri di browser) |
 
 ---
 
@@ -192,10 +194,10 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
 |---|---|---|---|---|---|
-| F09.1 | Field baru "Gambar Detail" pelatihan (`batches.gambar_detail_url`) — upload tanpa dialog crop, tampil utuh di halaman detail publik | TODO | | | |
-| F09.2 | Galeri foto produk (crop bebas, tampil utuh) **+ thumbnail terpisah `products.thumbnail_url`, rasio 16:9 (ADR-022b, revisi setelah diuji Alif)** + perbaikan panah carousel keluar bingkai | WIP | `cursor-prompt-fix-f09.2.md` | | Alif menguji galeri crop-bebas, menemukan 2 masalah (panah + kebingungan thumbnail) — perbaikan diajukan 2026-09-17, belum diuji ulang |
-| F09.3 | Rasio crop upload Hero Beranda diselaraskan dari 16:9 ke 4:3 | TODO | | | |
-| F09.4 | Lightbox klik-untuk-perbesar (backdrop blur) untuk hero pelatihan dan galeri produk publik | TODO | | | |
+| F09.1 | Field baru "Gambar Detail" pelatihan (`batches.gambar_detail_url`) — upload tanpa dialog crop, tampil utuh di halaman detail publik | DONE | `src/app/admin/(protected)/batch/batch-form.tsx`; `src/components/batch-detail-hero.tsx` | 2026-10-09 | Dikonfirmasi Alif 9 Okt 2026 (diuji sendiri di browser; checklist plan.md Audit dokumen inti 2026-10-08) |
+| F09.2 | Galeri foto produk (crop bebas, tampil utuh) **+ thumbnail terpisah `products.thumbnail_url`, rasio 16:9 (ADR-022b, revisi setelah diuji Alif)** + perbaikan panah carousel keluar bingkai | DONE | `cursor-prompt-fix-f09.2.md`; `src/app/[locale]/(public)/katalog/[slug]/product-gallery.tsx`; `src/app/admin/(protected)/produk/produk-form.tsx` | 2026-10-09 | Alif menguji galeri crop-bebas, menemukan 2 masalah (panah + kebingungan thumbnail) — perbaikan diajukan 2026-09-17, belum diuji ulang. Dikonfirmasi Alif 9 Okt 2026 (diuji sendiri di browser; checklist plan.md Audit dokumen inti 2026-10-08) |
+| F09.3 | Rasio crop upload Hero Beranda diselaraskan dari 16:9 ke 4:3 | DONE | `src/app/admin/(protected)/konten/hero-slide-form-dialog.tsx` | 2026-10-09 | Dikonfirmasi Alif 9 Okt 2026 (diuji sendiri di browser; checklist plan.md Audit dokumen inti 2026-10-08) |
+| F09.4 | Lightbox klik-untuk-perbesar (backdrop blur) untuk hero pelatihan dan galeri produk publik | DONE | `src/components/public-image-lightbox.tsx`; `src/components/batch-detail-hero.tsx`; `src/app/[locale]/(public)/katalog/[slug]/product-gallery.tsx` | 2026-10-09 | Dikonfirmasi Alif 9 Okt 2026 (diuji sendiri di browser; checklist plan.md Audit dokumen inti 2026-10-08) |
 
 ---
 
@@ -207,10 +209,10 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 |---|---|---|---|---|---|
 | F10.1 | Polish Admin: menu Pendaftaran Batch/Peserta Pendaftaran pindah ke section Leads, warna tombol edit/hapus/setujui konsisten, hint heading silabus **+ pembersihan Pendaftaran Minat (F01.6) yang sudah orphan (temuan tambahan Cursor, di luar prompt asli)** | DONE | `cursor-prompt-sprint9-modul10-f10.1-admin-polish.md`; `src/components/shell/admin-shell.tsx`; `src/components/ui/button.tsx` (varian `edit`/`success` baru); `src/app/admin/(protected)/pendaftaran-batch/pendaftaran-batch-row-actions.tsx`; `src/app/admin/(protected)/batch/batch-form.tsx` (hint silabus); dihapus: halaman/actions/table Admin Pendaftaran Minat, `daftar-minat-dialog.tsx`, `daftarMinatAction`, validasi terkait; `/admin/leads` diarahkan redirect ke Penawaran; Overview + Kursus Saya dialihkan baca dari `batch_registrations` | 2026-09-18 | Alif menguji sendiri di browser: menu Leads sekarang 4 item (Minat DIHAPUS, jadi Penawaran/Pendaftaran Batch/Peserta), section Batch tinggal Daftar+Kategori, route existing tidak berubah; tombol edit=biru/success=hijau/hapus & tolak=destructive konsisten dan dark-mode-friendly; hint H2/H3 silabus tampil di form Batch ID+EN. Pembersihan Minat: dikonfirmasi via kode dulu (`DaftarMinatDialog` sudah tidak di-import di mana pun sejak ADR-020r) sebelum Cursor menghapus, `tsc`/`lint`/`build` bersih, redirect dan Overview/Kursus Saya diuji Alif dan berfungsi. Tabel `batch_leads` di Supabase SENGAJA TIDAK dihapus (riwayat lama, sesuai PRD.md §9b/checklist F07 "batch_leads tidak terhapus/rusak") |
 | F10.2 | Cek operasional: `NEXT_PUBLIC_SITE_URL` Vercel Production, konfirmasi urutan produk/pelatihan BUKAN bug | SKIP (bukan bug)/PERLU DICEK ALIF | — (tanpa kode, dikerjakan Alif langsung di Vercel Dashboard) | | Ditelusuri ke kode 2026-09-18: query `urutan` sudah konsisten di Beranda/`/pelatihan`/`/katalog`, dikonfirmasi Alif via AskUserQuestion bukan bug |
-| F10.3 | Perbaikan bug kuis LMS — jawaban salah tidak lagi meloloskan submit, tombol "Ulangi Ujian" mereset kuis saja (bukan materi) | TODO | `cursor-prompt-sprint9-modul10-f10.3-kuis-lms.md` | | |
-| F10.4 | Bukti pembayaran pendaftaran batch (`batch_registrations.bukti_url`) — Admin upload sebelum Setuju, tampil di detail Peserta Pendaftaran | TODO | `cursor-prompt-sprint9-modul10-f10.4-bukti-pembayaran.md` | | |
-| F10.5 | Infrastruktur email — verifikasi & reset password pindah dari bawaan Supabase ke Resend (template branded sudah ada, sebelumnya tidak pernah dipanggil) | TODO | `cursor-prompt-sprint9-modul10-f10.5-email-resend.md` | | |
-| F10.6 | Verifikasi email lintas-device — device asal auto-login begitu device lain selesai verifikasi, dengan animasi menunggu | TODO | `cursor-prompt-sprint9-modul10-f10.6-verifikasi-lintas-device.md` | | Bergantung F10.5 selesai duluan |
+| F10.3 | Perbaikan bug kuis LMS — jawaban salah tidak lagi meloloskan submit, tombol "Ulangi Ujian" mereset kuis saja (bukan materi) | DONE | `cursor-prompt-sprint9-modul10-f10.3-kuis-lms.md`; `src/app/[locale]/(kelas)/materi/[id]/course-reader.tsx` | 2026-10-09 | Dikonfirmasi Alif 9 Okt 2026 (diuji sendiri di browser; checklist plan.md Audit dokumen inti 2026-10-08) |
+| F10.4 | Bukti pembayaran pendaftaran batch (`batch_registrations.bukti_url`) — Admin upload sebelum Setuju, tampil di detail Peserta Pendaftaran | DONE | `cursor-prompt-sprint9-modul10-f10.4-bukti-pembayaran.md`; `src/app/admin/(protected)/pendaftaran-batch/pendaftaran-batch-row-actions.tsx`; `src/app/admin/(protected)/peserta-pendaftaran/peserta-pendaftaran-detail.tsx` | 2026-10-09 | Dikonfirmasi Alif 9 Okt 2026 (diuji sendiri di browser; checklist plan.md Audit dokumen inti 2026-10-08) |
+| F10.5 | Infrastruktur email — verifikasi & reset password pindah dari bawaan Supabase ke Resend (template branded sudah ada, sebelumnya tidak pernah dipanggil) | DONE | `cursor-prompt-sprint9-modul10-f10.5-email-resend.md`; `src/app/[locale]/(auth)/daftar/actions.ts` | 2026-10-09 | Dikonfirmasi Alif 9 Okt 2026 (diuji sendiri di browser; checklist plan.md Audit dokumen inti 2026-10-08) |
+| F10.6 | Verifikasi email lintas-device — device asal auto-login begitu device lain selesai verifikasi, dengan animasi menunggu | DONE | `cursor-prompt-sprint9-modul10-f10.6-verifikasi-lintas-device.md`; `src/app/[locale]/(auth)/verifikasi-email/verifikasi-poller.tsx` | 2026-10-09 | Bergantung F10.5 selesai duluan. Dikonfirmasi Alif 9 Okt 2026 (diuji sendiri di browser; checklist plan.md Audit dokumen inti 2026-10-08) |
 
 ---
 
@@ -220,9 +222,9 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
 |---|---|---|---|---|---|
-| F11.1 | Hapus field teks "Kategori" dari form Produk, badge kategori publik pindah baca dari relasi `category_id` (view `products_public` + kolom baru `category_nama_id`/`category_nama_en`) | TODO | `cursor-prompt-sprint10-modul11-f11.1-kategori-produk.md` | | Bergantung SQL `usulan-sql-modul11-adr024.sql` dijalankan Alif dulu + regenerate `src/types/database.ts` |
-| F11.2 | Dashboard Admin: section Ringkasan Leads per sumber (Pendaftaran Batch vs Permintaan Penawaran + breakdown status), grafik tren jadi 2 garis, tambahan pie chart status Leads + bar chart Sertifikat, angka stat card diperbesar | TODO | `cursor-prompt-sprint10-modul11-f11.2-dashboard-admin.md` | | |
-| F11.3 | Redesign halaman Login Admin — tambahkan `BrandLogo` (komponen sudah ada) | TODO | `cursor-prompt-sprint10-modul11-f11.3-login-admin.md` | | |
+| F11.1 | Hapus field teks "Kategori" dari form Produk, badge kategori publik pindah baca dari relasi `category_id` (view `products_public` + kolom baru `category_nama_id`/`category_nama_en`) | DONE | `cursor-prompt-sprint10-modul11-f11.1-kategori-produk.md`; `src/app/admin/(protected)/produk/produk-form.tsx` | 2026-10-09 | Bergantung SQL `usulan-sql-modul11-adr024.sql` dijalankan Alif dulu + regenerate `src/types/database.ts`. Dikonfirmasi Alif 9 Okt 2026 (diuji sendiri di browser; checklist plan.md Audit dokumen inti 2026-10-08) |
+| F11.2 | Dashboard Admin: section Ringkasan Leads per sumber (Pendaftaran Batch vs Permintaan Penawaran + breakdown status), grafik tren jadi 2 garis, tambahan pie chart status Leads + bar chart Sertifikat, angka stat card diperbesar | DONE | `cursor-prompt-sprint10-modul11-f11.2-dashboard-admin.md`; `src/app/admin/(protected)/overview/` | 2026-10-09 | Dikonfirmasi Alif 9 Okt 2026 (diuji sendiri di browser; checklist plan.md Audit dokumen inti 2026-10-08) |
+| F11.3 | Redesign halaman Login Admin — tambahkan `BrandLogo` (komponen sudah ada) | DONE | `cursor-prompt-sprint10-modul11-f11.3-login-admin.md`; `src/app/admin/login/page.tsx` | 2026-10-09 | Dikonfirmasi Alif 9 Okt 2026 (diuji sendiri di browser; checklist plan.md Audit dokumen inti 2026-10-08) |
 
 ---
 
@@ -254,16 +256,16 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 ## Sprint 13 — Modul 14: Tambahan Hexatara (meeting 4 Okt 2026)
 
-> Enam permintaan meeting 4 Oktober 2026 (ADR-027). F14.1–F14.6 DONE setelah uji Alif.
+> Enam permintaan meeting 4 Oktober 2026 (ADR-027). **Dikoreksi 2026-10-08:** F14.1–F14.6 kembali TODO untuk uji ulang Alif. Kode sudah ada. Riwayat uji sebelumnya tetap di log di bawah, bukan status aktif.
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
 |---|---|---|---|---|---|
-| F14.1 | Hero: badge Autel Robotics Authorized Dealer di bawah judul retail | DONE | `src/components/hero-section.tsx`; `messages/id.json`; `messages/en.json` | 2026-10-06 | Alif konfirmasi DONE 6 Okt 2026. |
-| F14.2 | Relabel Pendaftaran Kelompok + minimal 3 peserta (label saja; rute/tabel company_* tetap) | DONE | `messages/{id,en}.json` (`batch.registerCompany`); `daftar-perusahaan-dialog.tsx`; `daftar-perusahaan-actions.ts`; `validations/company-registration.ts`; `admin/pendaftaran-perusahaan/*`; `admin-shell.tsx`; `email/templates.ts` | 2026-10-06 | Alif konfirmasi DONE 6 Okt 2026 (uji minimal 2 peserta ditolak). |
-| F14.3 | Instruktur: foto portrait 4:5, bio→Catatan internal, dialog Detail Admin | DONE | `instruktur-section.tsx`; `image-upload-field.tsx`; `instructor-form-dialog.tsx`; `instructor-list.tsx`; `instructor-detail-dialog.tsx`; `instructor-portrait-badge.tsx`; `instructor-actions.ts`; `validations/instructor-admin.ts` | 2026-10-06 | Alif konfirmasi DONE 6 Okt 2026. |
-| F14.4 | Partner Kami: CRUD Admin + section publik di bawah Instruktur | DONE | `partner-section.tsx`; `messages/{id,en}.json`; `admin/konten/partner/page.tsx`; `partner-list.tsx`; `partner-form-dialog.tsx`; `partner-actions.ts`; `partner-row-actions.tsx`; `partner-active-switch.tsx`; `validations/partner-admin.ts`; `admin-shell.tsx`; `image-upload-field.tsx` | 2026-10-06 | Alif konfirmasi DONE 6 Okt 2026. |
-| F14.5 | Saklar tutup LMS Freemium (server gate + UI + Admin) | DONE | `site-settings.ts`; `lms-closed-page.tsx`; `lms-admin-preview-strip.tsx`; `materi-preview-button.tsx`; `materi/**/page.tsx`; `kuis/page.tsx`; `materi/[id]/actions.ts`; `kuis/actions.ts`; `daftar/actions.ts`; `pelatihan/page.tsx`; `dashboard/{pelatihan,kursus,upgrade}/page.tsx`; `pengaturan/freemium-lms-card.tsx`; `sitemap.ts`; `messages/{id,en}.json` | 2026-10-07 | Alif konfirmasi DONE 7 Okt 2026: saklar off dari pengaturan + sudut pandang user + tombol Pratinjau Materi. |
-| F14.6 | Program kategori (flag) + Lokasi Praktek + filter slug + form individu + Excel kelompok | DONE | `kategori-manager.tsx`; `batch/kategori/*`; `batch/lokasi-praktek/*`; `slugify.ts`; `pelatihan/page.tsx`; `dashboard/pelatihan/page.tsx`; `pelatihan/[slug]/{page,daftar-batch-*,daftar-perusahaan-*}.tsx`; `company-registration/import.ts`; `pendaftaran-batch/*`; `peserta-pendaftaran/*`; `pendaftaran-perusahaan/*` | 2026-10-08 | Alif konfirmasi DONE 8 Okt 2026: 6A (7 Okt, SiDOPI + flag + kota), 6B (form individu + Admin/export), 6C (Excel kelompok + detail peserta). |
+| F14.1 | Hero: badge Autel Robotics Authorized Dealer di bawah judul retail | TODO | `src/components/hero-section.tsx`; `messages/id.json`; `messages/en.json` | | Selesai dikodekan, menunggu uji ulang Alif |
+| F14.2 | Relabel Pendaftaran Kelompok + minimal 3 peserta (label saja; rute/tabel company_* tetap) | TODO | `messages/id.json`; `messages/en.json`; `src/app/[locale]/(public)/pelatihan/[slug]/daftar-perusahaan-dialog.tsx`; `src/app/[locale]/(public)/pelatihan/[slug]/daftar-perusahaan-actions.ts`; `src/lib/validations/company-registration.ts`; `src/app/admin/(protected)/pendaftaran-perusahaan/`; `src/components/shell/admin-shell.tsx`; `src/lib/email/templates.ts` | | Selesai dikodekan, menunggu uji ulang Alif |
+| F14.3 | Instruktur: foto portrait 4:5, bio→Catatan internal, dialog Detail Admin | TODO | `src/components/instruktur-section.tsx`; `src/components/image-upload-field.tsx`; `src/app/admin/(protected)/konten/instructor-form-dialog.tsx`; `src/app/admin/(protected)/konten/instructor-list.tsx`; `src/app/admin/(protected)/konten/instructor-detail-dialog.tsx`; `src/app/admin/(protected)/konten/instructor-portrait-badge.tsx`; `src/app/admin/(protected)/konten/instructor-actions.ts`; `src/lib/validations/instructor-admin.ts` | | Selesai dikodekan, menunggu uji ulang Alif |
+| F14.4 | Partner Kami: CRUD Admin + section publik di bawah Instruktur | TODO | `src/components/partner-section.tsx`; `messages/id.json`; `messages/en.json`; `src/app/admin/(protected)/konten/partner/page.tsx`; `src/app/admin/(protected)/konten/partner-list.tsx`; `src/app/admin/(protected)/konten/partner-form-dialog.tsx`; `src/app/admin/(protected)/konten/partner-actions.ts`; `src/app/admin/(protected)/konten/partner-row-actions.tsx`; `src/app/admin/(protected)/konten/partner-active-switch.tsx`; `src/lib/validations/partner-admin.ts`; `src/components/shell/admin-shell.tsx`; `src/components/image-upload-field.tsx` | | Selesai dikodekan, menunggu uji ulang Alif |
+| F14.5 | Saklar tutup LMS Freemium (server gate + UI + Admin) | TODO | `src/lib/site-settings.ts`; `src/components/lms-closed-page.tsx`; `src/components/lms-admin-preview-strip.tsx`; `src/app/admin/(protected)/materi/materi-preview-button.tsx`; `src/app/[locale]/(kelas)/materi/`; `src/app/[locale]/(public)/kuis/page.tsx`; `src/app/[locale]/(kelas)/materi/[id]/actions.ts`; `src/app/[locale]/(public)/kuis/actions.ts`; `src/app/[locale]/(auth)/daftar/actions.ts`; `src/app/[locale]/(public)/pelatihan/page.tsx`; `src/app/[locale]/(user)/dashboard/pelatihan/page.tsx`; `src/app/[locale]/(user)/dashboard/kursus/page.tsx`; `src/app/[locale]/(user)/dashboard/upgrade/page.tsx`; `src/app/admin/(protected)/pengaturan/freemium-lms-card.tsx`; `src/app/sitemap.ts`; `messages/id.json`; `messages/en.json` | | Selesai dikodekan, menunggu uji ulang Alif |
+| F14.6 | Program kategori (flag) + Lokasi Praktek + filter slug + form individu + Excel kelompok | TODO | `src/components/admin/kategori-manager.tsx`; `src/app/admin/(protected)/batch/kategori/`; `src/app/admin/(protected)/batch/lokasi-praktek/`; `src/lib/slugify.ts`; `src/app/[locale]/(public)/pelatihan/page.tsx`; `src/app/[locale]/(user)/dashboard/pelatihan/page.tsx`; `src/app/[locale]/(public)/pelatihan/[slug]/`; `src/lib/company-registration/import.ts`; `src/app/admin/(protected)/pendaftaran-batch/`; `src/app/admin/(protected)/peserta-pendaftaran/`; `src/app/admin/(protected)/pendaftaran-perusahaan/` | | Selesai dikodekan, menunggu uji ulang Alif |
 
 ---
 
@@ -275,7 +277,7 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 | F05.2 | Lighthouse mobile ≥ 90 | TODO | |  | |
 | F05.3 | Halaman 404 & 500 dwibahasa | TODO | |  | |
 | F05.4 | SEO + sitemap + hreflang | TODO | |  | |
-| F05.5 | Sentry | TODO | |  | |
+| F05.5 | Sentry | DONE | `src/sentry.server.config.ts`; `src/sentry.edge.config.ts`; `src/instrumentation-client.ts`; `src/lib/sentry/shared.ts` | 2026-10-09 | Dikonfirmasi Alif 9 Okt 2026 (diuji sendiri di browser; checklist plan.md Audit dokumen inti 2026-10-08) |
 | F05.6 | Verifikasi backup Supabase | TODO | |  | |
 | F05.7 | Deploy + domain + SSL | TODO | |  | |
 | F05.8 | Isi `AS_BUILT/` keempat modul | DONE | `docs/AS_BUILT/M1-landing-page.md`, `M2-verifikasi-sertifikat.md`, `M3-sertifikat-gratis.md`, `M4-katalog-produk.md`, `_TEMPLATE.md`, `00-KNOWN-WARNINGS.md` | 2026-09-24 | Keempat modul inti BRD (M1–M4) terisi dari kode + Bukti registry (bukan PRD rencana saja). M1 sudah ada sebelumnya; M2–M4 ditulis 2026-09-24. Manual book tanpa istilah teknis di tiap berkas; keputusan implementasi + yang sengaja tidak dibangun terisi; gap UAT Hexatara dicatat jujur. |
@@ -418,15 +420,18 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 2026-10-03  F13.5b Admin dikodekan (menu Leads, tabel, export, detail status/nominal). 3a+3b lengkap di kode; F13.5 tetap TODO sampai Alif uji Admin.
 2026-10-03  F13.5  Alif mengunci DONE setelah uji Admin (3b) + form publik (3a) sebelumnya. Lima permintaan Abi ADR-026 selesai.
 2026-10-06  F14.1  Badge Autel Robotics Authorized Dealer di hero retail dikodekan (ADR-027). Status TODO — menunggu uji Alif. F14.2–F14.6 belum.
-2026-10-06  F14.1  Alif mengunci DONE. F14.2 dikodekan: label Kelompok + MIN_PESERTA_KELOMPOK=3; rute/tabel tetap. F14.2 TODO sampai uji Alif.
-2026-10-06  F14.2  Alif mengunci DONE (uji Excel 2 peserta ditolak). F14.3 dikodekan: portrait 4:5, Catatan internal, Detail Admin; kolom bio_* tetap. F14.3 TODO sampai uji Alif.
-2026-10-06  F14.3  Alif mengunci DONE. F14.4 dikodekan: tabel partners, Admin Partner Kami, section publik; bucket content/partners/. F14.4 TODO sampai uji Alif.
-2026-10-06  F14.4  Alif mengunci DONE. F14.5 diagnosis saklar LMS Freemium dicatat di plan.md — menunggu OK Alif sebelum kode.
+2026-10-06  F14.1  Alif mengunci uji (riwayat log). F14.2 dikodekan: label Kelompok + MIN_PESERTA_KELOMPOK=3; rute/tabel tetap. F14.2 TODO sampai uji Alif.
+2026-10-06  F14.2  Alif mengunci uji (riwayat log, Excel 2 peserta ditolak). F14.3 dikodekan: portrait 4:5, Catatan internal, Detail Admin; kolom bio_* tetap. F14.3 TODO sampai uji Alif.
+2026-10-06  F14.3  Alif mengunci uji (riwayat log). F14.4 dikodekan: tabel partners, Admin Partner Kami, section publik; bucket content/partners/. F14.4 TODO sampai uji Alif.
+2026-10-06  F14.4  Alif mengunci uji (riwayat log). F14.5 diagnosis saklar LMS Freemium dicatat di plan.md — menunggu OK Alif sebelum kode.
 2026-10-07  F14.5  Diagnosis disetujui; dikodekan (gerbang page+action, saklar Admin, fail-closed). F14.5 TODO sampai uji Alif.
-2026-10-07  F14.5  Alif mengunci DONE (saklar + pratinjau + tombol Pratinjau Materi). F14.6a dikodekan: flag kategori, CRUD lokasi praktek, filter ?kategori=slug. F14.6 TODO — Bukti: 6A selesai dikodekan.
+2026-10-07  F14.5  Alif mengunci uji (riwayat log, saklar + pratinjau + tombol Pratinjau Materi). F14.6a dikodekan: flag kategori, CRUD lokasi praktek, filter ?kategori=slug. F14.6 TODO — Bukti: 6A selesai dikodekan.
 2026-10-07  F14.6a Alif mengunci 6A (kategori SiDOPI + flag + kota). F14.6b dikodekan: form daftar + Admin leads. F14.6 tetap TODO.
-2026-10-08  F14.6b Alif mengunci DONE. F14.6c dikodekan: template Excel dinamis + parser flag + detail kelompok. F14.6 tetap TODO — Bukti: 6A, 6B, 6C selesai dikodekan, menunggu uji Alif.
-2026-10-08  F14.6c Alif mengunci DONE. F14.6 DONE. Audit dokumen (kode tidak diubah).
+2026-10-08  F14.6b Alif mengunci uji (riwayat log). F14.6c dikodekan: template Excel dinamis + parser flag + detail kelompok. F14.6 tetap TODO — Bukti: 6A, 6B, 6C selesai dikodekan, menunggu uji Alif.
+2026-10-08  F14.6c Alif mengunci uji (catatan riwayat). Audit dokumen sebelumnya.
+2026-10-08  Dikoreksi: F14.1–F14.6 status aktif TODO, bukti "Selesai dikodekan, menunggu uji ulang Alif". Riwayat uji di atas tidak dihapus.
+2026-10-08  F08.1–F08.4 naik DONE. Bukti: dikonfirmasi Alif 24 Sep 2026 (diuji sendiri di browser). ADR-021. F14 tidak diubah.
+2026-10-09  F00.9, F05.5, F09.1–F09.4, F10.3–F10.6, F11.1–F11.3 naik DONE. Bukti: dikonfirmasi Alif 9 Okt 2026 (diuji sendiri di browser; checklist plan.md Audit dokumen inti 2026-10-08). F09.2 sebelumnya WIP. F10.2, F08.1–F08.4, dan F14.1–F14.6 tidak diubah.
 ```
 
 ---

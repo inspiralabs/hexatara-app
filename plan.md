@@ -650,7 +650,7 @@ Pill di bawah judul kartu retail hero (`offerRetailTitle`): ikon `BadgeCheck` + 
 | `src/components/hero-section.tsx` | Pill di bawah judul retail |
 | `messages/id.json` / `messages/en.json` | `landing.offerRetailAuthorizedDealer` |
 
-Status: **dikonfirmasi Alif 6 Okt 2026.** F14.1 DONE.
+Status: **dikonfirmasi Alif 6 Okt 2026 (riwayat).** Dikoreksi 2026-10-08: status registry F14.1 = TODO, uji ulang.
 
 **Pesan commit yang disarankan**
 
@@ -675,7 +675,7 @@ Label tampil “Perusahaan/Komunitas” → “Kelompok” (ID+EN). Rute `/admin
 | `admin/pendaftaran-perusahaan/*`, `admin-shell.tsx` | Label Admin/export |
 | `email/templates.ts` | Judul “Pendaftaran kelompok baru” |
 
-Status: **dikonfirmasi Alif 6 Okt 2026.** F14.2 DONE.
+Status: **dikonfirmasi Alif 6 Okt 2026 (riwayat).** Dikoreksi 2026-10-08: status registry F14.2 = TODO, uji ulang.
 
 ---
 
@@ -691,7 +691,7 @@ Publik & Admin foto `aspect-[4/5]` + `object-top`. Form: label “Catatan” (in
 | `instructor-list.tsx` + `instructor-detail-dialog.tsx` + `instructor-portrait-badge.tsx` | Tabel + Detail + badge |
 | `instructor-actions.ts` / `instructor-admin.ts` | Tanpa bio_en di payload |
 
-Status: **dikonfirmasi Alif 6 Okt 2026.** F14.3 DONE.
+Status: **dikonfirmasi Alif 6 Okt 2026 (riwayat).** Dikoreksi 2026-10-08: status registry F14.3 = TODO, uji ulang.
 
 ---
 
@@ -708,7 +708,7 @@ Tabel `partners` (SQL blok B sudah jalan). Admin Konten → Partner Kami: CRUD l
 | `image-upload-field.tsx` | preset `logo` (alpha PNG/WebP) |
 | `validations/partner-admin.ts`, `types/database.ts` | Schema + tipe |
 
-Status: **dikonfirmasi Alif 6 Okt 2026.** F14.4 DONE.
+Status: **dikonfirmasi Alif 6 Okt 2026 (riwayat).** Dikoreksi 2026-10-08: status registry F14.4 = TODO, uji ulang.
 
 ---
 
@@ -794,7 +794,7 @@ Helper: `src/lib/materi.ts` — `MATERI_PATH`, `getMateriAktifId()`, `getMateriH
 | `sitemap.ts` | Tanpa `/kuis` saat tertutup |
 | `messages/{id,en}.json` | `lmsClosed.*` |
 
-Status: **dikonfirmasi Alif 7 Okt 2026** (saklar + pratinjau Admin + tombol Pratinjau Materi). F14.5 DONE.
+Status: **dikonfirmasi Alif 7 Okt 2026 (riwayat, saklar + pratinjau Admin + tombol Pratinjau Materi).** Dikoreksi 2026-10-08: status registry F14.5 = TODO, uji ulang.
 
 ---
 
@@ -858,14 +858,135 @@ Status: **dikonfirmasi Alif 8 Okt 2026.** 6B selesai.
 | Flag off | Kolom tambahan diabaikan; `practice_location_id` / `ukuran_baju` = null |
 | Admin | Detail peserta kelompok: dua kolom, "—" bila kosong. Tanpa export peserta baru |
 
-Status: **dikonfirmasi Alif 8 Okt 2026.** F14.6 DONE.
+Status: **dikonfirmasi Alif 8 Okt 2026 (riwayat).** Dikoreksi 2026-10-08: status registry F14.6 = TODO, uji ulang.
 
 ---
 
 ## Penutup batch Modul 14 (8 Oktober 2026)
 
-Enam permintaan meeting 4 Oktober 2026 sudah dikodekan dan dikonfirmasi Alif (F14.1–F14.6, ADR-027).
+Enam permintaan meeting 4 Oktober 2026 sudah dikodekan (ADR-027). Dikoreksi 2026-10-08: status registry F14.1 sampai F14.6 adalah TODO untuk uji ulang.
 
 Yang berjalan di kode: badge Autel di kartu retail; menu dan salinan “Pendaftaran Kelompok” dengan minimal 3 peserta; foto instruktur 4:5 dan label Catatan (kolom `bio_*` tetap); section Partner Kami; saklar LMS Freemium yang tertutup kecuali nilai `'true'`, dengan pratinjau Admin; program lewat flag kategori (bukan hardcode SiDOPI), kota praktek global, filter `?kategori=`, field lokasi/ukuran di daftar individu dan Excel kelompok.
 
 Yang sengaja tidak diganti: rute `/admin/pendaftaran-perusahaan`, tabel `company_*`, kolom `bio_*`. Email `minat_batch` tetap ditahan Fase 2. Export Excel per peserta kelompok tidak dibuat. Teks 25 larangan PRD §13 tidak diubah.
+
+---
+
+## Audit dokumen inti 2026-10-08
+
+Sumber kebenaran: kode di repo. Tiga dokumen diselaraskan. Kode aplikasi tidak diubah. Status F14.1–F14.6 di registry = TODO (uji ulang). Riwayat uji di bagian plan.md di atas **tidak ditimpa**; yang berlaku untuk serah-terima adalah baris registry.
+
+### 1. Catatan ketidakkonsistenan
+
+| No | Dokumen & bagian | Temuan | Bukti di kode | Tingkat | Tindakan |
+|---|---|---|---|---|---|
+| 1 | Registry F14.1–F14.6; ADR-027; Bagian 11 | Status tertulis selesai uji, padahal Alif minta uji ulang | Berkas F14 ada di `src/` (badge, saklar, flag, Excel) | Tinggi | Sudah diperbaiki: status aktif TODO. Riwayat uji Bagian 11 diubah jadi “diuji Alif (riwayat)”, tidak dihapus |
+| 2 | ENGINEERING §2.1; PRD §2 | Next.js 15 dan next-intl 3.x vs paket terpasang | `package.json`: next 16.3.4, react 19.2.8, next-intl ^4.14.2 | Tinggi | Sudah diperbaiki dengan catatan Dikoreksi. Baris kunci 5 Sep di PRD tetap, ditambah catatan |
+| 3 | PRD §15 | Klaim email lead hanya jenis penawaran | `katalog/[slug]/actions.ts` jenis penawaran; `daftar-perusahaan-actions.ts` jenis pendaftaran_perusahaan. `minat_batch` tidak dipanggil | Tinggi | Sudah diperbaiki. Cabang minat_batch tetap ditahan |
+| 4 | PRD §5 pembuka vs `database.ts` | “24 tabel” bukan inventaris sekarang. Lima tabel tidak disebut sebagai tabel di §5.1–5.1g | `material_chapter_files`, `certificate_order_items`, `merchandise_public_orders`, `company_registrations`, `company_registration_participants` ada di `database.ts` | Tinggi | Sudah diperbaiki: catatan Dikoreksi di §5.1h. Subbab lama tidak dihapus |
+| 5 | Registry Berkas Sprint 0–1 | Path `src/app/(public)`, `admin-sidebar.tsx`, `src/app/layout.tsx` tidak ada | Layout hidup: `src/app/[locale]/(public)/layout.tsx`, shell `src/components/shell/admin-shell.tsx` | Sedang | Sudah diperbaiki sebagai peta path di kepala registry. Status DONE baris itu tidak diturunkan. Sel F14 diganti path penuh yang ada |
+| 6 | ENGINEERING §2.2 vs kode | Larangan “tanpa chart” dan “tanpa next-themes” | `recharts` hanya di `src/app/admin/(protected)/overview/` (3 berkas). `next-themes` di `theme-provider.tsx` | Sedang | Ditutup 8 Okt 2026, opsi 2. Teks larangan tetap. Kalimat pengecualian di bawah tabel §2.2 |
+| 7 | PRD §13 butir 25 vs Overview | Larangan grafik analitik vs chart Admin yang sudah dikodekan | Tiga impor `recharts`, semuanya di Overview Admin | Sedang | Ditutup 8 Okt 2026. Butir 25 tidak diubah. Kalimat pengecualian di §13.6 |
+| 8 | Registry F08.1–F08.4, F09.1, F09.3, F09.4, F10.3–F10.6, F11.1–F11.3, F05.5, F00.9 | Status TODO/WIP, bukti kosong atau hanya prompt, sementara ADR dan kode sudah jalan | Contoh: `peserta-pendaftaran/`, `@sentry/nextjs`, `src/lib/email/` | Tinggi | F08.1–F08.4 DONE (24 Sep 2026). Ditutup 9 Okt 2026: F00.9, F05.5, F09.1–F09.4 (termasuk F09.2 yang sempat WIP), F10.3–F10.6, F11.1–F11.3 DONE. F10.2 tidak diubah |
+| 9 | ENGINEERING §3.6 vs Functions di `database.ts` | Tujuh fungsi generated tidak masuk tabel §3.6 | `aktivasi_sertifikat_free_track`, `profil_identitas_lengkap`, lima `reorder_*` | Rendah | Sudah dicatat di §3.7 |
+| 10 | Trigger cegah eskalasi role | Tidak ada di tiga dokumen maupun `database.ts` | Hanya di `backup-hexatara-2026-09-23.sql` (`prevent_role_self_escalation`). Guard aplikasi: `profiles.role === 'admin'` di `guard.ts` | Sedang | Ditutup 8 Okt 2026. Terverifikasi di database oleh Alif. Tercatat ENGINEERING §4.4. Tidak ada baris F05.9 di registry |
+| 11 | PRD rujukan “ENGINEERING Bagian 12” untuk ADR | Bagian ADR sekarang Bagian 10 | Tabel pengalihan di awal ENGINEERING | Rendah | Sudah diperbaiki di dua kalimat PRD |
+
+### 2. Dokumen yang diubah
+
+| Dokumen | Bagian | Perubahan |
+|---|---|---|
+| feature-registry.md | Kepala, Modul 14, log | F14.1–F14.6 TODO, bukti uji ulang, path penuh. Peta path usang. Log koreksi |
+| ENGINEERING.md | §2.1, §2.2, §3.7, ADR-027, Bagian 11 | Versi paket, catatan chart/themes, fungsi generated, status F14 jadi TODO uji ulang, riwayat tidak dihapus |
+| PRD.md | §0, §2, §5.1h, §13.6, §15 | Rujukan ADR ke Bagian 10, versi terpasang, lima tabel, tegangan larangan 25, email kelompok |
+| plan.md | Bagian ini | Laporan audit |
+
+### 3. Klaim yang tidak bisa diverifikasi di kode
+
+- Banyak bukti DONE Sprint 0–2 berupa kalimat uji browser. Audit ini tidak mengulang uji browser itu.
+- Default SQL `butuh_lokasi_praktek` / `butuh_ukuran_baju` tidak terlihat di `database.ts` (tipe boolean saja). Perilaku kode: flag mati menyimpan null.
+- Trigger `prevent_role_self_escalation`: **terverifikasi di database oleh Alif 8 Okt 2026** (bukan dari `database.ts`). Generator tipe tidak memuat fungsi trigger. Detail di ENGINEERING §4.4.
+
+### 4. Perlu keputusan Alif
+
+Butir A, B, dan C ditutup 8 Oktober 2026. Yang masih terbuka:
+
+- **Status baris F10.2.** Sel statusnya `SKIP (bukan bug)/PERLU DICEK ALIF`, bukan token baku `SKIP`. Usulan: samakan menjadi `SKIP` dan pindahkan “perlu dicek Alif” ke kolom Bukti, atau Alif mengunci `DONE` jika cek Vercel sudah selesai. Jangan diubah sebelum keputusan itu.
+
+### 5. Checklist uji ulang Alif
+
+Saat lolos, ubah baris itu di `feature-registry.md` (Status DONE, tanggal, bukti uji) dan tambah satu baris Bagian 11. Jangan menghapus baris riwayat.
+
+| Fitur | Langkah singkat | Dokumen saat menandai DONE |
+|---|---|---|
+| F14.1 | Beranda: lencana “Autel Robotics Authorized Dealer” di kartu jual drone, ID dan EN | feature-registry.md baris F14.1; ENGINEERING Bagian 11 satu baris |
+| F14.2 | Excel kelompok 2 peserta ditolak; 3 peserta diterima. Menu Admin bertuliskan Pendaftaran Kelompok | sama, baris F14.2 |
+| F14.3 | Foto instruktur tegak 4:5 di beranda. Form Admin label Catatan, tidak tampil di situs | sama, baris F14.3 |
+| F14.4 | Tambah partner di Admin Konten → Partner Kami; logo tampil di bawah instruktur. Kosongkan: bagian hilang | sama, baris F14.4 |
+| F14.5 | Matikan Akses LMS Freemium: pengunjung tidak masuk materi. Admin tetap bisa pratinjau. Nyalakan lagi | sama, baris F14.5 |
+| F14.6 | Kategori dengan dua centang: lokasi dan ukuran di form individu dan Excel. Kategori tanpa centang: field tidak ada. Filter `/pelatihan?kategori=` nama program | sama, baris F14.6 |
+
+### 6. Statistik
+
+- Baris registry diperiksa: 114. Setelah uji Alif 9 Okt 2026: DONE 97, TODO 14, WIP 1, SKIP 1, status lain 1. Angka sebelumnya (8 Okt malam): DONE 84, TODO 26, WIP 2, SKIP 1, status lain 1. Nomor F tidak ganda.
+- Masalah pada baris: 6 baris F14 status+path; puluhan path historis Sprint 0–1 (satu peta, bukan edit sel per sel); 20-an baris TODO bukti kosong yang kodenya mungkin sudah ada (tidak diubah).
+- ADR diperiksa: ADR-001 s.d. ADR-027, plus ADR-011b, ADR-020r, ADR-022b. Tidak ada nomor ganda. Tidak ada lompatan 001–027.
+- Tabel di `database.ts`: 37. View: 2. Inventaris PRD setelah koreksi menyebut kelimanya yang sebelumnya hilang dari daftar tabel. Fungsi generated: 10; §3.6 menyebut 3; selisih dicatat di §3.7.
+
+### 7. Tindak lanjut keputusan Alif 8 Oktober 2026
+
+Nama bagian tetap untuk rujukan silang: **Audit dokumen inti 2026-10-08**.
+
+#### (a) Ringkasan
+
+- **A.** Satu kalimat pengecualian ditambahkan di PRD §13.6 dan di bawah tabel ENGINEERING §2.2. Teks larangan asli (butir 25 dan dua baris §2.2) tidak diubah.
+- **B.** Hanya F08.1–F08.4 naik DONE, bukti tanggal 24 September 2026, selaras ADR-021. Satu baris gabungan di ENGINEERING Bagian 11. F14.1–F14.6 tetap TODO. Sisanya tetap TODO/WIP; checklist di (d).
+- **C.** Trigger role dicatat di ENGINEERING §4.4. Tidak ada baris registry F05.9, jadi tidak ada kolom Bukti yang ditambah. Bagian 11 dapat satu baris verifikasi. Kredensial akun uji tidak ditulis.
+
+#### (b) Dokumen yang diubah pada tindak lanjut ini
+
+| Dokumen | Bagian | Perubahan |
+|---|---|---|
+| PRD.md | §13.6 | Kalimat pengecualian chart Overview dan next-themes. Butir 25 tidak diubah |
+| ENGINEERING.md | §2.2 | Baris larangan chart dan next-themes dikembalikan ke teks asli; kalimat pengecualian di bawah tabel |
+| ENGINEERING.md | §3.7, §4.4, Bagian 11 | Trigger dijelaskan; ketiadaan di database.ts bukan bukti hilang; baris F08 dan baris verifikasi trigger |
+| feature-registry.md | F08.1–F08.4, log | Status DONE, bukti 24 Sep 2026, berkas yang ada di repo |
+| plan.md | Bagian «Audit dokumen inti 2026-10-08» | Butir A/B/C ditutup, checklist, status lain |
+
+#### (c) Hasil grep butir A
+
+Perintah: cari `from 'recharts'` di `src/`.
+
+Tiga berkas, semuanya di Admin Overview:
+
+- `src/app/admin/(protected)/overview/certificates-bar-chart.tsx`
+- `src/app/admin/(protected)/overview/leads-status-pie.tsx`
+- `src/app/admin/(protected)/overview/leads-trend-chart.tsx`
+
+Tidak ada impor recharts di rute publik atau dashboard user. Pengecualian ditulis.
+
+#### (d) Checklist uji Alif
+
+Ditutup 9 Okt 2026. Alif menguji sendiri di browser. Tiga belas baris di bawah bertanda DONE (judul permintaan menulis «14»; daftar kode yang dikonfirmasi berisi 13). F14 tidak termasuk di sini. F10.2 tidak termasuk.
+
+| Kode | Nama | Langkah klik | Dokumen saat DONE |
+|---|---|---|---|
+| F00.9 | Helper email | UAT A4.6: katalog, Minta penawaran, isi nama dan email. Email masuk ke alamat Pengaturan, bukan footer. UAT B1.1: selesai kuis, daftar, email verifikasi terkirim | DONE 9 Okt 2026 |
+| F05.5 | Sentry | Tidak ada tombol di situs. Picu satu error di lingkungan yang DSN-nya terisi, lalu cek event di Sentry: tanpa cookie, badan form, atau email (kebijakan ENGINEERING §2.4) | DONE 9 Okt 2026 |
+| F09.1 | Gambar detail pelatihan | Admin → Batch → ubah: unggah «Gambar Detail (ditampilkan utuh di halaman pelatihan)». Buka detail pelatihan publik: gambar utuh, tidak terpotong paksa | DONE 9 Okt 2026 |
+| F09.2 | Galeri produk + thumbnail | Admin → Produk: isi Thumbnail (kartu katalog) dan galeri. Kartu katalog memakai thumbnail. Detail: panah carousel di dalam bingkai. Klik foto: membesar | DONE 9 Okt 2026 |
+| F09.3 | Rasio hero 4:3 | Admin → Konten → Hero: unggah slide. Dialog crop memakai rasio 4:3. Slide tampil di beranda | DONE 9 Okt 2026 |
+| F09.4 | Lightbox publik | UAT A4.4: buka detail produk, klik foto galeri, gambar membesar, tutup. Ulangi pada gambar hero di detail pelatihan | DONE 9 Okt 2026 |
+| F10.3 | Kuis LMS | Di materi, jawab salah: tidak langsung lolos. Setelah selesai, tombol «Ulangi Ujian» mengulang kuis, bab yang sudah dibaca tidak terkunci ulang | DONE 9 Okt 2026 |
+| F10.4 | Bukti bayar pendaftaran | Admin → Pendaftaran Batch: unggah «Bukti pembayaran» sebelum setuju. Admin → Peserta Pendaftaran: detail menampilkan bukti itu | DONE 9 Okt 2026 |
+| F10.5 | Email verifikasi Resend | UAT B1.1–B1.2: daftar akun baru, email verifikasi masuk (bukan email bawaan polos Supabase), klik tautan, akun terverifikasi | DONE 9 Okt 2026 |
+| F10.6 | Verifikasi lintas perangkat | Mulai daftar di perangkat asal sampai halaman menunggu. Buka tautan email di perangkat lain. Perangkat asal pindah ke dashboard, atau ke halaman login bertanda sudah terverifikasi bila sesi tidak terbentuk | DONE 9 Okt 2026 |
+| F11.1 | Kategori produk | Admin → Produk → tambah/ubah: hanya combobox «Cari kategori produk…», tidak ada kotak teks kategori bebas. Badge di katalog mengikuti kategori itu | DONE 9 Okt 2026 |
+| F11.2 | Ringkasan Leads | Admin → Overview: angka pendaftaran dan penawaran terpisah, grafik tren dua garis, pie status, batang sertifikat | DONE 9 Okt 2026 |
+| F11.3 | Login Admin | Buka `/admin/login` (belum masuk): logo merek tampil di halaman, bukan form polos | DONE 9 Okt 2026 |
+
+#### (e) Status lain: 1
+
+Baris **F10.2**, status tertulis `SKIP (bukan bug)/PERLU DICEK ALIF`. Bukan `DONE`, `TODO`, `WIP`, atau `SKIP` polos, karena sel itu menggabungkan dua label. Isi: cek `NEXT_PUBLIC_SITE_URL` di Vercel dan urutan produk/pelatihan yang sudah dinilai bukan bug. Usulan penyeragaman ada di §4 bagian ini. Tidak diubah.
+
+
