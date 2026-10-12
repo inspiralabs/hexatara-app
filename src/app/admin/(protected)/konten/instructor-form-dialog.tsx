@@ -27,7 +27,6 @@ const DEFAULT_VALUES: InstructorFormInput = {
   jabatan_en: '',
   bio_id: '',
   foto_url: '',
-  urutan: 0,
   is_active: true,
 };
 
@@ -138,21 +137,6 @@ export function InstructorFormDialog({
                   <FormDescription>
                     Catatan internal tim Hexatara, tidak tampil di website.
                   </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={control}
-              name="urutan"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Urutan</FormLabel>
-                  <FormControl>
-                    <Input type="number" step={1} {...field} value={field.value ?? ''} className="max-w-[8rem]" />
-                  </FormControl>
-                  <FormDescription>Angka lebih kecil tampil lebih dulu.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

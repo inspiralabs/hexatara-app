@@ -2,8 +2,9 @@
 
 import { requireAdmin } from '@/lib/auth/guard';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { nextUrutan } from '@/lib/reorder';
 import { HeroSlideFormSchema, type HeroSlideFormInput } from '@/lib/validations/hero-slide-admin';
-import { teks, angka } from '@/lib/validations/batch-admin';
+import { teks } from '@/lib/validations/batch-admin';
 
 export async function simpanHeroSlideAction(slideId: number | null, input: HeroSlideFormInput) {
   await requireAdmin();
@@ -21,14 +22,17 @@ export async function simpanHeroSlideAction(slideId: number | null, input: HeroS
     subjudul_en: teks(p.subjudul_en),
     gambar_url: teks(p.gambar_url),
     cta_url: teks(p.cta_url),
-    urutan: angka(p.urutan) ?? 0,
     is_active: p.is_active,
   };
 
   const supabaseAdmin = createAdminClient();
 
   if (slideId == null) {
-    const { error } = await supabaseAdmin.from('hero_slides').insert(slide);
+    // Item baru selalu muncul paling bawah (F15.7) — bukan dari input manual.
+    const { data: existing } = await supabaseAdmin.from('hero_slides').select('urutan');
+    const { error } = await supabaseAdmin
+      .from('hero_slides')
+      .insert({ ...slide, urutan: nextUrutan(existing ?? []) });
     if (error) {
       console.error('[admin-hero-slide] gagal membuat slide:', error);
       return { ok: false as const, pesan: 'Gagal menyimpan hero slide. Coba lagi.' };

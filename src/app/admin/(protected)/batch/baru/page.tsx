@@ -14,6 +14,7 @@ const DEFAULT_VALUES: BatchFormInput = {
   lokasi_id: '',
   lokasi_en: '',
   alamat: '',
+  metode_kelas_teori: null,
   harga: '',
   status: 'upcoming',
   is_active: false,
@@ -37,14 +38,18 @@ export default async function AdminBatchBaruPage() {
 
   const supabaseAdmin = createAdminClient();
   const [{ data: kategoriList }, { data: batchList }] = await Promise.all([
-    supabaseAdmin.from('batch_categories').select('id, nama_id').order('urutan', { ascending: true }),
+    supabaseAdmin.from('batch_categories').select('id, nama_id, butuh_metode_kelas_teori').order('urutan', { ascending: true }),
     supabaseAdmin
       .from('batches')
       .select('id, judul_id, tanggal_mulai')
       .order('created_at', { ascending: false }),
   ]);
 
-  const kategoriOptions = (kategoriList ?? []).map((k) => ({ value: k.id, label: k.nama_id }));
+  const kategoriOptions = (kategoriList ?? []).map((k) => ({
+    value: k.id,
+    label: k.nama_id,
+    butuhMetodeKelasTeori: k.butuh_metode_kelas_teori,
+  }));
   const sumberBatchOptions = (batchList ?? []).map((b) => ({
     value: String(b.id),
     label: b.tanggal_mulai

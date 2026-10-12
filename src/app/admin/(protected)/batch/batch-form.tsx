@@ -2,11 +2,12 @@
 
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm, useFieldArray } from 'react-hook-form';
+import { useForm, useFieldArray, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PlusIcon, XIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { BatchFormSchema, type BatchFormInput } from '@/lib/validations/batch-admin';
+import { METODE_KELAS_TEORI, labelMetodeKelasTeori } from '@/lib/batch';
 import { salinDariBatchAction, simpanBatchAction } from './actions';
 import { uploadGambarAdminAction } from '../actions';
 import { Input } from '@/components/ui/input';
@@ -74,6 +75,10 @@ export function BatchForm({
   const equipment = useFieldArray({ control, name: 'equipment' });
   const faqs = useFieldArray({ control, name: 'faqs' });
   const gallery = useFieldArray({ control, name: 'gallery' });
+  const categoryId = useWatch({ control, name: 'category_id' });
+  const metodeDipilih = useWatch({ control, name: 'metode_kelas_teori' });
+  const butuhMetode =
+    kategoriOptions.find((item) => item.value === categoryId)?.butuhMetodeKelasTeori === true;
 
   async function onSubmit(data: BatchFormInput) {
     const hasil = await simpanBatchAction(mode === 'edit' ? (batchId ?? null) : null, data);
@@ -256,19 +261,63 @@ export function BatchForm({
             />
           </div>
 
-          <FormField
-            control={control}
-            name="alamat"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Alamat</FormLabel>
-                <FormControl>
-                  <Textarea rows={2} {...field} value={field.value ?? ''} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {butuhMetode ? (
+            <>
+              <FormField
+                control={control}
+                name="metode_kelas_teori"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Metode Kelas Teori</FormLabel>
+                    <FormControl>
+                      <Select value={field.value ?? null} onValueChange={field.onChange}>
+                        <SelectTrigger className="h-11 w-full">
+                          <SelectValue placeholder="Pilih metode…" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {METODE_KELAS_TEORI.map((nilai) => (
+                            <SelectItem key={nilai} value={nilai}>
+                              {labelMetodeKelasTeori(nilai, 'id')}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {metodeDipilih === 'hybrid' || metodeDipilih === 'full_tatap_muka' ? (
+                <FormField
+                  control={control}
+                  name="alamat"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Alamat Kelas Teori</FormLabel>
+                      <FormControl>
+                        <Textarea rows={2} {...field} value={field.value ?? ''} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              ) : null}
+            </>
+          ) : (
+            <FormField
+              control={control}
+              name="alamat"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Alamat</FormLabel>
+                  <FormControl>
+                    <Textarea rows={2} {...field} value={field.value ?? ''} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormField
@@ -326,6 +375,7 @@ export function BatchForm({
             />
           </div>
 
+          {butuhMetode ? <p className="text-sm font-medium text-foreground">Jadwal Kelas Teori</p> : null}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <FormField
               control={control}

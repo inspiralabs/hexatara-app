@@ -47,7 +47,6 @@ export function InstructorDetailDialog({ instructor }: { instructor: Instructor 
           <Baris label="Jabatan (EN)" value={instructor.jabatan_en ?? ''} />
           <Baris label="Catatan" value={instructor.bio_id ?? ''} />
           <Baris label="Status" value={instructor.is_active ? 'Aktif' : 'Nonaktif'} />
-          <Baris label="Urutan" value={String(instructor.urutan)} />
         </dl>
       </DialogContent>
     </Dialog>

@@ -30,6 +30,43 @@ export function formatRupiah(nilai: number) {
   }).format(nilai);
 }
 
+export const METODE_KELAS_TEORI = ['virtual_meeting', 'hybrid', 'full_tatap_muka'] as const;
+export type MetodeKelasTeori = (typeof METODE_KELAS_TEORI)[number];
+
+const LABEL_METODE_KELAS_TEORI: Record<MetodeKelasTeori, { id: string; en: string }> = {
+  virtual_meeting: { id: 'Virtual Meeting', en: 'Virtual Meeting' },
+  hybrid: { id: 'Hybrid', en: 'Hybrid' },
+  full_tatap_muka: { id: 'Full Tatap Muka', en: 'Full In-Person' },
+};
+
+export function labelMetodeKelasTeori(nilai: string | null | undefined, locale: string) {
+  if (nilai !== 'virtual_meeting' && nilai !== 'hybrid' && nilai !== 'full_tatap_muka') return null;
+  return locale.startsWith('en') ? LABEL_METODE_KELAS_TEORI[nilai].en : LABEL_METODE_KELAS_TEORI[nilai].id;
+}
+
+/** Flag mati: metode null, alamat tetap. Virtual: alamat null. Nilai asing ditolak. */
+export function sesuaikanMetodeKelasTeori(
+  butuh: boolean,
+  metode: string | null | undefined,
+  alamat: string | null,
+) {
+  if (!butuh) return { ok: true as const, metode: null, alamat };
+  if (metode == null || metode === '') return { ok: true as const, metode: null, alamat };
+  if (metode !== 'virtual_meeting' && metode !== 'hybrid' && metode !== 'full_tatap_muka') {
+    return { ok: false as const };
+  }
+  if (metode === 'virtual_meeting') return { ok: true as const, metode, alamat: null };
+  return { ok: true as const, metode, alamat };
+}
+
+export function susunPesanBatchTidakBisaDihapus(perorangan: number, kelompok: number) {
+  const bagian: string[] = [];
+  if (perorangan > 0) bagian.push(`${perorangan} pendaftar perorangan`);
+  if (kelompok > 0) bagian.push(`${kelompok} pendaftaran kelompok`);
+  const punya = bagian.length > 0 ? `sudah punya ${bagian.join(" dan ")}` : "sudah punya pendaftar";
+  return `Batch ini tidak bisa dihapus karena ${punya}. Nonaktifkan batch agar tidak tampil di publik.`;
+}
+
 export function stripHtmlExcerpt(html: string | null, maxLen = 120): string | null {
   if (!html) return null;
   const teks = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();

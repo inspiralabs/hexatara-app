@@ -1,16 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { PlusIcon } from 'lucide-react';
-import { DataTable, SortableHeader, createDataTableColumnHelper } from '@/components/data-table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { ReorderButtons } from '@/components/admin/reorder-buttons';
+import { useReorderList } from '@/components/admin/use-reorder-list';
 import { TestimonialRowActions } from './testimonial-row-actions';
 import { TestimonialActiveSwitch } from './testimonial-active-switch';
 import { TestimonialFormDialog } from './testimonial-form-dialog';
+import { reorderTestimonialAction } from './testimonial-actions';
 import type { TestimonialFormInput } from '@/lib/validations/testimonial-admin';
 import type { Database } from '@/types/database';
 
 type Testimonial = Database['public']['Tables']['testimonials']['Row'];
+
+const STATUS_SEMUA = 'semua';
 
 function keDefaultValues(t: Testimonial): TestimonialFormInput {
   return {
@@ -20,12 +27,9 @@ function keDefaultValues(t: Testimonial): TestimonialFormInput {
     isi_id: t.isi_id,
     isi_en: t.isi_en ?? '',
     foto_url: t.foto_url ?? '',
-    urutan: t.urutan,
     is_active: t.is_active,
   };
 }
-
-const columnHelper = createDataTableColumnHelper<Testimonial>();
 
 export function TestimonialList({
   testimonials,
@@ -34,8 +38,26 @@ export function TestimonialList({
   testimonials: Testimonial[];
   judul: string;
 }) {
+  const { daftar, pending, pindah } = useReorderList(
+    testimonials,
+    reorderTestimonialAction,
+    'Urutan testimoni berhasil diubah.'
+  );
+  const [cari, setCari] = useState('');
+  const [status, setStatus] = useState(STATUS_SEMUA);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Testimonial | null>(null);
+
+  const terfilter = useMemo(() => {
+    const q = cari.trim().toLowerCase();
+    return daftar.filter((t) => {
+      if (q && !t.nama.toLowerCase().includes(q)) return false;
+      if (status !== STATUS_SEMUA && String(t.is_active) !== status) return false;
+      return true;
+    });
+  }, [daftar, cari, status]);
+
+  const filterAktif = Boolean(cari.trim()) || status !== STATUS_SEMUA;
 
   function bukaTambah() {
     setEditing(null);
@@ -47,36 +69,6 @@ export function TestimonialList({
     setDialogOpen(true);
   }
 
-  const columns = [
-    columnHelper.accessor('nama', {
-      header: (ctx) => <SortableHeader column={ctx.column} label="Nama" />,
-      cell: (info) => <span className="font-medium text-foreground">{info.getValue()}</span>,
-    }),
-    columnHelper.accessor('urutan', {
-      header: (ctx) => <SortableHeader column={ctx.column} label="Urutan" />,
-    }),
-    columnHelper.accessor((row) => String(row.is_active), {
-      id: 'is_active',
-      header: 'Aktif',
-      filterFn: 'equalsString',
-      enableSorting: false,
-      cell: ({ row }) => <TestimonialActiveSwitch testimonialId={row.original.id} aktif={row.original.is_active} />,
-    }),
-    columnHelper.display({
-      id: 'aksi',
-      header: () => <span className="sr-only">Aksi</span>,
-      cell: ({ row }) => (
-        <div className="flex justify-end">
-          <TestimonialRowActions
-            testimonialId={row.original.id}
-            nama={row.original.nama}
-            onUbah={() => bukaUbah(row.original)}
-          />
-        </div>
-      ),
-    }),
-  ];
-
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
@@ -86,24 +78,78 @@ export function TestimonialList({
         </Button>
       </div>
 
-      <DataTable
-        columns={columns}
-        data={testimonials}
-        getRowId={(row) => String(row.id)}
-        searchColumnId="nama"
-        searchPlaceholder="Cari nama..."
-        emptyMessage="Belum ada testimoni."
-        columnFilters={[
-          {
-            id: 'is_active',
-            label: 'Aktif',
-            options: [
-              { value: 'true', label: 'Aktif' },
-              { value: 'false', label: 'Nonaktif' },
-            ],
-          },
-        ]}
-      />
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center">
+        <Input
+          value={cari}
+          onChange={(e) => setCari(e.target.value)}
+          placeholder="Cari nama..."
+          className="h-11 w-full max-w-sm sm:w-56"
+        />
+        <Select value={status} onValueChange={(v: string | null) => setStatus(v ?? STATUS_SEMUA)}>
+          <SelectTrigger className="h-11 w-full sm:w-44" aria-label="Aktif">
+            <SelectValue placeholder="Aktif">
+              {status === STATUS_SEMUA ? 'Aktif: Semua' : status === 'true' ? 'Aktif' : 'Nonaktif'}
+            </SelectValue>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={STATUS_SEMUA}>Semua</SelectItem>
+            <SelectItem value="true">Aktif</SelectItem>
+            <SelectItem value="false">Nonaktif</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="overflow-x-auto rounded-lg border border-border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-16">Urutan</TableHead>
+              <TableHead>Nama</TableHead>
+              <TableHead>Aktif</TableHead>
+              <TableHead className="text-right">
+                <span className="sr-only">Aksi</span>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {terfilter.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  Belum ada testimoni.
+                </TableCell>
+              </TableRow>
+            ) : (
+              terfilter.map((row) => {
+                const indexPenuh = daftar.findIndex((t) => t.id === row.id);
+                return (
+                  <TableRow key={row.id}>
+                    <TableCell>
+                      <ReorderButtons
+                        label={row.nama}
+                        disabledUp={indexPenuh <= 0 || pending || filterAktif}
+                        disabledDown={
+                          indexPenuh < 0 || indexPenuh >= daftar.length - 1 || pending || filterAktif
+                        }
+                        onUp={() => pindah(row.id, 'up')}
+                        onDown={() => pindah(row.id, 'down')}
+                      />
+                    </TableCell>
+                    <TableCell className="font-medium text-foreground">{row.nama}</TableCell>
+                    <TableCell>
+                      <TestimonialActiveSwitch testimonialId={row.id} aktif={row.is_active} />
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex justify-end">
+                        <TestimonialRowActions testimonialId={row.id} nama={row.nama} onUbah={() => bukaUbah(row)} />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
       <TestimonialFormDialog
         open={dialogOpen}

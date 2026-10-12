@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { METODE_KELAS_TEORI } from '@/lib/batch';
 
 // Tanpa .transform() dengan sengaja — supaya tipe input dan output sama, dan
 // useForm<BatchFormInput>() tidak bentrok dengan tipe hasil zodResolver.
@@ -54,6 +55,7 @@ export const BatchFormSchema = z.object({
   lokasi_id: teksOpsional,
   lokasi_en: teksOpsional,
   alamat: teksOpsional,
+  metode_kelas_teori: z.enum(METODE_KELAS_TEORI).nullable().optional(),
   harga: angkaOpsional,
   status: z.enum(['upcoming', 'open', 'closed']),
   is_active: z.boolean(),

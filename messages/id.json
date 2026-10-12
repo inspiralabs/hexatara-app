@@ -88,6 +88,9 @@
     "timeLabel": "Waktu: ",
     "locationLabel": "Lokasi: ",
     "addressLabel": "Alamat: ",
+    "theoryScheduleLabel": "Jadwal Kelas Teori: ",
+    "theoryMethodLabel": "Metode Kelas Teori: ",
+    "theoryAddressLabel": "Alamat Kelas Teori: ",
     "supportHeading": "Dukungan Peserta",
     "supportDescription": "Pertanyaan seputar batch reguler? Hubungi Admin lewat WhatsApp.",
     "contactAdmin": "Hubungi Admin",
@@ -304,6 +307,7 @@
     "filterSortLabel": "Urutkan",
     "semua": "Semua",
     "sort": {
+      "urutan": "Urutan Pilihan",
       "terbaru": "Terbaru",
       "hargaAsc": "Harga Terendah ke Tertinggi",
       "hargaDesc": "Harga Tertinggi ke Terendah"

@@ -2,7 +2,7 @@
 
 import { requireAdmin } from '@/lib/auth/guard';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { angka } from '@/lib/validations/batch-admin';
+import { nextUrutan } from '@/lib/reorder';
 import {
   PracticeLocationFormSchema,
   type PracticeLocationFormInput,
@@ -18,13 +18,16 @@ export async function simpanLokasiPraktekAction(id: number | null, input: Practi
 
   const row = {
     nama_kota: parsed.data.nama_kota.trim(),
-    urutan: angka(parsed.data.urutan) ?? 0,
     is_active: parsed.data.is_active,
   };
   const supabaseAdmin = createAdminClient();
 
   if (id == null) {
-    const { error } = await supabaseAdmin.from('practice_locations').insert(row);
+    // Item baru selalu muncul paling bawah (F15.7) — bukan dari input manual.
+    const { data: existing } = await supabaseAdmin.from('practice_locations').select('urutan');
+    const { error } = await supabaseAdmin
+      .from('practice_locations')
+      .insert({ ...row, urutan: nextUrutan(existing ?? []) });
     if (error) {
       if (error.code === '23505') {
         return { ok: false as const, pesan: 'Kota sudah ada' };
@@ -72,6 +75,21 @@ export async function hapusLokasiPraktekAction(id: number) {
     }
     console.error('[admin-lokasi-praktek] gagal hapus:', error);
     return { ok: false as const, pesan: 'Gagal menghapus. Coba lagi.' };
+  }
+  return { ok: true as const };
+}
+
+// practice_locations.urutan TIDAK unique — aman di-update langsung per baris
+// (pola sama products/hero_slides).
+export async function reorderLokasiPraktekAction(ids: number[]) {
+  await requireAdmin();
+  const supabaseAdmin = createAdminClient();
+  for (const [index, id] of ids.entries()) {
+    const { error } = await supabaseAdmin.from('practice_locations').update({ urutan: index }).eq('id', id);
+    if (error) {
+      console.error('[admin-lokasi-praktek] gagal reorder:', error);
+      return { ok: false as const, pesan: 'Gagal mengubah urutan. Coba lagi.' };
+    }
   }
   return { ok: true as const };
 }

@@ -2,8 +2,9 @@
 
 import { requireAdmin } from '@/lib/auth/guard';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { nextUrutan } from '@/lib/reorder';
 import { TestimonialFormSchema, type TestimonialFormInput } from '@/lib/validations/testimonial-admin';
-import { teks, angka } from '@/lib/validations/batch-admin';
+import { teks } from '@/lib/validations/batch-admin';
 
 export async function simpanTestimonialAction(testimonialId: number | null, input: TestimonialFormInput) {
   await requireAdmin();
@@ -21,14 +22,17 @@ export async function simpanTestimonialAction(testimonialId: number | null, inpu
     isi_id: p.isi_id,
     isi_en: teks(p.isi_en),
     foto_url: teks(p.foto_url),
-    urutan: angka(p.urutan) ?? 0,
     is_active: p.is_active,
   };
 
   const supabaseAdmin = createAdminClient();
 
   if (testimonialId == null) {
-    const { error } = await supabaseAdmin.from('testimonials').insert(testimonial);
+    // Item baru selalu muncul paling bawah (F15.7) — bukan dari input manual.
+    const { data: existing } = await supabaseAdmin.from('testimonials').select('urutan');
+    const { error } = await supabaseAdmin
+      .from('testimonials')
+      .insert({ ...testimonial, urutan: nextUrutan(existing ?? []) });
     if (error) {
       console.error('[admin-testimonial] gagal membuat testimoni:', error);
       return { ok: false as const, pesan: 'Gagal menyimpan testimoni. Coba lagi.' };
@@ -51,6 +55,20 @@ export async function hapusTestimonialAction(testimonialId: number) {
   if (error) {
     console.error('[admin-testimonial] gagal hapus testimoni:', error);
     return { ok: false as const, pesan: 'Gagal menghapus. Coba lagi.' };
+  }
+  return { ok: true as const };
+}
+
+// testimonials.urutan TIDAK unique — aman di-update langsung per baris.
+export async function reorderTestimonialAction(testimonialIds: number[]) {
+  await requireAdmin();
+  const supabaseAdmin = createAdminClient();
+  for (const [index, id] of testimonialIds.entries()) {
+    const { error } = await supabaseAdmin.from('testimonials').update({ urutan: index }).eq('id', id);
+    if (error) {
+      console.error('[admin-testimonial] gagal reorder testimoni:', error);
+      return { ok: false as const, pesan: 'Gagal mengubah urutan. Coba lagi.' };
+    }
   }
   return { ok: true as const };
 }

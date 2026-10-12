@@ -1,12 +1,10 @@
 'use client';
 
-import { useEffect, useMemo, useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
+import { useMemo, useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Input } from '@/components/ui/input';
 import { ReorderButtons } from '@/components/admin/reorder-buttons';
-import { moveItem } from '@/lib/reorder';
+import { useReorderList } from '@/components/admin/use-reorder-list';
 import { ProdukRowActions } from './produk-row-actions';
 import { reorderProdukAction } from './actions';
 
@@ -28,41 +26,23 @@ export type ProdukRow = {
   urutan: number;
 };
 
-export function ProdukTable({ produk, basePath = '/admin/produk' }: { produk: ProdukRow[]; basePath?: string }) {
-  const router = useRouter();
-  const [daftar, setDaftar] = useState(produk);
+export function ProdukTable({
+  produk,
+  basePath = '/admin/produk',
+  reorderAction = reorderProdukAction,
+}: {
+  produk: ProdukRow[];
+  basePath?: string;
+  reorderAction?: (ids: number[]) => Promise<{ ok: true } | { ok: false; pesan: string }>;
+}) {
+  const { daftar, pending, pindah } = useReorderList(produk, reorderAction, 'Urutan produk berhasil diubah.');
   const [cari, setCari] = useState('');
-  const [pending, startTransition] = useTransition();
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDaftar(produk);
-  }, [produk]);
 
   const terfilter = useMemo(() => {
     const q = cari.trim().toLowerCase();
     if (!q) return daftar;
     return daftar.filter((p) => p.nama_id.toLowerCase().includes(q));
   }, [daftar, cari]);
-
-  // Reorder selalu terhadap daftar penuh (bukan hasil filter) agar index konsisten.
-  function pindah(id: number, arah: 'up' | 'down') {
-    const index = daftar.findIndex((p) => p.id === id);
-    if (index < 0) return;
-    const baru = moveItem(daftar, index, arah);
-    if (baru === daftar) return;
-    setDaftar(baru);
-    startTransition(async () => {
-      const hasil = await reorderProdukAction(baru.map((p) => p.id));
-      if (!hasil.ok) {
-        toast.error(hasil.pesan);
-        setDaftar(daftar);
-        return;
-      }
-      toast.success('Urutan produk berhasil diubah.');
-      router.refresh();
-    });
-  }
 
   return (
     <div className="flex flex-col gap-4">

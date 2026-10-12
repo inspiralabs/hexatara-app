@@ -3,8 +3,8 @@
 import { revalidatePath } from 'next/cache';
 import { requireAdmin } from '@/lib/auth/guard';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { nextUrutan } from '@/lib/reorder';
 import { PartnerFormSchema, type PartnerFormInput } from '@/lib/validations/partner-admin';
-import { angka } from '@/lib/validations/batch-admin';
 
 const FORMAT_LOGO = ['image/jpeg', 'image/png', 'image/webp'] as const;
 
@@ -66,14 +66,15 @@ export async function simpanPartnerAction(partnerId: number | null, input: Partn
   const partner = {
     nama: p.nama,
     logo_url: p.logo_url,
-    urutan: angka(p.urutan) ?? 0,
     is_active: p.is_active,
   };
 
   const supabaseAdmin = createAdminClient();
 
   if (partnerId == null) {
-    const { error } = await supabaseAdmin.from('partners').insert(partner);
+    // Item baru selalu muncul paling bawah (F15.7) — bukan dari input manual.
+    const { data: existing } = await supabaseAdmin.from('partners').select('urutan');
+    const { error } = await supabaseAdmin.from('partners').insert({ ...partner, urutan: nextUrutan(existing ?? []) });
     if (error) {
       console.error('[admin-partner] gagal membuat partner:', error);
       return { ok: false as const, pesan: 'Gagal menyimpan partner. Coba lagi.' };
@@ -119,6 +120,21 @@ export async function hapusPartnerAction(partnerId: number) {
     return { ok: false as const, pesan: 'Gagal menghapus. Coba lagi.' };
   }
 
+  revalidateBeranda();
+  return { ok: true as const };
+}
+
+// partners.urutan TIDAK unique — aman di-update langsung per baris.
+export async function reorderPartnerAction(partnerIds: number[]) {
+  await requireAdmin();
+  const supabaseAdmin = createAdminClient();
+  for (const [index, id] of partnerIds.entries()) {
+    const { error } = await supabaseAdmin.from('partners').update({ urutan: index }).eq('id', id);
+    if (error) {
+      console.error('[admin-partner] gagal reorder partner:', error);
+      return { ok: false as const, pesan: 'Gagal mengubah urutan. Coba lagi.' };
+    }
+  }
   revalidateBeranda();
   return { ok: true as const };
 }

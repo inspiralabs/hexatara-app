@@ -9,7 +9,7 @@ import {
   ComboboxList,
 } from '@/components/ui/combobox';
 
-export type KategoriOption = { value: string; label: string };
+export type KategoriOption = { value: string; label: string; butuhMetodeKelasTeori?: boolean };
 
 export function KategoriCombobox({
   items,

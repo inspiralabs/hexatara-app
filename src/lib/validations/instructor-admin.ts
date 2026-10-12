@@ -5,7 +5,6 @@ import { z } from 'zod';
 // → null dilakukan di Server Action lewat teks() dari batch-admin.ts.
 const teksOpsional = z.string().nullable().optional();
 const teksWajib = z.string().min(1, { error: 'Wajib diisi' });
-const angkaOpsional = z.union([z.string(), z.number()]).nullable().optional();
 
 export const InstructorFormSchema = z.object({
   nama: teksWajib,
@@ -14,7 +13,6 @@ export const InstructorFormSchema = z.object({
   // Catatan internal (kolom DB tetap bio_id). bio_en tidak di form — jangan dikirim saat update.
   bio_id: teksOpsional,
   foto_url: teksOpsional,
-  urutan: angkaOpsional,
   is_active: z.boolean(),
 });
 

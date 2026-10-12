@@ -1,13 +1,11 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { PlusIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { toast } from 'sonner';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ReorderButtons } from '@/components/admin/reorder-buttons';
-import { moveItem } from '@/lib/reorder';
+import { useReorderList } from '@/components/admin/use-reorder-list';
 import { HeroCarouselView } from '@/components/hero-carousel';
 import { HeroSlideRowActions } from './hero-slide-row-actions';
 import { HeroSlideActiveSwitch } from './hero-slide-active-switch';
@@ -26,23 +24,16 @@ function keDefaultValues(s: HeroSlide): HeroSlideFormInput {
     subjudul_en: s.subjudul_en ?? '',
     gambar_url: s.gambar_url ?? '',
     cta_url: s.cta_url ?? '',
-    urutan: s.urutan,
     is_active: s.is_active,
   };
 }
 
 export function HeroSlideList({ slides }: { slides: HeroSlide[] }) {
-  const router = useRouter();
-  const [daftar, setDaftar] = useState(slides);
-  // Setelah router.refresh(), Server Component ini re-fetch dan mengirim
-  // `slides` baru sebagai prop — tapi useState hanya memakai initial value
-  // SEKALI saat mount, jadi tanpa efek ini daftar lokal tetap basi sampai
-  // reload manual.
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDaftar(slides);
-  }, [slides]);
-  const [pending, startTransition] = useTransition();
+  const { daftar, pending, pindah } = useReorderList(
+    slides,
+    reorderHeroSlideAction,
+    'Urutan hero slide berhasil diubah.'
+  );
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<HeroSlide | null>(null);
 
@@ -54,22 +45,6 @@ export function HeroSlideList({ slides }: { slides: HeroSlide[] }) {
   function bukaUbah(slide: HeroSlide) {
     setEditing(slide);
     setDialogOpen(true);
-  }
-
-  function pindah(index: number, arah: 'up' | 'down') {
-    const baru = moveItem(daftar, index, arah);
-    if (baru === daftar) return;
-    setDaftar(baru);
-    startTransition(async () => {
-      const hasil = await reorderHeroSlideAction(baru.map((s) => s.id));
-      if (!hasil.ok) {
-        toast.error(hasil.pesan);
-        setDaftar(daftar);
-        return;
-      }
-      toast.success('Urutan hero slide berhasil diubah.');
-      router.refresh();
-    });
   }
 
   const previewSlides = daftar
@@ -130,8 +105,8 @@ export function HeroSlideList({ slides }: { slides: HeroSlide[] }) {
                       label={slide.judul_id}
                       disabledUp={index === 0 || pending}
                       disabledDown={index === daftar.length - 1 || pending}
-                      onUp={() => pindah(index, 'up')}
-                      onDown={() => pindah(index, 'down')}
+                      onUp={() => pindah(slide.id, 'up')}
+                      onDown={() => pindah(slide.id, 'down')}
                     />
                   </TableCell>
                   <TableCell className="font-medium text-foreground">{slide.judul_id}</TableCell>

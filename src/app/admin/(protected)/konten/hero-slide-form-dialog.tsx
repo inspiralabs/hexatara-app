@@ -27,7 +27,6 @@ const DEFAULT_VALUES: HeroSlideFormInput = {
   subjudul_en: '',
   gambar_url: '',
   cta_url: '',
-  urutan: 0,
   is_active: true,
 };
 
@@ -150,21 +149,6 @@ export function HeroSlideFormDialog({
                     <Input placeholder="/katalog atau https://..." {...field} value={field.value ?? ''} />
                   </FormControl>
                   <FormDescription>Seluruh gambar hero bisa diklik menuju tautan ini.</FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={control}
-              name="urutan"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Urutan</FormLabel>
-                  <FormControl>
-                    <Input type="number" step={1} {...field} value={field.value ?? ''} className="max-w-[8rem]" />
-                  </FormControl>
-                  <FormDescription>Angka lebih kecil tampil lebih dulu.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

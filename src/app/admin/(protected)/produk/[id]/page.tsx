@@ -29,7 +29,6 @@ export default async function AdminProdukUbahPage({ params }: { params: Promise<
     rating: produk.rating ?? '',
     harga: produk.harga ?? '',
     tampilkan_harga: produk.tampilkan_harga,
-    urutan: produk.urutan,
     is_active: produk.is_active,
     deskripsi_id: produk.deskripsi_id ?? '',
     deskripsi_en: produk.deskripsi_en ?? '',

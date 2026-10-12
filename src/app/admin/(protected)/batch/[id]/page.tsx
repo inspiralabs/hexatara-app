@@ -32,12 +32,16 @@ export default async function AdminBatchUbahPage({ params }: { params: Promise<{
     supabase.from('batch_equipment').select('teks_id, teks_en').eq('batch_id', batchId).order('urutan'),
     supabase.from('batch_faqs').select('tanya_id, tanya_en, jawab_id, jawab_en').eq('batch_id', batchId).order('urutan'),
     supabase.from('batch_gallery').select('gambar_url, caption_id, caption_en').eq('batch_id', batchId).order('urutan'),
-    supabase.from('batch_categories').select('id, nama_id').order('urutan', { ascending: true }),
+    supabase.from('batch_categories').select('id, nama_id, butuh_metode_kelas_teori').order('urutan', { ascending: true }),
   ]);
 
   // Admin Panel Bahasa Indonesia saja (ENGINEERING.md §6.3) — label combobox
   // pakai nama_id langsung, tidak perlu pick() dwibahasa di sini.
-  const kategoriOptions = (kategoriList ?? []).map((k) => ({ value: k.id, label: k.nama_id }));
+  const kategoriOptions = (kategoriList ?? []).map((k) => ({
+    value: k.id,
+    label: k.nama_id,
+    butuhMetodeKelasTeori: k.butuh_metode_kelas_teori,
+  }));
 
   const defaultValues: BatchFormInput = {
     judul_id: batch.judul_id,
@@ -48,6 +52,12 @@ export default async function AdminBatchUbahPage({ params }: { params: Promise<{
     lokasi_id: batch.lokasi_id ?? '',
     lokasi_en: batch.lokasi_en ?? '',
     alamat: batch.alamat ?? '',
+    metode_kelas_teori:
+      batch.metode_kelas_teori === 'virtual_meeting' ||
+      batch.metode_kelas_teori === 'hybrid' ||
+      batch.metode_kelas_teori === 'full_tatap_muka'
+        ? batch.metode_kelas_teori
+        : null,
     harga: batch.harga ?? '',
     status: batch.status,
     is_active: batch.is_active,

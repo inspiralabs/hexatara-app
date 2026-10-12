@@ -1097,6 +1097,184 @@ Footer DataTable tidak punya teks "N dari M baris dipilih". `colSpan` baris koso
 
 `src/components/data-table.tsx`: `enableRowSelection` default `true` → `false`. Prop tidak dihapus. `ProdukTable` dan `BabList` tidak disentuh.
 
-`pnpm tsc --noEmit`, `pnpm lint`, `pnpm test`: lolos (14 tes). `pnpm knip` gagal pada temuan lama (field.tsx, skeleton.tsx, shadcn, tw-animate-css, tailwindcss, puluhan export UI). Tidak ada temuan baru di `data-table.tsx`.
+`pnpm tsc --noEmit`, `pnpm lint`, `pnpm test`: lolos (14 tes). `pnpm knip` gagal pada temuan lama (field.tsx, skeleton.tsx, shadcn, tw-animate-css, tailwindcss, puluhan export UI). Tidak ada temuan baru di `data-table.tsx`. F15.3 DONE 12 Okt 2026 (konfirmasi Alif).
+
+---
+
+## Modul 15 — F15.4
+
+Tanpa SQL. FK tidak diubah. Status registry TODO.
+
+### Verifikasi
+
+`hapusBatchAction` dipanggil hanya dari `batch-row-actions.tsx`, yang dipasang di `batch-table.tsx`. Toggle Aktif tetap di `batch-active-switch.tsx` / `toggleAktifBatchAction` dan tidak disentuh.
+
+FK ke `batches` di `database.ts` dan SQL usulan/backup:
+
+| Tabel | ON DELETE |
+|---|---|
+| `batch_benefits`, `batch_equipment`, `batch_faqs`, `batch_gallery`, `batch_requirements` | CASCADE (backup 2026-09-23) |
+| `batch_leads` | SET NULL |
+| `batch_registrations` | CASCADE |
+| `company_registrations` | NO ACTION (`references batches(id)` tanpa ON DELETE) |
+| `company_registration_participants` | CASCADE dari `company_registrations`, bukan dari `batches` |
+
+Tidak ada FK `batch_id` di sertifikat, upgrade, atau tabel lain di `database.ts`.
+
+### Perubahan
+
+Sebelum delete, hitung `batch_registrations` dan `company_registrations`. Total > 0: tidak delete, pesan menyebut jumlah yang bukan nol plus saran Nonaktifkan. Error `23503` memakai pesan sejenis. Error lain tetap "Coba lagi", dengan `console.error` berisi `code`, `message`, `details`. Dialog hapus menjelaskan aturan itu. Toast error 10 detik.
+
+### Uji manual Alif
+
+- (a) Batch baru tanpa pendaftar bisa dihapus.
+- (b) Batch dengan pendaftar perorangan ditolak; baris pendaftar tetap ada.
+- (c) Batch dengan pendaftaran kelompok ditolak; baris kelompok tetap ada.
+- (d) Toggle Aktif tetap menyembunyikan atau menampilkan batch di publik.
+
+`pnpm tsc --noEmit`, `pnpm lint`, `pnpm test`: lolos. Tes: 18 lulus (4 baru untuk pesan hapus). F15.4 DONE 12 Okt 2026 (konfirmasi Alif).
+
+---
+
+## Modul 15 — F15.5
+
+Ditahan dulu karena `database.ts` belum memuat kolom. Setelah regenerate, kedua kolom ada: `batch_categories.butuh_kategori_peserta` dan `batch_registrations.kategori_peserta` nullable. Enum tidak berubah. Kolom `butuh_metode_kelas_teori` ada di tipe dan tidak disentuh.
+
+Tanpa SQL baru. Pendaftaran kelompok tidak diubah. Status registry TODO.
+
+### Perubahan
+
+Checkbox Admin "Butuh kategori peserta (Penerbitan Baru / Renewal)" mengikuti flag lokasi dan ukuran baju. Form publik merender dan mengirim pilihan itu hanya jika flag true. Server membaca flag dari database: flag hidup mewajibkan enum; flag mati mengabaikan kiriman klien dan menyimpan NULL. Tabel, detail, dan Excel Admin memakai label yang aman untuk null ("—"). Baris pendaftar lama tidak di-update.
+
+Flag yang sudah tersimpan tetap false sampai Admin mencentangnya. Kategori SiDOPI belum otomatis menampilkan field.
+
+### Uji manual Alif
+
+- (a) Kategori tanpa flag (misalnya Advanced): dialog tidak menampilkan Baru/Renewal; pendaftaran baru tersimpan null; Admin menampilkan "—".
+- (b) Centang flag pada SiDOPI: field tampil dan wajib.
+- (c) Pendaftar lama tetap menyimpan nilai lama.
+- (d) Export Excel Admin tidak error pada baris null.
+
+`pnpm tsc --noEmit`, `pnpm lint`, `pnpm test`: lolos. Tes: 22 lulus (4 baru untuk resolver dan label). F15.5 DONE 12 Okt 2026 (konfirmasi Alif: checkbox kategori benar; publik menyembunyikan Baru/Renewal bila flag tidak dicentang).
+
+---
+
+## Modul 15 — F15.6
+
+Tanpa SQL baru. Kolom `alamat` tidak dihapus dan tidak diganti nama. Status registry TODO.
+
+### Audit
+
+`batches.alamat` dipakai form Admin, simpan, salin batch, dan halaman detail publik. Label "Waktu" / "Alamat" hanya di detail publik (`timeLabel`, `addressLabel`). Kartu jadwal, direktori, dashboard pelatihan, dan kursus menampilkan tanggal serta lokasi tanpa label itu. Email tidak menyebut jadwal atau alamat batch. Tempat itu tidak diubah.
+
+### Perubahan
+
+Checkbox kategori "Butuh metode kelas teori". Form batch membaca flag dari daftar kategori yang sudah dimuat. Flag hidup: label bagian tanggal "Jadwal Kelas Teori", select metode, textarea alamat hanya untuk Hybrid dan Full Tatap Muka. Virtual menyimpan alamat null. Server membaca flag dari database; flag mati menyimpan metode null dan mempertahankan alamat. Salin batch ikut menyalin metode. Publik memakai key i18n baru. Batch berflag tetapi metode kosong tetap tampilan lama.
+
+### Uji manual Alif
+
+- (1) Centang flag pada kategori RPC.
+- (2) Buat atau ubah batch RPC: label jadwal dan dropdown metode muncul; alamat hanya untuk Hybrid dan Full Tatap Muka.
+- (3) Halaman publik RPC: Jadwal Kelas Teori + Metode. Virtual tanpa alamat. Hybrid atau Tatap Muka dengan Alamat Kelas Teori.
+- (4) Batch kategori lain tidak berubah.
+- (5) Batch RPC lama tanpa metode tampil seperti dulu.
+
+`pnpm tsc --noEmit`, `pnpm lint`, `pnpm test`: lolos. Tes: 25 lulus (3 baru untuk label dan resolver metode). F15.6 DONE 12 Okt 2026 (konfirmasi Alif).
+
+---
+
+## Modul 15 — F15.7
+
+Tanpa SQL. Audit Tahap 1 membuktikan tidak ada constraint UNIQUE pada kolom `urutan` di `products`, `hero_slides`, `instructors`, `partners`, `testimonials`, maupun `practice_locations` — hanya `material_chapters`/`material_chapter_files` yang UNIQUE (sudah dipakai RPC dua-fase sebelumnya, tidak disentuh). Status registry TODO.
+
+### Audit Tahap 1 — menu dengan kolom `urutan`
+
+| Menu | Status sebelum | Keterangan |
+|---|---|---|
+| Produk (termasuk Merchandise, tabel yang sama) | Sudah panah (tabel) + **input angka ganda di form** | `produk-table.tsx` sudah `ReorderButtons`; `produk-form.tsx` masih punya field "Urutan" yang ikut terkirim saat edit |
+| Hero Beranda | Sudah panah (tabel) + **input angka ganda di form** | `hero-slide-list.tsx` sudah arrow lokal (dipindah ke hook); `hero-slide-form-dialog.tsx` masih punya field "Urutan" |
+| Bab Materi, Lampiran File, Bank Soal | Sudah panah | `ReorderButtons` + `reorder_*_action`/RPC, tanpa input angka di form — tidak disentuh |
+| Kategori Produk, Kategori Batch | Sudah panah | RPC `reorder_batch_categories` lewat `kategori-manager.tsx` — tidak disentuh |
+| Lokasi Praktek | **Masih angka** | Kolom tabel polos + input "Urutan" di dialog, tanpa arrow sama sekali |
+| Instruktur | **Masih angka** | Kolom sortable di `DataTable` (pagination 10/klik header) + input "Urutan" di dialog + baris "Urutan" di Detail |
+| Partner Kami | **Masih angka** | Sama pola Instruktur |
+| Testimoni | **Masih angka** | Sama pola Instruktur |
+| Batch: Fasilitas/Syarat/Peralatan/FAQ/Galeri | Tidak relevan | `batches/actions.ts` menulis `urutan: index` dari posisi array form (replace-all saat simpan) — tidak ada baris independen untuk di-reorder, pola sama `product_images` |
+| Popup, Sale Banner, Company Profile, Tentang Kami | Tidak relevan | Tidak ada kolom `urutan` sama sekali |
+
+Konfirmasi ordering publik: `/pelatihan`, `/pelatihan/[slug]` (lokasi praktek), Beranda (hero, instruktur, partner, testimoni), `/katalog` — semua sudah `order('urutan')` di query, tidak diubah.
+
+### Perubahan
+
+- Hook bersama `src/components/admin/use-reorder-list.ts` (`daftar`, `setDaftar`, `pending`, `pindah`) — pola persis `ProdukTable` sebelumnya (reorder selalu terhadap daftar penuh, rollback + toast saat Server Action gagal). `ProdukTable` dan `HeroSlideList` direfaktor memakainya tanpa mengubah perilaku/tampilan.
+- Helper murni baru `nextUrutan()` di `src/lib/reorder.ts` — `max(urutan) + 1`, dipakai Server Action insert untuk Hero, Lokasi Praktek, Instruktur, Partner, Testimoni (item baru selalu di baris paling bawah). **Produk/Merchandise SENGAJA tidak dipasangi `nextUrutan()`** — grouped per kategori, ditahan untuk Prompt 8 sesuai arahan; insert tetap memakai default kolom (0) seperti sebelumnya, hanya input manualnya yang dihapus.
+- Lokasi Praktek, Instruktur, Partner, Testimoni: kolom/baris "Urutan" dan input angkanya dihapus dari tabel, dialog, dan (Instruktur) Detail; diganti `<ReorderButtons>` + Server Action baru (`reorderLokasiPraktekAction`, `reorderInstructorAction`, `reorderPartnerAction`, `reorderTestimonialAction`) yang meng-update `urutan = index` per baris (pola sama `reorderProdukAction`, kolom tidak UNIQUE).
+- Instruktur, Partner, Testimoni: list diganti dari `DataTable` (pagination) ke tabel polos + pencarian + filter status `Select`, karena reorder arrow harus bekerja di atas daftar penuh, bukan satu halaman pagination. Switch aktif, aksi baris (ubah/hapus), dan dialog Detail (Instruktur) dipertahankan apa adanya.
+- Field zod `urutan` dihapus dari enam schema admin (`produk-admin`, `hero-slide-admin`, `practice-location-admin`, `instructor-admin`, `partner-admin`, `testimonial-admin`); Server Action `simpan*Action` untuk keenamnya tidak lagi menulis `urutan` saat update (kolom tidak tersentuh, tidak ada lagi dua cara mengubah urutan).
+
+### Uji manual Alif
+
+Untuk tiap menu (Produk, Hero, Lokasi Praktek, Instruktur, Partner, Testimoni):
+- (a) Tambah item baru → muncul paling bawah (Produk/Merchandise: tetap di urutan 0/teratas seperti sebelumnya, belum ikut diseragamkan — ditahan ke Prompt 8).
+- (b) Klik panah naik/turun → urutan berubah dan tetap setelah refresh halaman.
+- (c) Halaman publik (Beranda, `/katalog`, `/pelatihan/[slug]` lokasi praktek) mengikuti urutan baru.
+- (d) Tidak ada lagi input atau kolom angka "Urutan" di form maupun tabel manapun.
+- (e) Mengubah (edit) item tidak memindahkan posisinya.
+- (f) Panah atas pada item pertama dan panah bawah pada item terakhir nonaktif (abu-abu, tidak bisa diklik); panah nonaktif juga saat pencarian/filter aktif.
+
+`pnpm tsc --noEmit`, `pnpm lint`, `pnpm build`: bersih. `pnpm test`: 29 lulus (4 baru untuk `moveItem`/`nextUrutan`). `pnpm knip`: tidak ada temuan baru (seluruh temuan yang muncul sudah ada sebelum F15.7, komponen shadcn/dependency yang sudah diketahui). F15.7 DONE 12 Okt 2026 (konfirmasi Alif).
+
+---
+
+## Modul 15 — F15.8
+
+Tanpa SQL. Prasyarat F15.7 (`useReorderList`) terpenuhi. Status registry TODO.
+
+### Audit Tahap 1
+
+**1. Query yang menampilkan daftar produk / memakai `urutan`:**
+
+| Lokasi | Termasuk merchandise? | Keterangan |
+|---|---|---|
+| `src/components/produk-section.tsx` (landing "Produk") | **Ya (bug)** | `products_public` tanpa filter kategori, `order('urutan').limit(6)` — diperbaiki |
+| `src/app/[locale]/(public)/katalog/page.tsx` (`/katalog`) | Ya, memang disengaja | Etalase gabungan; default sebelumnya `created_at desc`, sekarang `urutan` (grouped) |
+| `src/app/[locale]/(public)/katalog/[slug]/page.tsx` ("Produk Lain") | Tidak relevan | Suggestion sudah `.eq('category_id', produk.category_id)` — satu produk hanya menyarankan produk SATU kategori yang sama, tidak pernah mencampur merch dengan non-merch. Tidak diubah |
+| `src/lib/merchandise.ts getProdukMerchandiseAktif` (dashboard user) | Hanya merchandise | Sudah `.ilike('category_nama_id','merchandise')`, tidak diubah |
+| `src/app/admin/(protected)/produk/page.tsx` | **Ya (bug)** | Semua `products` tanpa filter, `ProdukTable` + `reorderProdukAction` menulis `urutan=index` untuk SELURUH baris yang dikirim arrow — reorder di sini dulu ikut menimpa urutan merchandise. Diperbaiki (exclude Merchandise, NULL-safe) |
+| `src/app/admin/(protected)/merchandise/page.tsx` | Hanya merchandise | Sudah `.eq('category_id', kategoriId)`, reorder-nya sendiri sudah aman (hanya mengirim id merchandise) — tapi memakai Server Action yang sama (`reorderProdukAction`) tanpa validasi kelompok. Diberi action & validasi terpisah |
+| `src/app/sitemap.ts` | Tidak relevan | Path statis saja, tidak query `products` |
+
+**2. Sort `/katalog`:** `SORT_VALUES = ["terbaru","hargaAsc","hargaDesc"]`, default `"terbaru"` (`created_at desc`). **Tanpa pagination** — seluruh hasil query dirender sekaligus (tidak ada `.range()`/halaman) — jadi sort kelompok untuk opsi baru aman dikerjakan di JS setelah fetch, sesuai arahan kalau tidak ada pagination.
+
+**3. Pindah kategori produk/merchandise:** `ProdukForm`/`KategoriCombobox` menampilkan SEMUA `product_categories` (termasuk "Merchandise") baik dibuka dari `/admin/produk` maupun `/admin/merchandise` — Admin bisa memindahkan produk masuk/keluar kelompok Merchandise lewat kedua halaman edit yang sama. Logika "urutan ke akhir kelompok tujuan saat pindah kelompok" karena itu ditaruh di satu tempat (`simpanProdukAction`), bukan dua.
+
+### Perubahan
+
+- `src/lib/produk-sort.ts` (baru) — tiga fungsi murni dipakai bersama Server Action dan halaman publik:
+  - `masukKelompokMerch(categoryId, kategoriMerchId)` — satu definisi kelompok dipakai di semua tempat.
+  - `urutanBerikutnyaUntukKelompok(items, kategoriMerchId, isMerch)` — `max(urutan)+1` **hanya dari baris di kelompok yang sama** (membungkus `nextUrutan()` dari F15.7).
+  - `compareKatalogUrutan(a, b, kategoriMerchId)` — komparator sort `/katalog`: kelompok produk dulu lalu merchandise, dalam kelompok `urutan` naik, dasi `created_at` terbaru dulu.
+- `src/app/admin/(protected)/produk/actions.ts`:
+  - `simpanProdukAction` sekarang menghitung kelompok (produk/merchandise) dari `category_id` yang disimpan. **Tambah baru** → `urutan` = akhir kelompok tujuan (bukan default 0 lagi — inilah Prompt 8 yang ditahan di F15.7). **Ubah, kelompok tetap sama** → `urutan` tidak disentuh (perilaku F15.7 dipertahankan). **Ubah, pindah kelompok** (lewat ganti kategori ke/dari Merchandise) → `urutan` diset ke akhir kelompok TUJUAN.
+  - `reorderProdukAction` (kelompok produk) dan `reorderMerchandiseAction` (kelompok merchandise, baru) — keduanya memanggil `reorderKelompok()` bersama, yang memvalidasi di server bahwa SEMUA id yang dikirim benar-benar anggota kelompok yang diklaim (query ulang `category_id` tiap id) sebelum menulis `urutan=index` — reorder di satu menu tidak bisa lagi menimpa baris kelompok lain, bahkan kalau client mengirim id yang salah.
+- `src/app/admin/(protected)/produk/produk-table.tsx` — `ProdukTable` menerima `reorderAction` sebagai prop opsional (default `reorderProdukAction`, perilaku lama tetap jika tidak diisi).
+- `src/app/admin/(protected)/produk/page.tsx` (Admin Produk) — query `products` dikecualikan dari kategori Merchandise lewat `.or('category_id.is.null,category_id.neq.<id merch>')` (NULL-safe: produk tanpa kategori tetap tampil). Kalau kategori Merchandise belum pernah dibuat, tidak ada filter sama sekali (tampil semua, seperti sebelumnya).
+- `src/app/admin/(protected)/merchandise/page.tsx` (Admin Merchandise) — `ProdukTable` dipanggil dengan `reorderAction={reorderMerchandiseAction}`. Query & pesan kosong tidak diubah (sudah benar).
+- `src/components/produk-section.tsx` (landing) — query `products_public` ditambah `.or('category_id.is.null,category_id.neq.<id merch>')` (NULL-safe), `order('urutan').limit(6)` dipertahankan.
+- `src/app/[locale]/(public)/katalog/sort-options.ts` — `SORT_VALUES` tambah `"urutan"` di depan; `src/app/[locale]/(public)/katalog/page.tsx` — default sort jadi `"urutan"` (bukan `"terbaru"`), opsi `"terbaru"`/`"hargaAsc"`/`"hargaDesc"` tetap ada dan tetap di-query di DB seperti sebelumnya. Untuk `"urutan"`: tanpa `ORDER BY` di query, hasil disortir di JS dengan `compareKatalogUrutan()` (kolom `urutan` ditambahkan ke `select()`). Filter kategori yang sudah ada tidak diubah, tetap bekerja untuk semua opsi sort.
+- `messages/id.json`/`en.json` — `catalog.sort.urutan`: "Urutan Pilihan" / "Featured Order".
+- Data lama: `urutan` existing mungkin tumpang-tindih antar kelompok (semua pernah di-reorder lewat `reorderProdukAction` sebelum F15.8 saat Produk dan Merchandise masih satu daftar tercampur). **Tanpa SQL** — begitu Admin melakukan reorder pertama kali di salah satu menu setelah F15.8, kelompok itu langsung ternormalisasi `0..n`; kelompok yang belum pernah di-reorder ulang bisa saja masih punya nilai `urutan` yang tumpang-tindih dengan kelompok lain, tapi karena `compareKatalogUrutan()` dan kedua `reorderKelompok()` SELALU memfilter per kelompok dulu sebelum membandingkan/menulis angka, tumpang-tindih angka mentah TIDAK menyebabkan interleaving yang salah di tampilan manapun.
+
+### Uji manual Alif
+
+- (a) Di Admin Produk, geser urutan satu produk naik/turun → cek di Admin Merchandise, urutan merchandise tidak berubah.
+- (b) Di Admin Merchandise, geser urutan satu merchandise → cek di Admin Produk, urutan produk tidak berubah.
+- (c) Landing (Beranda) section "Produk" menampilkan 6 produk NON-merchandise sesuai urutan Admin — tidak ada merchandise yang muncul di situ.
+- (d) `/katalog` tanpa parameter sort (default) menampilkan produk dulu (urutan Admin) lalu merchandise (urutan Admin) — klik opsi "Harga Terendah ke Tertinggi"/"Harga Tertinggi ke Terendah" tetap berfungsi seperti sebelumnya.
+- (e) Tambah merchandise baru dari Admin Merchandise → muncul paling akhir di antara merchandise lain (tidak ikut urutan produk). Tambah produk baru dari Admin Produk → muncul paling akhir di antara produk lain.
+- (f) Pindahkan satu produk ke kategori "Merchandise" lewat form edit → produk itu hilang dari Admin Produk, muncul di akhir daftar Admin Merchandise.
+- (g) Dashboard Merchandise user (`/dashboard/merchandise`) tetap berurutan seperti sebelumnya (tidak terpengaruh).
+
+`pnpm tsc --noEmit`, `pnpm lint`, `pnpm build`: bersih. `pnpm test`: 38 lulus (9 baru: `masukKelompokMerch`, `compareKatalogUrutan`, `urutanBerikutnyaUntukKelompok`). `pnpm knip`: tidak ada temuan baru. F15.8 DONE 12 Okt 2026 (konfirmasi Alif).
 
 

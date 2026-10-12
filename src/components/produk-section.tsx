@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { pick } from "@/lib/i18n/pick";
 import { ContentCard } from "@/components/content-card";
 import { publicBadgeKategori, publicCtaPrimary, publicCtaSecondary, publicSectionHeading } from "@/lib/public-ui";
+import { getKategoriMerchandiseId } from "@/lib/merchandise";
 
 function formatRupiah(nilai: number) {
   return new Intl.NumberFormat("id-ID", {
@@ -19,11 +20,18 @@ export async function ProdukSection({ limit = 6 }: { limit?: number } = {}) {
   const t = await getTranslations("landing");
   const tCatalog = await getTranslations("catalog");
 
-  const { data: produk, error } = await supabase
+  const kategoriMerchId = await getKategoriMerchandiseId();
+  let query = supabase
     .from("products_public")
     .select("id, slug, nama_id, nama_en, category_nama_id, category_nama_en, harga, rating, thumbnail_url")
     .order("urutan")
     .limit(limit);
+  // Landing "Produk" khusus drone/aksesori — merchandise punya alur beli sendiri
+  // (F15.8). NULL-safe: produk tanpa kategori tetap tampil.
+  if (kategoriMerchId) {
+    query = query.or("category_id.is.null,category_id.neq." + kategoriMerchId);
+  }
+  const { data: produk, error } = await query;
 
   if (error) console.error("[produk-section] gagal memuat produk:", error);
   if (!produk || produk.length === 0) return null;

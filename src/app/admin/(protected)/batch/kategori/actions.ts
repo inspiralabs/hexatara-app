@@ -21,6 +21,8 @@ export async function simpanKategoriBatchAction(id: string | null, input: BatchK
     nama_en: teks(parsed.data.nama_en),
     butuh_lokasi_praktek: parsed.data.butuh_lokasi_praktek,
     butuh_ukuran_baju: parsed.data.butuh_ukuran_baju,
+    butuh_kategori_peserta: parsed.data.butuh_kategori_peserta,
+    butuh_metode_kelas_teori: parsed.data.butuh_metode_kelas_teori,
   };
   const supabaseAdmin = createAdminClient();
 

@@ -11,12 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { labelKategoriPeserta } from '@/lib/validations/pendaftaran-batch';
 import type { PendaftaranBatchRow } from './pendaftaran-batch-table';
-
-const LABEL_KATEGORI: Record<PendaftaranBatchRow['kategori_peserta'], string> = {
-  penerbitan_baru: 'Penerbitan baru',
-  perpanjangan_renewal: 'Perpanjangan / renewal',
-};
 
 function Baris({ label, value }: { label: string; value: string }) {
   return (
@@ -87,7 +83,7 @@ export function PendaftaranBatchDetail({ row }: { row: PendaftaranBatchRow }) {
             <Baris label="Email" value={row.email ?? ''} />
             <Baris label="WhatsApp" value={row.whatsapp ?? ''} />
             <Baris label="Batch" value={row.batchJudul} />
-            <Baris label="Kategori" value={LABEL_KATEGORI[row.kategori_peserta]} />
+            <Baris label="Kategori" value={labelKategoriPeserta(row.kategori_peserta)} />
             <Baris label="Lokasi Praktek" value={row.lokasiPraktek ?? ''} />
             <Baris label="Ukuran Baju" value={row.ukuranBaju ?? ''} />
             <Baris label="Akun" value={row.user_id ? 'Login' : 'Tanpa akun'} />

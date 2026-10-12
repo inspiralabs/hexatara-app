@@ -17,6 +17,7 @@ export const ADMIN_IDLE_MS = 30 * 60 * 1000;
 export const ADMIN_IDLE_WARN_MS = 28 * 60 * 1000;
 //export const ADMIN_IDLE_MS = 60_000;
 //export const ADMIN_IDLE_WARN_MS = 30_000;
+// extension of ADMIN IDLE WARNS 
 
 export function AdminIdleTimeout() {
   const last = useRef(0);

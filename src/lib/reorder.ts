@@ -8,3 +8,10 @@ export function moveItem<T>(items: T[], index: number, direction: 'up' | 'down')
   [hasil[index], hasil[target]] = [hasil[target]!, hasil[index]!];
   return hasil;
 }
+
+// Urutan untuk baris baru = urutan tertinggi yang ada + 1, supaya item baru
+// selalu muncul paling bawah (F15.7) — menggantikan input angka manual.
+export function nextUrutan(items: { urutan: number }[]): number {
+  if (items.length === 0) return 0;
+  return Math.max(...items.map((item) => item.urutan)) + 1;
+}

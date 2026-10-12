@@ -75,7 +75,9 @@ export type Database = {
       }
       batch_categories: {
         Row: {
+          butuh_kategori_peserta: boolean
           butuh_lokasi_praktek: boolean
+          butuh_metode_kelas_teori: boolean
           butuh_ukuran_baju: boolean
           created_at: string
           id: string
@@ -86,7 +88,9 @@ export type Database = {
           urutan: number
         }
         Insert: {
+          butuh_kategori_peserta?: boolean
           butuh_lokasi_praktek?: boolean
+          butuh_metode_kelas_teori?: boolean
           butuh_ukuran_baju?: boolean
           created_at?: string
           id?: string
@@ -97,7 +101,9 @@ export type Database = {
           urutan?: number
         }
         Update: {
+          butuh_kategori_peserta?: boolean
           butuh_lokasi_praktek?: boolean
+          butuh_metode_kelas_teori?: boolean
           butuh_ukuran_baju?: boolean
           created_at?: string
           id?: string
@@ -268,7 +274,9 @@ export type Database = {
           email: string | null
           foto_ktp_url: string | null
           id: number
-          kategori_peserta: Database["public"]["Enums"]["kategori_peserta_rpc"]
+          kategori_peserta:
+            | Database["public"]["Enums"]["kategori_peserta_rpc"]
+            | null
           kode_referral: string | null
           nama_lengkap: string | null
           nomor_ktp: string | null
@@ -294,7 +302,9 @@ export type Database = {
           email?: string | null
           foto_ktp_url?: string | null
           id?: number
-          kategori_peserta: Database["public"]["Enums"]["kategori_peserta_rpc"]
+          kategori_peserta?:
+            | Database["public"]["Enums"]["kategori_peserta_rpc"]
+            | null
           kode_referral?: string | null
           nama_lengkap?: string | null
           nomor_ktp?: string | null
@@ -320,7 +330,9 @@ export type Database = {
           email?: string | null
           foto_ktp_url?: string | null
           id?: number
-          kategori_peserta?: Database["public"]["Enums"]["kategori_peserta_rpc"]
+          kategori_peserta?:
+            | Database["public"]["Enums"]["kategori_peserta_rpc"]
+            | null
           kode_referral?: string | null
           nama_lengkap?: string | null
           nomor_ktp?: string | null
@@ -407,6 +419,7 @@ export type Database = {
           kategori_id: string | null
           lokasi_en: string | null
           lokasi_id: string | null
+          metode_kelas_teori: string | null
           rating: number | null
           silabus_en: string | null
           silabus_id: string | null
@@ -434,6 +447,7 @@ export type Database = {
           kategori_id?: string | null
           lokasi_en?: string | null
           lokasi_id?: string | null
+          metode_kelas_teori?: string | null
           rating?: number | null
           silabus_en?: string | null
           silabus_id?: string | null
@@ -461,6 +475,7 @@ export type Database = {
           kategori_id?: string | null
           lokasi_en?: string | null
           lokasi_id?: string | null
+          metode_kelas_teori?: string | null
           rating?: number | null
           silabus_en?: string | null
           silabus_id?: string | null
@@ -495,6 +510,55 @@ export type Database = {
           last_number?: number
         }
         Relationships: []
+      }
+      certificate_order_items: {
+        Row: {
+          created_at: string
+          harga_satuan: number
+          id: number
+          order_id: number
+          product_id: number
+          qty: number
+        }
+        Insert: {
+          created_at?: string
+          harga_satuan: number
+          id?: never
+          order_id: number
+          product_id: number
+          qty: number
+        }
+        Update: {
+          created_at?: string
+          harga_satuan?: number
+          id?: never
+          order_id?: number
+          product_id?: number
+          qty?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificate_order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "certificate_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificate_order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificate_order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products_public"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       certificate_orders: {
         Row: {
@@ -544,84 +608,6 @@ export type Database = {
           user_id?: string
           verified_at?: string | null
           verified_by?: string | null
-        }
-        Relationships: []
-      }
-      certificate_order_items: {
-        Row: {
-          created_at: string
-          harga_satuan: number
-          id: number
-          order_id: number
-          product_id: number
-          qty: number
-        }
-        Insert: {
-          created_at?: string
-          harga_satuan: number
-          id?: number
-          order_id: number
-          product_id: number
-          qty: number
-        }
-        Update: {
-          created_at?: string
-          harga_satuan?: number
-          id?: number
-          order_id?: number
-          product_id?: number
-          qty?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "certificate_order_items_order_id_fkey"
-            columns: ["order_id"]
-            isOneToOne: false
-            referencedRelation: "certificate_orders"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "certificate_order_items_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      merchandise_public_orders: {
-        Row: {
-          alamat_pengiriman: Json
-          catatan: string | null
-          created_at: string
-          id: number
-          items: Json
-          nama_lengkap: string
-          status: Database["public"]["Enums"]["status_lead"]
-          updated_at: string
-          whatsapp: string
-        }
-        Insert: {
-          alamat_pengiriman: Json
-          catatan?: string | null
-          created_at?: string
-          id?: number
-          items: Json
-          nama_lengkap: string
-          status?: Database["public"]["Enums"]["status_lead"]
-          updated_at?: string
-          whatsapp: string
-        }
-        Update: {
-          alamat_pengiriman?: Json
-          catatan?: string | null
-          created_at?: string
-          id?: number
-          items?: Json
-          nama_lengkap?: string
-          status?: Database["public"]["Enums"]["status_lead"]
-          updated_at?: string
-          whatsapp?: string
         }
         Relationships: []
       }
@@ -714,7 +700,7 @@ export type Database = {
         Insert: {
           created_at?: string
           email: string
-          id?: number
+          id?: never
           nama: string
           practice_location_id?: number | null
           registration_id: number
@@ -724,7 +710,7 @@ export type Database = {
         Update: {
           created_at?: string
           email?: string
-          id?: number
+          id?: never
           nama?: string
           practice_location_id?: number | null
           registration_id?: number
@@ -774,7 +760,7 @@ export type Database = {
           created_at?: string
           email_pic: string
           file_excel_url: string
-          id?: number
+          id?: never
           jumlah_peserta: number
           nama_perusahaan: string
           nama_pic: string
@@ -791,7 +777,7 @@ export type Database = {
           created_at?: string
           email_pic?: string
           file_excel_url?: string
-          id?: number
+          id?: never
           jumlah_peserta?: number
           nama_perusahaan?: string
           nama_pic?: string
@@ -1065,30 +1051,39 @@ export type Database = {
         }
         Relationships: []
       }
-      practice_locations: {
+      merchandise_public_orders: {
         Row: {
+          alamat_pengiriman: Json
+          catatan: string | null
           created_at: string
           id: number
-          is_active: boolean
-          nama_kota: string
+          items: Json
+          nama_lengkap: string
+          status: Database["public"]["Enums"]["status_lead"]
           updated_at: string
-          urutan: number
+          whatsapp: string
         }
         Insert: {
+          alamat_pengiriman: Json
+          catatan?: string | null
           created_at?: string
-          id?: number
-          is_active?: boolean
-          nama_kota: string
+          id?: never
+          items: Json
+          nama_lengkap: string
+          status?: Database["public"]["Enums"]["status_lead"]
           updated_at?: string
-          urutan?: number
+          whatsapp: string
         }
         Update: {
+          alamat_pengiriman?: Json
+          catatan?: string | null
           created_at?: string
-          id?: number
-          is_active?: boolean
-          nama_kota?: string
+          id?: never
+          items?: Json
+          nama_lengkap?: string
+          status?: Database["public"]["Enums"]["status_lead"]
           updated_at?: string
-          urutan?: number
+          whatsapp?: string
         }
         Relationships: []
       }
@@ -1104,7 +1099,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
-          id?: number
+          id?: never
           is_active?: boolean
           logo_url: string
           nama: string
@@ -1113,7 +1108,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
-          id?: number
+          id?: never
           is_active?: boolean
           logo_url?: string
           nama?: string
@@ -1176,6 +1171,33 @@ export type Database = {
           tayang_mulai?: string | null
           tayang_selesai?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      practice_locations: {
+        Row: {
+          created_at: string
+          id: number
+          is_active: boolean
+          nama_kota: string
+          updated_at: string
+          urutan: number
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          is_active?: boolean
+          nama_kota: string
+          updated_at?: string
+          urutan?: number
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          is_active?: boolean
+          nama_kota?: string
+          updated_at?: string
+          urutan?: number
         }
         Relationships: []
       }

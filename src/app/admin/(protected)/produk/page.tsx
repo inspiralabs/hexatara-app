@@ -3,6 +3,7 @@ import { requireAdmin } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from 'cn';
+import { getKategoriMerchandiseId } from '@/lib/merchandise';
 import { ProdukTable } from './produk-table';
 
 export default async function AdminProdukPage() {
@@ -11,10 +12,17 @@ export default async function AdminProdukPage() {
   await requireAdmin();
 
   const supabase = await createClient();
-  const { data: produk, error } = await supabase
+  const kategoriMerchId = await getKategoriMerchandiseId();
+  // Merchandise punya menu & urutan sendiri (F15.8) — dikeluarkan dari sini.
+  // NULL-safe: produk tanpa category_id tetap tampil (bukan merchandise).
+  let query = supabase
     .from('products')
     .select('id, nama_id, harga, tampilkan_harga, is_active, urutan, product_categories(nama_id)')
     .order('urutan');
+  if (kategoriMerchId) {
+    query = query.or(`category_id.is.null,category_id.neq.${kategoriMerchId}`);
+  }
+  const { data: produk, error } = await query;
 
   if (error) console.error('[admin-produk] gagal memuat daftar:', error);
 

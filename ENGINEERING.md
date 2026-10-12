@@ -1482,7 +1482,7 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 
 **Keputusan.** F15.1 hanya mengganti string. Tanpa SQL, tanpa ubah route, slug, atau logika. Navbar yang tampil tetap `nav.produk` (larangan prompt: jangan ubah key itu). Key `nav.katalog` diganti ke "Marketplace" meski tidak dipakai komponen nav.
 
-**Konsekuensi.** Pengunjung masih melihat label nav "Produk" / "Products" pada tautan `/katalog` sampai ada keputusan terpisah untuk `nav.produk`. F15.1 dan F15.2 DONE 12 Okt 2026 (konfirmasi Alif). F15.3: `DataTable` `enableRowSelection` default false; prop tetap, nyalakan per tabel bila ada aksi massal. Tidak ada tabel yang membaca pilihan baris. Status F15.3 TODO.
+**Konsekuensi.** Pengunjung masih melihat label nav "Produk" / "Products" pada tautan `/katalog` sampai ada keputusan terpisah untuk `nav.produk`. F15.1–F15.4 DONE 12 Okt 2026 (konfirmasi Alif). F15.5 dikodekan 12 Okt 2026, registry TODO: pilihan Penerbitan Baru / Renewal hanya tampil bila `batch_categories.butuh_kategori_peserta`; selain itu insert `kategori_peserta` NULL. Enum dan pendaftaran kelompok tidak diubah. Flag kategori yang sudah ada tetap false sampai Admin mencentangnya (termasuk SiDOPI). F15.5 DONE 12 Okt 2026 (konfirmasi Alif). F15.6 dikodekan, registry TODO: label jadwal dan metode kelas teori hanya bila `butuh_metode_kelas_teori`; kolom `alamat` tidak diubah namanya.
 
 ---
 
@@ -1559,3 +1559,7 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-10-11 | **ADR-028 dibuka — F15.1 dikodekan.** Judul `/pelatihan` dan `/katalog` diganti di `messages`. Tanpa SQL. Registry TODO sampai uji Alif. |
 | 2026-10-12 | **F15.1 DONE** (konfirmasi Alif). **F15.2 dikodekan:** label pas foto menyebut latar merah. Tanpa SQL. Registry F15.2 TODO. |
 | 2026-10-12 | **F15.2 DONE** (konfirmasi Alif). **F15.3 dikodekan:** checkbox baris DataTable mati secara default. Prop `enableRowSelection` tetap. Registry F15.3 TODO. |
+| 2026-10-12 | **F15.3 DONE** (konfirmasi Alif). **F15.4 dikodekan:** hapus batch ditolak bila ada pendaftar. FK tidak diubah. Registry F15.4 TODO. |
+| 2026-10-12 | **F15.4 DONE** (konfirmasi Alif). F15.5 ditahan: `src/types/database.ts` belum memuat flag `butuh_kategori_peserta` dan `kategori_peserta` nullable. |
+| 2026-10-12 | **F15.5 dikodekan**, registry TODO. Tidak ada SQL baru. Enum tidak diubah. Pendaftaran kelompok tidak diubah. |
+| 2026-10-12 | **F15.5 DONE** (konfirmasi Alif). **F15.6 dikodekan**, registry TODO. Metode kelas teori hanya untuk kategori berflag. Tanpa SQL baru. |

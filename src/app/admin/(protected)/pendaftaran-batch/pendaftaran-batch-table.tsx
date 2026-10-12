@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { PendaftaranBatchDetail } from './pendaftaran-batch-detail';
 import { PendaftaranBatchRowActions } from './pendaftaran-batch-row-actions';
 import { eksporPendaftaranBatchXlsx } from './pendaftaran-batch-export';
+import { labelKategoriPeserta } from '@/lib/validations/pendaftaran-batch';
 import type { Database } from '@/types/database';
 
 export type PendaftaranBatchRow = {
@@ -20,7 +21,7 @@ export type PendaftaranBatchRow = {
   tempat_lahir: string | null;
   tanggal_lahir: string | null;
   alamat_lengkap: string | null;
-  kategori_peserta: Database['public']['Enums']['kategori_peserta_rpc'];
+  kategori_peserta: Database['public']['Enums']['kategori_peserta_rpc'] | null;
   sumber_info: string | null;
   kode_referral: string | null;
   user_id: string | null;
@@ -30,11 +31,6 @@ export type PendaftaranBatchRow = {
   ukuranBaju: string | null;
   fotoKtpUrl: string | null;
   pasFotoUrl: string | null;
-};
-
-const LABEL_KATEGORI: Record<PendaftaranBatchRow['kategori_peserta'], string> = {
-  penerbitan_baru: 'Penerbitan baru',
-  perpanjangan_renewal: 'Perpanjangan / renewal',
 };
 
 const columnHelper = createDataTableColumnHelper<PendaftaranBatchRow>();
@@ -61,7 +57,7 @@ const columns = [
     id: 'kategori',
     header: 'Kategori',
     filterFn: 'equalsString',
-    cell: (info) => LABEL_KATEGORI[info.getValue()],
+    cell: (info) => labelKategoriPeserta(info.getValue()),
   }),
   columnHelper.accessor((row) => row.lokasiPraktek ?? '—', {
     id: 'lokasi',

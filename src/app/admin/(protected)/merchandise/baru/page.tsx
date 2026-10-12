@@ -25,7 +25,6 @@ export default async function AdminMerchandiseBaruPage() {
     rating: '',
     harga: '',
     tampilkan_harga: true,
-    urutan: 0,
     is_active: true,
     deskripsi_id: '',
     deskripsi_en: '',

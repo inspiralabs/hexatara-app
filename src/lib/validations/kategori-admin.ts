@@ -16,6 +16,8 @@ export const KategoriFormSchema = z.object({
 export const BatchKategoriFormSchema = KategoriFormSchema.extend({
   butuh_lokasi_praktek: z.boolean(),
   butuh_ukuran_baju: z.boolean(),
+  butuh_kategori_peserta: z.boolean(),
+  butuh_metode_kelas_teori: z.boolean(),
 });
 
 export type KategoriFormInput = z.input<typeof KategoriFormSchema>;

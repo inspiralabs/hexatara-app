@@ -1285,7 +1285,7 @@ Judul halaman publik saja. Route tetap `/pelatihan` dan `/katalog`.
 - `/katalog`: judul "Hexatara Marketplace" (id dan en), plus subtitle baru. Metadata SEO mengikuti. Key `nav.katalog` jadi "Marketplace". Label nav yang tampil tetap `nav.produk`.
 - Tidak diubah: `landing.scheduleHeading`, label filter, tombol kembali, route, slug.
 
-Selesai bila Alif menguji sendiri di browser. F15.1 dan F15.2 DONE 12 Okt 2026. F15.3 (checkbox baris DataTable Admin mati secara default; prop tetap) masih TODO.
+Selesai bila Alif menguji sendiri di browser. F15.1–F15.4 DONE 12 Okt 2026. F15.5 dikodekan, registry TODO: form individu menampilkan Penerbitan Baru / Renewal hanya bila kategori punya `butuh_kategori_peserta`; selain itu nilai disimpan NULL dan Admin menampilkan "—". Baris lama tidak diubah. Flag mulai false sampai Admin mencentang kategori yang membutuhkan (misalnya SiDOPI). F15.5 DONE 12 Okt 2026. F15.6 dikodekan, registry TODO: batch yang kategorinya `butuh_metode_kelas_teori` menampilkan Jadwal Kelas Teori dan pilihan Virtual / Hybrid / Full Tatap Muka. Virtual menyimpan alamat kosong. Batch lain tetap memakai Waktu dan Alamat.
 
 - Form peserta dan profil: label "Pas Foto (Background Merah)" / "Passport Photo (Red Background)", plus kalimat bantuan latar merah. Tidak ada pemeriksaan warna gambar. Kolom `pas_foto_url` tidak berubah. Pendaftaran kelompok tidak meminta foto.
 

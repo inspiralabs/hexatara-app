@@ -5,6 +5,7 @@ import { getKategoriMerchandiseId } from '@/lib/merchandise';
 import { buttonVariants } from '@/components/ui/button';
 import { cn } from 'cn';
 import { ProdukTable } from '../produk/produk-table';
+import { reorderMerchandiseAction } from '../produk/actions';
 
 export default async function AdminMerchandisePage() {
   await requireAdmin();
@@ -35,6 +36,7 @@ export default async function AdminMerchandisePage() {
       </div>
       <ProdukTable
         basePath="/admin/merchandise"
+        reorderAction={reorderMerchandiseAction}
         produk={(produk ?? []).map((p) => ({
           id: p.id,
           nama_id: p.nama_id,

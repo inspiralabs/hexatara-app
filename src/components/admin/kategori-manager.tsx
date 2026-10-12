@@ -48,6 +48,8 @@ export type KategoriRow = {
   is_active: boolean;
   butuh_lokasi_praktek?: boolean;
   butuh_ukuran_baju?: boolean;
+  butuh_kategori_peserta?: boolean;
+  butuh_metode_kelas_teori?: boolean;
 };
 
 type FormValues = BatchKategoriFormInput;
@@ -58,6 +60,8 @@ const DEFAULT_VALUES: FormValues = {
   nama_en: '',
   butuh_lokasi_praktek: false,
   butuh_ukuran_baju: false,
+  butuh_kategori_peserta: false,
+  butuh_metode_kelas_teori: false,
 };
 
 function keDefaultValues(k: KategoriRow): FormValues {
@@ -66,6 +70,8 @@ function keDefaultValues(k: KategoriRow): FormValues {
     nama_en: k.nama_en ?? '',
     butuh_lokasi_praktek: k.butuh_lokasi_praktek ?? false,
     butuh_ukuran_baju: k.butuh_ukuran_baju ?? false,
+    butuh_kategori_peserta: k.butuh_kategori_peserta ?? false,
+    butuh_metode_kelas_teori: k.butuh_metode_kelas_teori ?? false,
   };
 }
 
@@ -200,6 +206,12 @@ export function KategoriManager({
                       <span className="font-medium text-foreground">{k.nama_id}</span>
                       {programFlags && k.butuh_lokasi_praktek ? (
                         <Badge variant="secondary">Lokasi praktek</Badge>
+                      ) : null}
+                      {programFlags && k.butuh_kategori_peserta ? (
+                        <Badge variant="secondary">Kategori peserta</Badge>
+                      ) : null}
+                      {programFlags && k.butuh_metode_kelas_teori ? (
+                        <Badge variant="secondary">Metode kelas teori</Badge>
                       ) : null}
                       {programFlags && k.butuh_ukuran_baju ? (
                         <Badge variant="secondary">Ukuran baju</Badge>
@@ -375,6 +387,54 @@ function KategoriFormDialog({
                           <FormLabel className="font-normal">Perlu Lokasi Praktek</FormLabel>
                           <FormDescription>
                             Centang untuk program seperti SiDOPI: form pendaftaran akan menanyakan kota praktek.
+                          </FormDescription>
+                        </div>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name="butuh_kategori_peserta"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex items-start gap-3">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value === true}
+                            onCheckedChange={(v) => field.onChange(v === true)}
+                          />
+                        </FormControl>
+                        <div className="space-y-1">
+                          <FormLabel className="font-normal">
+                            Butuh kategori peserta (Penerbitan Baru / Renewal)
+                          </FormLabel>
+                          <FormDescription>
+                            Form pendaftaran menampilkan pilihan penerbitan baru atau perpanjangan.
+                          </FormDescription>
+                        </div>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name="butuh_metode_kelas_teori"
+                  render={({ field }) => (
+                    <FormItem>
+                      <div className="flex items-start gap-3">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value === true}
+                            onCheckedChange={(v) => field.onChange(v === true)}
+                          />
+                        </FormControl>
+                        <div className="space-y-1">
+                          <FormLabel className="font-normal">
+                            Butuh metode kelas teori (Virtual / Hybrid / Tatap Muka)
+                          </FormLabel>
+                          <FormDescription>
+                            Form batch memakai jadwal kelas teori dan pilihan metode, bukan alamat biasa.
                           </FormDescription>
                         </div>
                       </div>

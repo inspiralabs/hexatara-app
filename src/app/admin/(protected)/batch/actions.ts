@@ -1,6 +1,7 @@
 'use server';
 
 import { requireAdmin } from '@/lib/auth/guard';
+import { susunPesanBatchTidakBisaDihapus, sesuaikanMetodeKelasTeori } from '@/lib/batch';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { BatchFormSchema, teks, angka, type BatchFormInput } from '@/lib/validations/batch-admin';
 
@@ -20,15 +21,32 @@ export async function simpanBatchAction(batchId: number | null, input: BatchForm
   }
 
   const { benefits, requirements, equipment, faqs, gallery, ...rest } = parsed.data;
+  const supabaseAdmin = createAdminClient();
+  const categoryId = teks(rest.category_id);
+  let butuhMetode = false;
+  if (categoryId) {
+    const { data: kategori } = await supabaseAdmin
+      .from('batch_categories')
+      .select('butuh_metode_kelas_teori')
+      .eq('id', categoryId)
+      .maybeSingle();
+    butuhMetode = kategori?.butuh_metode_kelas_teori === true;
+  }
+  const metode = sesuaikanMetodeKelasTeori(butuhMetode, rest.metode_kelas_teori, teks(rest.alamat));
+  if (!metode.ok) {
+    return { ok: false as const, pesan: 'Metode kelas teori tidak valid.' };
+  }
+
   const batch = {
     judul_id: rest.judul_id,
     judul_en: teks(rest.judul_en),
     slug: rest.slug,
-    category_id: teks(rest.category_id),
+    category_id: categoryId,
     rating: angka(rest.rating),
     lokasi_id: teks(rest.lokasi_id),
     lokasi_en: teks(rest.lokasi_en),
-    alamat: teks(rest.alamat),
+    alamat: metode.alamat,
+    metode_kelas_teori: metode.metode,
     harga: angka(rest.harga),
     status: rest.status,
     is_active: rest.is_active,
@@ -41,7 +59,6 @@ export async function simpanBatchAction(batchId: number | null, input: BatchForm
     tanggal_mulai: teks(rest.tanggal_mulai),
     tanggal_selesai: teks(rest.tanggal_selesai),
   };
-  const supabaseAdmin = createAdminClient();
 
   let id = batchId;
   if (id == null) {
@@ -166,9 +183,47 @@ export async function simpanBatchAction(batchId: number | null, input: BatchForm
 export async function hapusBatchAction(batchId: number) {
   await requireAdmin();
   const supabaseAdmin = createAdminClient();
+
+  const [perorangan, kelompok] = await Promise.all([
+    supabaseAdmin
+      .from('batch_registrations')
+      .select('id', { count: 'exact', head: true })
+      .eq('batch_id', batchId),
+    supabaseAdmin
+      .from('company_registrations')
+      .select('id', { count: 'exact', head: true })
+      .eq('batch_id', batchId),
+  ]);
+
+  if (perorangan.error || kelompok.error) {
+    const error = perorangan.error ?? kelompok.error;
+    console.error('[admin-batch] gagal hitung pendaftar:', {
+      code: error?.code,
+      message: error?.message,
+      details: error?.details,
+    });
+    return { ok: false as const, pesan: 'Gagal menghapus. Coba lagi.' };
+  }
+
+  const jumlahPerorangan = perorangan.count ?? 0;
+  const jumlahKelompok = kelompok.count ?? 0;
+  if (jumlahPerorangan + jumlahKelompok > 0) {
+    return {
+      ok: false as const,
+      pesan: susunPesanBatchTidakBisaDihapus(jumlahPerorangan, jumlahKelompok),
+    };
+  }
+
   const { error } = await supabaseAdmin.from('batches').delete().eq('id', batchId);
   if (error) {
-    console.error('[admin-batch] gagal hapus batch:', error);
+    console.error('[admin-batch] gagal hapus batch:', {
+      code: error.code,
+      message: error.message,
+      details: error.details,
+    });
+    if (error.code === '23503') {
+      return { ok: false as const, pesan: susunPesanBatchTidakBisaDihapus(0, 0) };
+    }
     return { ok: false as const, pesan: 'Gagal menghapus. Coba lagi.' };
   }
   return { ok: true as const };
@@ -199,7 +254,7 @@ export async function salinDariBatchAction(batchIdSumber: number) {
     .select(
       `
       category_id, rating,
-      lokasi_id, lokasi_en, alamat, harga,
+      lokasi_id, lokasi_en, alamat, metode_kelas_teori, harga,
       deskripsi_id, deskripsi_en, silabus_id, silabus_en
     `
     )
@@ -254,6 +309,12 @@ export async function salinDariBatchAction(batchIdSumber: number) {
     lokasi_id: sumber.lokasi_id ?? '',
     lokasi_en: sumber.lokasi_en ?? '',
     alamat: sumber.alamat ?? '',
+    metode_kelas_teori:
+      sumber.metode_kelas_teori === 'virtual_meeting' ||
+      sumber.metode_kelas_teori === 'hybrid' ||
+      sumber.metode_kelas_teori === 'full_tatap_muka'
+        ? sumber.metode_kelas_teori
+        : null,
     harga: sumber.harga ?? '',
     status: 'upcoming',
     is_active: false,

@@ -108,6 +108,7 @@ export function DaftarBatchDialog({
   prefill,
   butuhLokasiPraktek = false,
   butuhUkuranBaju = false,
+  butuhKategoriPeserta = false,
   lokasiPraktekOptions = [],
 }: {
   batchId: number;
@@ -116,6 +117,7 @@ export function DaftarBatchDialog({
   prefill: Prefill | null;
   butuhLokasiPraktek?: boolean;
   butuhUkuranBaju?: boolean;
+  butuhKategoriPeserta?: boolean;
   lokasiPraktekOptions?: { id: number; nama_kota: string }[];
 }) {
   const t = useTranslations('batch.register');
@@ -139,8 +141,9 @@ export function DaftarBatchDialog({
       makePendaftaranBatchFormSchema({
         butuhLokasi: butuhLokasiPraktek,
         butuhUkuran: butuhUkuranBaju,
+        butuhKategori: butuhKategoriPeserta,
       }),
-    [butuhLokasiPraktek, butuhUkuranBaju],
+    [butuhLokasiPraktek, butuhUkuranBaju, butuhKategoriPeserta],
   );
 
   const {
@@ -226,6 +229,7 @@ export function DaftarBatchDialog({
     for (const [key, value] of Object.entries(data)) {
       if (value != null && value !== '') formData.set(key, String(value));
     }
+    if (!butuhKategoriPeserta) formData.delete('kategori_peserta');
     formData.set('sumber_info', sumberPilihan);
     if (sumberPilihan === 'Lainnya') formData.set('sumber_info_lainnya', sumberLainnya);
     if (sebagaiTamu) formData.set('sebagai_tamu', '1');
@@ -519,32 +523,34 @@ export function DaftarBatchDialog({
               />
             </div>
 
-            <Controller
-              name="kategori_peserta"
-              control={control}
-              render={({ field }) => (
-                <div className="flex flex-col gap-2">
-                  <span className="text-sm font-medium text-foreground">{t('kategoriLabel')}</span>
-                  <RadioGroup
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    className="gap-2"
-                  >
-                    <Label className="flex items-center gap-2 font-normal">
-                      <RadioGroupItem value="penerbitan_baru" />
-                      {t('kategoriBaru')}
-                    </Label>
-                    <Label className="flex items-center gap-2 font-normal">
-                      <RadioGroupItem value="perpanjangan_renewal" />
-                      {t('kategoriRenewal')}
-                    </Label>
-                  </RadioGroup>
-                  {errors.kategori_peserta && (
-                    <p className="text-sm text-destructive">{errors.kategori_peserta.message}</p>
-                  )}
-                </div>
-              )}
-            />
+            {butuhKategoriPeserta ? (
+              <Controller
+                name="kategori_peserta"
+                control={control}
+                render={({ field }) => (
+                  <div className="flex flex-col gap-2">
+                    <span className="text-sm font-medium text-foreground">{t('kategoriLabel')}</span>
+                    <RadioGroup
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      className="gap-2"
+                    >
+                      <Label className="flex items-center gap-2 font-normal">
+                        <RadioGroupItem value="penerbitan_baru" />
+                        {t('kategoriBaru')}
+                      </Label>
+                      <Label className="flex items-center gap-2 font-normal">
+                        <RadioGroupItem value="perpanjangan_renewal" />
+                        {t('kategoriRenewal')}
+                      </Label>
+                    </RadioGroup>
+                    {errors.kategori_peserta && (
+                      <p className="text-sm text-destructive">{errors.kategori_peserta.message}</p>
+                    )}
+                  </div>
+                )}
+              />
+            ) : null}
 
             <div className="flex flex-col gap-1.5">
               <Label>{t('sumberLabel')}</Label>

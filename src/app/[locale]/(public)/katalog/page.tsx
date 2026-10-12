@@ -6,6 +6,8 @@ import { PublicHeroMist } from "@/components/public-hero-mist";
 import { publicCtaPrimary, publicSectionHeading } from "@/lib/public-ui";
 import { pageMetadata } from "@/lib/seo/page-metadata";
 import { getWhatsappAdmin } from "@/lib/site-settings";
+import { getKategoriMerchandiseId } from "@/lib/merchandise";
+import { compareKatalogUrutan } from "@/lib/produk-sort";
 import { ProdukCard } from "./produk-card";
 import { FilterBar } from "./filter-bar";
 import { SORT_VALUES, type ProdukSort } from "./sort-options";
@@ -46,7 +48,7 @@ export default async function KatalogPage({
 }) {
   const { kategori, sort } = await searchParams;
   const kategoriId = kategori;
-  const sortValue = isSort(sort) ? sort : "terbaru";
+  const sortValue = isSort(sort) ? sort : "urutan";
 
   const supabase = await createClient();
   const locale = await getLocale();
@@ -64,7 +66,9 @@ export default async function KatalogPage({
   // sudah NULL di sisi database (ADR-004), tidak pernah menyentuh payload apa pun.
   let query = supabase
     .from("products_public")
-    .select("id, slug, nama_id, nama_en, category_nama_id, category_nama_en, category_id, harga, rating, created_at, thumbnail_url");
+    .select(
+      "id, slug, nama_id, nama_en, category_nama_id, category_nama_en, category_id, harga, rating, created_at, thumbnail_url, urutan"
+    );
 
   if (kategoriId) query = query.eq("category_id", kategoriId);
 
@@ -72,13 +76,22 @@ export default async function KatalogPage({
     query = query.order("harga", { ascending: true, nullsFirst: false });
   } else if (sortValue === "hargaDesc") {
     query = query.order("harga", { ascending: false, nullsFirst: false });
-  } else {
+  } else if (sortValue === "terbaru") {
     query = query.order("created_at", { ascending: false });
   }
+  // sortValue === "urutan" (default): tanpa ORDER BY di sini — diurutkan di
+  // JS lewat compareKatalogUrutan() setelah fetch (tanpa pagination, lihat
+  // plan.md "Modul 15 — F15.8").
 
-  const { data: produk, error: errProduk } = await query;
+  const { data: produkMentah, error: errProduk } = await query;
 
   if (errProduk) console.error("[katalog] gagal memuat produk:", errProduk);
+
+  const kategoriMerchId = sortValue === "urutan" ? await getKategoriMerchandiseId() : null;
+  const produk =
+    sortValue === "urutan" && produkMentah
+      ? [...produkMentah].sort((a, b) => compareKatalogUrutan(a, b, kategoriMerchId))
+      : produkMentah;
 
   const ids = (produk ?? []).map((p) => p.id).filter((id): id is number => id != null);
 

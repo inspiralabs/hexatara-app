@@ -88,6 +88,9 @@
     "timeLabel": "Time: ",
     "locationLabel": "Location: ",
     "addressLabel": "Address: ",
+    "theoryScheduleLabel": "Theory Class Schedule: ",
+    "theoryMethodLabel": "Theory Class Method: ",
+    "theoryAddressLabel": "Theory Class Address: ",
     "supportHeading": "Participant Support",
     "supportDescription": "Questions about the regular batch? Contact Admin on WhatsApp.",
     "contactAdmin": "Contact Admin",
@@ -304,6 +307,7 @@
     "filterSortLabel": "Sort",
     "semua": "All",
     "sort": {
+      "urutan": "Featured Order",
       "terbaru": "Newest",
       "hargaAsc": "Price: Low to High",
       "hargaDesc": "Price: High to Low"

@@ -5,7 +5,6 @@ import { z } from 'zod';
 // → null dilakukan di Server Action lewat teks() dari batch-admin.ts.
 const teksOpsional = z.string().nullable().optional();
 const teksWajib = z.string().min(1, { error: 'Wajib diisi' });
-const angkaOpsional = z.union([z.string(), z.number()]).nullable().optional();
 
 export const HeroSlideFormSchema = z.object({
   judul_id: teksWajib,
@@ -14,7 +13,6 @@ export const HeroSlideFormSchema = z.object({
   subjudul_en: teksOpsional,
   gambar_url: teksOpsional,
   cta_url: teksOpsional,
-  urutan: angkaOpsional,
   is_active: z.boolean(),
 });
 

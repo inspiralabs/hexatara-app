@@ -2,14 +2,40 @@
 
 import { requireAdmin } from '@/lib/auth/guard';
 import { createAdminClient } from '@/lib/supabase/admin';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { teks, angka } from '@/lib/validations/batch-admin';
 import { ProductFormSchema, type ProductFormInput } from '@/lib/validations/produk-admin';
+import { getKategoriMerchandiseId } from '@/lib/merchandise';
+import { masukKelompokMerch, urutanBerikutnyaUntukKelompok } from '@/lib/produk-sort';
 
 function pesanGagalSimpan(error: { code?: string }) {
   if (error.code === '23505') {
     return 'Slug sudah dipakai produk lain. Pilih slug lain.';
   }
   return 'Gagal menyimpan produk. Coba lagi.';
+}
+
+async function urutanBerikutnyaDiKelompok(
+  supabaseAdmin: SupabaseClient,
+  kategoriMerchId: string | null,
+  isMerch: boolean
+) {
+  const { data } = await supabaseAdmin.from('products').select('category_id, urutan');
+  return urutanBerikutnyaUntukKelompok(data ?? [], kategoriMerchId, isMerch);
+}
+
+/** Semua id yang dikirim harus benar-benar anggota kelompok yang diklaim — dicek di server, bukan percaya FormData/client. */
+async function validasiKelompok(
+  supabaseAdmin: SupabaseClient,
+  ids: number[],
+  kategoriMerchId: string | null,
+  isMerch: boolean
+) {
+  if (ids.length === 0) return true;
+  const { data } = await supabaseAdmin.from('products').select('id, category_id').in('id', ids);
+  const rows = data ?? [];
+  if (rows.length !== ids.length) return false;
+  return rows.every((r) => masukKelompokMerch(r.category_id, kategoriMerchId) === isMerch);
 }
 
 export async function uploadGambarProdukAction(formData: FormData) {
@@ -51,7 +77,6 @@ export async function simpanProdukAction(id: number | null, input: ProductFormIn
     rating: angka(rest.rating),
     harga: angka(rest.harga),
     tampilkan_harga: rest.tampilkan_harga,
-    urutan: angka(rest.urutan) ?? 0,
     is_active: rest.is_active,
     deskripsi_id: teks(rest.deskripsi_id),
     deskripsi_en: teks(rest.deskripsi_en),
@@ -61,17 +86,29 @@ export async function simpanProdukAction(id: number | null, input: ProductFormIn
   };
 
   const supabaseAdmin = createAdminClient();
+  const kategoriMerchId = await getKategoriMerchandiseId();
+  const kelompokBaruMerch = masukKelompokMerch(produk.category_id, kategoriMerchId);
 
   let produkId = id;
   if (produkId == null) {
-    const { data, error } = await supabaseAdmin.from('products').insert(produk).select('id').single();
+    // Item baru selalu di akhir KELOMPOKNYA (produk atau merchandise) — F15.8.
+    const urutan = await urutanBerikutnyaDiKelompok(supabaseAdmin, kategoriMerchId, kelompokBaruMerch);
+    const { data, error } = await supabaseAdmin.from('products').insert({ ...produk, urutan }).select('id').single();
     if (error || !data) {
       console.error('[admin-produk] gagal membuat produk:', error);
       return { ok: false as const, pesan: pesanGagalSimpan(error ?? {}) };
     }
     produkId = data.id;
   } else {
-    const { error } = await supabaseAdmin.from('products').update(produk).eq('id', produkId);
+    // Pindah kelompok lewat ubah kategori → urutan diset ke akhir kelompok
+    // tujuan. Kalau tetap di kelompok yang sama, urutan tidak disentuh.
+    const { data: sebelum } = await supabaseAdmin.from('products').select('category_id').eq('id', produkId).single();
+    const kelompokLamaMerch = masukKelompokMerch(sebelum?.category_id ?? null, kategoriMerchId);
+    const payload =
+      kelompokLamaMerch === kelompokBaruMerch
+        ? produk
+        : { ...produk, urutan: await urutanBerikutnyaDiKelompok(supabaseAdmin, kategoriMerchId, kelompokBaruMerch) };
+    const { error } = await supabaseAdmin.from('products').update(payload).eq('id', produkId);
     if (error) {
       console.error('[admin-produk] gagal mengubah produk:', error);
       return { ok: false as const, pesan: pesanGagalSimpan(error) };
@@ -113,10 +150,17 @@ export async function hapusProdukAction(id: number) {
   return { ok: true as const };
 }
 
-// products.urutan TIDAK unique — aman di-update langsung per baris (pola sama hero_slides).
-export async function reorderProdukAction(produkIds: number[]) {
+// products.urutan TIDAK unique — aman di-update langsung per baris (pola sama
+// hero_slides). Reorder per kelompok (F15.8) — id yang dikirim divalidasi
+// benar-benar anggota kelompoknya sebelum ditulis, supaya reorder di satu
+// menu (Produk/Merchandise) tidak pernah menimpa urutan kelompok lain.
+async function reorderKelompok(produkIds: number[], isMerch: boolean) {
   await requireAdmin();
   const supabaseAdmin = createAdminClient();
+  const kategoriMerchId = await getKategoriMerchandiseId();
+  if (!(await validasiKelompok(supabaseAdmin, produkIds, kategoriMerchId, isMerch))) {
+    return { ok: false as const, pesan: 'Data tidak valid. Muat ulang halaman dan coba lagi.' };
+  }
   for (const [index, id] of produkIds.entries()) {
     const { error } = await supabaseAdmin.from('products').update({ urutan: index }).eq('id', id);
     if (error) {
@@ -125,4 +169,12 @@ export async function reorderProdukAction(produkIds: number[]) {
     }
   }
   return { ok: true as const };
+}
+
+export async function reorderProdukAction(produkIds: number[]) {
+  return reorderKelompok(produkIds, false);
+}
+
+export async function reorderMerchandiseAction(produkIds: number[]) {
+  return reorderKelompok(produkIds, true);
 }

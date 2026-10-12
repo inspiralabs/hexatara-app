@@ -24,7 +24,6 @@ export const ProductFormSchema = z.object({
   rating: ratingOpsional,
   harga: angkaOpsional,
   tampilkan_harga: z.boolean(),
-  urutan: angkaOpsional,
   is_active: z.boolean(),
   deskripsi_id: teksOpsional,
   deskripsi_en: teksOpsional,

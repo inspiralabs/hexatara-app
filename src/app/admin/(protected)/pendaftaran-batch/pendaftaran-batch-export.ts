@@ -1,10 +1,6 @@
 import { format } from 'date-fns';
+import { labelKategoriPeserta } from '@/lib/validations/pendaftaran-batch';
 import type { PendaftaranBatchRow } from './pendaftaran-batch-table';
-
-const LABEL_KATEGORI: Record<PendaftaranBatchRow['kategori_peserta'], string> = {
-  penerbitan_baru: 'Penerbitan baru',
-  perpanjangan_renewal: 'Perpanjangan / renewal',
-};
 
 /** Export antrean menunggu — kolom detail penuh, tanpa foto. */
 export async function eksporPendaftaranBatchXlsx(rows: PendaftaranBatchRow[]) {
@@ -14,7 +10,7 @@ export async function eksporPendaftaranBatchXlsx(rows: PendaftaranBatchRow[]) {
     Email: row.email ?? '',
     WhatsApp: row.whatsapp ?? '',
     Batch: row.batchJudul,
-    'Kategori Peserta': LABEL_KATEGORI[row.kategori_peserta],
+    'Kategori Peserta': labelKategoriPeserta(row.kategori_peserta),
     'Lokasi Praktek': row.lokasiPraktek ?? '',
     'Ukuran Baju': row.ukuranBaju ?? '',
     Akun: row.user_id ? 'Login' : 'Tanpa akun',

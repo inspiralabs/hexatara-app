@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { CheckCircle2Icon } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
-import { formatRupiah, formatTanggalBatch, splitHtmlByHeadings } from "@/lib/batch";
+import { formatRupiah, formatTanggalBatch, labelMetodeKelasTeori, splitHtmlByHeadings } from "@/lib/batch";
 import { pick } from "@/lib/i18n/pick";
 import { getKontakPelatihan, getWhatsappAdmin } from "@/lib/site-settings";
 import { pageMetadata, plainDescription } from "@/lib/seo/page-metadata";
@@ -95,7 +95,7 @@ export default async function BatchDetailPage({
   const { data: batch, error: batchError } = await supabase
     .from("batches")
     .select(
-      "id, slug, judul_id, judul_en, category_id, lokasi_id, lokasi_en, alamat, harga, status, tanggal_mulai, tanggal_selesai, deskripsi_id, deskripsi_en, silabus_id, silabus_en, hero_gambar_url, gambar_detail_url, rating, batch_categories(nama_id, nama_en, butuh_lokasi_praktek, butuh_ukuran_baju)"
+      "id, slug, judul_id, judul_en, category_id, lokasi_id, lokasi_en, alamat, metode_kelas_teori, harga, status, tanggal_mulai, tanggal_selesai, deskripsi_id, deskripsi_en, silabus_id, silabus_en, hero_gambar_url, gambar_detail_url, rating, batch_categories(nama_id, nama_en, butuh_lokasi_praktek, butuh_ukuran_baju, butuh_kategori_peserta, butuh_metode_kelas_teori)"
     )
     .eq("slug", slug)
     .eq("is_active", true)
@@ -106,6 +106,7 @@ export default async function BatchDetailPage({
 
   const butuhLokasiPraktek = batch.batch_categories?.butuh_lokasi_praktek === true;
   const butuhUkuranBaju = batch.batch_categories?.butuh_ukuran_baju === true;
+  const butuhKategoriPeserta = batch.batch_categories?.butuh_kategori_peserta === true;
 
   const [
     { data: benefits },
@@ -158,6 +159,12 @@ export default async function BatchDetailPage({
     locale,
   );
   const lokasi = pick(batch.lokasi_id, batch.lokasi_en, locale);
+  const labelMetode = labelMetodeKelasTeori(batch.metode_kelas_teori, locale);
+  const tampilTeori = batch.batch_categories?.butuh_metode_kelas_teori === true && labelMetode != null;
+  const tampilAlamatTeori =
+    tampilTeori &&
+    (batch.metode_kelas_teori === 'hybrid' || batch.metode_kelas_teori === 'full_tatap_muka') &&
+    Boolean(batch.alamat);
   const deskripsi = pick(batch.deskripsi_id, batch.deskripsi_en, locale);
   const silabus = pick(batch.silabus_id, batch.silabus_en, locale);
   const waRegulerLink = buildWaPelatihanLink(
@@ -249,8 +256,16 @@ export default async function BatchDetailPage({
             <dl className="mt-3 space-y-1.5 text-sm text-muted-foreground sm:columns-2 sm:gap-8">
               {tanggal && (
                 <div className="break-inside-avoid">
-                  <dt className="inline font-medium text-foreground">{t("timeLabel")}</dt>
+                  <dt className="inline font-medium text-foreground">
+                    {tampilTeori ? t("theoryScheduleLabel") : t("timeLabel")}
+                  </dt>
                   <dd className="inline">{tanggal}</dd>
+                </div>
+              )}
+              {tampilTeori && (
+                <div className="break-inside-avoid">
+                  <dt className="inline font-medium text-foreground">{t("theoryMethodLabel")}</dt>
+                  <dd className="inline">{labelMetode}</dd>
                 </div>
               )}
               {lokasi && (
@@ -259,12 +274,17 @@ export default async function BatchDetailPage({
                   <dd className="inline">{lokasi}</dd>
                 </div>
               )}
-              {batch.alamat && (
+              {tampilAlamatTeori ? (
+                <div className="break-inside-avoid">
+                  <dt className="inline font-medium text-foreground">{t("theoryAddressLabel")}</dt>
+                  <dd className="inline">{batch.alamat}</dd>
+                </div>
+              ) : !tampilTeori && batch.alamat ? (
                 <div className="break-inside-avoid">
                   <dt className="inline font-medium text-foreground">{t("addressLabel")}</dt>
                   <dd className="inline">{batch.alamat}</dd>
                 </div>
-              )}
+              ) : null}
             </dl>
             {batch.harga != null && (
               <p className="mt-3 text-2xl font-bold text-primary sm:text-3xl">{formatRupiah(batch.harga)}</p>
@@ -279,6 +299,7 @@ export default async function BatchDetailPage({
                     prefill={pendaftaran.prefill}
                     butuhLokasiPraktek={butuhLokasiPraktek}
                     butuhUkuranBaju={butuhUkuranBaju}
+                    butuhKategoriPeserta={butuhKategoriPeserta}
                     lokasiPraktekOptions={lokasiPraktek ?? []}
                   />
                 </div>

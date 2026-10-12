@@ -16,13 +16,12 @@ import {
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { ImageUploadField } from '@/components/image-upload-field';
 
 const DEFAULT_VALUES: PartnerFormInput = {
   nama: '',
   logo_url: '',
-  urutan: 0,
   is_active: true,
 };
 
@@ -111,26 +110,6 @@ export function PartnerFormDialog({
                       }}
                     />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={control}
-              name="urutan"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Urutan</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                      value={field.value ?? ''}
-                      onChange={(e) => field.onChange(e.target.value === '' ? '' : e.target.value)}
-                    />
-                  </FormControl>
-                  <FormDescription>Angka lebih kecil tampil lebih awal.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

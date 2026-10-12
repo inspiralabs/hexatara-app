@@ -12,6 +12,7 @@ import {
 } from '@/lib/validations/practice-location-admin';
 import {
   hapusLokasiPraktekAction,
+  reorderLokasiPraktekAction,
   simpanLokasiPraktekAction,
   toggleAktifLokasiPraktekAction,
 } from './actions';
@@ -22,6 +23,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { ReorderButtons } from '@/components/admin/reorder-buttons';
+import { useReorderList } from '@/components/admin/use-reorder-list';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,25 +41,24 @@ type Lokasi = Database['public']['Tables']['practice_locations']['Row'];
 
 const DEFAULT_VALUES: PracticeLocationFormInput = {
   nama_kota: '',
-  urutan: 0,
   is_active: true,
 };
 
 function keDefaultValues(l: Lokasi): PracticeLocationFormInput {
   return {
     nama_kota: l.nama_kota,
-    urutan: l.urutan,
     is_active: l.is_active,
   };
 }
 
 export function LokasiPraktekManager({ items }: { items: Lokasi[] }) {
   const router = useRouter();
-  const [daftar, setDaftar] = useState(items);
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setDaftar(items);
-  }, [items]);
+  const {
+    daftar,
+    setDaftar,
+    pending: reorderPending,
+    pindah,
+  } = useReorderList(items, reorderLokasiPraktekAction, 'Urutan lokasi praktek berhasil diubah.');
 
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Lokasi | null>(null);
@@ -116,8 +118,8 @@ export function LokasiPraktekManager({ items }: { items: Lokasi[] }) {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-16">Urutan</TableHead>
               <TableHead>Kota</TableHead>
-              <TableHead className="w-24">Urutan</TableHead>
               <TableHead className="w-28">Status aktif</TableHead>
               <TableHead className="text-right">Aksi</TableHead>
             </TableRow>
@@ -130,10 +132,18 @@ export function LokasiPraktekManager({ items }: { items: Lokasi[] }) {
                 </TableCell>
               </TableRow>
             ) : (
-              daftar.map((l) => (
+              daftar.map((l, index) => (
                 <TableRow key={l.id}>
+                  <TableCell>
+                    <ReorderButtons
+                      label={l.nama_kota}
+                      disabledUp={index === 0 || reorderPending}
+                      disabledDown={index === daftar.length - 1 || reorderPending}
+                      onUp={() => pindah(l.id, 'up')}
+                      onDown={() => pindah(l.id, 'down')}
+                    />
+                  </TableCell>
                   <TableCell className="font-medium text-foreground">{l.nama_kota}</TableCell>
-                  <TableCell>{l.urutan}</TableCell>
                   <TableCell>
                     <Switch
                       checked={l.is_active}
@@ -253,24 +263,6 @@ function LokasiFormDialog({
                   <FormLabel>Nama kota *</FormLabel>
                   <FormControl>
                     <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={control}
-              name="urutan"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Urutan</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                      value={field.value ?? ''}
-                      onChange={(e) => field.onChange(e.target.value === '' ? '' : Number(e.target.value))}
-                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

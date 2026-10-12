@@ -159,20 +159,6 @@ export function ProdukForm({
             />
             <FormField
               control={control}
-              name="urutan"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Urutan</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} value={field.value ?? ''} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={control}
               name="rating"
               render={({ field }) => (
                 <FormItem>

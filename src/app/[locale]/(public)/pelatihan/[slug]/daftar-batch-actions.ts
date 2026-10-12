@@ -4,7 +4,11 @@ import { z } from 'zod';
 import { getOptionalUser } from '@/lib/auth/guard';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { PendaftaranBatchSchema, UKURAN_BAJU } from '@/lib/validations/pendaftaran-batch';
+import {
+  PendaftaranBatchSchema,
+  resolveKategoriPeserta,
+  UKURAN_BAJU,
+} from '@/lib/validations/pendaftaran-batch';
 import { getWhatsappAdmin } from '@/lib/site-settings';
 
 const BatchIdSchema = z.number().int().positive();
@@ -100,7 +104,10 @@ export async function daftarBatchAction(batchId: unknown, formData: FormData) {
     tempat_lahir: formData.get('tempat_lahir'),
     tanggal_lahir: formData.get('tanggal_lahir'),
     alamat_lengkap: formData.get('alamat_lengkap'),
-    kategori_peserta: formData.get('kategori_peserta'),
+    kategori_peserta: (() => {
+      const raw = formData.get('kategori_peserta');
+      return raw === 'penerbitan_baru' || raw === 'perpanjangan_renewal' ? raw : undefined;
+    })(),
     sumber_info: sumberInfo,
     kode_referral: String(formData.get('kode_referral') ?? '').trim() || undefined,
   });
@@ -146,7 +153,7 @@ export async function daftarBatchAction(batchId: unknown, formData: FormData) {
   const { data: batch } = await admin
     .from('batches')
     .select(
-      'id, judul_id, is_active, status, batch_categories(butuh_lokasi_praktek, butuh_ukuran_baju)',
+      'id, judul_id, is_active, status, batch_categories(butuh_lokasi_praktek, butuh_ukuran_baju, butuh_kategori_peserta)',
     )
     .eq('id', parsedBatchId.data)
     .eq('is_active', true)
@@ -159,9 +166,17 @@ export async function daftarBatchAction(batchId: unknown, formData: FormData) {
   const kategori = batch.batch_categories as {
     butuh_lokasi_praktek: boolean;
     butuh_ukuran_baju: boolean;
+    butuh_kategori_peserta: boolean;
   } | null;
   const butuhLokasi = kategori?.butuh_lokasi_praktek === true;
   const butuhUkuran = kategori?.butuh_ukuran_baju === true;
+  const kategoriPeserta = resolveKategoriPeserta(
+    kategori?.butuh_kategori_peserta === true,
+    data.kategori_peserta,
+  );
+  if (!kategoriPeserta.ok) {
+    return { ok: false as const, pesan: 'Kategori peserta wajib dipilih.' };
+  }
 
   let practiceLocationId: number | null = null;
   let ukuranBaju: string | null = null;
@@ -206,7 +221,7 @@ export async function daftarBatchAction(batchId: unknown, formData: FormData) {
       tempat_lahir: data.tempat_lahir,
       tanggal_lahir: data.tanggal_lahir,
       alamat_lengkap: data.alamat_lengkap,
-      kategori_peserta: data.kategori_peserta,
+      kategori_peserta: kategoriPeserta.value,
       sumber_info: data.sumber_info ?? null,
       kode_referral: data.kode_referral ?? null,
       practice_location_id: practiceLocationId,

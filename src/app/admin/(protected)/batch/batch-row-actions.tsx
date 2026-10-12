@@ -33,7 +33,7 @@ export function BatchRowActions({ batchId, judul }: { batchId: number; judul: st
     startTransition(async () => {
       const hasil = await hapusBatchAction(batchId);
       if (!hasil.ok) {
-        toast.error(hasil.pesan);
+        toast.error(hasil.pesan, { duration: 10000 });
         return;
       }
       setHapusOpen(false);
@@ -63,8 +63,9 @@ export function BatchRowActions({ batchId, judul }: { batchId: number; judul: st
           <AlertDialogHeader>
             <AlertDialogTitle>Hapus batch &quot;{judul}&quot;?</AlertDialogTitle>
             <AlertDialogDescription>
-              Data batch beserta benefit, peralatan, FAQ, dan galerinya akan terhapus permanen.
-              Tindakan ini tidak bisa dibatalkan.
+              Batch tanpa pendaftar akan terhapus permanen beserta benefit, peralatan, FAQ, dan galerinya.
+              Batch yang sudah punya pendaftar perorangan atau kelompok tidak bisa dihapus. Untuk
+              menyembunyikannya dari publik, matikan toggle Aktif.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

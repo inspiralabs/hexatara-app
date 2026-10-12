@@ -9,7 +9,7 @@ export type PesertaPendaftaranRow = {
   tempat_lahir: string | null;
   tanggal_lahir: string | null;
   alamat_lengkap: string | null;
-  kategori_peserta: Database['public']['Enums']['kategori_peserta_rpc'];
+  kategori_peserta: Database['public']['Enums']['kategori_peserta_rpc'] | null;
   sumber_info: string | null;
   kode_referral: string | null;
   user_id: string | null;
