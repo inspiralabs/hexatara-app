@@ -1277,6 +1277,18 @@ Menghilangkan ambiguitas field kategori Produk/Batch, melengkapi dashboard Admin
 
 ---
 
+## 9g. MODUL 15 — TAMBAHAN ABI (ADR-028), F15.1
+
+Judul halaman publik saja. Route tetap `/pelatihan` dan `/katalog`.
+
+- `/pelatihan`: judul "Direktori Pelatihan & Sertifikasi" / "Training & Certification Directory", plus subtitle baru. Metadata SEO mengikuti judul dan subtitle itu.
+- `/katalog`: judul "Hexatara Marketplace" (id dan en), plus subtitle baru. Metadata SEO mengikuti. Key `nav.katalog` jadi "Marketplace". Label nav yang tampil tetap `nav.produk`.
+- Tidak diubah: `landing.scheduleHeading`, label filter, tombol kembali, route, slug.
+
+Selesai bila Alif menguji sendiri di browser. F15.1 dan F15.2 DONE 12 Okt 2026. F15.3 (checkbox baris DataTable Admin mati secara default; prop tetap) masih TODO.
+
+- Form peserta dan profil: label "Pas Foto (Background Merah)" / "Passport Photo (Red Background)", plus kalimat bantuan latar merah. Tidak ada pemeriksaan warna gambar. Kolom `pas_foto_url` tidak berubah. Pendaftaran kelompok tidak meminta foto.
+
 ## 10. MODUL PENDUKUNG — ADMIN PANEL
 
 > BRD Bagian 5.E · dikerjakan menyebar di Sprint 1–4

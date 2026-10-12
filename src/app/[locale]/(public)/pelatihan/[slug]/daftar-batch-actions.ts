@@ -138,7 +138,7 @@ export async function daftarBatchAction(batchId: unknown, formData: FormData) {
   if ((!ktpOk && !pathKtpProfil) || (!pasOk && !pathPasProfil)) {
     return {
       ok: false as const,
-      pesan: 'Foto KTP dan pas foto wajib diunggah (JPG/PNG/WebP, maks. 5 MB).',
+      pesan: 'Foto KTP dan pas foto (background merah) wajib diunggah (JPG/PNG/WebP, maks. 5 MB).',
     };
   }
 

@@ -146,7 +146,7 @@ export function PesertaPendaftaranDetail({ row }: { row: PesertaPendaftaranRow }
           </dl>
           <div className="grid gap-4 sm:grid-cols-2">
             <FotoInline label="Foto KTP" src={row.fotoKtpUrl} onZoom={setZoomSrc} />
-            <FotoInline label="Pas foto" src={row.pasFotoUrl} onZoom={setZoomSrc} />
+            <FotoInline label="Pas Foto (Background Merah)" src={row.pasFotoUrl} onZoom={setZoomSrc} />
           </div>
           <div className="mt-4">
             <FotoInline label="Bukti pembayaran" src={row.buktiUrl} onZoom={setZoomSrc} />

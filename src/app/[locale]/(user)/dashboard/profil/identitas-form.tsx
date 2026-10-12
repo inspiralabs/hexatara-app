@@ -109,7 +109,8 @@ export function IdentitasForm({
         />
         <IdentitasFotoField
           jenis="pas_foto"
-          label="Pas Foto"
+          label="Pas Foto (Background Merah)"
+          hint="Gunakan pas foto dengan latar belakang merah."
           previewUrl={previewPasFotoUrl}
           aspectClass="aspect-[3/4]"
         />

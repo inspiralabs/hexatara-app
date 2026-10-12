@@ -514,8 +514,8 @@ export function DaftarBatchDialog({
                 file={filePas}
                 onFile={setFilePas}
                 sudahAdaDiProfil={Boolean(pakaiProfil && prefill?.pas_foto_url)}
-                hintAda={t('fotoAdaProfil')}
-                hintKosong={t('fotoHint')}
+                hintAda={`${t('pasFotoHelper')} ${t('fotoAdaProfil')}`}
+                hintKosong={`${t('pasFotoHelper')} ${t('fotoHint')}`}
               />
             </div>
 

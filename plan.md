@@ -989,4 +989,114 @@ Ditutup 9 Okt 2026. Alif menguji sendiri di browser. Tiga belas baris di bawah b
 
 Baris **F10.2**, status tertulis `SKIP (bukan bug)/PERLU DICEK ALIF`. Bukan `DONE`, `TODO`, `WIP`, atau `SKIP` polos, karena sel itu menggabungkan dua label. Isi: cek `NEXT_PUBLIC_SITE_URL` di Vercel dan urutan produk/pelatihan yang sudah dinilai bukan bug. Usulan penyeragaman ada di §4 bagian ini. Tidak diubah.
 
+---
+
+## Modul 15 — F15.1
+
+Teks saja. Tanpa SQL. Status registry TODO.
+
+### Audit (tidak diubah dulu)
+
+Pencarian case-insensitive di `messages/*.json` dan `src/`.
+
+| Temuan | Pemakaian | Keputusan |
+|---|---|---|
+| `pelatihan.pageTitle` / `pageSubtitle` | Heading `/pelatihan` (`pelatihan/page.tsx` ~125–126, namespace `pelatihan`) | Diubah (Tahap 2A) |
+| `seo.pelatihanTitle` / `pelatihanDescription` | Metadata `/pelatihan` (`generateMetadata`, namespace `seo`) | Diubah (Tahap 2A) |
+| `catalog.pageTitle` / `pageSubtitle` | Heading `/katalog` (`katalog/page.tsx` ~128–129, namespace `catalog`) | Diubah (Tahap 2B) |
+| `seo.katalogTitle` / `katalogDescription` | Metadata `/katalog` | Diubah (Tahap 2B) |
+| `nav.katalog` | Tidak ada pemanggil di `src/` | Diubah sesuai prompt, tidak tampil |
+| `landing.scheduleHeading` | Heading section beranda, bukan judul halaman | Sengaja tidak diubah |
+| `pelatihan.kosong`, `lmsClosed.description`, `legal.syaratKetentuan` | Kalimat isi, bukan judul halaman | Sengaja tidak diubah |
+| `catalog.backToCatalog` ("Kembali ke Katalog" / "Back to Catalog") | Key ada, tidak dipakai di `src/`. Bukan frasa "Katalog Produk" / "Product Catalog" | Sengaja tidak diubah |
+| Navbar + footer tautan `/katalog` | `layout.tsx` memakai `nav.produk`, bukan `nav.katalog` | Sengaja tidak diubah (`nav.produk` dilarang diubah) |
+| Komentar `pelatihan/page.tsx` ~102 | Komentar kode, bukan UI | Sengaja tidak diubah |
+| Email, breadcrumb | Tidak ada frasa judul itu | Tidak ada yang disamakan |
+
+### Key yang diubah (lama → baru)
+
+| Key | id lama → baru | en lama → baru |
+|---|---|---|
+| `pelatihan.pageTitle` | Jadwal Pelatihan → Direktori Pelatihan & Sertifikasi | Training Schedule → Training & Certification Directory |
+| `pelatihan.pageSubtitle` | Pelatihan pilot drone bersertifikat (Remote Pilot Certificate) bersama instruktur berpengalaman. → Jelajahi berbagai pilihan program pelatihan drone, mulai dari tingkat dasar hingga spesialisasi industri | Certified drone pilot training (Remote Pilot Certificate) with experienced instructors. → Discover our comprehensive drone training programs, ranging from beginner courses to advanced industry specializations |
+| `seo.pelatihanTitle` | sama dengan pageTitle | sama dengan pageTitle |
+| `seo.pelatihanDescription` | deskripsi SEO lama → subtitle baru | deskripsi SEO lama → subtitle baru |
+| `catalog.pageTitle` | Katalog Produk → Hexatara Marketplace | Product Catalog → Hexatara Marketplace |
+| `catalog.pageSubtitle` | Drone profesional Autel untuk kebutuhan survei, pemetaan, dan industri. → Jelajahi pilihan drone, suku cadang, flight gear & aksesori, serta merchandise eksklusif Hexatara. | Professional Autel drones for survey, mapping, and industrial needs. → Explore our diverse selection of drones, spare parts, flight gears & accessories, and exclusive Hexatara merchandise. |
+| `seo.katalogTitle` | Katalog Produk → Hexatara Marketplace | Product Catalog → Hexatara Marketplace |
+| `seo.katalogDescription` | deskripsi SEO lama → subtitle baru | deskripsi SEO lama → subtitle baru |
+| `nav.katalog` | Katalog Produk → Marketplace | Product Catalog → Marketplace |
+
+`pnpm tsc --noEmit`, `pnpm lint`, `pnpm test`: lolos (2026-10-11). Tes: 14 lulus. F15.1 DONE 12 Okt 2026 (konfirmasi Alif).
+
+---
+
+## Modul 15 — F15.2
+
+Teks label saja. Tanpa SQL. Status registry TODO.
+
+### Audit
+
+| Tempat | Teks lama | Keputusan |
+|---|---|---|
+| `batch.register.pasFotoLabel` | Pas foto / Passport photo | Diubah |
+| `batch.register.errPasFoto` | Pas foto wajib diunggah. / Passport photo is required. | Diubah |
+| `daftar-batch-dialog.tsx` FotoPicker | hint format bersama KTP | Hint pas foto ditambah kalimat latar merah |
+| `daftar-batch-actions.ts` | Foto KTP dan pas foto wajib diunggah … | Diubah, tetap hardcode Indonesia |
+| `identitas-form.tsx` | Pas Foto | Diubah + hint |
+| `identitas-foto-field.tsx` toast | Pas foto berhasil diunggah. | Diubah |
+| Admin `pendaftaran-batch-detail.tsx`, `peserta-pendaftaran-detail.tsx` | Pas foto | Diubah |
+| `pendaftaran-batch/page.tsx` | catatan signed URL 5 menit | Tidak diubah (bukan label field) |
+| Pendaftaran kelompok / Excel | tidak ada unggah foto | Tidak berlaku |
+| Kolom `pas_foto_url`, field `pas_foto` | — | Tidak diubah |
+
+### Lama → baru
+
+| File | Lama | Baru |
+|---|---|---|
+| `messages` `pasFotoLabel` | Pas foto / Passport photo | Pas Foto (Background Merah) / Passport Photo (Red Background) |
+| `messages` `pasFotoHelper` (baru) | — | Gunakan pas foto dengan latar belakang merah. / Use a passport photo with a red background. |
+| `messages` `errPasFoto` | Pas foto wajib diunggah. / Passport photo is required. | Pas foto (background merah) wajib diunggah. / Passport photo (red background) is required. |
+| `daftar-batch-actions.ts` | Foto KTP dan pas foto wajib diunggah (JPG/PNG/WebP, maks. 5 MB). | Foto KTP dan pas foto (background merah) wajib diunggah (JPG/PNG/WebP, maks. 5 MB). |
+| `identitas-form.tsx` | Pas Foto | Pas Foto (Background Merah) + hint latar merah |
+| `identitas-foto-field.tsx` | Pas foto berhasil diunggah. | Pas foto (background merah) berhasil diunggah. |
+| dua detail Admin | Pas foto | Pas Foto (Background Merah) |
+
+`pnpm tsc --noEmit`, `pnpm lint`, `pnpm test`: lolos. Tes: 14 lulus. F15.2 DONE 12 Okt 2026 (konfirmasi Alif).
+
+---
+
+## Modul 15 — F15.3
+
+Tanpa SQL. Status registry TODO.
+
+### Audit
+
+15 pemanggilan `<DataTable` di 14 berkas. Tidak satu pun mengirim `enableRowSelection`, `rowSelection`, `onSelectionChange`, atau `getSelectedRowModel`. Tidak ada aksi massal yang membaca baris terpilih. Tidak ada tabel yang dikecualikan.
+
+| Berkas | Pemakaian pilihan baris |
+|---|---|
+| `batch/batch-table.tsx` | tidak |
+| `konten/instructor-list.tsx` | tidak |
+| `konten/partner-list.tsx` | tidak |
+| `konten/popup-list.tsx` | tidak |
+| `konten/sale-banner-list.tsx` | tidak |
+| `konten/testimonial-list.tsx` | tidak |
+| `leads/penawaran-table.tsx` | tidak |
+| `merchandise/pesanan/pesanan-merchandise-table.tsx` | tidak |
+| `merchandise/pesanan-publik/pesanan-publik-table.tsx` | tidak |
+| `pendaftaran-batch/pendaftaran-batch-table.tsx` | tidak |
+| `pendaftaran-perusahaan/pendaftaran-perusahaan-table.tsx` | tidak |
+| `peserta-pendaftaran/peserta-pendaftaran-table.tsx` | tidak |
+| `sertifikat/sertifikat-table.tsx` | tidak |
+| `upgrade/upgrade-tables.tsx` (2 tabel) | tidak |
+
+Footer DataTable tidak punya teks "N dari M baris dipilih". `colSpan` baris kosong memakai `columnsWithSelect.length`, jadi ikut menyusut saat kolom `_select` tidak ditambah. Lebar `w-10` hanya untuk header `_select`.
+
+### Perubahan
+
+`src/components/data-table.tsx`: `enableRowSelection` default `true` → `false`. Prop tidak dihapus. `ProdukTable` dan `BabList` tidak disentuh.
+
+`pnpm tsc --noEmit`, `pnpm lint`, `pnpm test`: lolos (14 tes). `pnpm knip` gagal pada temuan lama (field.tsx, skeleton.tsx, shadcn, tw-animate-css, tailwindcss, puluhan export UI). Tidak ada temuan baru di `data-table.tsx`.
+
 

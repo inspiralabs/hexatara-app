@@ -1474,6 +1474,18 @@ Pekerjaan ini dikerjakan 24–25 September 2026 (sebelum UAT bersama Abi) dan sa
 
 ---
 
+### ADR-028 — Tambahan Abi pasca meeting 4 Okt (Modul 15), dimulai F15.1
+
+**2026-10-11 · Berlaku**
+
+**Konteks.** Abi minta judul halaman publik `/pelatihan` dan `/katalog` diganti. Teks hidup di `messages/id.json` dan `messages/en.json`. Halaman sudah memakai `t("pageTitle")` / `t("pageSubtitle")` dan metadata `seo.*`.
+
+**Keputusan.** F15.1 hanya mengganti string. Tanpa SQL, tanpa ubah route, slug, atau logika. Navbar yang tampil tetap `nav.produk` (larangan prompt: jangan ubah key itu). Key `nav.katalog` diganti ke "Marketplace" meski tidak dipakai komponen nav.
+
+**Konsekuensi.** Pengunjung masih melihat label nav "Produk" / "Products" pada tautan `/katalog` sampai ada keputusan terpisah untuk `nav.produk`. F15.1 dan F15.2 DONE 12 Okt 2026 (konfirmasi Alif). F15.3: `DataTable` `enableRowSelection` default false; prop tetap, nyalakan per tabel bila ada aksi massal. Tidak ada tabel yang membaca pilihan baris. Status F15.3 TODO.
+
+---
+
 ### Template ADR baru
 
 ```
@@ -1544,3 +1556,6 @@ Konsekuensi: apa yang jadi lebih sulit karena pilihan ini
 | 2026-10-09 | **F09.1–F09.4 DONE** (ADR-022 / ADR-022b). Gambar detail pelatihan, galeri + thumbnail, crop hero 4:3, lightbox publik. |
 | 2026-10-09 | **F10.3–F10.6 DONE** (ADR-023). Kuis LMS, bukti bayar pendaftaran, email Resend, verifikasi lintas perangkat. F10.2 tidak diubah. |
 | 2026-10-09 | **F11.1–F11.3 DONE** (ADR-024). Kategori produk dari relasi, ringkasan Leads di Overview, logo di login Admin. |
+| 2026-10-11 | **ADR-028 dibuka — F15.1 dikodekan.** Judul `/pelatihan` dan `/katalog` diganti di `messages`. Tanpa SQL. Registry TODO sampai uji Alif. |
+| 2026-10-12 | **F15.1 DONE** (konfirmasi Alif). **F15.2 dikodekan:** label pas foto menyebut latar merah. Tanpa SQL. Registry F15.2 TODO. |
+| 2026-10-12 | **F15.2 DONE** (konfirmasi Alif). **F15.3 dikodekan:** checkbox baris DataTable mati secara default. Prop `enableRowSelection` tetap. Registry F15.3 TODO. |

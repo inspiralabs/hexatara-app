@@ -269,6 +269,16 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 ---
 
+## Sprint 14 — Modul 15: Tambahan Abi (ADR-028)
+
+| Kode | Fitur | Status | Berkas | Diuji | Bukti |
+|---|---|---|---|---|---|
+| F15.1 | Judul halaman `/pelatihan` dan `/katalog` (teks next-intl saja) | DONE | `messages/id.json`; `messages/en.json` | 2026-10-12 | Dikonfirmasi Alif 12 Okt 2026 |
+| F15.2 | Label pas foto: latar belakang merah (teks saja) | DONE | `messages/id.json`; `messages/en.json`; `daftar-batch-dialog.tsx`; `daftar-batch-actions.ts`; `identitas-form.tsx`; `identitas-foto-field.tsx`; `pendaftaran-batch-detail.tsx`; `peserta-pendaftaran-detail.tsx` | 2026-10-12 | Dikonfirmasi Alif 12 Okt 2026 |
+| F15.3 | Matikan checkbox baris DataTable Admin (default) | TODO | `src/components/data-table.tsx` | | Menunggu uji Alif di browser |
+
+---
+
 ## Sprint 5 — Hardening & Deploy
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |
@@ -432,6 +442,9 @@ delapan minggu berubah jadi empat belas minggu tanpa ada yang memutuskannya.
 2026-10-08  Dikoreksi: F14.1–F14.6 status aktif TODO, bukti "Selesai dikodekan, menunggu uji ulang Alif". Riwayat uji di atas tidak dihapus.
 2026-10-08  F08.1–F08.4 naik DONE. Bukti: dikonfirmasi Alif 24 Sep 2026 (diuji sendiri di browser). ADR-021. F14 tidak diubah.
 2026-10-09  F00.9, F05.5, F09.1–F09.4, F10.3–F10.6, F11.1–F11.3 naik DONE. Bukti: dikonfirmasi Alif 9 Okt 2026 (diuji sendiri di browser; checklist plan.md Audit dokumen inti 2026-10-08). F09.2 sebelumnya WIP. F10.2, F08.1–F08.4, dan F14.1–F14.6 tidak diubah.
+2026-10-11  F15.1 dikodekan (teks judul /pelatihan dan /katalog). Status TODO — menunggu uji Alif. Tanpa SQL.
+2026-10-12  F15.1 DONE. Dikonfirmasi Alif. F15.2 dikodekan (label pas foto background merah). Status F15.2 TODO. Tanpa SQL. Kolom pas_foto_url tidak diubah.
+2026-10-12  F15.2 DONE. Dikonfirmasi Alif. F15.3 dikodekan: enableRowSelection default false. Prop tetap ada. Status F15.3 TODO. Tanpa SQL.
 ```
 
 ---

@@ -108,7 +108,7 @@ export function DataTable<TData extends RowData>({
   searchPlaceholder = 'Cari...',
   emptyMessage = 'Belum ada data.',
   columnFilters,
-  enableRowSelection = true,
+  enableRowSelection = false,
   getRowId,
   toolbarStart,
   toolbarEnd,

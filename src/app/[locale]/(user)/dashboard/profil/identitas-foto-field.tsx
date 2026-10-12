@@ -13,11 +13,13 @@ const UKURAN_MAKS = 5 * 1024 * 1024;
 export function IdentitasFotoField({
   jenis,
   label,
+  hint,
   previewUrl,
   aspectClass = 'aspect-video',
 }: {
   jenis: 'ktp' | 'pas_foto';
   label: string;
+  hint?: string;
   previewUrl: string | null;
   aspectClass?: string;
 }) {
@@ -51,7 +53,7 @@ export function IdentitasFotoField({
         return;
       }
       toast.success(
-        jenis === 'ktp' ? 'Foto KTP berhasil diunggah.' : 'Pas foto berhasil diunggah.',
+        jenis === 'ktp' ? 'Foto KTP berhasil diunggah.' : 'Pas foto (background merah) berhasil diunggah.',
       );
       router.refresh();
     } catch {
@@ -103,6 +105,7 @@ export function IdentitasFotoField({
           </span>
         )}
       </label>
+      {hint ? <p className="text-xs text-muted-foreground">{hint}</p> : null}
       {previewUrl && !uploading && (
         <p className="text-xs text-muted-foreground">Klik gambar untuk mengganti.</p>
       )}
