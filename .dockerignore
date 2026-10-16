@@ -1,0 +1,16 @@
+.git
+node_modules
+.next
+.pnpm-store
+.vitest
+.playwright-mcp
+.cursor
+.husky
+.impeccable
+_lh-*
+Claude outputs
+coverage
+*.md
+*.sql
+.env*
+!.env.example
