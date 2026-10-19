@@ -60,7 +60,10 @@ export default async function PublicLayout({ children }: { children: React.React
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
           <Link href="/" className="flex items-center gap-2 font-heading text-2xl font-semibold leading-none text-foreground">
             <BrandLogo variant="default" size={32} priority unoptimized={false} />
-            Hexatara
+            <span className="flex flex-col gap-1">
+              Hexatara
+              <span className="text-sm font-medium leading-none text-muted-foreground">UASTC-011</span>
+            </span>
           </Link>
 
           <nav className="hidden items-center gap-6 md:flex">
