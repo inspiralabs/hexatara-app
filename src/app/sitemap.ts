@@ -3,6 +3,9 @@ import { routing } from "@/i18n/routing";
 import { localizedPath, siteOrigin } from "@/lib/seo/page-metadata";
 import { isFreemiumLmsOpen } from "@/lib/site-settings";
 
+// Bergantung pada saklar LMS (cookies) — selalu dinamis, bukan prerender saat build.
+export const dynamic = "force-dynamic";
+
 /** Path publik statis saja — slug dinamis batch/produk ditunda (plan F05.4). */
 const STATIC_PUBLIC_PATHS = [
   "/",
