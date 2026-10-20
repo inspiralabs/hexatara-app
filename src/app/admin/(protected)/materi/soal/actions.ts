@@ -3,7 +3,7 @@
 import { requireAdmin } from '@/lib/auth/guard';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { teks } from '@/lib/validations/batch-admin';
-import { SoalFormSchema, type SoalFormInput } from '@/lib/validations/soal-admin';
+import { HapusSoalBatchSchema, SoalFormSchema, type SoalFormInput } from '@/lib/validations/soal-admin';
 
 const HURUF_OPSI = ['a', 'b', 'c', 'd'] as const;
 
@@ -101,6 +101,22 @@ export async function hapusSoalAction(id: number) {
   const { error } = await supabaseAdmin.from('quiz_questions').delete().eq('id', id);
   if (error) {
     console.error('[admin-soal] gagal hapus soal:', error);
+    return { ok: false as const, pesan: 'Gagal menghapus. Coba lagi.' };
+  }
+  return { ok: true as const };
+}
+
+export async function hapusSoalBatchAction(ids: number[]) {
+  await requireAdmin();
+  const parsed = HapusSoalBatchSchema.safeParse(ids);
+  if (!parsed.success) {
+    return { ok: false as const, pesan: 'Pilihan soal tidak valid.' };
+  }
+  const supabaseAdmin = createAdminClient();
+  // Opsi ikut terhapus lewat FK quiz_options_question_id_fkey ON DELETE CASCADE.
+  const { error } = await supabaseAdmin.from('quiz_questions').delete().in('id', parsed.data);
+  if (error) {
+    console.error('[admin-soal] gagal hapus soal massal:', error);
     return { ok: false as const, pesan: 'Gagal menghapus. Coba lagi.' };
   }
   return { ok: true as const };

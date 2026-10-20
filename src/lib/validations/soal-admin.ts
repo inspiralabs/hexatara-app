@@ -26,3 +26,10 @@ export const SoalFormSchema = z.object({
 
 export type SoalFormInput = z.input<typeof SoalFormSchema>;
 export type SoalFormOutput = z.output<typeof SoalFormSchema>;
+
+export const MAKS_HAPUS_BATCH = 200;
+
+export const HapusSoalBatchSchema = z
+  .array(z.number().int().positive())
+  .min(1)
+  .max(MAKS_HAPUS_BATCH);
