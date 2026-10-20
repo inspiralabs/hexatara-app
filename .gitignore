@@ -61,3 +61,10 @@ _lh-stage4/
 .pnpm-store/
 .vitest/
 supabase/.temp/
+
+# alat bantu lokal (tetap ada di disk)
+.cursor/
+.impeccable/
+.claude/
+backup-*.sql
+*.zip
