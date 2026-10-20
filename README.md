@@ -36,6 +36,7 @@ Simpan di `.env.local` (tidak boleh di-commit). Nilai diminta dari pemilik proye
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY`                      | Kunci publik Supabase                                           |
 | `SUPABASE_SERVICE_ROLE_KEY`                          | Kunci server (rahasia, jangan ke browser)                       |
 | `NEXT_PUBLIC_SITE_URL`                               | URL situs (dipakai SEO dan email)                               |
+| `NEXT_PUBLIC_CANONICAL_URL`                          | Opsional. Origin canonical untuk SEO (canonical, hreflang, OG, sitemap, JSON-LD) dan penentu host yang boleh di-index. Dipakai selama transisi, saat build VPS masih memakai host `hexatara.inspiralabs.id` (isi `https://hexatara.com`). Setelah cutover (`NEXT_PUBLIC_SITE_URL` = `https://hexatara.com`) variabel ini boleh dihapus karena fallback-nya sama. |
 | `NEXT_PUBLIC_WA_ADMIN`                               | Nomor WhatsApp bawaan                                           |
 | `RESEND_API_KEY`, `EMAIL_FROM`                       | Pengiriman email                                                |
 | `ADMIN_NOTIFY_EMAIL`                                 | Email penerima notifikasi (cadangan jika belum diatur di Admin) |

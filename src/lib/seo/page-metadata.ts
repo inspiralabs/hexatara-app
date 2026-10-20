@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getPathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
+import { canonicalOrigin } from "./canonical";
 
 /** Shared social preview — public/og-hexatara.png (1200×630). */
 export const OG_IMAGE = {
@@ -12,15 +13,10 @@ export const OG_IMAGE = {
 
 type PathnameHref = Parameters<typeof getPathname>[0]["href"];
 
-export function siteOrigin(): string {
-  return (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(
-    /\/$/,
-    "",
-  );
-}
+export { canonicalOrigin, isIndexableHost, siteOrigin } from "./canonical";
 
 function absoluteUrl(pathname: string): string {
-  return `${siteOrigin()}${pathname}`;
+  return `${canonicalOrigin()}${pathname}`;
 }
 
 /** Strip HTML for meta description (Tiptap bodies). */
