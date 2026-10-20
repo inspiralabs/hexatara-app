@@ -1,0 +1,31 @@
+# Deploy ke VPS Inspiralabs (kontrak: server-setup/docs/app-contract.md).
+# Nama app di VPS: "hexatara". Domain utama hexatara.com (+ www);
+# hexatara.inspiralabs.id = staging/transisi (otomatis noindex, lihat src/proxy.ts).
+services:
+  web:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+        NEXT_PUBLIC_CANONICAL_URL: ${NEXT_PUBLIC_CANONICAL_URL}
+        NEXT_PUBLIC_SENTRY_DSN: ${NEXT_PUBLIC_SENTRY_DSN}
+        NEXT_PUBLIC_WA_ADMIN: ${NEXT_PUBLIC_WA_ADMIN}
+    env_file: .env
+    expose: ["3000"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/').then(r=>process.exit(r.status<500?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+    networks: [edge]
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.hexatara.rule=Host(`hexatara.com`) || Host(`www.hexatara.com`) || Host(`hexatara.inspiralabs.id`)
+
+networks:
+  edge:
+    external: true

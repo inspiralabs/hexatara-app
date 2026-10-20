@@ -3,6 +3,8 @@ import { withSentryConfig } from "@sentry/nextjs/config";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
+  // Image Docker (VPS) hanya butuh .next/standalone; Vercel mengabaikan opsi ini.
+  output: "standalone",
   // Poster preset boleh ~1.5 MB; multipart + overhead > default body Server Action (1 MB) → 500.
   experimental: {
     serverActions: {
