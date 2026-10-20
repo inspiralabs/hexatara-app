@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { siteOrigin } from "@/lib/seo/page-metadata";
+import { canonicalOrigin } from "@/lib/seo/page-metadata";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/admin", "/dashboard", "/en/dashboard"],
     },
-    sitemap: `${siteOrigin()}/sitemap.xml`,
+    sitemap: `${canonicalOrigin()}/sitemap.xml`,
   };
 }

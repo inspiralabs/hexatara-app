@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Fraunces, Geist } from "next/font/google";
 import { routing } from "@/i18n/routing";
 import { Toaster } from "@/components/ui/sonner";
-import { OG_IMAGE, siteOrigin } from "@/lib/seo/page-metadata";
+import { OG_IMAGE, canonicalOrigin } from "@/lib/seo/page-metadata";
 import "../globals.css";
 
 const geist = Geist({
@@ -36,7 +36,10 @@ export async function generateMetadata({
   const ogLocale = locale === "en" ? "en_US" : "id_ID";
 
   return {
-    metadataBase: new URL(siteOrigin()),
+    metadataBase: new URL(canonicalOrigin()),
+    creator: "InspiraLabs",
+    authors: [{ name: "InspiraLabs", url: "https://inspiralabs.id" }],
+    publisher: "Hexatara",
     title: {
       default: title,
       template: "%s | Hexatara",

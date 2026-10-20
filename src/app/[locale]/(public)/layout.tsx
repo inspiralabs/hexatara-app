@@ -175,7 +175,19 @@ export default async function PublicLayout({ children }: { children: React.React
         </div>
 
         <div className="border-t border-border px-4 py-4 text-center text-sm text-muted-foreground">
-          {tCommon("footerCopyright", { year: new Date().getFullYear() })}
+          {tCommon.rich("footerCopyright", {
+            year: new Date().getFullYear(),
+            inspira: (chunks) => (
+              <a
+                href="https://inspiralabs.id"
+                target="_blank"
+                rel="noopener"
+                className="underline-offset-4 hover:text-foreground hover:underline"
+              >
+                {chunks}
+              </a>
+            ),
+          })}
         </div>
       </footer>
 

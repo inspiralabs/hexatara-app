@@ -11,7 +11,9 @@ import { InstrukturSection } from "@/components/instruktur-section";
 import { PartnerSection } from "@/components/partner-section";
 import { TestimoniSection } from "@/components/testimoni-section";
 import { FaqSection } from "@/components/faq-section";
-import { pageMetadata } from "@/lib/seo/page-metadata";
+import { JsonLd } from "@/components/seo/json-ld";
+import { buildHomeJsonLd } from "@/lib/seo/site-identity";
+import { canonicalOrigin, pageMetadata } from "@/lib/seo/page-metadata";
 
 // Pop-up dan sale banner dikelola Admin lewat database dan bisa berubah kapan saja
 // (F01.1/F01.2) — halaman ini WAJIB dynamic, bukan di-prerender statis saat build,
@@ -40,6 +42,7 @@ export default function Home() {
   // section berkonten sempit (Instruktur/Testimoni/FAQ).
   return (
     <>
+      <JsonLd data={buildHomeJsonLd(canonicalOrigin())} />
       <PopupPembuka />
       <HeroSection />
       <SaleBanner />

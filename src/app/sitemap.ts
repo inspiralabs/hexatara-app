@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
-import { localizedPath, siteOrigin } from "@/lib/seo/page-metadata";
+import { canonicalOrigin, localizedPath } from "@/lib/seo/page-metadata";
 import { isFreemiumLmsOpen } from "@/lib/site-settings";
 
 // Bergantung pada saklar LMS (cookies) — selalu dinamis, bukan prerender saat build.
@@ -21,7 +21,7 @@ const STATIC_PUBLIC_PATHS = [
 ] as const;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const origin = siteOrigin();
+  const origin = canonicalOrigin();
   const lmsOpen = await isFreemiumLmsOpen();
   const entries: MetadataRoute.Sitemap = [];
 
