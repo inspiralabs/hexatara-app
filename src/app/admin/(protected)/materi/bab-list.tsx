@@ -61,8 +61,8 @@ export function BabList({ materialId, bab }: { materialId: number; bab: Bab[] })
           <TableHeader>
             <TableRow>
               <TableHead className="w-16">Urutan</TableHead>
-              <TableHead>Judul</TableHead>
-              <TableHead className="text-right">Aksi</TableHead>
+              <TableHead className="min-w-64">Judul</TableHead>
+              <TableHead className="w-px text-right sticky right-0 border-l border-border bg-background">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -84,8 +84,12 @@ export function BabList({ materialId, bab }: { materialId: number; bab: Bab[] })
                       onDown={() => pindah(index, 'down')}
                     />
                   </TableCell>
-                  <TableCell className="font-medium text-foreground">{b.judul_id}</TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="max-w-xl whitespace-normal font-medium text-foreground">
+                    <span className="line-clamp-2" title={b.judul_id}>
+                      {b.judul_id}
+                    </span>
+                  </TableCell>
+                  <TableCell className="text-right sticky right-0 border-l border-border bg-background">
                     <BabRowActions babId={b.id} judul={b.judul_id} />
                   </TableCell>
                 </TableRow>
