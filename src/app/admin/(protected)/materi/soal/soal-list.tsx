@@ -11,6 +11,10 @@ import { SoalRowActions } from './soal-row-actions';
 
 export type Soal = { id: number; pertanyaan_id: string; urutan: number; is_active: boolean };
 
+// Kolom Aksi sticky: TableCell bawaan whitespace-nowrap, jadi teks panjang
+// melebarkan tabel dan mendorong Aksi keluar layar.
+const aksiSticky = 'sticky right-0 border-l border-border bg-background';
+
 // Table polos + ReorderButtons (ADR-014), sama pola dengan BabList —
 // bukan DataTable, karena reorder butuh seluruh daftar tampil sekaligus
 // (tidak terpotong pagination) supaya urutan naik/turun tetap benar.
@@ -41,15 +45,14 @@ export function SoalList({ soal }: { soal: Soal[] }) {
 
   return (
     <div className="flex flex-col gap-4">
-
       <div className="overflow-x-auto rounded-lg border border-border">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="w-16">Urutan</TableHead>
-              <TableHead>Pertanyaan</TableHead>
-              <TableHead>Aktif</TableHead>
-              <TableHead className="text-right">Aksi</TableHead>
+              <TableHead className="min-w-64">Pertanyaan</TableHead>
+              <TableHead className="w-16">Aktif</TableHead>
+              <TableHead className={`w-px text-right ${aksiSticky}`}>Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -71,9 +74,13 @@ export function SoalList({ soal }: { soal: Soal[] }) {
                       onDown={() => pindah(index, 'down')}
                     />
                   </TableCell>
-                  <TableCell className="font-medium text-foreground">{s.pertanyaan_id}</TableCell>
+                  <TableCell className="max-w-xl whitespace-normal font-medium text-foreground">
+                    <span className="line-clamp-2" title={s.pertanyaan_id}>
+                      {s.pertanyaan_id}
+                    </span>
+                  </TableCell>
                   <TableCell>{s.is_active ? 'Ya' : 'Tidak'}</TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className={`text-right ${aksiSticky}`}>
                     <SoalRowActions id={s.id} pertanyaan={s.pertanyaan_id} />
                   </TableCell>
                 </TableRow>
@@ -82,6 +89,7 @@ export function SoalList({ soal }: { soal: Soal[] }) {
           </TableBody>
         </Table>
       </div>
+
     </div>
   );
 }

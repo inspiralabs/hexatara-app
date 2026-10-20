@@ -43,3 +43,31 @@ next-env.d.ts
 
 # database dumps (F05.6) — jangan commit
 backup-hexatara-*.sql
+
+#artefak
+# dokumen kerja & artefak lokal (tetap ada di disk, tidak masuk Git)
+/docs/
+/prompt-*.md
+/cursor-prompt-*.md
+/rencana-*.md
+/usulan-sql-*.sql
+/PANDUAN*.md
+/PRD.md
+/ENGINEERING.md
+/plan.md
+/Claude outputs/
+_lh-perf-*/
+_lh-stage4/
+.playwright-mcp/
+.pnpm-store/
+.vitest/
+supabase/.temp/
+
+# alat bantu lokal (tetap ada di disk)
+.cursor/
+.impeccable/
+.claude/
+backup-*.sql
+*.zip
+.cursor/
+.impeccable/

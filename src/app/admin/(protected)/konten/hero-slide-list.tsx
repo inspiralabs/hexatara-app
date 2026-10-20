@@ -85,9 +85,9 @@ export function HeroSlideList({ slides }: { slides: HeroSlide[] }) {
           <TableHeader>
             <TableRow>
               <TableHead className="w-16">Urutan</TableHead>
-              <TableHead>Judul</TableHead>
+              <TableHead className="min-w-64">Judul</TableHead>
               <TableHead>Aktif</TableHead>
-              <TableHead className="text-right">Aksi</TableHead>
+              <TableHead className="w-px text-right sticky right-0 border-l border-border bg-background">Aksi</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -109,11 +109,15 @@ export function HeroSlideList({ slides }: { slides: HeroSlide[] }) {
                       onDown={() => pindah(slide.id, 'down')}
                     />
                   </TableCell>
-                  <TableCell className="font-medium text-foreground">{slide.judul_id}</TableCell>
+                  <TableCell className="max-w-xl whitespace-normal font-medium text-foreground">
+                    <span className="line-clamp-2" title={slide.judul_id}>
+                      {slide.judul_id}
+                    </span>
+                  </TableCell>
                   <TableCell>
                     <HeroSlideActiveSwitch slideId={slide.id} aktif={slide.is_active} />
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell className="text-right sticky right-0 border-l border-border bg-background">
                     <HeroSlideRowActions
                       slideId={slide.id}
                       judul={slide.judul_id}

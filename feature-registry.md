@@ -284,6 +284,18 @@ apa pun. Contoh baik memberi tahu segalanya — dan sudah setengah jadi sebagai 
 
 ---
 
+## Sprint 15 — SEO sinyal InspiraLabs (ADR-029)
+
+> Permintaan Alif. Tanpa SQL. Tidak ada teks tersembunyi / keyword stuffing.
+
+| Kode | Fitur | Status | Berkas | Diuji | Bukti |
+|---|---|---|---|---|---|
+| F16.1 | Canonical origin SEO terpisah (`NEXT_PUBLIC_CANONICAL_URL`), X-Robots-Tag noindex untuk host non-canonical, link footer ke inspiralabs.id, metadata creator/authors/publisher, JSON-LD @graph beranda | IN PROGRESS | `src/lib/seo/canonical.ts`; `src/lib/seo/site-identity.ts`; `src/components/seo/json-ld.tsx`; `src/lib/seo/page-metadata.ts`; `src/proxy.ts`; `src/app/robots.ts`; `src/app/sitemap.ts`; `src/app/[locale]/layout.tsx`; `src/app/[locale]/(public)/{layout,page}.tsx`; `messages/{id,en}.json` | | Menunggu uji Alif |
+
+**ADR-029 (nomor sementara; ENGINEERING.md tidak ada di repo).** Canonical utama = hexatara.com (VPS Inspiralabs; Vercel akan dihapus). Selama transisi host lain (hexatara.inspiralabs.id) mendapat header `X-Robots-Tag: noindex, nofollow` dari proxy; robots.txt tetap Allow agar crawler bisa membaca header itu. `canonicalOrigin()` dipakai hanya untuk SEO; URL fungsional (email, redirect auth, QR sertifikat) tetap `NEXT_PUBLIC_SITE_URL`. JSON-LD memakai `WebSite.creator` karena `Organization` tidak punya properti `creator` di schema.org. Catatan env: `NEXT_PUBLIC_CANONICAL_URL` dipakai selama transisi, saat build VPS masih memakai host hexatara.inspiralabs.id (isi https://hexatara.com). Setelah cutover (NEXT_PUBLIC_SITE_URL = https://hexatara.com) boleh dihapus karena fallback-nya sama.
+
+---
+
 ## Sprint 5 — Hardening & Deploy
 
 | Kode | Fitur | Status | Berkas | Diuji | Bukti |

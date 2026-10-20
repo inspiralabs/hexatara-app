@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { cache } from 'react';
+import { unstable_rethrow } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { getOptionalUser } from '@/lib/auth/guard';
@@ -120,6 +121,7 @@ export const isFreemiumLmsOpen = cache(async (): Promise<boolean> => {
     const value = await bacaSetting(KEY_FREEMIUM_LMS_OPEN);
     return value === 'true';
   } catch (err) {
+    unstable_rethrow(err); // sinyal dynamic-usage Next jangan ditelan
     console.error('[site-settings] freemium_lms_open:', err);
     return false;
   }

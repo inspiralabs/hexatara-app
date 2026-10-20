@@ -2,6 +2,7 @@ import { createServerClient } from '@supabase/ssr';
 import createMiddleware from 'next-intl/middleware';
 import { NextResponse, type NextRequest } from 'next/server';
 import { routing } from '@/i18n/routing';
+import { isIndexableHost } from '@/lib/seo/canonical';
 
 const handleI18nRouting = createMiddleware(routing);
 
@@ -45,6 +46,13 @@ export async function proxy(request: NextRequest) {
   // Memicu refresh token kalau sudah kadaluwarsa. Hanya itu tugas proxy
   // ini — keputusan izin/redirect tetap satu-satunya tanggung jawab guard.ts.
   await supabase.auth.getClaims();
+
+  // Host staging/transisi (mis. hexatara.inspiralabs.id) tidak boleh ter-index.
+  // robots.txt tetap Allow supaya crawler bisa membaca header ini.
+  const host = (request.headers.get('x-forwarded-host') ?? request.headers.get('host') ?? '').split(',')[0]?.trim();
+  if (host && !isIndexableHost(host)) {
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+  }
 
   return response;
 }

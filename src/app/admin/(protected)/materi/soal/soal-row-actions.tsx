@@ -3,16 +3,10 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { MoreVerticalIcon } from 'lucide-react';
+import { PencilIcon, Trash2Icon } from 'lucide-react';
 import { toast } from 'sonner';
 import { hapusSoalAction } from './actions';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -44,17 +38,27 @@ export function SoalRowActions({ id, pertanyaan }: { id: number; pertanyaan: str
 
   return (
     <>
-      <DropdownMenu>
-        <DropdownMenuTrigger render={<Button variant="ghost" size="icon" aria-label={`Aksi untuk soal ${pertanyaan}`} />}>
-          <MoreVerticalIcon />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem variant="edit" render={<Link href={`/admin/materi/soal/${id}`} />}>Ubah</DropdownMenuItem>
-          <DropdownMenuItem variant="destructive" onClick={() => setHapusOpen(true)}>
-            Hapus
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="flex items-center justify-end gap-1">
+        <Link
+          href={`/admin/materi/soal/${id}`}
+          aria-label={`Ubah soal ${pertanyaan}`}
+          className={buttonVariants({ variant: 'edit', size: 'sm', className: 'h-9 min-w-9' })}
+        >
+          <PencilIcon />
+          <span className="hidden md:inline">Ubah</span>
+        </Link>
+        <Button
+          type="button"
+          variant="destructive"
+          size="sm"
+          className="h-9 min-w-9"
+          aria-label={`Hapus soal ${pertanyaan}`}
+          onClick={() => setHapusOpen(true)}
+        >
+          <Trash2Icon />
+          <span className="hidden md:inline">Hapus</span>
+        </Button>
+      </div>
 
       <AlertDialog open={hapusOpen} onOpenChange={setHapusOpen}>
         <AlertDialogContent>
